@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class PlayerState
 {
+    #region Components
     protected PlayerStateMachine stateMachine;
     protected Player player;
     protected Rigidbody2D rb;
+    #endregion
 
+    protected static float xInput;
+    protected static float yInput;
     private string animBoolName;
 
     protected float stateTimer;
@@ -20,17 +24,20 @@ public class PlayerState
 
     public virtual void Enter()
     {
-        player.anim.SetBool(animBoolName, true);
+        //player.anim.SetBool(animBoolName, true);
         rb = player.rb;
     }
 
     public virtual void Update()
     {
-        player.anim.SetFloat("yVelocity", rb.velocity.y);
+        stateTimer -= Time.deltaTime;
+
+        xInput = Input.GetAxisRaw("Horizontal");
+        yInput = Input.GetAxisRaw("Vertical");
     }
 
     public virtual void Exit()
     {
-        player.anim.SetBool(animBoolName, false);
+        //player.anim.SetBool(animBoolName, false);
     }
 }
