@@ -8,20 +8,17 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    public int HP = 3;
+    [SerializeField] private int HP = 3;
+    [SerializeField] private float hitDuration;
 
     [Header("Move info")]
-    public float moveSpeed = 12f;
-    public float dashDuration = 2.0f;
+    public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
+    public float dashDuration = 2.0f;
 
     [Header("Gun info")]
-    public GunBase gun;
-    //[Header("Collision info")]
-    //[SerializeField] private Transform groundCheck;
-    //[SerializeField] private float groundCheckDistance;
-    //[SerializeField] private LayerMask whatIsGround;
-
+    public Gun gun;
+    public bool isAttackable = true;
 
     #region Componets
     public Animator anim { get; private set; }
@@ -61,6 +58,8 @@ public class Player : MonoBehaviour
         //Debug.Log(stateMachine.currentState);
         stateMachine.currentState.Update();
 
+        //To do. 전투 가능 지역 여부 판단 
+        //gun.SetActive(false)
     }
 
     //private void OnDrawGizmos()
@@ -81,13 +80,19 @@ public class Player : MonoBehaviour
             Debug.Log("Player Dead");
         else
         {
-            //To do. 무적 설정
+            //Change Layer & Change Color
+            gameObject.layer = 7;
+            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
 
+            Invoke("OffDamaged", hitDuration);
         }
     }
 
     private void OffDamaged()
     {
-
+        gameObject.layer = 6;
+        spriteRenderer.color = new Color(1, 1, 1, 1);
     }
+
+
 }

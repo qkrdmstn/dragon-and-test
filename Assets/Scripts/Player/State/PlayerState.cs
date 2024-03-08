@@ -8,13 +8,16 @@ public class PlayerState
     protected PlayerStateMachine stateMachine;
     protected Player player;
     protected Rigidbody2D rb;
+    private string animBoolName;
     #endregion
 
+    #region Inputs
     protected static float xInput;
     protected static float yInput;
-    private string animBoolName;
+    #endregion
 
     protected float stateTimer;
+
     public PlayerState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
     {
         this.player = _player;
@@ -24,7 +27,7 @@ public class PlayerState
 
     public virtual void Enter()
     {
-        //player.anim.SetBool(animBoolName, true);
+        player.anim.SetBool(animBoolName, true);
         rb = player.rb;
     }
 
@@ -34,10 +37,13 @@ public class PlayerState
 
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
+
+        player.anim.SetFloat("xVelocity", rb.velocity.x);
+        player.anim.SetFloat("yVelocity", rb.velocity.y);
     }
 
     public virtual void Exit()
     {
-        //player.anim.SetBool(animBoolName, false);
+        player.anim.SetBool(animBoolName, false);
     }
 }

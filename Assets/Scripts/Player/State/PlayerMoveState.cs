@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMoveState : PlayerAttackableState
+public class PlayerMoveState : PlayerState
 {
     public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
@@ -22,7 +22,7 @@ public class PlayerMoveState : PlayerAttackableState
     {
         base.Update();
 
-        //Move Logic
+        //Move
         Vector2 dir = new Vector2(xInput, yInput);
         dir.Normalize();
 
