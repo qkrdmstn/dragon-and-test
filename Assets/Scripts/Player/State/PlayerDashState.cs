@@ -19,7 +19,9 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
-        //To do. 무적 추가, 전투 가능 지역 판단..
+        // 대시 중 무적
+        player.gameObject.layer = 7;
+        player.spriteRenderer.color = new Color(1, 0, 0);
 
         //Dash Direction Setting
         dashDir = new Vector2(xInput, yInput);
@@ -36,7 +38,9 @@ public class PlayerDashState : PlayerState
         player.isAttackable = true;
         player.gun.shootTimer -= player.dashDuration;
 
-        //To do. 무적 해제 추가
+        // 무적 해제
+        player.gameObject.layer = 6;
+        player.spriteRenderer.color = new Color(1, 1, 1);
 
         player.SetVelocity(0, 0);
     }
@@ -45,7 +49,35 @@ public class PlayerDashState : PlayerState
     {
         base.Update();
 
-        dash = dashDir * player.dashSpeed;
+        //Constant
+        switch (player.dashMode)
+        {
+            case 0:
+                //Constant
+                if (player.dashDuration * 0.33 <= stateTimer)
+                    dash = dashDir * player.dashSpeed;
+                else
+                    dash = dashDir * player.dashSpeed * 0.3f;
+                break;
+            case 1:
+                //Constant & Exponantial
+                if (player.dashDuration * 0.5f <= stateTimer)
+                    dash = dashDir * player.dashSpeed;
+                else
+                    dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration * 0.67f - stateTimer));
+                break;
+            case 2:
+                //Exponantial
+                dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration - stateTimer));
+                break;
+            case 3:
+                //Cosine
+                dash = dashDir * player.dashSpeed * Mathf.Cos(3.7f * (player.dashDuration - stateTimer));
+                break;
+            default:
+                break;
+        }
+
         player.SetVelocity(dash.x, dash.y);
 
         //Dash Duration

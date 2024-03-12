@@ -15,10 +15,14 @@ public class Player : MonoBehaviour
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
+    public float expCoefficient = -3.0f;
+    public int dashMode = 0;
 
     [Header("Gun info")]
     public Gun gun;
     public bool isAttackable = true;
+
+    //To do. facing direction으로 애니메이션 방향 정하기
 
     #region Componets
     public Animator anim { get; private set; }

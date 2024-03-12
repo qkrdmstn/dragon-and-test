@@ -299,9 +299,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 3
   hitDuration: 0
-  moveSpeed: 10
-  dashSpeed: 25
-  dashDuration: 0.2
+  moveSpeed: 5.5
+  dashSpeed: 11
+  dashDuration: 0.45
+  expCoefficient: -3.5
+  dashMode: 0
   gun: {fileID: 1448581443}
   isAttackable: 1
 --- !u!1 &955222021
@@ -380,7 +382,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955222021}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
