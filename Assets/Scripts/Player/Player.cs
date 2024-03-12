@@ -15,10 +15,14 @@ public class Player : MonoBehaviour
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
+    public float expCoefficient = -3.0f;
+    public int dashMode = 0;
 
     [Header("Gun info")]
     public Gun gun;
     public bool isAttackable = true;
+
+    //To do. facing direction으로 애니메이션 방향 정하기
 
     #region Componets
     public Animator anim { get; private set; }
@@ -75,23 +79,29 @@ public class Player : MonoBehaviour
     public void OnDamamged(int damage)
     {
         HP -= damage;
-
+        Debug.Log("HP: " + HP);
         if (HP == 0)
             Debug.Log("Player Dead");
         else
         {
             //Change Layer & Change Color
             gameObject.layer = 7;
-            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
 
-            Invoke("OffDamaged", hitDuration);
+            StartCoroutine(DamagedProcess());
         }
     }
 
-    private void OffDamaged()
+    IEnumerator DamagedProcess()
     {
+        for (int i = 0; i < 2; i++) 
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+            yield return new WaitForSeconds(hitDuration / 4.0f);
+
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(hitDuration / 4.0f);
+        }
         gameObject.layer = 6;
-        spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 
 
