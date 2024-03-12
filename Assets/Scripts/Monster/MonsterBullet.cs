@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class MonsterBullet : MonoBehaviour
 {
     public float lifeTimer;
 
@@ -25,14 +25,12 @@ public class Bullet : MonoBehaviour
         rigid = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         lifeTimer -= Time.deltaTime;
 
         rigid.velocity = dir * bulletSpeed;
 
-        //�ӽ� Bound
         if (!IsInDomain() || lifeTimer < 0.0f)
             Destroy(this.gameObject);
     }
@@ -51,10 +49,9 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Monster"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             Destroy(this.gameObject);
         }
-        Debug.Log("ontrigger");
     }
 }
