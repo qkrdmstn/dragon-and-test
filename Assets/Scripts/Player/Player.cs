@@ -79,23 +79,29 @@ public class Player : MonoBehaviour
     public void OnDamamged(int damage)
     {
         HP -= damage;
-
+        Debug.Log("HP: " + HP);
         if (HP == 0)
             Debug.Log("Player Dead");
         else
         {
             //Change Layer & Change Color
             gameObject.layer = 7;
-            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
 
-            Invoke("OffDamaged", hitDuration);
+            StartCoroutine(DamagedProcess());
         }
     }
 
-    private void OffDamaged()
+    IEnumerator DamagedProcess()
     {
+        for (int i = 0; i < 2; i++) 
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+            yield return new WaitForSeconds(hitDuration / 4.0f);
+
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(hitDuration / 4.0f);
+        }
         gameObject.layer = 6;
-        spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 
 

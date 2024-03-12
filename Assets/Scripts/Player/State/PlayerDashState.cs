@@ -49,28 +49,32 @@ public class PlayerDashState : PlayerState
     {
         base.Update();
 
-        //Constant
+        //Dash Velocity Func
         switch (player.dashMode)
         {
             case 0:
                 //Constant
+                dash = dashDir * player.dashSpeed;
+                break;
+            case 1:
+                //Constant Range
                 if (player.dashDuration * 0.33 <= stateTimer)
                     dash = dashDir * player.dashSpeed;
                 else
                     dash = dashDir * player.dashSpeed * 0.3f;
                 break;
-            case 1:
+            case 2:
                 //Constant & Exponantial
                 if (player.dashDuration * 0.5f <= stateTimer)
                     dash = dashDir * player.dashSpeed;
                 else
                     dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration * 0.67f - stateTimer));
                 break;
-            case 2:
+            case 3:
                 //Exponantial
                 dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration - stateTimer));
                 break;
-            case 3:
+            case 4:
                 //Cosine
                 dash = dashDir * player.dashSpeed * Mathf.Cos(3.7f * (player.dashDuration - stateTimer));
                 break;
