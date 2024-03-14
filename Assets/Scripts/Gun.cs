@@ -19,10 +19,10 @@ public class Gun : MonoBehaviour
     [SerializeField] private bool isReloading = false;
     [SerializeField] private bool clickReloadFlag = false;
 
-    //public int maxBullet; //ÃÖ´ë ÃÑ¾Ë °³¼ö
-    //public int curTotalBullet; //ÇöÀç °¡Áø ÃÑ¾Ë
-    [SerializeField] private int magazineSize; //ÅºÃ¢ Å©±â
-    [SerializeField] private int loadedBullet; //ÇöÀç ÀåÀüµÈ ÃÑ¾Ë
+    //public int maxBullet; //ï¿½Ö´ï¿½ ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½
+    //public int curTotalBullet; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½
+    [SerializeField] private int magazineSize; //ÅºÃ¢ Å©ï¿½ï¿½
+    [SerializeField] private int loadedBullet; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½
 
     [Header("Bullet Prefabs")]
     public GameObject bulletPrefab;
