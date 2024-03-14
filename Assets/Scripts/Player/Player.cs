@@ -66,6 +66,14 @@ public class Player : MonoBehaviour
         //gun.SetActive(false)
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
+        {
+            OnDamamged(1);
+        }
+    }
+
     //private void OnDrawGizmos()
     //{
     //    Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
