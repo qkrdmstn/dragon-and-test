@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour
+public class ScenesManager : MonoBehaviour
 {
-    public static UIManager instance = null;
-    public Fade fade;
-
+    public static ScenesManager instance = null;
     private void Awake()
     {
         if (instance == null)
@@ -19,7 +18,10 @@ public class UIManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+    }
 
-        fade = GetComponentInChildren<Fade>();
+    public void ChangeScene(string _sceneName)
+    {
+        SceneManager.LoadScene(_sceneName);
     }
 }

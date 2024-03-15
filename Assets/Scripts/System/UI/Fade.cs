@@ -2,43 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class Fade : MonoBehaviour
 {
-    public float fadeTime = 2f;
+    [SerializeField] float fadeTime;
     float start, end, time;
     Image fadePanel;
-    [SerializeField] bool isPlay = false;
-    bool isPlaying = false;
-
-    void Awake()
-    {
-        fadePanel = GetComponent<Image>();  
-    }
-
 
     void Start()
     {
+        fadePanel = GetComponent<Image>();
+
         start = 1f;
         end = 0f;
+        fadeTime = 1.5f;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (isPlay && !isPlaying)
-        {
-            isPlaying = true;
-            StartCoroutine(FadeCoroutine());
-        }
+    public void ManageFade(bool _scene, string _loadSceneName) {
+        // bool _scene 변수는 sceneLoad 이외에 fade기능을 사용할 일이 없다면 삭제
+        StartCoroutine(FadeCoroutine(_scene, _loadSceneName));
     }
 
-    IEnumerator FadeCoroutine()
-    {
+    IEnumerator FadeCoroutine(bool _scene, string _loadSceneName)
+    {   
         Color fadeColor = fadePanel.color;
 
-        // 밝아집니다
         time = 0f;
         while (fadeColor.a < 1f)
         {
@@ -50,11 +38,12 @@ public class Fade : MonoBehaviour
             yield return null;
         }
 
-        SceneManager.LoadScene("ChangeSceneTest");
-        yield return new WaitForSeconds(1f);
-        // 이 사이에 씬 이동 전환 기능 삽입 가능 -> collider의 tag로 이동되어야할 map을 구분지어 [씬 이동 전문 스크립트] 하나 생성 필요
-
-        // 원하는 기능 수행완료시, 다시 어두워집니다
+        if (_scene)
+        {
+            ScenesManager.instance.ChangeScene(_loadSceneName);
+            yield return new WaitForSeconds(.5f);
+        }
+        
         time = 0f;
         while(fadeColor.a > 0f)
         {
@@ -65,9 +54,5 @@ public class Fade : MonoBehaviour
 
             yield return null;
         }
-
-        isPlaying = false;
-        isPlay = false;
-        
     }
 }
