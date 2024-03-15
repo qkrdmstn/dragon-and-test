@@ -76,7 +76,7 @@ public class PlayerDashState : PlayerState
                 break;
             case 4:
                 //Cosine
-                dash = dashDir * player.dashSpeed * Mathf.Cos(3.7f * (player.dashDuration - stateTimer));
+                dash = dashDir * player.dashSpeed * Mathf.Cos(3.4f * (player.dashDuration - stateTimer));
                 break;
             default:
                 break;

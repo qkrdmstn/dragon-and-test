@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    [SerializeField] private int HP = 3;
+    [SerializeField] public int HP = 3;
     [SerializeField] private float hitDuration;
 
     [Header("Move info")]
@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     public Gun gun;
     public bool isAttackable = true;
 
+    [Header("Position Check")]
+    public bool isCombatZone = true;
     //To do. facing direction으로 애니메이션 방향 정하기
 
     #region Componets
@@ -62,8 +64,10 @@ public class Player : MonoBehaviour
         //Debug.Log(stateMachine.currentState);
         stateMachine.currentState.Update();
 
-        //To do. 전투 가능 지역 여부 판단 
-        //gun.SetActive(false)
+        //if (isCombatZone)//To do. 전투 가능 지역 여부 판단 
+        //{
+        //    //gun.SetActive(false)
+        //}
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -111,6 +115,4 @@ public class Player : MonoBehaviour
         }
         gameObject.layer = 6;
     }
-
-
 }
