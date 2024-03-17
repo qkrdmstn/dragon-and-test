@@ -8,22 +8,30 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    [SerializeField] public int HP = 3;
+    public int HP = 3;
     [SerializeField] private float hitDuration;
+
+    [Header("Skill info")]
+    public float curMP = 100.0f;
+    public float maxMP = 100.0f;
 
     [Header("Move info")]
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
+
+    //Temp variable
     public float expCoefficient = -3.0f;
     public int dashMode = 0;
-
+   
     [Header("Gun info")]
     public Gun gun;
     public bool isAttackable = true;
 
-    [Header("Position Check")]
+    [Header("State Check")]
     public bool isCombatZone = true;
+    public bool isStateChangeable = true;
+
     //To do. facing direction으로 애니메이션 방향 정하기
 
     #region Componets
@@ -42,7 +50,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        stateMachine = new PlayerStateMachine();
+        stateMachine = new PlayerStateMachine(this);
 
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
         moveState = new PlayerMoveState(this, stateMachine, "Move");
@@ -64,7 +72,7 @@ public class Player : MonoBehaviour
         //Debug.Log(stateMachine.currentState);
         stateMachine.currentState.Update();
 
-        //if (isCombatZone)//To do. 전투 가능 지역 여부 판단 
+        //if (isCombatZone)//To do. Check CombatZone
         //{
         //    //gun.SetActive(false)
         //}
@@ -91,7 +99,7 @@ public class Player : MonoBehaviour
     public void OnDamamged(int damage)
     {
         HP -= damage;
-        Debug.Log("HP: " + HP);
+       // Debug.Log("HP: " + HP);
         if (HP == 0)
             Debug.Log("Player Dead");
         else
