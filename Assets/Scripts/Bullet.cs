@@ -55,6 +55,5 @@ public class Bullet : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        Debug.Log("ontrigger");
     }
 }
