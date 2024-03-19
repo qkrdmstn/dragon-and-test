@@ -9,9 +9,10 @@ public class Monster : MonoBehaviour
 
     public float moveSpeed = 9.0f;
 
-    public float recognitionRange = 10.0f;
+    public float recognitionRange = 100.0f;
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
+    public Chase chase;
 
     #region MonsterShoot
     public int damage = 1;
@@ -40,6 +41,7 @@ public class Monster : MonoBehaviour
 
     public GameObject player;
     public GameObject monsterBullet;
+    public float tempSpeed;
 
     [Header("CameraSetting")]
     public CamShakeProfile profile;
@@ -54,6 +56,7 @@ public class Monster : MonoBehaviour
         chaseState = new MonsterChaseState(this, stateMachine, player);
         chaseAttackState = new MonsterChaseAttackState(this, stateMachine, player);
         attackState = new MonsterAttackState(this, stateMachine, player);
+        tempSpeed = moveSpeed;
     }
 
     private void Start()
@@ -62,6 +65,7 @@ public class Monster : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
+        chase = GetComponent<Chase>();
         stateMachine.Initialize(idleState);
 
         impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -88,10 +92,22 @@ public class Monster : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet")){
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
             OnDamaged(1);
         }
+        else if (collision.gameObject.CompareTag("Ground"))
+        {
+            //Debug.Log("in");
+            //tempSpeed = 0f;
+        }
 
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        //Debug.Log("out");
+        //tempSpeed = moveSpeed;
     }
 
     public void Shoot()
