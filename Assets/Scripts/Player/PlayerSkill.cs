@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
 using Random = UnityEngine.Random;
 
 public enum Month 
@@ -157,39 +156,35 @@ public class PlayerSkill : MonoBehaviour
             createNum = 20 - curActiveCardNum;
 
         //Determining card type random
-        int[] indexes = CreatingRandomType(createNum);
+        List<int> randomIndexes = CreatingRandomType(createNum);
 
         //Creating Random Pos
-        Vector2 []pos = CreatingRandomPos(createNum);
+        List<Vector2> randomPositions = CreatingRandomPos(createNum);
 
         for (int i = 0; i < createNum; i++)
         {
-            hwatuCards[indexes[i]].rectTransform.anchoredPosition = pos[i];
-            hwatuCards[indexes[i]].cardObj.transform.SetAsLastSibling();
-            hwatuCards[indexes[i]].cardObj.SetActive(true);
+            hwatuCards[randomIndexes[i]].rectTransform.anchoredPosition = randomPositions[i];
+            hwatuCards[randomIndexes[i]].cardObj.transform.SetAsLastSibling();
+            hwatuCards[randomIndexes[i]].cardObj.SetActive(true);
         }
     }
 
-    private int[] CreatingRandomType(int num)
+    private List<int> CreatingRandomType(int num)
     {
-        int[] indexes = new int[num];
-        int size = 0;
-        while (size < num)
+        List<int> indexes = new List<int>();
+        while (indexes.Count < num)
         {
             int idx = Random.Range(0, 20);
-            if (IndexDuplicateCheck(idx))
-            {
-                indexes[size] = idx;
-                size++;
-            }
+            if (IndexDuplicateCheck(idx, indexes))
+                indexes.Add(idx);
         }
 
         return indexes;
     }
 
-    private bool IndexDuplicateCheck(int idx)
+    private bool IndexDuplicateCheck(int idx, List<int> indexes)
     {
-        //Active Check
+        //Activated Check
         if (hwatuCards[idx].cardObj.activeSelf)
             return false;
 
@@ -199,66 +194,101 @@ public class PlayerSkill : MonoBehaviour
             if (selectCards[i].cardObj == hwatuCards[idx].cardObj)
                 return false;
         }
+
+        //Check the index already set to random 
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            if (indexes[i] == idx)
+                return false;
+        }
         return true;
     }
 
-    private Vector2[] CreatingRandomPos(int num)
+    private List<Vector2> CreatingRandomPos(int num)
     {
-        Vector2[] positions = new Vector2[num];
+        List<Vector2> positions = new List<Vector2>();
         float minX = -blanketRectTransform.sizeDelta.x / 2.0f + cardSizeX / 2.0f;
         float maxX = minX * -1;
         float minY = -blanketRectTransform.sizeDelta.y / 2.0f + cardSizeY / 2.0f;
         float maxY = minY * -1;
 
-        int size = 0;
-        while (size < num)
+        while (positions.Count < num)
         {
             float x = Random.Range(minX, maxX);
             float y = Random.Range(minY, maxY);
             Vector2 temp = new Vector2(x, y);
-            if (PositionDuplicateCheck(temp))
-            {
-                positions[size] = temp;
-                size++;
-            }
+            if (PositionDuplicateCheck(temp, positions))
+                positions.Add(temp);
         }
-
         return positions;
     }
 
-    private bool PositionDuplicateCheck(Vector2 pos)
+    private bool PositionDuplicateCheck(Vector2 pos, List<Vector2> positions)
     {
-        float totalArea = cardSizeX * cardSizeY;
-        Vector2 minPos1 = new Vector2(pos.x - cardSizeX/2.0f, pos.y - cardSizeY / 2.0f);
+        Vector2 minPos1 = new Vector2(pos.x - cardSizeX / 2.0f, pos.y - cardSizeY / 2.0f);
         Vector2 maxPos1 = new Vector2(pos.x + cardSizeX / 2.0f, pos.y + cardSizeY / 2.0f);
 
+        //Check the Position of Activated Card
         for (int i = 0; i < hwatuCards.Length; i++)
         {
             if (hwatuCards[i].cardObj.activeSelf)
             {
-                Vector2 otherCardPos = new Vector2(hwatuCards[i].rectTransform.anchoredPosition.x, hwatuCards[i].rectTransform.anchoredPosition.y);
-                Vector2 minPos2 = new Vector2(otherCardPos.x - cardSizeX / 2.0f, otherCardPos.y - cardSizeY / 2.0f);
-                Vector2 maxPos2 = new Vector2(otherCardPos.x + cardSizeX / 2.0f, otherCardPos.y + cardSizeY / 2.0f);
+                Vector2 activeCardPos = new Vector2(hwatuCards[i].rectTransform.anchoredPosition.x, hwatuCards[i].rectTransform.anchoredPosition.y);
+                Vector2 minPos2 = new Vector2(activeCardPos.x - cardSizeX / 2.0f, activeCardPos.y - cardSizeY / 2.0f);
+                Vector2 maxPos2 = new Vector2(activeCardPos.x + cardSizeX / 2.0f, activeCardPos.y + cardSizeY / 2.0f);
 
-                float overlapArea = OverlapLength(minPos1.x, maxPos1.x, minPos2.x, maxPos2.x) * OverlapLength(minPos1.y, maxPos1.y, minPos2.y, maxPos2.y);
-                if (overlapArea / totalArea >= maxOverlapArea)
+                if (!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
                     return false;
             }
+        }
+
+        //Check the Position already set to random 
+        for(int i=0; i<positions.Count; i++)
+        {
+            Vector2 otherCardPos = new Vector2(positions[i].x, positions[i].y);
+            Debug.Log(otherCardPos);
+            Vector2 minPos2 = new Vector2(otherCardPos.x - cardSizeX / 2.0f, otherCardPos.y - cardSizeY / 2.0f);
+            Vector2 maxPos2 = new Vector2(otherCardPos.x + cardSizeX / 2.0f, otherCardPos.y + cardSizeY / 2.0f);
+
+            if(!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
+                return false;
         }
         return true;
     }
 
+    private bool OverlapCondition(Vector2 minPos1, Vector2 maxPos1, Vector2 minPos2, Vector2 maxPos2)
+    {
+        float totalArea = cardSizeX * cardSizeY;
+        float overlapArea = OverlapLength(minPos1.x, maxPos1.x, minPos2.x, maxPos2.x) * OverlapLength(minPos1.y, maxPos1.y, minPos2.y, maxPos2.y);
+        if (maxOverlapArea != 0.0f && overlapArea / totalArea >= maxOverlapArea)
+            return false;
+        else if (maxOverlapArea == 0.0f && overlapArea != 0.0f)
+            return false;
+        else
+            return true;
+    }
+
     private float OverlapLength(float minX1, float maxX1, float minX2, float maxX2)
     {
+        float result = 0.0f;
         if (minX1 >= maxX2) return 0.0f;
         if (minX2 >= maxX1) return 0.0f;
 
-        if (minX1 < maxX2 && minX1 > minX2)
-            return maxX2 - minX1;
-        if (minX2 < maxX1 && minX2 > minX1)
-            return maxX1 - minX2;
-        return 0.0f;
+        if (minX1 < minX2 && maxX1 > maxX2)
+            result = maxX2 - minX2;
+        else if (minX2 < minX1 && maxX2 > maxX1)
+            result = maxX1 - maxX2;
+        else if (minX1 < maxX2 && minX1 > minX2)
+            result = maxX2 - minX1;
+        else if (minX2 < maxX1 && minX2 > minX1)
+            result = maxX1 - minX2;
+
+        if (result < 0.0f)
+            result *= -1;
+        return result;
     }
+
+
 
     private void ExitSkill()
     {
@@ -373,7 +403,6 @@ public class PlayerSkill : MonoBehaviour
 
     private void UseSkill(HwatuCombination result)
     {
-        int num = 0;
         switch(result)
         {
             case HwatuCombination.GTT38:
