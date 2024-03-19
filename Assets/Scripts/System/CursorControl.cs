@@ -49,6 +49,7 @@ public class CursorControl : MonoBehaviour
         cursorTex = UIManager.instance.TextureFromSprite(_cursorImg);
         cursorPoint = new Vector2(cursorTex.width / 2, cursorTex.height / 2);
         Cursor.SetCursor(cursorTex, cursorPoint, CursorMode.ForceSoftware);
+        Cursor.lockState = CursorLockMode.Confined; // 게임 창 밖으로 커서가 나가지 못함
     }
 
     bool Diff_FromPlayerToCursor(Vector3 player, Vector3 cursor)
