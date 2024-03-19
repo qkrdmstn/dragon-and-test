@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Monster : MonoBehaviour
 {
@@ -40,6 +41,11 @@ public class Monster : MonoBehaviour
     public GameObject player;
     public GameObject monsterBullet;
 
+    [Header("CameraSetting")]
+    public CamShakeProfile profile;
+    private CinemachineImpulseSource impulseSource;
+    
+
     private void Awake()
     {
         stateMachine = new MonsterStateMachine();
@@ -58,7 +64,7 @@ public class Monster : MonoBehaviour
         col = GetComponent<Collider2D>();
         stateMachine.Initialize(idleState);
 
-        
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
@@ -68,6 +74,9 @@ public class Monster : MonoBehaviour
 
     public void OnDamaged(int damage)
     {
+        // 피격에 따른 카메라 진동
+        CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
+
         HP -= damage;
 
         if (HP == 0)
