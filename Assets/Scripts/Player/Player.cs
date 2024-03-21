@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
     {
         HP -= damage;
        // Debug.Log("HP: " + HP);
-        if (HP == 0)
+        if (HP <= 0)
             Debug.Log("Player Dead");
         else
         {

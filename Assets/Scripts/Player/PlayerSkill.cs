@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public enum Month 
+#region Enum
+public enum Month
 {
     Jan, Feb, Mar, Apr, May,
     Jun, Jul, Aug, Sep, Oct
@@ -29,7 +30,7 @@ public enum HwatuType
 
 public enum HwatuCombination
 {
-    GTT38, GTT13, GTT18, 
+    GTT38, GTT13, GTT18,
     AHES74,
     JTT, MTGR94,
     TT9, TT8, TT7, TT6, TT5, TT4, TT3, TT2, TT1, TTCatch73,
@@ -37,9 +38,11 @@ public enum HwatuCombination
     AL12, DS14, GPP19, JPP110, JS410, SR46,
     KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0
 }
+#endregion
 
+#region Class
 [System.Serializable]
- class HwatuCard
+class HwatuCard
 {
     public GameObject cardObj;
     public Month month;
@@ -48,11 +51,27 @@ public enum HwatuCombination
     public RectTransform rectTransform;
 }
 
+class Sero
+{
+    public int x1;
+    public int y1, y2;
+    public int chk;
+
+    public Sero(int _x1, int _y1, int _y2, int _chk)
+    {
+        x1 = _x1;
+        y1 = _y1;
+        y2 = _y2;
+        chk = _chk;
+    }
+}
+#endregion
+
+
 public class PlayerSkill : MonoBehaviour
 {
-    [Header("Skill info")]
+    [Header("Card info")]
     public int drawCnt;
-
     [Space(10f)]
     public float skillDuration;
     public float skillTimer;
@@ -62,15 +81,22 @@ public class PlayerSkill : MonoBehaviour
     [Space(10f)]
     public int minActiveCardNum;
     public int curActiveCardNum;
-    [Space(10f)]
-    public float cardSizeX;
-    public float cardSizeY;
+    private float cardSizeX;
+    private float cardSizeY;
     [Range(0.0f, 1.0f)]
-    public float maxOverlapArea = 0.7f;
-    [SerializeField] private HwatuCard[] selectCards;
+    [SerializeField] private float maxOverlapArea = 0.7f;
+
+    private HwatuCard[] selectCards;
+    private Vector2 selectCardWorldPos;
+
+    [Header("Damage info")]
+    [SerializeField] private float damageRadius;
+    [SerializeField] private int skillDamage;
+    [SerializeField] private LayerMask monsterLayer;
 
     #region Components
     private Player player;
+    [Space(10f)]
     public GameObject skillUI;
     public RectTransform blanketRectTransform;
     [SerializeField] HwatuCard[]hwatuCards;
@@ -80,7 +106,6 @@ public class PlayerSkill : MonoBehaviour
     void Awake()
     {
         player = GameObject.FindObjectOfType<Player>();
-
         InitHwatu();
     }
 
@@ -108,8 +133,9 @@ public class PlayerSkill : MonoBehaviour
     private void StartSkill()
     {
         //player setting
-        //player.curMP -= player.maxMP;
+        player.curMP -= player.maxMP;
         player.isStateChangeable = false;
+        player.isAttackable = false;
 
         Time.timeScale = 0.0f;
         
@@ -178,7 +204,6 @@ public class PlayerSkill : MonoBehaviour
             if (IndexDuplicateCheck(idx, indexes))
                 indexes.Add(idx);
         }
-
         return indexes;
     }
 
@@ -228,6 +253,9 @@ public class PlayerSkill : MonoBehaviour
         Vector2 minPos1 = new Vector2(pos.x - cardSizeX / 2.0f, pos.y - cardSizeY / 2.0f);
         Vector2 maxPos1 = new Vector2(pos.x + cardSizeX / 2.0f, pos.y + cardSizeY / 2.0f);
 
+        List<Sero> seroList = new List<Sero>(); //List for Card Position Overlap Test
+        int[] heightArray = new int[(int)(cardSizeY * 10) + 1];
+
         //Check the Position of Activated Card
         for (int i = 0; i < hwatuCards.Length; i++)
         {
@@ -236,9 +264,9 @@ public class PlayerSkill : MonoBehaviour
                 Vector2 activeCardPos = new Vector2(hwatuCards[i].rectTransform.anchoredPosition.x, hwatuCards[i].rectTransform.anchoredPosition.y);
                 Vector2 minPos2 = new Vector2(activeCardPos.x - cardSizeX / 2.0f, activeCardPos.y - cardSizeY / 2.0f);
                 Vector2 maxPos2 = new Vector2(activeCardPos.x + cardSizeX / 2.0f, activeCardPos.y + cardSizeY / 2.0f);
-
-                if (!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
-                    return false;
+                AddOverlapAreas(minPos1, maxPos1, minPos2, maxPos2, seroList);
+                //if (!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
+                //    return false;
             }
         }
 
@@ -246,52 +274,99 @@ public class PlayerSkill : MonoBehaviour
         for(int i=0; i<positions.Count; i++)
         {
             Vector2 otherCardPos = new Vector2(positions[i].x, positions[i].y);
-            Debug.Log(otherCardPos);
             Vector2 minPos2 = new Vector2(otherCardPos.x - cardSizeX / 2.0f, otherCardPos.y - cardSizeY / 2.0f);
             Vector2 maxPos2 = new Vector2(otherCardPos.x + cardSizeX / 2.0f, otherCardPos.y + cardSizeY / 2.0f);
-
-            if(!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
-                return false;
+            AddOverlapAreas(minPos1, maxPos1, minPos2, maxPos2, seroList);
+            //if(!OverlapCondition(minPos1, maxPos1, minPos2, maxPos2))
+            //    return false;
         }
-        return true;
+        //return true;
+
+        seroList.Sort(seroCompare);
+
+        float overlapAreas = 0.0f;
+        int lx = 0;
+        for (int i = 0; i < seroList.Count; i++) 
+        {
+            Sero s = seroList[i];
+            int cnt = 0;
+            for (int j = 0; j <= (int)(cardSizeY * 10); j++)
+            {
+                if (heightArray[j] > 0) cnt++;
+            }
+
+            overlapAreas += cnt * (s.x1 - lx);
+            for (int j = s.y1 + 1; j <= s.y2; j++)
+            {
+                if (s.chk == 1) heightArray[j]++;
+                else heightArray[j]--;
+            }
+            lx = s.x1;
+        }
+        overlapAreas /= 100.0f;
+
+        float totalArea = cardSizeX * cardSizeY;
+        if (overlapAreas / totalArea > maxOverlapArea)
+            return false;
+        else
+        {
+            //Debug.Log("position: " + pos + " Overlap Ratio: " + overlapAreas / totalArea);
+            return true;
+        }
+    }
+
+    private void AddOverlapAreas(Vector2 minPos1, Vector2 maxPos1, Vector2 minPos2, Vector2 maxPos2, List<Sero> list)
+    {
+        //Calculate Overlap Area
+        float leftX = Mathf.Max(minPos1.x, minPos2.x);
+        float rightX = Mathf.Min(maxPos1.x, maxPos2.x);
+        float bottomY = Mathf.Max(minPos1.y, minPos2.y);
+        float topY = Mathf.Min(maxPos1.y, maxPos2.y);
+
+        float width = Mathf.Max(0, rightX - leftX);
+        float height = Mathf.Max(0, topY - bottomY);
+
+        if (width != 0 && height != 0)
+        {
+            float x1 = leftX * 10; float x2 = rightX * 10;
+            float y1 = (bottomY - minPos1.y) * 10; float y2 = (topY - minPos1.y) * 10;
+            list.Add(new Sero((int)x1, (int)y1, (int)y2, 1));
+            list.Add(new Sero((int)x2, (int)y1, (int)y2, -1));
+        }
+    }
+
+    private int seroCompare(Sero a, Sero b)
+    {
+        if (a.x1 == b.x1)
+            return a.chk < b.chk ? -1 : 1;
+        else 
+            return a.x1 < b.x1 ? -1 : 1;
     }
 
     private bool OverlapCondition(Vector2 minPos1, Vector2 maxPos1, Vector2 minPos2, Vector2 maxPos2)
     {
+        //Calculate Overlap Area
+        float leftX = Mathf.Max(minPos1.x, minPos2.x);
+        float rightX = Mathf.Min(maxPos1.x, maxPos2.x);
+        float bottomY = Mathf.Max(minPos1.y, minPos2.y);
+        float topY = Mathf.Min(maxPos1.y, maxPos2.y);
+
+        float width = Mathf.Max(0, rightX - leftX);
+        float height = Mathf.Max(0, topY - bottomY);
+        float overlapArea = width * height;
+
+        //Check Overlap condition 
         float totalArea = cardSizeX * cardSizeY;
-        float overlapArea = OverlapLength(minPos1.x, maxPos1.x, minPos2.x, maxPos2.x) * OverlapLength(minPos1.y, maxPos1.y, minPos2.y, maxPos2.y);
-        if (maxOverlapArea != 0.0f && overlapArea / totalArea >= maxOverlapArea)
-            return false;
-        else if (maxOverlapArea == 0.0f && overlapArea != 0.0f)
+        float overlapRatio = overlapArea / totalArea;
+        if (overlapRatio > maxOverlapArea)
             return false;
         else
             return true;
     }
 
-    private float OverlapLength(float minX1, float maxX1, float minX2, float maxX2)
-    {
-        float result = 0.0f;
-        if (minX1 >= maxX2) return 0.0f;
-        if (minX2 >= maxX1) return 0.0f;
-
-        if (minX1 < minX2 && maxX1 > maxX2)
-            result = maxX2 - minX2;
-        else if (minX2 < minX1 && maxX2 > maxX1)
-            result = maxX1 - maxX2;
-        else if (minX1 < maxX2 && minX1 > minX2)
-            result = maxX2 - minX1;
-        else if (minX2 < maxX1 && minX2 > minX1)
-            result = maxX1 - minX2;
-
-        if (result < 0.0f)
-            result *= -1;
-        return result;
-    }
-
-
-
     private void ExitSkill()
     {
+        player.isAttackable = true;
         player.isStateChangeable = true;
         skillUI.SetActive(false);
 
@@ -506,7 +581,8 @@ public class PlayerSkill : MonoBehaviour
                 break;
         }
 
-        player.HP += 2;
+        player.moveSpeed *= 1.2f;
+        player.dashSpeed *= 1.2f;
     }
 
     public void SelectHwatu(GameObject selectObj)
@@ -516,9 +592,33 @@ public class PlayerSkill : MonoBehaviour
             if (selectObj == hwatuCards[i].cardObj)
             {
                 selectCards[drawCnt] = hwatuCards[i];
+                AreaDamage(drawCnt);
                 drawCnt++;
                 break;
             }
         }
+    }
+
+    private void AreaDamage(int draCnt)
+    {
+        HwatuCard card = selectCards[draCnt];
+        float yScreenHalfSize = Screen.height / 2;
+        float xScreenHalfSize = Screen.width / 2;
+        Vector2 cardScreenPos = card.rectTransform.anchoredPosition + new Vector2(xScreenHalfSize, yScreenHalfSize);
+        selectCardWorldPos = Camera.main.ScreenToWorldPoint(cardScreenPos);
+
+        Collider2D[] inRangeMonsters = Physics2D.OverlapCircleAll(selectCardWorldPos, damageRadius, monsterLayer);
+        for(int i=0; i<inRangeMonsters.Length; i++)
+        {
+            Monster monster = inRangeMonsters[i].GetComponent<Monster>();
+            monster.OnDamaged(skillDamage);
+        }
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(selectCardWorldPos, damageRadius);
     }
 }

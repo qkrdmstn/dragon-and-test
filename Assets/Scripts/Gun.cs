@@ -78,7 +78,7 @@ public class Gun : MonoBehaviour
             bullet.BulletInitialize(damage, dir);
         }
     }
-
+    
     public void Reload()
     {
         if(loadedBullet != magazineSize)

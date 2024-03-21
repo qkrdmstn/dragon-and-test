@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     public float recognitionRange = 10.0f;
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
+    public float playerMPGain = 40.0f;
 
     #region MonsterShoot
     public int damage = 1;
@@ -57,7 +58,6 @@ public class Monster : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         stateMachine.Initialize(idleState);
-
         
     }
 
@@ -70,9 +70,9 @@ public class Monster : MonoBehaviour
     {
         HP -= damage;
 
-        if (HP == 0)
+        if (HP <= 0)
         {
-            Destroy(gameObject);
+            Dead();
         }
 
     }
@@ -117,4 +117,11 @@ public class Monster : MonoBehaviour
         isReloading = false;
     }
 
+    private void Dead()
+    {
+        Player playerScript = player.GetComponent<Player>();
+
+        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
+        Destroy(gameObject);
+    }
 }

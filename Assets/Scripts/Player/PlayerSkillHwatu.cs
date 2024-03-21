@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PlayerSkillHwatu : MonoBehaviour
 {
     private float activeTimer;
-    private float activeDuration = 1.0f;
+    private float activeDuration = 0.8f;
 
     #region Components
     private PlayerSkill playerSkill;
