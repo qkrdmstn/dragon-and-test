@@ -39,6 +39,9 @@ public class Monster : MonoBehaviour
     #endregion
 
     public GameObject player;
+    private Player playerScript;
+    public GameObject eventManager;
+    private Spawner spawn;
     public GameObject monsterBullet;
     public float tempSpeed;
 
@@ -46,6 +49,7 @@ public class Monster : MonoBehaviour
     {
         stateMachine = new MonsterStateMachine();
         player = GameObject.FindWithTag("Player");
+        eventManager = GameObject.FindWithTag("EditorOnly");
         idleState = new MonsterIdleState(this, stateMachine, player);
         chaseState = new MonsterChaseState(this, stateMachine, player);
         chaseAttackState = new MonsterChaseAttackState(this, stateMachine, player);
@@ -60,6 +64,8 @@ public class Monster : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         chase = GetComponent<Chase>();
+        playerScript = GetComponent<Player>();
+        spawn = eventManager.GetComponent<Spawner>();
         stateMachine.Initialize(idleState);
         
     }
@@ -73,9 +79,10 @@ public class Monster : MonoBehaviour
     {
         HP -= damage;
 
-        if (HP == 0)
+        if (HP <= 0)
         {
             Destroy(gameObject);
+            spawn.deathCount();
         }
 
     }
@@ -86,18 +93,6 @@ public class Monster : MonoBehaviour
         {
             OnDamaged(1);
         }
-        else if (collision.gameObject.CompareTag("Ground"))
-        {
-            //Debug.Log("in");
-            //tempSpeed = 0f;
-        }
-
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        //Debug.Log("out");
-        //tempSpeed = moveSpeed;
     }
 
     public void Shoot()

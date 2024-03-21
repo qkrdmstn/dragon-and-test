@@ -25,7 +25,8 @@ public class Chase : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindWithTag("Player");
-        layerMask = LayerMask.GetMask("Ground", "Monster");
+        //layerMask = LayerMask.GetMask("Ground", "Monster");
+        layerMask = LayerMask.GetMask("Ground");
         for (int i = 0; i < 12; i++)
         {
             float angle = i * angleInterval;

@@ -177,7 +177,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 0.44634956
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -1019,7 +1019,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1299545337}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
@@ -1244,7 +1244,7 @@ GameObject:
   - component: {fileID: 1401388429}
   m_Layer: 0
   m_Name: EventManager
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1276,7 +1276,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6271ded68e17bf4187bc054d0a5fbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterSpawn: {fileID: 8029816057679458794, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
+  monsterA: {fileID: 8029816057679458794, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
+  monsterB: {fileID: 8029816057679458794, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
+  monsterC: {fileID: 8029816057679458794, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
   player: {fileID: 315423333}
   spawnRadius: 5
   wave: 3
@@ -1958,6 +1960,10 @@ PrefabInstance:
     - target: {fileID: 8361660979078594347, guid: 938efc25c95062448b992925b9f4f89b, type: 3}
       propertyPath: m_BodyType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8361660979078594347, guid: 938efc25c95062448b992925b9f4f89b, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8361660979078594347, guid: 938efc25c95062448b992925b9f4f89b, type: 3}
       propertyPath: m_Constraints
