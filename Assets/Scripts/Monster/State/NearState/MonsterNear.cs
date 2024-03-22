@@ -52,7 +52,6 @@ public class MonsterNear : MonoBehaviour
         chaseState = new MonsterChaseStateNear(this, stateMachine, player);
         attackState = new MonsterAttackStateNear(this, stateMachine, player);
         tempSpeed = moveSpeed;
-        GetComponent<Collider2D>().enabled = false;
     }
 
     private void Start()
@@ -75,7 +74,6 @@ public class MonsterNear : MonoBehaviour
     public void OnDamaged(int damage)
     {
         HP -= damage;
-
         if (HP <= 0)
         {
             Dead();
@@ -107,27 +105,25 @@ public class MonsterNear : MonoBehaviour
     {
         GetComponent<Collider2D>().enabled = true;
         newpos = transform.position+(Vector3)(chase.tempDir * armLength);
-        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, Mathf.Atan2(chase.tempDir.y, chase.tempDir.x) * Mathf.Rad2Deg);
+        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, Mathf.Atan2(chase.tempDir.y, chase.tempDir.x) * Mathf.Rad2Deg, LayerMask.NameToLayer("Player"));
         foreach(Collider2D collider in collider2Ds)
         {
             if(collider.CompareTag("Player"))
             {
                 playerScript.OnDamamged(damage);
-                GetComponent<Collider2D>().enabled = false;
             }
         }
     }
 
     public void outAttack()
     {
-        GetComponent<Collider2D>().enabled = false;
         inAttack = false;
     }
 
 
     private void OnDrawGizmos()
     {
-        if(GetComponent<Collider2D>().enabled == true && newpos != null)
+        if(newpos != null)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(newpos, boxSize);

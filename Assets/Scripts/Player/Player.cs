@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     public float dashDuration = 2.0f;
     public Vector2 facingDir;
 
+    public GameObject DeadUI;
+
     //Temp variable
     public float expCoefficient = -3.0f;
     public int dashMode = 0;
@@ -32,8 +34,6 @@ public class Player : MonoBehaviour
     [Header("State Check")]
     public bool isCombatZone = true;
     public bool isStateChangeable = true;
-
-    //To do. facing direction으로 애니메이션 방향 정하기
 
     #region Componets
     public Animator anim { get; private set; }
@@ -56,6 +56,11 @@ public class Player : MonoBehaviour
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
+
+        if (ScenesManager.instance.GetSceneNum() >= 2)
+            isCombatZone = true;
+        else
+            isCombatZone = false;
     }
 
     private void Start()
@@ -110,7 +115,11 @@ public class Player : MonoBehaviour
         HP -= damage;
        // Debug.Log("HP: " + HP);
         if (HP <= 0)
+        {
             Debug.Log("Player Dead");
+            PlayerDead();
+            Time.timeScale = 0.0f;
+        }
         else
         {
             //Change Layer & Change Color
@@ -118,6 +127,11 @@ public class Player : MonoBehaviour
 
             StartCoroutine(DamagedProcess());
         }
+    }
+
+    private void PlayerDead()
+    {
+        DeadUI.SetActive(true);
     }
 
     IEnumerator DamagedProcess()

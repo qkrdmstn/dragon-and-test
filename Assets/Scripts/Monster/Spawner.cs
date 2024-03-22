@@ -10,7 +10,7 @@ public class Spawner : MonoBehaviour
     public GameObject player;
     public float spawnRadius = 5f;
     public int wave = 3;
-    public int quantity = 5;
+    public int quantity = 9;
     private int waveLeft = 0;
     private int monsterLeft = 0;
     private GameObject[] spawnList;
@@ -19,12 +19,16 @@ public class Spawner : MonoBehaviour
     {
         waveLeft = wave;
         List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC};
-        spawnList = new GameObject[quantity];
-        for (int i=0;i<quantity;i++)
-        {
-            if (i<monsterList.Count) spawnList[i] = monsterList[i];
-            else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
-        }
+        spawnList = new GameObject[9] { monsterList[2], monsterList[2],
+                                        monsterList[1], monsterList[1], monsterList[1], monsterList[1],
+                                        monsterList[0],monsterList[0],monsterList[0]};
+        //for (int i=0;i<quantity;i++)
+        //{
+        //    if (i<monsterList.Count) spawnList[i] = monsterList[i];
+        //    else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
+        //}
+
+        
         
         newWave();
     }

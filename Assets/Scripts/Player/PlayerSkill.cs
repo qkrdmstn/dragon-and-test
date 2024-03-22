@@ -42,7 +42,7 @@ public enum HwatuCombination
 
 #region Class
 [System.Serializable]
-class HwatuCard
+public class HwatuCard
 {
     public GameObject cardObj;
     public Month month;
@@ -86,7 +86,7 @@ public class PlayerSkill : MonoBehaviour
     [Range(0.0f, 1.0f)]
     [SerializeField] private float maxOverlapArea = 0.7f;
 
-    private HwatuCard[] selectCards;
+    public HwatuCard[] selectCards;
     private Vector2 selectCardWorldPos;
 
     [Header("Damage info")]
@@ -103,10 +103,12 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         player = GameObject.FindObjectOfType<Player>();
-        InitHwatu();
+        
+        if(player.isCombatZone)
+            InitHwatu();
     }
 
     // Update is called once per frame
@@ -121,10 +123,11 @@ public class PlayerSkill : MonoBehaviour
 
     private void InitHwatu()
     {
+        PlayerSkillHwatu[] cards = skillUI.GetComponentsInChildren<PlayerSkillHwatu>();
         for (int i = 0; i < hwatuCards.Length; i++) 
         {
-            hwatuCards[i].hwatu = hwatuCards[i].cardObj.GetComponent<PlayerSkillHwatu>();
-            hwatuCards[i].rectTransform = hwatuCards[i].cardObj.GetComponent<RectTransform>();
+            cards[i].CardInit();
+            hwatuCards[i] = cards[i].card;
         }
         cardSizeX = hwatuCards[0].rectTransform.sizeDelta.x;
         cardSizeY = hwatuCards[0].rectTransform.sizeDelta.y;
@@ -611,7 +614,13 @@ public class PlayerSkill : MonoBehaviour
         for(int i=0; i<inRangeMonsters.Length; i++)
         {
             Monster monster = inRangeMonsters[i].GetComponent<Monster>();
-            monster.OnDamaged(skillDamage);
+            MonsterNear monsterNear = inRangeMonsters[i].GetComponent<MonsterNear>();
+
+            if(monster != null)
+                monster.OnDamaged(skillDamage);
+            else if(monsterNear != null)
+                monsterNear.OnDamaged(skillDamage);
+
         }
     }
 

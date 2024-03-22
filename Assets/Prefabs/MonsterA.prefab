@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 8029816057679458794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.79, y: 3.33, z: 0}
-  m_LocalScale: {x: 1, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: -1199710013, guid: 4104ee12b4d54f54b91b3ba875787837, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -181,6 +181,7 @@ MonoBehaviour:
   attackRange: 5
   haltRange: 2
   chase: {fileID: 0}
+  playerMPGain: 40
   damage: 1
   monsterShootTimer: 0
   monsterShootDelay: 0.7
@@ -189,5 +190,7 @@ MonoBehaviour:
   loadedBullet: 0
   magazineSize: 3
   player: {fileID: 0}
+  eventManager: {fileID: 0}
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
   tempSpeed: 0
+  profile: {fileID: 0}

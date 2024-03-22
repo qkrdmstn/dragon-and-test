@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class PlayerSkillHwatu : MonoBehaviour
 {
+    public HwatuCard card;
+    public Month month;
+    public HwatuType type;
+
     private float activeTimer;
     private float activeDuration = 0.8f;
 
@@ -16,6 +20,7 @@ public class PlayerSkillHwatu : MonoBehaviour
 
     private void Awake()
     {
+        CardInit();
         playerSkill = GameObject.FindObjectOfType<PlayerSkill>();
         image = gameObject.GetComponent<Image>();
     }
@@ -39,5 +44,14 @@ public class PlayerSkillHwatu : MonoBehaviour
     {
         playerSkill.curActiveCardNum--;
 
+    }
+
+    public void CardInit()
+    {
+        card.cardObj = this.gameObject;
+        card.month = this.month;
+        card.type = this.type;
+        card.hwatu = this;
+        card.rectTransform = this.GetComponent<RectTransform>();
     }
 }

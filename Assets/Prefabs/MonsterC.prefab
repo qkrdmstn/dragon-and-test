@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 8029816057679458794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.79, y: 3.33, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,8 +78,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
+  m_Sprite: {fileID: 626918169, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  m_Color: {r: 0.5580278, g: 0.5947902, b: 0.7169812, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -188,5 +188,8 @@ MonoBehaviour:
   boxSize: {x: 3, y: 3}
   armLength: 0
   player: {fileID: 0}
+  playerScript: {fileID: 0}
   eventManager: {fileID: 0}
+  spawn: {fileID: 0}
   tempSpeed: 0
+  playerMPGain: 40
