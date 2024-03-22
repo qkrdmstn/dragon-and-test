@@ -49,7 +49,7 @@ public class MonsterBullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Ground"))
         {
             Destroy(this.gameObject);
         }
@@ -57,7 +57,7 @@ public class MonsterBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Ground"))
         {
             Destroy(this.gameObject);
         }
