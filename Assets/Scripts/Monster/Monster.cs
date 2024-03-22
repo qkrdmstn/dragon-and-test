@@ -12,6 +12,7 @@ public class Monster : MonoBehaviour
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
     public Chase chase;
+    public float playerMPGain = 40.0f;
 
     #region MonsterShoot
     public int damage = 1;
@@ -81,10 +82,17 @@ public class Monster : MonoBehaviour
 
         if (HP <= 0)
         {
-            Destroy(gameObject);
-            spawn.deathCount();
+            Dead();
         }
 
+    }
+
+    private void Dead()
+    {
+        playerScript = player.GetComponent<Player>();
+        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
+        Destroy(gameObject);
+        spawn.deathCount();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
