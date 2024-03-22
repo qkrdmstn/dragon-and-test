@@ -59,6 +59,8 @@ public class Gun : MonoBehaviour
                     Reload();
             }
         }
+
+        player.anim.SetBool("isAttacking", isAttacking);
     }
 
     public void Shoot()
@@ -68,7 +70,7 @@ public class Gun : MonoBehaviour
             shootTimer = shootDelay;
             loadedBullet--;
             isAttacking = true;
-            player.anim.SetBool("isAttacking", isAttacking);
+
 
             //Create Bullet
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
@@ -79,15 +81,26 @@ public class Gun : MonoBehaviour
             dir.Normalize();
 
             bullet.BulletInitialize(damage, dir);
-            Invoke("InactiveIsAttacking", 0.2f);
+            StartCoroutine(InactiveIsAttacking());
         }
     }
     
-    public void InactiveIsAttacking()
+    IEnumerator InactiveIsAttacking()
     {
-        isAttacking = false;
-        player.anim.SetBool("isAttacking", isAttacking);
+        yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
+        yield return new WaitForSeconds(shootDelay);
+        
+        if (!Input.GetKey(KeyCode.Mouse0))
+        {
+            isAttacking = false;
+        }
     }
+
+    //public void InactiveIsAttacking()
+    //{
+    //    isAttacking = false;
+    //    player.anim.SetBool("isAttacking", isAttacking);
+    //}
 
     public void Reload()
     {
@@ -95,6 +108,7 @@ public class Gun : MonoBehaviour
         {
             //Debug.Log("Reload Start");
             clickReloadFlag = false;
+            isAttacking = false;
             isReloading = true;
 
             //Reload Visulaize
