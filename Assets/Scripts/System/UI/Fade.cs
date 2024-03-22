@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Fade : MonoBehaviour
 {
@@ -15,16 +16,25 @@ public class Fade : MonoBehaviour
 
         start = 1f;
         end = 0f;
-        fadeTime = 1.5f;
+        fadeTime = 2f;
     }
 
-    public void ManageFade(bool _scene, string _loadSceneName) {
-        // bool _scene 변수는 sceneLoad 이외에 fade기능을 사용할 일이 없다면 삭제
-        StartCoroutine(FadeCoroutine(_scene, _loadSceneName));
+    public void ManageFade(int _sceneNum) {
+        SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
+
+        if (((int)_sceneInfo) == 1)
+        {
+            TextMeshProUGUI[] texts = UIManager.instance.SceneUI[0].GetComponentsInChildren<TextMeshProUGUI>();
+            for(int i=0; i<texts.Length; i++)
+            {
+                StartCoroutine(TextFadeCoroutine(texts[i]));
+            }
+        }
+        StartCoroutine(FadeCoroutine(_sceneInfo));
     }
 
-    IEnumerator FadeCoroutine(bool _scene, string _loadSceneName)
-    {   
+    IEnumerator FadeCoroutine(SceneInfo _sceneInfo)
+    {   // Image
         Color fadeColor = fadePanel.color;
 
         time = 0f;
@@ -38,9 +48,8 @@ public class Fade : MonoBehaviour
             yield return null;
         }
 
-        if (_scene)
         {
-            ScenesManager.instance.ChangeScene(_loadSceneName);
+            ScenesManager.instance.ChangeScene(_sceneInfo);
             yield return new WaitForSeconds(.5f);
         }
         
@@ -51,6 +60,33 @@ public class Fade : MonoBehaviour
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
             fadePanel.color = fadeColor;
+
+            yield return null;
+        }
+    }
+
+    IEnumerator TextFadeCoroutine(TextMeshProUGUI text)
+    {   // Text
+        //Color fadeColor = text.color;
+        
+        time = 0f;
+        while (text.alpha < 1f)
+        {
+            time += Time.deltaTime / fadeTime;
+
+            text.alpha = Mathf.Lerp(end, start, time); // 0 ~ 1
+            //fadePanel.color = fadeColor;
+
+            yield return null;
+        }
+
+        time = 0f;
+        while (text.alpha > 0f)
+        {
+            time += Time.deltaTime / fadeTime;
+
+            text.alpha = Mathf.Lerp(start, end, time); // 1 ~ 0
+            //fadePanel.color = fadeColor;
 
             yield return null;
         }

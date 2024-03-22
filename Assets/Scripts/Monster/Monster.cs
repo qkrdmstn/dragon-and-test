@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Monster : MonoBehaviour
 {
@@ -12,7 +13,11 @@ public class Monster : MonoBehaviour
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
     public Chase chase;
+=========
     public float playerMPGain = 40.0f;
+>>>>>>>>> Temporary merge branch 2
+    public float playerMPGain = 40.0f;
+>>>>>>>>> Temporary merge branch 2
 
     #region MonsterShoot
     public int damage = 1;
@@ -46,6 +51,11 @@ public class Monster : MonoBehaviour
     public GameObject monsterBullet;
     public float tempSpeed;
 
+    [Header("CameraSetting")]
+    public CamShakeProfile profile;
+    private CinemachineImpulseSource impulseSource;
+    
+
     private void Awake()
     {
         stateMachine = new MonsterStateMachine();
@@ -68,7 +78,8 @@ public class Monster : MonoBehaviour
         playerScript = GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
         stateMachine.Initialize(idleState);
-        
+
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
@@ -78,11 +89,14 @@ public class Monster : MonoBehaviour
 
     public void OnDamaged(int damage)
     {
+        // 피격에 따른 카메라 진동
+        CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
+
         HP -= damage;
 
-        if (HP <= 0)
+        if (HP == 0)
         {
-            Dead();
+            Destroy(gameObject);
         }
 
     }
