@@ -86,10 +86,11 @@ public class Player : MonoBehaviour
         //Debug.Log(stateMachine.currentState);
         stateMachine.currentState.Update();
 
-        //if (isCombatZone)//To do. Check CombatZone
-        //{
-        //    //gun.SetActive(false)
-        //}
+        //Check CombatZone
+        if (isCombatZone && !gun.gameObject.activeSelf)
+            gun.gameObject.SetActive(true);
+        else if (!isCombatZone && gun.gameObject.activeSelf)
+            gun.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

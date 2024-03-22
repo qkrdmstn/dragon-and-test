@@ -114,7 +114,7 @@ public class PlayerSkill : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Q) && !skillUI.activeSelf)
+        if(player.isCombatZone && Input.GetKeyDown(KeyCode.Q) && !skillUI.activeSelf)
         {
             if(player.isCombatZone && player.isAttackable && player.curMP >= player.maxMP)
                 StartSkill();
