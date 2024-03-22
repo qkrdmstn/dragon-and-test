@@ -11,7 +11,7 @@ public class MonsterNear : MonoBehaviour
     public float recognitionRange = 100.0f;
     public float attackRange = 2.0f;
     public Chase chase;
-
+    public LayerMask playerMask;  
     #region MonsterAttack
     public int damage = 1;
     public bool inAttack = false;
@@ -85,6 +85,7 @@ public class MonsterNear : MonoBehaviour
         playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);
         spawn.deathCount();
+        temp.instance.killScore += 1;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -105,7 +106,7 @@ public class MonsterNear : MonoBehaviour
     {
         GetComponent<Collider2D>().enabled = true;
         newpos = transform.position+(Vector3)(chase.tempDir * armLength);
-        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, Mathf.Atan2(chase.tempDir.y, chase.tempDir.x) * Mathf.Rad2Deg, LayerMask.NameToLayer("Player"));
+        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, Mathf.Atan2(chase.tempDir.y, chase.tempDir.x) * Mathf.Rad2Deg, playerMask);
         foreach(Collider2D collider in collider2Ds)
         {
             if(collider.CompareTag("Player"))

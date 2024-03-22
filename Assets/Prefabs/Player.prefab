@@ -438,14 +438,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3
-  hitDuration: 1
-  curMP: 100
+  HP: 6
+  hitDuration: 0.8
+  curMP: 0
   maxMP: 100
-  moveSpeed: 5.5
+  moveSpeed: 5.65
   dashSpeed: 13
   dashDuration: 0.58
   facingDir: {x: 0, y: 0}
+  DeadUI: {fileID: 0}
   expCoefficient: -3.5
   dashMode: 3
   gun: {fileID: 2969474140790355981}
@@ -472,8 +473,9 @@ MonoBehaviour:
   minActiveCardNum: 3
   curActiveCardNum: 0
   maxOverlapArea: 0.7
+  selectCards: []
   damageRadius: 2.5
-  skillDamage: 96
+  skillDamage: 34
   monsterLayer:
     serializedVersion: 2
     m_Bits: 256

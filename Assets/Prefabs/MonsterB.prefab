@@ -176,10 +176,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 5
-  moveSpeed: 6
+  moveSpeed: 7
   recognitionRange: 100
   attackRange: 2
   chase: {fileID: 0}
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 64
   damage: 1
   inAttack: 0
   cooldown: 2
@@ -192,4 +195,4 @@ MonoBehaviour:
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
   tempSpeed: 0
-  playerMPGain: 40
+  playerMPGain: 10

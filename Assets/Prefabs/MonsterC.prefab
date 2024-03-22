@@ -175,12 +175,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc32a858405a1e7488292c7d2fb37995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10
+  HP: 8
   moveSpeed: 4
   recognitionRange: 100
   attackRange: 1
   chase: {fileID: 0}
-  damage: 1
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  damage: 2
   inAttack: 0
   cooldown: 3
   tempcool: 0

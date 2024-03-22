@@ -3,41 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class temp : MonoBehaviour
 {
-    public float x1, x2, x3, x4;
-    public float y1, y2, y3, y4;
+    public static temp instance = null;
+    public Text txt;
 
-    // Start is called before the first frame update
-    void Start()
+
+    public int killScore = 0;
+
+    private void Awake()
     {
-
-
+        if (instance == null)
+        { //생성 전이면
+            instance = this; //생성
+        }
+        else if (instance != this)
+        { //이미 생성되어 있으면
+            Destroy(this.gameObject); //새로만든거 삭제
+        }
     }
-
+    private void Start()
+    {
+        killScore = 0;
+    }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            func1();
-        }
-    }
-
-
-    private void func1()
-    {
-        int[] arr = new int[4];
-
-        //for(int i=0; i<arr.Length; i++)
-        //{
-        //    Debug.Log(arr[i]);
-        //}
-
-        foreach(int a in arr)
-        {
-            Debug.Log(a);
-        }
+        txt.text = "Kill: " + killScore;
     }
 }

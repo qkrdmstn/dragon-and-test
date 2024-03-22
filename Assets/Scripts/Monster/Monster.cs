@@ -99,6 +99,7 @@ public class Monster : MonoBehaviour
         playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);
         spawn.deathCount();
+        temp.instance.killScore += 1;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
