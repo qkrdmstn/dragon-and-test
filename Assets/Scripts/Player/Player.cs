@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
@@ -49,6 +50,11 @@ public class Player : MonoBehaviour
     public PlayerDashState dashState { get; private set; }
     #endregion
 
+    [Header("CameraSetting")]
+    public CamShakeProfile profile;
+    public CameraManager cameraManager;
+    private CinemachineImpulseSource impulseSource;
+
     private void Awake()
     {
         stateMachine = new PlayerStateMachine(this);
@@ -71,6 +77,9 @@ public class Player : MonoBehaviour
         col = GetComponent<Collider2D>();
 
         stateMachine.Initialize(idleState);
+
+        cameraManager = FindObjectOfType<CameraManager>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
@@ -112,6 +121,9 @@ public class Player : MonoBehaviour
 
     public void OnDamamged(int damage)
     {
+        // monster에게 맞았을때 쉐이킹 
+        cameraManager.CameraShakeFromProfile(profile, impulseSource);
+
         HP -= damage;
        // Debug.Log("HP: " + HP);
         if (HP <= 0)

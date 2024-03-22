@@ -10,28 +10,46 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3aa2fe1e76064a3683582e86577eba9, type: 3}
-  m_Name: Monster_1
+  m_Name: Gun
   m_EditorClassIdentifier: 
-  impactTime: 0.2
-  impactForce: 1
-  defaultVelocity: {x: 0, y: -1, z: 0}
+  impactDuration: 0.2
+  impactForce: 0.25
+  defaultVelocity: {x: -0.5, y: -0.5, z: 0}
   impulseCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 1.1160204
-      outSlope: 1.1160204
+      inSlope: 1.6403356
+      outSlope: 1.6403356
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5035034
-      value: 1.56192
-      inSlope: -0.007874846
-      outSlope: -0.007874846
+      time: 0.2713304
+      value: 1.4450729
+      inSlope: -0.17080086
+      outSlope: -0.17080086
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5069485
+      value: 0.9780926
+      inSlope: -0.046435
+      outSlope: -0.046435
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.75262195
+      value: 1.4421864
+      inSlope: 0.05078751
+      outSlope: 0.05078751
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -39,8 +57,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: -1.1317701
-      outSlope: -1.1317701
+      inSlope: -1.7874923
+      outSlope: -1.7874923
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -48,6 +66,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  listenerAmplitude: 4
-  listenerFrequency: 3
+  listenerAmplitude: 1
+  listenerFrequency: 1
   listenerDuration: 0.5
