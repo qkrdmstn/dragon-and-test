@@ -23,8 +23,8 @@ public class MonsterChaseState : MonsterState
     {
         base.Update();
 
-        direction = (player.transform.position - monster.transform.position).normalized;
-        monster.transform.Translate(direction * monster.moveSpeed * Time.deltaTime);
+        direction = monster.chase.tempDir;
+        monster.transform.Translate(direction * monster.tempSpeed * Time.deltaTime);
         
         if (distanceToPlayer < monster.attackRange)
             stateMachine.ChangeState(monster.chaseAttackState);

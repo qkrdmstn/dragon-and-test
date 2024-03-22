@@ -8,10 +8,10 @@ public class Monster : MonoBehaviour
 
     public float moveSpeed = 9.0f;
 
-    public float recognitionRange = 10.0f;
+    public float recognitionRange = 100.0f;
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
-    public float playerMPGain = 40.0f;
+    public Chase chase;
 
     #region MonsterShoot
     public int damage = 1;
@@ -39,16 +39,22 @@ public class Monster : MonoBehaviour
     #endregion
 
     public GameObject player;
+    private Player playerScript;
+    public GameObject eventManager;
+    private Spawner spawn;
     public GameObject monsterBullet;
+    public float tempSpeed;
 
     private void Awake()
     {
         stateMachine = new MonsterStateMachine();
         player = GameObject.FindWithTag("Player");
+        eventManager = GameObject.FindWithTag("EditorOnly");
         idleState = new MonsterIdleState(this, stateMachine, player);
         chaseState = new MonsterChaseState(this, stateMachine, player);
         chaseAttackState = new MonsterChaseAttackState(this, stateMachine, player);
         attackState = new MonsterAttackState(this, stateMachine, player);
+        tempSpeed = moveSpeed;
     }
 
     private void Start()
@@ -57,6 +63,9 @@ public class Monster : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
+        chase = GetComponent<Chase>();
+        playerScript = GetComponent<Player>();
+        spawn = eventManager.GetComponent<Spawner>();
         stateMachine.Initialize(idleState);
         
     }
@@ -72,17 +81,18 @@ public class Monster : MonoBehaviour
 
         if (HP <= 0)
         {
-            Dead();
+            Destroy(gameObject);
+            spawn.deathCount();
         }
 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet")){
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
             OnDamaged(1);
         }
-
     }
 
     public void Shoot()
@@ -117,11 +127,4 @@ public class Monster : MonoBehaviour
         isReloading = false;
     }
 
-    private void Dead()
-    {
-        Player playerScript = player.GetComponent<Player>();
-
-        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
-        Destroy(gameObject);
-    }
 }

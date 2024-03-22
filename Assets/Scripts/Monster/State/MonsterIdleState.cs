@@ -23,7 +23,11 @@ public class MonsterIdleState : MonsterState
     {
         base.Update();
 
+        /*
         if (distanceToPlayer < monster.recognitionRange)
             stateMachine.ChangeState(monster.chaseState);
+        */
+
+        stateMachine.ChangeState(monster.chaseState);
     }
 }
