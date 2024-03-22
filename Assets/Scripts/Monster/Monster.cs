@@ -13,11 +13,7 @@ public class Monster : MonoBehaviour
     public float attackRange = 5.0f;
     public float haltRange = 2.0f;
     public Chase chase;
-=========
     public float playerMPGain = 40.0f;
->>>>>>>>> Temporary merge branch 2
-    public float playerMPGain = 40.0f;
->>>>>>>>> Temporary merge branch 2
 
     #region MonsterShoot
     public int damage = 1;
@@ -54,13 +50,12 @@ public class Monster : MonoBehaviour
     [Header("CameraSetting")]
     public CamShakeProfile profile;
     private CinemachineImpulseSource impulseSource;
-    
-
+   
     private void Awake()
     {
         stateMachine = new MonsterStateMachine();
         player = GameObject.FindWithTag("Player");
-        eventManager = GameObject.FindWithTag("EditorOnly");
+        eventManager = GameObject.FindObjectOfType <Spawner>().gameObject;
         idleState = new MonsterIdleState(this, stateMachine, player);
         chaseState = new MonsterChaseState(this, stateMachine, player);
         chaseAttackState = new MonsterChaseAttackState(this, stateMachine, player);
@@ -75,7 +70,7 @@ public class Monster : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         chase = GetComponent<Chase>();
-        playerScript = GetComponent<Player>();
+        playerScript = player.GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
         stateMachine.Initialize(idleState);
 
@@ -90,26 +85,23 @@ public class Monster : MonoBehaviour
     public void OnDamaged(int damage)
     {
         // 피격에 따른 카메라 진동
-        CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
+        //CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
 
         HP -= damage;
-
-        if (HP == 0)
+        if (HP <= 0)
         {
-            Destroy(gameObject);
+            Dead();
         }
-
     }
 
     private void Dead()
     {
-        playerScript = player.GetComponent<Player>();
         playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);
         spawn.deathCount();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {

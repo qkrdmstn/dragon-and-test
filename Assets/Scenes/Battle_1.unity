@@ -474,7 +474,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63302683}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.061274, y: -0.06287241, z: -10}
+  m_LocalPosition: {x: -10.061274, y: -0.06287289, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3339,6 +3339,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+--- !u!1 &873561706 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2969474142644749431, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+  m_PrefabInstance: {fileID: 873561705}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &924156830
 GameObject:
   m_ObjectHideFlags: 0
@@ -4921,6 +4926,7 @@ GameObject:
   - component: {fileID: 1363548288}
   - component: {fileID: 1363548287}
   - component: {fileID: 1363548286}
+  - component: {fileID: 1363548289}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -4978,6 +4984,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1363548289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363548285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6271ded68e17bf4187bc054d0a5fbfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterA: {fileID: 8029816057679458794, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
+  monsterB: {fileID: 8029816057679458794, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
+  monsterC: {fileID: 8029816057679458794, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
+  player: {fileID: 873561706}
+  spawnRadius: 5
+  wave: 3
+  quantity: 5
 --- !u!1 &1389903396
 GameObject:
   m_ObjectHideFlags: 0

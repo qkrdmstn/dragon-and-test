@@ -41,13 +41,13 @@ public class MonsterNear : MonoBehaviour
     public Spawner spawn;
     public float tempSpeed;
     private Vector3 newpos;
-    
+    public float playerMPGain = 40.0f;
 
     private void Awake()
     {
         stateMachine = new MonsterStateMachineNear();
         player = GameObject.FindWithTag("Player");
-        eventManager = GameObject.FindWithTag("EditorOnly");
+        eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
         //idleState = new MonsterIdleState(this, stateMachine, player);
         chaseState = new MonsterChaseStateNear(this, stateMachine, player);
         attackState = new MonsterAttackStateNear(this, stateMachine, player);
@@ -78,12 +78,18 @@ public class MonsterNear : MonoBehaviour
 
         if (HP <= 0)
         {
-            Destroy(gameObject);
-            spawn.deathCount();
+            Dead();
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void Dead()
+    {
+        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
+        Destroy(gameObject);
+        spawn.deathCount();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
