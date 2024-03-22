@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum SceneInfo
+{
+    Start,
+    Town_1,
+    Battle_1,
+};
+
 public class ScenesManager : MonoBehaviour
 {
     public static ScenesManager instance = null;
@@ -20,8 +27,28 @@ public class ScenesManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    public void ChangeScene(string _sceneName)
+    public int GetSceneNum()
     {
-        SceneManager.LoadScene(_sceneName);
+        return SceneManager.GetActiveScene().buildIndex;
+    }
+
+    public void ChangeScene(SceneInfo _sceneInfo)
+    {
+        switch (_sceneInfo)
+        {
+            case SceneInfo.Start:
+                break;
+
+            case SceneInfo.Town_1:
+                UIManager.instance.SceneUI[0].SetActive(false);
+                UIManager.instance.SceneUI[1].SetActive(true);
+                break;
+
+            case SceneInfo.Battle_1:
+                UIManager.instance.SceneUI[1].SetActive(false);
+                UIManager.instance.SceneUI[2].SetActive(true);
+                break;
+        }
+        SceneManager.LoadScene(((int)_sceneInfo));
     }
 }

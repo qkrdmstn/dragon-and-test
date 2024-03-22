@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
 public class CursorControl : MonoBehaviour
 {
     [SerializeField] Sprite cursorImg;
 
-    [SerializeField] Camera cam;
-    [SerializeField] Transform player;
+    public Camera cam;
+    public Transform player;
 
     [Header("Threshold")]
     [Tooltip("지정한 거리만큼까지만 cursor의 이동 위치를 카메라가 follow합니다")]
@@ -28,6 +27,8 @@ public class CursorControl : MonoBehaviour
 
     private void Update()
     {
+        if (ScenesManager.instance.GetSceneNum() < 1) return;
+
         worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         targetPos = (player.position + worldPos) / 2f;
 
@@ -41,7 +42,7 @@ public class CursorControl : MonoBehaviour
         else transform.position = player.position;
     }
 
-    void SetCursor(Sprite _cursorImg)
+    public void SetCursor(Sprite _cursorImg)
     {
         Texture2D cursorTex;
         Vector2 cursorPoint;

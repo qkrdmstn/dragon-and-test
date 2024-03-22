@@ -18,6 +18,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float reloadTime;
     [SerializeField] private bool isReloading = false;
     [SerializeField] private bool clickReloadFlag = false;
+    [SerializeField] private bool isAttacking = false;
 
     //public int maxBullet; //�ִ� �Ѿ� ����
     //public int curTotalBullet; //���� ���� �Ѿ�
@@ -58,6 +59,8 @@ public class Gun : MonoBehaviour
                     Reload();
             }
         }
+
+        player.anim.SetBool("isAttacking", isAttacking);
     }
 
     public void Shoot()
@@ -66,6 +69,8 @@ public class Gun : MonoBehaviour
         {
             shootTimer = shootDelay;
             loadedBullet--;
+            isAttacking = true;
+
 
             //Create Bullet
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
@@ -76,8 +81,26 @@ public class Gun : MonoBehaviour
             dir.Normalize();
 
             bullet.BulletInitialize(damage, dir);
+            StartCoroutine(InactiveIsAttacking());
         }
     }
+    
+    IEnumerator InactiveIsAttacking()
+    {
+        yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
+        yield return new WaitForSeconds(shootDelay);
+        
+        if (!Input.GetKey(KeyCode.Mouse0))
+        {
+            isAttacking = false;
+        }
+    }
+
+    //public void InactiveIsAttacking()
+    //{
+    //    isAttacking = false;
+    //    player.anim.SetBool("isAttacking", isAttacking);
+    //}
 
     public void Reload()
     {
@@ -85,6 +108,7 @@ public class Gun : MonoBehaviour
         {
             //Debug.Log("Reload Start");
             clickReloadFlag = false;
+            isAttacking = false;
             isReloading = true;
 
             //Reload Visulaize
@@ -98,8 +122,6 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
         loadedBullet = magazineSize;
         isReloading = false;
-        //Debug.Log("Reload End");
-
                     
         renderer.color = new Color(1, 1, 1);
     }

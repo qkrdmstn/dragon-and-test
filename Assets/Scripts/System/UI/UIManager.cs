@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
     public Fade fade;
+    public GameObject[] SceneUI;
 
     private void Awake()
     {
@@ -21,8 +22,6 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
 
         fade = GetComponentInChildren<Fade>();
-        
-
     }
 
     public Texture2D TextureFromSprite(Sprite sprite)
@@ -40,5 +39,10 @@ public class UIManager : MonoBehaviour
         }
         else
             return sprite.texture;
+    }
+
+    public void SetScene_start()
+    {
+
     }
 }
