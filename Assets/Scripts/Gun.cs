@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Gun : MonoBehaviour
 {
@@ -28,10 +29,23 @@ public class Gun : MonoBehaviour
     [Header("Bullet Prefabs")]
     public GameObject bulletPrefab;
 
+    [Header("CameraSetting")]
+    // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
+    public CamShakeProfile profile;
+    public CameraManager cameraManager;
+    private CinemachineImpulseSource impulseSource;
+
     private void Awake()
     {
         player = GameObject.FindWithTag("Player").GetComponent<Player>();
         renderer = gameObject.GetComponent<SpriteRenderer>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+    }
+
+    private void Start()
+    {
+        if(player.isCombatZone)
+            cameraManager = FindObjectOfType<CameraManager>();
     }
 
     private void Update()
@@ -67,6 +81,10 @@ public class Gun : MonoBehaviour
     {
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
+            if(cameraManager != null)
+            {   // player 총 반동
+                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            }
             shootTimer = shootDelay;
             loadedBullet--;
             isAttacking = true;
