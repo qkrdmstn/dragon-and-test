@@ -40,6 +40,12 @@ public class PlayerState
 
         player.anim.SetFloat("xVelocity", rb.velocity.x);
         player.anim.SetFloat("yVelocity", rb.velocity.y);
+
+        Vector2 mouseDir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
+        mouseDir.Normalize();
+        //Debug.Log(mouseDir);
+        player.anim.SetFloat("xDirection", mouseDir.x);
+        player.anim.SetFloat("yDirection", mouseDir.y);
     }
 
     public virtual void Exit()

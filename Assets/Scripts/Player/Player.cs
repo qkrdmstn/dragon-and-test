@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
+    public Vector2 facingDir;
 
     //Temp variable
     public float expCoefficient = -3.0f;
@@ -79,6 +80,14 @@ public class Player : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
+        {
+            OnDamamged(1);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
         {

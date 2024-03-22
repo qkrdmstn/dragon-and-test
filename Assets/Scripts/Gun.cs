@@ -18,6 +18,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float reloadTime;
     [SerializeField] private bool isReloading = false;
     [SerializeField] private bool clickReloadFlag = false;
+    [SerializeField] private bool isAttacking = false;
 
     //public int maxBullet; //�ִ� �Ѿ� ����
     //public int curTotalBullet; //���� ���� �Ѿ�
@@ -66,6 +67,8 @@ public class Gun : MonoBehaviour
         {
             shootTimer = shootDelay;
             loadedBullet--;
+            isAttacking = true;
+            player.anim.SetBool("isAttacking", isAttacking);
 
             //Create Bullet
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
@@ -76,9 +79,16 @@ public class Gun : MonoBehaviour
             dir.Normalize();
 
             bullet.BulletInitialize(damage, dir);
+            Invoke("InactiveIsAttacking", 0.2f);
         }
     }
     
+    public void InactiveIsAttacking()
+    {
+        isAttacking = false;
+        player.anim.SetBool("isAttacking", isAttacking);
+    }
+
     public void Reload()
     {
         if(loadedBullet != magazineSize)
@@ -98,8 +108,6 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
         loadedBullet = magazineSize;
         isReloading = false;
-        //Debug.Log("Reload End");
-
                     
         renderer.color = new Color(1, 1, 1);
     }

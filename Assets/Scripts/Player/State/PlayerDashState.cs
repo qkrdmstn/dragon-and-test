@@ -21,7 +21,6 @@ public class PlayerDashState : PlayerState
 
         // 措矫 吝 公利
         player.gameObject.layer = 7;
-        player.spriteRenderer.color = new Color(1, 0, 0);
 
         //Dash Direction Setting
         dashDir = new Vector2(xInput, yInput);
@@ -40,7 +39,6 @@ public class PlayerDashState : PlayerState
 
         // 公利 秦力
         player.gameObject.layer = 6;
-        player.spriteRenderer.color = new Color(1, 1, 1);
 
         player.SetVelocity(0, 0);
     }
