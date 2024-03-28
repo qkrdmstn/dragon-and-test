@@ -7,38 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-#region Enum
-public enum Month
-{
-    Jan, Feb, Mar, Apr, May,
-    Jun, Jul, Aug, Sep, Oct
-}
 
-public enum HwatuType
-{
-    JanCrane, JanPine,
-    FebBird, FebPrunus,
-    MarCherryLight, MarCherry,
-    AprCuckoo, AprWisteria,
-    MayBridge, MayIris,
-    JunButterfly, JunPeony,
-    JulBoar, JulLespedeza,
-    AugMoon, AugGoose,
-    SepSakajuki, SepChrysanthemum,
-    OctDeer, OctFoliage
-}
-
-public enum HwatuCombination
-{
-    GTT38, GTT13, GTT18,
-    AHES74,
-    JTT, MTGR94,
-    TT9, TT8, TT7, TT6, TT5, TT4, TT3, TT2, TT1, TTCatch73,
-    PT94,
-    AL12, DS14, GPP19, JPP110, JS410, SR46,
-    KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0
-}
-#endregion
 
 #region Class
 [System.Serializable]
@@ -47,7 +16,7 @@ public class HwatuCard
     public GameObject cardObj;
     public Month month;
     public HwatuType type;
-    public PlayerSkillHwatu hwatu;
+    public OldPlayerSkillHwatu hwatu;
     public RectTransform rectTransform;
 }
 
@@ -68,7 +37,7 @@ class Sero
 #endregion
 
 
-public class PlayerSkill : MonoBehaviour
+public class OldPlayerSkill : MonoBehaviour
 {
     [Header("Card info")]
     public int drawCnt;
@@ -123,7 +92,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void InitHwatu()
     {
-        PlayerSkillHwatu[] cards = skillUI.GetComponentsInChildren<PlayerSkillHwatu>();
+        OldPlayerSkillHwatu[] cards = skillUI.GetComponentsInChildren<OldPlayerSkillHwatu>();
         for (int i = 0; i < hwatuCards.Length; i++) 
         {
             cards[i].CardInit();

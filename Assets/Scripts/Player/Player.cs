@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float hitDuration;
 
     [Header("Skill info")]
+    public int blankBulletNum = 4;
     public float curMP = 100.0f;
     public float maxMP = 100.0f;
 
