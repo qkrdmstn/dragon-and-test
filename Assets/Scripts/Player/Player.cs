@@ -19,13 +19,11 @@ public class Player : MonoBehaviour
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
+    public float expCoefficient = -3.0f;
     public Vector2 facingDir;
 
-    public GameObject DeadUI;
-
     //Temp variable
-    public float expCoefficient = -3.0f;
-    public int dashMode = 0;
+    public GameObject DeadUI;
    
     [Header("Gun info")]
     public Gun gun;
@@ -62,10 +60,6 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
-        if (ScenesManager.instance.GetSceneNum() >= 2)
-            isCombatZone = true;
-        else
-            isCombatZone = false;
     }
 
     private void Start()
@@ -79,6 +73,11 @@ public class Player : MonoBehaviour
 
         cameraManager = FindObjectOfType<CameraManager>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+
+        if (ScenesManager.instance.GetSceneNum() >= 2)
+            isCombatZone = true;
+        else
+            isCombatZone = false;
     }
 
     private void Update()

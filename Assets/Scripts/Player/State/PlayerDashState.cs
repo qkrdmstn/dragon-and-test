@@ -19,7 +19,7 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
-        // ´ë½Ã Áß ¹«Àû
+        // ëŒ€ì‹œ ì¤‘ ë¬´ì 
         player.gameObject.layer = 7;
 
         //Dash Direction Setting
@@ -37,7 +37,7 @@ public class PlayerDashState : PlayerState
         player.isAttackable = true;
         player.gun.shootTimer -= player.dashDuration;
 
-        // ¹«Àû ÇØÁ¦
+        // ë¬´ì  í•´ì œ
         player.gameObject.layer = 6;
 
         player.SetVelocity(0, 0);
@@ -47,39 +47,8 @@ public class PlayerDashState : PlayerState
     {
         base.Update();
 
-        //Dash Velocity Func
-        switch (player.dashMode)
-        {
-            case 0:
-                //Constant
-                dash = dashDir * player.dashSpeed;
-                break;
-            case 1:
-                //Constant Range
-                if (player.dashDuration * 0.33 <= stateTimer)
-                    dash = dashDir * player.dashSpeed;
-                else
-                    dash = dashDir * player.dashSpeed * 0.3f;
-                break;
-            case 2:
-                //Constant & Exponantial
-                if (player.dashDuration * 0.5f <= stateTimer)
-                    dash = dashDir * player.dashSpeed;
-                else
-                    dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration * 0.67f - stateTimer));
-                break;
-            case 3:
-                //Exponantial
-                dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration - stateTimer));
-                break;
-            case 4:
-                //Cosine
-                dash = dashDir * player.dashSpeed * Mathf.Cos(3.4f * (player.dashDuration - stateTimer));
-                break;
-            default:
-                break;
-        }
-
+        //Exponantial
+        dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration - stateTimer));
         player.SetVelocity(dash.x, dash.y);
 
         //Dash Duration
