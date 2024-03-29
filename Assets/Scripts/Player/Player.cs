@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     [Header("State Check")]
     public bool isCombatZone = true;
     public bool isStateChangeable = true;
+    public bool isInteraction = false;
 
     #region Componets
     public Animator anim { get; private set; }
