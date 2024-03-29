@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSkill : MonoBehaviour
+public class PlayerBlankBulletSkill : MonoBehaviour
 {
     [Header("Blank Bullet info")]
     public float blankBulletDelay;
@@ -12,22 +12,16 @@ public class PlayerSkill : MonoBehaviour
     public float impactForce;
     public int impactLayerMask;
 
-    [Header("Card Select Skill info")]
-    public float cardSelectCoolTime;
-    public float cardSelectTimer;
-    [Space(10f)]
-    public int drawCnt;
-    public Hwatu[] selectCards;
-
     #region Components
     private Player player;
-
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindObjectOfType<Player>();
+        this.enabled = player.isCombatZone;
+
         impactLayerMask = LayerMask.GetMask("Monster", "MonsterBullet");
     }
 
@@ -35,13 +29,9 @@ public class PlayerSkill : MonoBehaviour
     void Update()
     {
         blankBulletTimer -= Time.deltaTime;
-        cardSelectTimer -= Time.deltaTime;
 
         if(Input.GetKeyDown(KeyCode.Q) && blankBulletTimer < 0.0f && player.blankBulletNum > 0)
-        {
             BlankBullet();
-        }
-
     }
 
     private void BlankBullet()
@@ -56,6 +46,7 @@ public class PlayerSkill : MonoBehaviour
             if (target.CompareTag("MonsterBullet"))
             {
                 //Todo. Change from Monster Bullet Pool to inactive
+                Destroy(inRangeTarget[i].gameObject);
 
             }
             else if(target.CompareTag("Monster"))
@@ -68,7 +59,6 @@ public class PlayerSkill : MonoBehaviour
                 //Todo. Add knockback to monster state and call
             }
 
-            Destroy(inRangeTarget[i].gameObject);
         }
     }
 
@@ -77,5 +67,4 @@ public class PlayerSkill : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(this.transform.position, impactRadius);
     }
-
 }

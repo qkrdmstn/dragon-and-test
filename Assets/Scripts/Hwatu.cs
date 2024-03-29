@@ -26,18 +26,17 @@ public enum HwatuType
 
 public enum HwatuCombination
 {
-    GTT38, GTT13, GTT18,
-    AHES74,
-    JTT, MTGR94,
-    TT9, TT8, TT7, TT6, TT5, TT4, TT3, TT2, TT1, TTCatch73,
-    PT94,
+    GTT38, GTT18, GTT13,
+    JTT, 
+    TT9, TT8, TT7, TT6, TT5, TT4, TT3, TT2, TT1,
     AL12, DS14, GPP19, JPP110, JS410, SR46,
-    KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0
+    KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0,
+    AHES74, TTCatch73, MTGR94, PT94,
 }
 #endregion
 
 [System.Serializable]
-public class Hwatu
+public class Hwatu : MonoBehaviour
 {
     public HwatuType type;
     public Month month;

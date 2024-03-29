@@ -365,6 +365,7 @@ GameObject:
   - component: {fileID: 9164923190227248142}
   - component: {fileID: 9164923190227248139}
   - component: {fileID: 9164923190227248136}
+  - component: {fileID: 863276444859189487}
   - component: {fileID: 7682503680651831577}
   - component: {fileID: 6026035233142154471}
   m_Layer: 6
@@ -442,15 +443,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 6
+  HP: 104
   hitDuration: 0.8
-  curMP: 0
+  blankBulletNum: 47
+  curMP: 2100
   maxMP: 100
   moveSpeed: 5.65
   dashSpeed: 13
   dashDuration: 0.58
   expCoefficient: -3.5
-  facingDir: {x: 0, y: 0}
   DeadUI: {fileID: 0}
   gun: {fileID: 9164923188876154999}
   isAttackable: 1
@@ -458,6 +459,44 @@ MonoBehaviour:
   isStateChangeable: 1
   profile: {fileID: 11400000, guid: 10e4dfeb3157b48799b562bf7cdd96cc, type: 2}
   cameraManager: {fileID: 0}
+--- !u!114 &863276444859189487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9164923190227248141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5988dc953ee027243a5393378f6437a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combinationDuration: 3
+  cusorFocusDuration: 0.5
+  drawCnt: 0
+  isCombinationSkill: 0
+  firstProb:
+  - 0.0909
+  - 0.0866
+  - 0.0823
+  - 0.078
+  - 0.0737
+  - 0.0694
+  - 0.0651
+  - 0.0608
+  - 0.0565
+  - 0.0522
+  - 0.0478
+  - 0.0435
+  - 0.0392
+  - 0.0349
+  - 0.0306
+  - 0.0263
+  - 0.022
+  - 0.0177
+  - 0.0134
+  - 0.0091
+  selectCards: []
 --- !u!114 &7682503680651831577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,10 +509,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abc60f48305ca61439068982620997d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawCnt: 0
-  skillDuration: 0
-  skillTimer: 0
-  selectCards: []
+  blankBulletDelay: 0
+  blankBulletTimer: 0
+  impactRadius: 3.5
+  impactForce: 3
+  impactLayerMask: 0
 --- !u!114 &6026035233142154471
 MonoBehaviour:
   m_ObjectHideFlags: 0

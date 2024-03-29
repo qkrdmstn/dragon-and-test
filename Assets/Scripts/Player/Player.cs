@@ -8,7 +8,8 @@ using Cinemachine;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    public int HP = 3;
+    public int curHP = 3;
+    public int maxHP = 3;
     [SerializeField] private float hitDuration;
 
     [Header("Skill info")]
@@ -21,7 +22,6 @@ public class Player : MonoBehaviour
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
     public float expCoefficient = -3.0f;
-    public Vector2 facingDir;
 
     //Temp variable
     public GameObject DeadUI;
@@ -61,6 +61,10 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
+        if (ScenesManager.instance.GetSceneNum() >= 2)
+            isCombatZone = true;
+        else
+            isCombatZone = false;
     }
 
     private void Start()
@@ -74,11 +78,6 @@ public class Player : MonoBehaviour
 
         cameraManager = FindObjectOfType<CameraManager>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
-
-        if (ScenesManager.instance.GetSceneNum() >= 2)
-            isCombatZone = true;
-        else
-            isCombatZone = false;
     }
 
     private void Update()
@@ -124,9 +123,9 @@ public class Player : MonoBehaviour
         // monster에게 맞았을때 쉐이킹 
         cameraManager.CameraShakeFromProfile(profile, impulseSource);
 
-        HP -= damage;
+        curHP -= damage;
        // Debug.Log("HP: " + HP);
-        if (HP <= 0)
+        if (curHP <= 0)
         {
             Debug.Log("Player Dead");
             PlayerDead();
