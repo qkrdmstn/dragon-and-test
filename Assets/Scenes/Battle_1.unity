@@ -240,7 +240,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &68585069
 GameObject:
@@ -660,8 +660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txt: {fileID: 927422050}
-  player: {fileID: 873561708}
-  playerSkill: {fileID: 873561707}
+  player: {fileID: 0}
 --- !u!114 &356677038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,11 +793,6 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!4 &467917641 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2969474142644749429, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-  m_PrefabInstance: {fileID: 873561705}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &506660676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1304,6 +1298,7 @@ MonoBehaviour:
   - {fileID: 1107019598}
   - {fileID: 1283615976}
   - {fileID: 425339191}
+  curUIGroup: {fileID: 0}
 --- !u!4 &772516758
 Transform:
   m_ObjectHideFlags: 0
@@ -1408,7 +1403,7 @@ Transform:
   m_Children:
   - {fileID: 1719677357}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &799671528
 MonoBehaviour:
@@ -1510,33 +1505,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
---- !u!1 &873561706 stripped
+--- !u!4 &873561706 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+  m_PrefabInstance: {fileID: 873561705}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &873561707 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2969474142644749431, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+  m_CorrespondingSourceObject: {fileID: 9164923190227248141, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
   m_PrefabInstance: {fileID: 873561705}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &873561707 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2969474142644749424, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-  m_PrefabInstance: {fileID: 873561705}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873561706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5071ce52f962aa4089b4e0a6ff893fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &873561708 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2969474142644749426, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-  m_PrefabInstance: {fileID: 873561705}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873561706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &924156830
 GameObject:
   m_ObjectHideFlags: 0
@@ -2831,7 +2809,7 @@ MonoBehaviour:
   monsterA: {fileID: 8029816057679458794, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
   monsterB: {fileID: 8029816057679458794, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
   monsterC: {fileID: 8029816057679458794, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
-  player: {fileID: 873561706}
+  player: {fileID: 873561707}
   spawnRadius: 20
   wave: 3
   quantity: 9
@@ -4104,7 +4082,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursorImg: {fileID: 152299772, guid: 7eadb9885b2c54fb4a4e6f8550afaa95, type: 3}
   cam: {fileID: 63302684}
-  player: {fileID: 467917641}
+  player: {fileID: 873561706}
   cursor_threshold: 3
   player_threshold: 3
 --- !u!4 &1890144824
@@ -5297,7 +5275,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -5563,7 +5541,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -5672,7 +5650,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -5919,7 +5897,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -6216,7 +6194,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -6521,7 +6499,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -6893,7 +6871,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -7220,7 +7198,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -7619,7 +7597,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -7814,7 +7792,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -7923,7 +7901,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -8049,7 +8027,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -8307,7 +8285,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -8474,7 +8452,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -8591,7 +8569,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -8987,7 +8965,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -9203,7 +9181,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -9321,7 +9299,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -9488,7 +9466,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2
@@ -9655,7 +9633,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 873561707}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerSkill, Assembly-CSharp
         m_MethodName: SelectHwatu
         m_Mode: 2

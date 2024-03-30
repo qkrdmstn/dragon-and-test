@@ -8,10 +8,12 @@ using Cinemachine;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    public int HP = 3;
+    public int curHP = 3;
+    public int maxHP = 3;
     [SerializeField] private float hitDuration;
 
     [Header("Skill info")]
+    public int blankBulletNum = 4;
     public float curMP = 100.0f;
     public float maxMP = 100.0f;
 
@@ -19,13 +21,10 @@ public class Player : MonoBehaviour
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;
     public float dashDuration = 2.0f;
-    public Vector2 facingDir;
-
-    public GameObject DeadUI;
+    public float expCoefficient = -3.0f;
 
     //Temp variable
-    public float expCoefficient = -3.0f;
-    public int dashMode = 0;
+    public GameObject DeadUI;
    
     [Header("Gun info")]
     public Gun gun;
@@ -125,9 +124,9 @@ public class Player : MonoBehaviour
         // monster에게 맞았을때 쉐이킹 
         cameraManager.CameraShakeFromProfile(profile, impulseSource);
 
-        HP -= damage;
+        curHP -= damage;
        // Debug.Log("HP: " + HP);
-        if (HP <= 0)
+        if (curHP <= 0)
         {
             Debug.Log("Player Dead");
             PlayerDead();

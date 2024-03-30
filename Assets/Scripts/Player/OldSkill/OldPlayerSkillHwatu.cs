@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerSkillHwatu : MonoBehaviour
+public class OldPlayerSkillHwatu : MonoBehaviour
 {
     public HwatuCard card;
     public Month month;
@@ -14,14 +14,14 @@ public class PlayerSkillHwatu : MonoBehaviour
     private float activeDuration = 0.8f;
 
     #region Components
-    private PlayerSkill playerSkill;
+    private OldPlayerSkill playerSkill;
     private Image image;
     #endregion
 
     private void Awake()
     {
         CardInit();
-        playerSkill = GameObject.FindObjectOfType<PlayerSkill>();
+        playerSkill = GameObject.FindObjectOfType<OldPlayerSkill>();
         image = gameObject.GetComponent<Image>();
     }
 

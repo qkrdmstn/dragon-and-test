@@ -268,6 +268,72 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &197517703
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 9164923190227248136, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: cameraManager
+      value: 
+      objectReference: {fileID: 1852969277}
+    - target: {fileID: 9164923190227248141, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+--- !u!4 &197517704 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9164923190227248143, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+  m_PrefabInstance: {fileID: 197517703}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &270848295
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,7 +559,7 @@ Transform:
   m_Children:
   - {fileID: 1888618737}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &375870968
 MonoBehaviour:
@@ -566,7 +632,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   txt: {fileID: 1876191513}
   player: {fileID: 0}
-  playerSkill: {fileID: 0}
 --- !u!114 &398157693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1484,6 +1549,7 @@ MonoBehaviour:
   - {fileID: 810356939}
   - {fileID: 2090685086}
   - {fileID: 1312143171}
+  curUIGroup: {fileID: 0}
 --- !u!4 &792948267
 Transform:
   m_ObjectHideFlags: 0
@@ -1809,7 +1875,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &966997066
 MonoBehaviour:
@@ -2628,7 +2694,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursorImg: {fileID: 152299772, guid: 7eadb9885b2c54fb4a4e6f8550afaa95, type: 3}
   cam: {fileID: 966997064}
+<<<<<<< HEAD
   player: {fileID: 2969474142165236943}
+=======
+  player: {fileID: 197517704}
+>>>>>>> CharacterBase
   cursor_threshold: 3
   player_threshold: 3
 --- !u!4 &1451286845

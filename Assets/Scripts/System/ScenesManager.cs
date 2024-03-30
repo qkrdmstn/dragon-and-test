@@ -42,11 +42,13 @@ public class ScenesManager : MonoBehaviour
             case SceneInfo.Town_1:
                 UIManager.instance.SceneUI[0].SetActive(false);
                 UIManager.instance.SceneUI[1].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI[1].GetComponent<UIGroup>();
                 break;
 
             case SceneInfo.Battle_1:
                 UIManager.instance.SceneUI[1].SetActive(false);
                 UIManager.instance.SceneUI[2].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI[2].GetComponent<UIGroup>();
                 break;
         }
         SceneManager.LoadScene(((int)_sceneInfo));

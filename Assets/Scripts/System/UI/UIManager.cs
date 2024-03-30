@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     public static UIManager instance = null;
     public Fade fade;
     public GameObject[] SceneUI;
+    public UIGroup curUIGroup;
 
     private void Awake()
     {
