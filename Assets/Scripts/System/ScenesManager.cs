@@ -27,6 +27,17 @@ public class ScenesManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
+    private void OnEnable()
+    {
+        // 씬 매니저의 sceneLoaded에 체인을 건다.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     public int GetSceneNum()
     {
         return SceneManager.GetActiveScene().buildIndex;
@@ -34,6 +45,13 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeScene(SceneInfo _sceneInfo)
     {
+        SceneManager.LoadScene(((int)_sceneInfo));
+    }
+
+    // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneInfo _sceneInfo = (SceneInfo)scene.buildIndex;
         switch (_sceneInfo)
         {
             case SceneInfo.Start:
@@ -51,6 +69,5 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI[2].GetComponent<UIGroup>();
                 break;
         }
-        SceneManager.LoadScene(((int)_sceneInfo));
     }
 }

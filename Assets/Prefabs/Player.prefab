@@ -368,6 +368,7 @@ GameObject:
   - component: {fileID: 863276444859189487}
   - component: {fileID: 7682503680651831577}
   - component: {fileID: 6026035233142154471}
+  - component: {fileID: 6877562619138306935}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -443,7 +444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 104
+  curHP: 3
+  maxHP: 3
   hitDuration: 0.8
   blankBulletNum: 47
   curMP: 2100
@@ -457,6 +459,7 @@ MonoBehaviour:
   isAttackable: 1
   isCombatZone: 1
   isStateChangeable: 1
+  isInteraction: 0
   profile: {fileID: 11400000, guid: 10e4dfeb3157b48799b562bf7cdd96cc, type: 2}
   cameraManager: {fileID: 0}
 --- !u!114 &863276444859189487
@@ -496,7 +499,8 @@ MonoBehaviour:
   - 0.0177
   - 0.0134
   - 0.0091
-  selectCards: []
+  selectedCards: []
+  skillManager: {fileID: 0}
 --- !u!114 &7682503680651831577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,6 +571,18 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &6877562619138306935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9164923190227248141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f926b6a24ec5844a6655eb70ec1505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9164923190375090481
 GameObject:
   m_ObjectHideFlags: 0
