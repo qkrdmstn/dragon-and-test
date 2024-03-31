@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
-        if (ScenesManager.instance.GetSceneNum() >= 2)
+        if (SceneManager.GetActiveScene().name == "Battle_1" || SceneManager.GetActiveScene().name == "Character")
             isCombatZone = true;
         else
             isCombatZone = false;
