@@ -8,21 +8,6 @@ using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 using Image = UnityEngine.UI.Image;
 
-[System.Serializable]
-public struct HwatuUI
-{
-    public int idx;
-    public Hwatu hwatu;
-    public GameObject obj;
-
-    public HwatuUI(GameObject _obj, Hwatu _hwatu, int _idx)
-    {
-        obj = _obj;
-        hwatu = _hwatu;
-        idx = _idx;
-    }
-}
-
 public class PlayerCombinationSkill : MonoBehaviour
 {
     [Header("Combination Skill info")]
@@ -36,15 +21,15 @@ public class PlayerCombinationSkill : MonoBehaviour
     public bool isCombinationSkill;
 
     [Header("Probability info")]
-    public float[] firstProb = { 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f,
+    private float[] firstProb = { 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f,
                                     0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f};
     private float[] secondProb;
     private float[] cumulativeProb;
 
     [Header("Card info")]
-    [SerializeField] private HwatuUI[] selectedCards;
-    private HwatuUI[] activeCardUI;
-    private HwatuUI[] hwatuUI;
+    [SerializeField] private ImoogiHwatuUI[] selectedCards;
+    private ImoogiHwatuUI[] activeCardUI;
+    private ImoogiHwatuUI[] hwatuUI;
 
     private IEnumerator coroutine;
 
@@ -77,11 +62,13 @@ public class PlayerCombinationSkill : MonoBehaviour
         GameObject SkillUI = UIManager.instance.curUIGroup.childUI[0];
         int numOfChild = SkillUI.transform.childCount;
 
-        hwatuUI = new HwatuUI[numOfChild];
+        hwatuUI = new ImoogiHwatuUI[numOfChild];
         for (int i = 0; i < numOfChild; i++)
         {
             Transform tf = SkillUI.transform.GetChild(i);
-            hwatuUI[i] = new HwatuUI(tf.gameObject, tf.GetComponent<Hwatu>(), i);
+            hwatuUI[i] = tf.GetComponent<ImoogiHwatuUI>();
+            hwatuUI[i].hwatuObj = tf.gameObject;
+            hwatuUI[i].idx = i;
         }
     }
 
@@ -89,7 +76,7 @@ public class PlayerCombinationSkill : MonoBehaviour
     {
         player.curMP -= player.maxMP;
         isCombinationSkill = true;
-        selectedCards = new HwatuUI[2];
+        selectedCards = new ImoogiHwatuUI[2];
 
         coroutine = SelectCardCoroutine();
         StartCoroutine(coroutine);
@@ -128,19 +115,19 @@ public class PlayerCombinationSkill : MonoBehaviour
     private void ActiveRandomCard()
     {
         List<int> randomIdx = GetCardRandomIdxList();
-        activeCardUI = new HwatuUI[3] { hwatuUI[randomIdx[0]], hwatuUI[randomIdx[1]], hwatuUI[randomIdx[2]] };
+        activeCardUI = new ImoogiHwatuUI[3] { hwatuUI[randomIdx[0]], hwatuUI[randomIdx[1]], hwatuUI[randomIdx[2]] };
 
         //Setting Card Position & Activate Card
         SetActiveCardPos();
         for (int i = 0; i < randomIdx.Count; i++)
         {
-            Image img = activeCardUI[i].obj.GetComponent<Image>();
+            Image img = activeCardUI[i].GetComponent<Image>();
             if (i == 0)
                 img.color = new Color(1, 1, 1, 1);
             else
                 img.color = new Color(1, 1, 1, 0.5f);
 
-            hwatuUI[randomIdx[i]].obj.SetActive(true);
+            hwatuUI[randomIdx[i]].hwatuObj.SetActive(true);
         }
     }
 
@@ -230,7 +217,7 @@ public class PlayerCombinationSkill : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-            Image img = activeCardUI[i].obj.GetComponent<Image>();
+            Image img = activeCardUI[i].GetComponent<Image>();
             if (i == focusIdx)
                 img.color = new Color(1, 1, 1, 1);
             else
@@ -244,9 +231,9 @@ public class PlayerCombinationSkill : MonoBehaviour
         Vector3 middlePos = this.transform.position + Vector3.up;
         Vector3 rightPos = this.transform.position + Vector3.up + Vector3.right;
 
-        activeCardUI[0].obj.transform.position = Camera.main.WorldToScreenPoint(leftPos);
-        activeCardUI[1].obj.transform.position = Camera.main.WorldToScreenPoint(middlePos);
-        activeCardUI[2].obj.transform.position = Camera.main.WorldToScreenPoint(rightPos);
+        activeCardUI[0].transform.position = Camera.main.WorldToScreenPoint(leftPos);
+        activeCardUI[1].transform.position = Camera.main.WorldToScreenPoint(middlePos);
+        activeCardUI[2].transform.position = Camera.main.WorldToScreenPoint(rightPos);
     }
 
     private void TimeOver()
@@ -257,7 +244,7 @@ public class PlayerCombinationSkill : MonoBehaviour
         StopCoroutine(coroutine);
         for (int i = 0; i < hwatuUI.Length; i++)
         {
-            hwatuUI[i].obj.SetActive(false);
+            hwatuUI[i].hwatuObj.SetActive(false);
         }
     }
 
@@ -267,7 +254,7 @@ public class PlayerCombinationSkill : MonoBehaviour
         drawCnt++;
         for (int i = 0; i < hwatuUI.Length; i++)
         {
-            hwatuUI[i].obj.SetActive(false);
+            hwatuUI[i].hwatuObj.SetActive(false);
         }
 
         if(drawCnt == 1)

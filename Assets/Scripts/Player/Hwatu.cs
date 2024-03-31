@@ -36,7 +36,7 @@ public enum HwatuCombination
 #endregion
 
 [System.Serializable]
-public class Hwatu : MonoBehaviour
+public class Hwatu
 {
     public HwatuType type;
     public Month month;

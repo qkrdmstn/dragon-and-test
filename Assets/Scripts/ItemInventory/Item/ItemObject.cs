@@ -6,13 +6,14 @@ public class ItemObject : MonoBehaviour
 {
     [SerializeField] private ItemData itemData;
 
-    #region Components
-    private SpriteRenderer sr;
-    #endregion
+    private void OnValidate()
+    {
+        GetComponent<SpriteRenderer>().sprite = itemData.icon;
+        gameObject.name = "Item Obj - " + itemData.itemName;
+    }
 
     private void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -20,6 +21,7 @@ public class ItemObject : MonoBehaviour
         if(collision.CompareTag("Player"))
         {
             Debug.Log(itemData.itemName + "Get Item!!");
+            InventoryData.instance.AddItem(itemData);
             Destroy(this.gameObject);
         }
     }

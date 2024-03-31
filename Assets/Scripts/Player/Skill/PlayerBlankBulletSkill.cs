@@ -58,7 +58,6 @@ public class PlayerBlankBulletSkill : MonoBehaviour
 
                 //Todo. Add knockback to monster state and call
             }
-
         }
     }
 
