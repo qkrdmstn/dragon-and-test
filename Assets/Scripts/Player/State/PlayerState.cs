@@ -33,6 +33,8 @@ public class PlayerState
 
     public virtual void Update()
     {
+        if (player.isInteraction) return;
+
         stateTimer -= Time.deltaTime;
 
         xInput = Input.GetAxisRaw("Horizontal");
