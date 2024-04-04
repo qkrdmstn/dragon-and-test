@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 public class InventoryData : MonoBehaviour
 {
@@ -11,9 +13,19 @@ public class InventoryData : MonoBehaviour
     public List<InventoryItem> inventoryItems;
     public Dictionary<ItemData, InventoryItem> inventoryDictionary;
 
+    public List<InventoryItem> gunItems;
+    public Dictionary<ItemData, InventoryItem> gunDictionary;
+
+    public InventoryItem amorItem;
+    public Dictionary<ItemData, InventoryItem> amorDictionary; 
+
     [Header("Inventory UI")]
     [SerializeField] private Transform inventorySlotParent;
-    private ItemSlotUI[] itemSlot;
+    [SerializeField] private Transform gunSlotParent;
+    [SerializeField] private Transform amorSlotParent;
+    private ItemSlotUI[] inventoryItemSlot;
+    private ItemSlotUI[] gunItemSlot;
+    private ItemSlotUI amorItemSlot;
 
     private void Awake()
     {
@@ -34,19 +46,52 @@ public class InventoryData : MonoBehaviour
         inventoryItems = new List<InventoryItem>();
         inventoryDictionary = new Dictionary<ItemData, InventoryItem>();
 
-        itemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
+        gunItems = new List<InventoryItem>();
+        gunDictionary = new Dictionary<ItemData, InventoryItem>();
+
+        inventoryItemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
+        gunItemSlot = gunSlotParent.GetComponentsInChildren<ItemSlotUI>();
+        amorItemSlot = amorSlotParent.GetComponentInChildren<ItemSlotUI>();
     }
+
+    public void AddGunItem(ItemData _gunItem)
+    {
+        //인벤토리에 없는 경우에만 추가. (무기 중복 X)
+        if (!inventoryDictionary.TryGetValue(_gunItem, out InventoryItem value))
+        {
+            InventoryItem newItem = new InventoryItem(_gunItem);
+            gunItems.Add(newItem);
+            gunDictionary.Add(_gunItem, newItem);
+        }
+        UpdateSlotUI();
+    }
+
+    //public void AddAmorItem(ItemData _amorItem)
+    //{
+    //    amorItem = new InventoryItem(_amorItem);
+    //    amorDictionary.Clear();
+    //    amorDictionary.Add(_amorItem, amorItem);
+    //}
+
 
     private void UpdateSlotUI()
     {
         for(int i=0; i<inventoryItems.Count; i++)
         {
-            itemSlot[i].UpdateSlot(inventoryItems[i]);
+            inventoryItemSlot[i].UpdateSlot(inventoryItems[i]);
         }
+
+        for(int i=0; i<gunItems.Count; i++)
+        {
+            gunItemSlot[i].UpdateSlot(gunItems[i]);
+        }
+
+        amorItemSlot.UpdateSlot(amorItem);
     }
 
     public void AddItem(ItemData _item)
     {
+        //이미 인벤토리에 존재할 경우, Stack 크기만 증가
         if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
         {
             value.AddStack();

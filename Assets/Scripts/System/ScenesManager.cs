@@ -46,12 +46,19 @@ public class ScenesManager : MonoBehaviour
     public void ChangeScene(SceneInfo _sceneInfo)
     {
         SceneManager.LoadScene(((int)_sceneInfo));
+
+
+        GunManager.instance.SaveGunData();
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneInfo _sceneInfo = (SceneInfo)scene.buildIndex;
+
+        if (scene.buildIndex == 6 || scene.buildIndex == 7)
+            _sceneInfo = SceneInfo.Battle_1;
+
         switch (_sceneInfo)
         {
             case SceneInfo.Start:
@@ -67,6 +74,7 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI[1].SetActive(false);
                 UIManager.instance.SceneUI[2].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI[2].GetComponent<UIGroup>();
+                GunManager.instance.Initialize();
                 break;
         }
     }

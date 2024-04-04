@@ -1,8 +1,9 @@
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class ItemSlotUI : MonoBehaviour
+public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemText;
@@ -25,6 +26,15 @@ public class ItemSlotUI : MonoBehaviour
             {
                 itemText.text = "";
             }
+        }
+    }
+
+    public void OnPointerDown(PointerEventData evenData)
+    {
+        if(item.data != null)
+        {
+            Debug.Log("Item Name: " + item.data.itemName);
+
         }
     }
 }

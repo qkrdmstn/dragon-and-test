@@ -13,21 +13,23 @@ public class Gun : MonoBehaviour
     [Header("Gun Timer")]
     public float shootTimer;
 
-    [Header("Gun information")]
+    [Header("Gun Data")]
+    public GunData initData;
     public int damage = 1;
-    [SerializeField] private float shootDelay;
-    [SerializeField] private float reloadTime;
-    [SerializeField] private bool isReloading = false;
-    [SerializeField] private bool clickReloadFlag = false;
-    [SerializeField] private bool isAttacking = false;
-
-    //public int maxBullet; //�ִ� �Ѿ� ����
-    //public int curTotalBullet; //���� ���� �Ѿ�
-    [SerializeField] private int magazineSize; //źâ ũ��
-    [SerializeField] private int loadedBullet; //���� ������ �Ѿ�
+    public float shootDelay;
+    public float reloadTime;
+    public int maxBullet;
+    public int magazineSize;
+    public int loadedBullet;
+    public GameObject gunPrefab;
 
     [Header("Bullet Prefabs")]
     public GameObject bulletPrefab;
+
+    [Header("Gun State")]
+    [SerializeField] private bool isReloading = false;
+    [SerializeField] private bool clickReloadFlag = false;
+    [SerializeField] private bool isAttacking = false;
 
     [Header("CameraSetting")]
     // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
@@ -75,6 +77,30 @@ public class Gun : MonoBehaviour
         }
 
         player.anim.SetBool("isAttacking", isAttacking);
+    }
+
+    private void OnDisable()
+    {
+        if(isReloading)
+        {
+            isReloading = false;
+            clickReloadFlag = true;
+            //Reload Visulaize
+            renderer.color = new Color(1, 1, 1);
+        }
+    }
+
+    public void InitGunData(GunData _data)
+    {
+        damage = _data.damage;
+        shootDelay = _data.shootDelay;
+        reloadTime = _data.reloadTime;
+        maxBullet = _data.maxBullet;
+        magazineSize = _data.magazineSize;
+        loadedBullet = _data.loadedBullet;
+
+        gunPrefab = _data.gunPrefab;
+        bulletPrefab = _data.bulletPrefab;
     }
 
     public void Shoot()
