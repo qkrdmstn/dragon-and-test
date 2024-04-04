@@ -86,7 +86,8 @@ public class InventoryData : MonoBehaviour
             gunItemSlot[i].UpdateSlot(gunItems[i]);
         }
 
-        amorItemSlot.UpdateSlot(amorItem);
+        if(amorItem.data != null)
+            amorItemSlot.UpdateSlot(amorItem);
     }
 
     public void AddItem(ItemData _item)
