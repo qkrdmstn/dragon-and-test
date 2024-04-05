@@ -9,6 +9,10 @@ public class UIManager : MonoBehaviour
     public GameObject[] SceneUI;
     public UIGroup curUIGroup;
 
+    #region UIReference
+    public Player player;
+    #endregion
+
     private void Awake()
     {
         if (instance == null)
@@ -45,5 +49,10 @@ public class UIManager : MonoBehaviour
     public void SetScene_start()
     {
 
+    }
+
+    public void InitUIReference()
+    {
+        player = FindObjectOfType<Player>();
     }
 }

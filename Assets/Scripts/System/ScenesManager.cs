@@ -49,13 +49,14 @@ public class ScenesManager : MonoBehaviour
 
 
         GunManager.instance.SaveGunData();
+        UIManager.instance.InitUIReference();
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneInfo _sceneInfo = (SceneInfo)scene.buildIndex;
-
+        UIManager.instance.InitUIReference();
         if (scene.buildIndex == 6 || scene.buildIndex == 7)
             _sceneInfo = SceneInfo.Battle_1;
 

@@ -57,7 +57,7 @@ public class InventoryData : MonoBehaviour
     public void AddGunItem(ItemData _gunItem)
     {
         //인벤토리에 없는 경우에만 추가. (무기 중복 X)
-        if (!inventoryDictionary.TryGetValue(_gunItem, out InventoryItem value))
+        if (!gunDictionary.TryGetValue(_gunItem, out InventoryItem value))
         {
             InventoryItem newItem = new InventoryItem(_gunItem);
             gunItems.Add(newItem);

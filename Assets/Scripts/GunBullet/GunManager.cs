@@ -83,7 +83,7 @@ public class GunManager : MonoBehaviour
             if (i >= gunDataList.Count)
             {
                 _data = new GunData(gunObj.GetComponent<Gun>().initData);
-                gunDataList.Add(_data);
+                AddGunDataList(_data);
             }
             else
                 _data = gunDataList[i];
@@ -162,7 +162,7 @@ public class GunManager : MonoBehaviour
 
         //Data Save
         GunData _data = new GunData(_newGun.initData);
-        gunDataList.Add(_data);
+        AddGunDataList(_data);
         gunDictionary.Add(_data, _newGunObj);
         gunNum++;
 
@@ -174,5 +174,11 @@ public class GunManager : MonoBehaviour
     public void RemoveGun(GameObject gun)
     {
       
+    }
+
+    public void AddGunDataList(GunData _data)
+    {
+        gunDataList.Add(_data);
+        InventoryData.instance.AddGunItem(_data.gunItemData);
     }
 }
