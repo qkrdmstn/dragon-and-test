@@ -122,8 +122,8 @@ public class GunManager : MonoBehaviour
 
         //Gun Inventory Update
         GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx].gunItemData);
-        //Gun _gun = gunDataList[currentIdx].GetComponent<Gun>();
-        //UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
+        Gun _gun = gunParent.GetChild(currentIdx).GetComponent<Gun>();
+        UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
     }
 
     public void SaveGunData() 

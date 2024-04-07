@@ -5,6 +5,7 @@ using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Progress;
+using TMPro;
 
 public class GunInventoryData : MonoBehaviour
 {
@@ -12,13 +13,12 @@ public class GunInventoryData : MonoBehaviour
 
     public InventoryItem curGunItem;
     public int loadedBullet;
-    public int magazineSize;
+    public int maxBullet;
 
     [Header("GunInventory UI")]
     [SerializeField] private Transform gunSlotParent;
+    [SerializeField] private TextMeshProUGUI bulletText;
     private ItemSlotUI curGunItemSlot;
-
-    //text
 
     private void Awake()
     {
@@ -47,10 +47,10 @@ public class GunInventoryData : MonoBehaviour
 
     public void UpdateCurrentBulletUI(int _maxBullet, int _loadedBullet)
     {
-        magazineSize = _maxBullet;
+        maxBullet = _maxBullet;
         loadedBullet = _loadedBullet;
 
-        //Text modify
+        bulletText.text = (loadedBullet + " / " + maxBullet).ToString();
     }
 
     //sawpinventory
