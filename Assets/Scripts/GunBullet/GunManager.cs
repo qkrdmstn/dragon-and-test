@@ -18,6 +18,8 @@ public class GunManager : MonoBehaviour
     [Header("Swap info")]
     public GameObject currentGun;
     public int currentIdx;
+    public int currentGunLoadedBullet;
+    public int currentGunMaxBullet;
     public float swapDelay = 0.1f;
     public float swapTimer;
 
@@ -117,6 +119,11 @@ public class GunManager : MonoBehaviour
 
         currentGun = gunParent.GetChild(currentIdx).gameObject;
         currentGun.SetActive(true);
+
+        //Gun Inventory Update
+        GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx].gunItemData);
+        //Gun _gun = gunDataList[currentIdx].GetComponent<Gun>();
+        //UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
     }
 
     public void SaveGunData() 
@@ -179,6 +186,16 @@ public class GunManager : MonoBehaviour
     public void AddGunDataList(GunData _data)
     {
         gunDataList.Add(_data);
+
+        //Inventory Update
         InventoryData.instance.AddGunItem(_data.gunItemData);
+    }
+
+    public void UpdateCurrentGunBulletData(int maxBullet, int loadedBullet)
+    {
+        currentGunMaxBullet = maxBullet;
+        currentGunLoadedBullet = loadedBullet;
+
+        GunInventoryData.instance.UpdateCurrentBulletUI(currentGunMaxBullet, currentGunLoadedBullet);
     }
 }

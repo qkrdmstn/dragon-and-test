@@ -10,13 +10,15 @@ public class GunInventoryData : MonoBehaviour
 {
     public static GunInventoryData instance;
 
-    public List<InventoryItem> gunItems;
-    public Dictionary<ItemData, InventoryItem> gunDictionary;
+    public InventoryItem curGunItem;
+    public int loadedBullet;
+    public int magazineSize;
 
     [Header("GunInventory UI")]
     [SerializeField] private Transform gunSlotParent;
-    private ItemSlotUI[] gunItemSlot;
+    private ItemSlotUI curGunItemSlot;
 
+    //text
 
     private void Awake()
     {
@@ -34,30 +36,21 @@ public class GunInventoryData : MonoBehaviour
 
     private void Start()
     {
-        gunItems = new List<InventoryItem>();
-        gunDictionary = new Dictionary<ItemData, InventoryItem>();
-
-        gunItemSlot = gunSlotParent.GetComponentsInChildren<ItemSlotUI>();
+        curGunItemSlot = gunSlotParent.GetComponentInChildren<ItemSlotUI>();
     }
 
-    public void AddGunItem(ItemData _gunItem)
+    public void UpdateGunInventorySlotUI(ItemData _curGunItem)
     {
-        //인벤토리에 없는 경우에만 추가. (무기 중복 X)
-        if (!gunDictionary.TryGetValue(_gunItem, out InventoryItem value))
-        {
-            InventoryItem newItem = new InventoryItem(_gunItem);
-            gunItems.Add(newItem);
-            gunDictionary.Add(_gunItem, newItem);
-        }
-        UpdateSlotUI();
+        curGunItem = new InventoryItem(_curGunItem);
+        curGunItemSlot.UpdateSlot(curGunItem);
     }
 
-    private void UpdateSlotUI()
+    public void UpdateCurrentBulletUI(int _maxBullet, int _loadedBullet)
     {
-        for (int i = 0; i < gunItems.Count; i++)
-        {
-            gunItemSlot[i].UpdateSlot(gunItems[i]);
-        }
+        magazineSize = _maxBullet;
+        loadedBullet = _loadedBullet;
+
+        //Text modify
     }
 
     //sawpinventory

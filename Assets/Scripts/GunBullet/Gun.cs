@@ -126,6 +126,9 @@ public class Gun : MonoBehaviour
 
             bullet.BulletInitialize(damage, dir);
             StartCoroutine(InactiveIsAttacking());
+
+            //Gun Inventory Update
+            GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
         }
     }
     
@@ -168,5 +171,8 @@ public class Gun : MonoBehaviour
         isReloading = false;
                     
         renderer.color = new Color(1, 1, 1);
+
+        //Gun Inventory Update
+        GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
     }
 }
