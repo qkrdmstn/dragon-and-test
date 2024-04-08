@@ -24,7 +24,7 @@ public class Fade : MonoBehaviour
 
         if (((int)_sceneInfo) == 1)
         {
-            TextMeshProUGUI[] texts = UIManager.instance.SceneUI[0].GetComponentsInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
             for(int i=0; i<texts.Length; i++)
             {
                 StartCoroutine(TextFadeCoroutine(texts[i]));

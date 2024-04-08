@@ -28,7 +28,6 @@ public class Player : MonoBehaviour
     public GameObject DeadUI;
    
     [Header("Gun info")]
-    public GameObject gunParent;
     public Gun gun;
     public bool isAttackable = true;
 
@@ -64,8 +63,9 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
-        if (SceneManager.GetActiveScene().name == "Battle_1" ||
-            SceneManager.GetActiveScene().name == "Character" || SceneManager.GetActiveScene().name == "Character 2")
+        if (SceneManager.GetActiveScene().name == "Battle_1"
+            || SceneManager.GetActiveScene().name == "Character"
+            || SceneManager.GetActiveScene().name == "Tutorial")
             isCombatZone = true;
         else
             isCombatZone = false;
@@ -90,10 +90,10 @@ public class Player : MonoBehaviour
         stateMachine.currentState.Update();
 
         //Check CombatZone
-        if (isCombatZone && !gunParent.gameObject.activeSelf)
-            gunParent.gameObject.SetActive(true);
-        else if (!isCombatZone && gunParent.gameObject.activeSelf)
-            gunParent.gameObject.SetActive(false);
+        if (isCombatZone && !gun.gameObject.activeSelf)
+            gun.gameObject.SetActive(true);
+        else if (!isCombatZone && gun.gameObject.activeSelf)
+            gun.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

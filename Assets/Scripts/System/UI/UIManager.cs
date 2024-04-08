@@ -6,12 +6,11 @@ public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
     public Fade fade;
-    public GameObject[] SceneUI;
-    public UIGroup curUIGroup;
+    public DialogueDB dialogueDB;
 
-    #region UIReference
-    public Player player;
-    #endregion
+    //public GameObject[] SceneUI;
+    public SerializableDictionary<string, GameObject> SceneUI;
+    public UIGroup curUIGroup;
 
     private void Awake()
     {
@@ -44,15 +43,5 @@ public class UIManager : MonoBehaviour
         }
         else
             return sprite.texture;
-    }
-
-    public void SetScene_start()
-    {
-
-    }
-
-    public void InitUIReference()
-    {
-        player = FindObjectOfType<Player>();
     }
 }

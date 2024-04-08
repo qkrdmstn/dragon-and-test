@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public enum SceneInfo
 {
     Start,
+    Tutorial,
     Town_1,
     Battle_1,
 };
@@ -46,36 +47,33 @@ public class ScenesManager : MonoBehaviour
     public void ChangeScene(SceneInfo _sceneInfo)
     {
         SceneManager.LoadScene(((int)_sceneInfo));
-
-
-        GunManager.instance.SaveGunData();
-        UIManager.instance.InitUIReference();
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneInfo _sceneInfo = (SceneInfo)scene.buildIndex;
-        UIManager.instance.InitUIReference();
-        if (scene.buildIndex == 6 || scene.buildIndex == 7)
-            _sceneInfo = SceneInfo.Battle_1;
-
         switch (_sceneInfo)
         {
             case SceneInfo.Start:
                 break;
 
+            case SceneInfo.Tutorial:
+                UIManager.instance.SceneUI["Start"].SetActive(false);
+                UIManager.instance.SceneUI["Tutorial"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
+                break;
+
             case SceneInfo.Town_1:
-                UIManager.instance.SceneUI[0].SetActive(false);
-                UIManager.instance.SceneUI[1].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI[1].GetComponent<UIGroup>();
+                UIManager.instance.SceneUI["Tutorial"].SetActive(false);
+                UIManager.instance.SceneUI["Town_1"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
                 break;
 
             case SceneInfo.Battle_1:
-                UIManager.instance.SceneUI[1].SetActive(false);
-                UIManager.instance.SceneUI[2].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI[2].GetComponent<UIGroup>();
-                GunManager.instance.Initialize();
+                UIManager.instance.SceneUI["Town_1"].SetActive(false);
+                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
                 break;
         }
     }

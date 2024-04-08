@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76a3cbf800cd440eb662df635568fb6, type: 3}
+  m_Name: DialogueDB
+  m_EditorClassIdentifier: 
+  DialogueEntity:
+  - eventOrder: 1
+    eventName: "\uC2DC\uC791"
+    npcName: "\uC6A9\uACFC"
+    dialogue: "\uC6A9\uACFC\uB294 \uCC38 \uC2E0\uAE30\uD55C \uACFC\uC77C\uC774\uC57C"
+    isSelect: 1
+    selectType: "\uC751 \uB9DE\uC544, \uC544\uB2C8\uC57C"
+  - eventOrder: 1
+    eventName: "\uC2DC\uC791"
+    npcName: "\uC2DC\uD5D8"
+    dialogue: "\uC2DC\uD5D8\uC740 \uC5B8\uC81C\uB098 \uC5B4\uB824\uC6CC \u315C\u315C"
+    isSelect: 1
+    selectType: "\uC751 \uB9DE\uC544, \uC544\uB2C8\uC57C"
+  - eventOrder: 1
+    eventName: "\uC2DC\uC791"
+    npcName: "\uC6A9\uACFC"
+    dialogue: "\uC2A4\uD0C0\uBC85\uC2A4 \uC6A9\uACFC \uB9AC\uD504\uB808\uC154 \uBA39\uC73C\uB7EC
+      \uAC00\uC7A5~"
+    isSelect: 1
+    selectType: "\uADF8\uB798, \uC2EB\uC5B4"
+  - eventOrder: 2
+    eventName: "\uBABB\uB9D0\uB824"
+    npcName: "\uB9F9\uAD6C"
+    dialogue: "\uB098\uB294 \uB3CC\uC774 \uC88B\uC544"
+    isSelect: 0
+    selectType: 
+  - eventOrder: 2
+    eventName: "\uBABB\uB9D0\uB824"
+    npcName: "\uC218\uC9C0"
+    dialogue: "\uB098\uB294 \uC9F1\uAD6C\uAC00 \uC88B\uC544"
+    isSelect: 0
+    selectType: 
+  - eventOrder: 2
+    eventName: "\uBABB\uB9D0\uB824"
+    npcName: "\uC9F1\uAD6C"
+    dialogue: "\uB098\uB294 \uC774\uC2AC\uC774 \uB204\uB098\uAC00 \uC88B\uC544"
+    isSelect: 0
+    selectType: 
