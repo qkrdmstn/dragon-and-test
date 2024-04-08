@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     //public GameObject[] SceneUI;
     public SerializableDictionary<string, GameObject> SceneUI;
     public UIGroup curUIGroup;
+    private Player player;
 
     private void Awake()
     {

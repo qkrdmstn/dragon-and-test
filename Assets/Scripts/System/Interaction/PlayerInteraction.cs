@@ -29,7 +29,11 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         if (isBounded && Input.GetKeyDown(KeyCode.E)) DoInteraction();
-        if (dialogueInteraction.isDone) player.isInteraction = false;   // player의 상호작용 여부 관찰
+        if (dialogueInteraction.isDone)
+        {
+            player.isInteraction = false;   // player의 상호작용 여부 관찰
+            player.isStateChangeable = true;
+        }
     }
 
     void DoInteraction()
@@ -41,6 +45,8 @@ public class PlayerInteraction : MonoBehaviour
                 if (!player.isInteraction)
                 {
                     player.isInteraction = true;
+                    player.SetIdleStatePlayer();
+                    player.isStateChangeable = false;
                     dialogueInteraction.LoadEvent(interaction.eventName);
                 }
                 break;

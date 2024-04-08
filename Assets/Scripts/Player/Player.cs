@@ -25,11 +25,12 @@ public class Player : MonoBehaviour
     public float expCoefficient = -3.0f;
 
     //Temp variable
-    public GameObject DeadUI;
+    //public GameObject DeadUI;
    
     [Header("Gun info")]
     public Gun gun;
     public bool isAttackable = true;
+    public GameObject gunParent;
 
     [Header("State Check")]
     public bool isCombatZone = true;
@@ -146,7 +147,7 @@ public class Player : MonoBehaviour
 
     private void PlayerDead()
     {
-        DeadUI.SetActive(true);
+        //DeadUI.SetActive(true);
     }
 
     IEnumerator DamagedProcess()
@@ -160,5 +161,11 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
         gameObject.layer = 6;
+    }
+
+    public void SetIdleStatePlayer()
+    {
+        SetVelocity(0, 0);
+        stateMachine.ChangeState(idleState);
     }
 }

@@ -32,8 +32,8 @@ public class DefaultUIGroup : UIGroup
     private void OpenInventory()
     {
         Time.timeScale = 0.0f;
-        UIManager.instance.player.isStateChangeable = false;
-        UIManager.instance.player.isAttackable = false;
+        //UIManager.instance.player.isStateChangeable = false;
+        //UIManager.instance.player.isAttackable = false;
         childUI[0].SetActive(true);
 
     }
@@ -41,8 +41,8 @@ public class DefaultUIGroup : UIGroup
     public void CloseInventory()
     {
         Time.timeScale = 1.0f;
-        UIManager.instance.player.isStateChangeable = true;
-        UIManager.instance.player.isAttackable = true;
+        //UIManager.instance.player.isStateChangeable = true;
+        //UIManager.instance.player.isAttackable = true;
         childUI[0].SetActive(false);
 
         ChangePage(0);

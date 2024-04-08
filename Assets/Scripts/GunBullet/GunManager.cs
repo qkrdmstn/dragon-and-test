@@ -185,6 +185,7 @@ public class GunManager : MonoBehaviour
 
     public void AddGunDataList(GunData _data)
     {
+
         gunDataList.Add(_data);
 
         //Inventory Update
