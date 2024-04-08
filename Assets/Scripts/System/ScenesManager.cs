@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public enum SceneInfo
 {
     Start,
+    Tutorial,
     Town_1,
     Battle_1,
 };
@@ -57,15 +58,21 @@ public class ScenesManager : MonoBehaviour
             case SceneInfo.Start:
                 break;
 
+            case SceneInfo.Tutorial:
+                UIManager.instance.SceneUI["Start"].SetActive(false);
+                UIManager.instance.SceneUI["Tutorial"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
+                break;
+
             case SceneInfo.Town_1:
-                //UIManager.instance.SceneUI[0].SetActive(false);
-                //UIManager.instance.SceneUI[1].SetActive(true);
+                UIManager.instance.SceneUI["Tutorial"].SetActive(false);
+                UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
                 break;
 
             case SceneInfo.Battle_1:
-                //UIManager.instance.SceneUI[1].SetActive(false);
-                //UIManager.instance.SceneUI[2].SetActive(true);
+                UIManager.instance.SceneUI["Town_1"].SetActive(false);
+                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
                 break;
         }

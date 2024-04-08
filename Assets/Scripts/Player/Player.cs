@@ -63,7 +63,9 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
-        if (SceneManager.GetActiveScene().name == "Battle_1" || SceneManager.GetActiveScene().name == "Character")
+        if (SceneManager.GetActiveScene().name == "Battle_1"
+            || SceneManager.GetActiveScene().name == "Character"
+            || SceneManager.GetActiveScene().name == "Tutorial")
             isCombatZone = true;
         else
             isCombatZone = false;

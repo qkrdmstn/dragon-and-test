@@ -6,4 +6,6 @@ public class DialogueDBEntity
     public string eventName;
     public string npcName;
     public string dialogue;
+    public bool isSelect;
+    public string selectType;
 }

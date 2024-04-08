@@ -44,9 +44,4 @@ public class UIManager : MonoBehaviour
         else
             return sprite.texture;
     }
-
-    public void SetScene_start()
-    {
-
-    }
 }

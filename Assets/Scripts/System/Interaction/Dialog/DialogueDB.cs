@@ -6,5 +6,5 @@ using UnityEngine;
 [ExcelAsset]
 public class DialogueDB : ScriptableObject
 {
-	public List<DialogueDBEntity> DialogueEntity; // Replace 'EntityType' to an actual type that is serializable
+	public List<DialogueDBEntity> DialogueEntity; // Replace 'EntityType' to an actual type that is serializable.
 }
