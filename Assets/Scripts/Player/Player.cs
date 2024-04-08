@@ -29,8 +29,8 @@ public class Player : MonoBehaviour
    
     [Header("Gun info")]
     public Gun gun;
-    public bool isAttackable = true;
     public GameObject gunParent;
+    public bool isAttackable = true;
 
     [Header("State Check")]
     public bool isCombatZone = true;
@@ -91,10 +91,10 @@ public class Player : MonoBehaviour
         stateMachine.currentState.Update();
 
         //Check CombatZone
-        if (isCombatZone && !gun.gameObject.activeSelf)
-            gun.gameObject.SetActive(true);
-        else if (!isCombatZone && gun.gameObject.activeSelf)
-            gun.gameObject.SetActive(false);
+        if (isCombatZone && !gunParent.gameObject.activeSelf)
+            gunParent.gameObject.SetActive(true);
+        else if (!isCombatZone && gunParent.gameObject.activeSelf)
+            gunParent.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

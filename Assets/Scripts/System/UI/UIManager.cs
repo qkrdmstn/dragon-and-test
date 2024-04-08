@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     //public GameObject[] SceneUI;
     public SerializableDictionary<string, GameObject> SceneUI;
     public UIGroup curUIGroup;
-    private Player player;
+    public Player player;
 
     private void Awake()
     {
@@ -44,5 +44,10 @@ public class UIManager : MonoBehaviour
         }
         else
             return sprite.texture;
+    }
+
+    public void InitUIReference()
+    {
+        player = FindObjectOfType<Player>();
     }
 }

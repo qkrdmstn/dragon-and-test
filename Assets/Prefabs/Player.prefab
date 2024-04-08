@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 5633218439107059582}
   - component: {fileID: 5022314091673242867}
   - component: {fileID: 8967601601264965847}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: Interaction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,9 +376,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curHP: 3
-  maxHP: 3
-  hitDuration: 0
+  curHP: 39
+  maxHP: 41
+  hitDuration: 0.6
   blankBulletNum: 4
   curMP: 100
   maxMP: 100
@@ -387,8 +387,8 @@ MonoBehaviour:
   dashDuration: 0.58
   expCoefficient: -3.5
   gun: {fileID: 9164923188876154999}
-  isAttackable: 1
   gunParent: {fileID: 3176419107218324586}
+  isAttackable: 1
   isCombatZone: 1
   isStateChangeable: 1
   isInteraction: 0

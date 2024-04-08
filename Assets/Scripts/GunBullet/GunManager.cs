@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.Progress;
 
 public class GunManager : MonoBehaviour
@@ -47,23 +48,27 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-        Initialize();
+        if (SceneManager.GetActiveScene().name != "Start")
+            Initialize();
     }
 
     private void Update()
     {
-        if(player.isCombatZone)
+        if(SceneManager.GetActiveScene().name != "Start")
         {
-            swapTimer -= Time.deltaTime;
-            float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
-            if (scroll > 0 && swapTimer < 0.0f)
-                SwapGun(true);
-            if (scroll < 0 && swapTimer < 0.0f)
-                SwapGun(false);
-        }
+            if (player.isCombatZone)
+            {
+                swapTimer -= Time.deltaTime;
+                float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+                if (scroll > 0 && swapTimer < 0.0f)
+                    SwapGun(true);
+                if (scroll < 0 && swapTimer < 0.0f)
+                    SwapGun(false);
+            }
 
-        if (Input.GetKeyDown(KeyCode.O))
-            AddGun(tempPrefab);
+            if (Input.GetKeyDown(KeyCode.O))
+                AddGun(tempPrefab);
+        }
     }
 
     public void Initialize()
@@ -112,7 +117,9 @@ public class GunManager : MonoBehaviour
     private void InitActiveGun() //Initialize Default Gun
     {
         for (int i = 0; i < gunParent.childCount; i++)
+        {
             gunParent.GetChild(i).gameObject.SetActive(false);
+        }
 
         if (gunParent.childCount == 1)
             currentIdx = 0;
@@ -130,15 +137,20 @@ public class GunManager : MonoBehaviour
     {
         UpdateGunData();
         gunDictionary.Clear();
+        Debug.Log("end");
     }
 
     private void UpdateGunData()
     {
         for (int i = 0; i < gunDataList.Count; i++)
         {
-            GameObject _gunObj = gunDictionary[gunDataList[i]];
-            Gun _gun = _gunObj.GetComponent<Gun>();
-            gunDataList[i].gunDataUpdate(_gun);
+            if(gunDictionary.ContainsKey(gunDataList[i]))
+            {
+                GameObject _gunObj = gunDictionary[gunDataList[i]];
+                Gun _gun = _gunObj.GetComponent<Gun>();
+                gunDataList[i].gunDataUpdate(_gun);
+                Debug.Log("asd");
+            }
         }
     }
 
@@ -185,7 +197,6 @@ public class GunManager : MonoBehaviour
 
     public void AddGunDataList(GunData _data)
     {
-
         gunDataList.Add(_data);
 
         //Inventory Update

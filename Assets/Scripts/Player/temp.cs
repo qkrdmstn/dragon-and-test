@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class temp : MonoBehaviour
 {
-    public static temp instance = null;
+    public static temp instance;
     public Text txt;
 
 
@@ -16,12 +16,12 @@ public class temp : MonoBehaviour
     private void Awake()
     {
         if (instance == null)
-        { //»ı¼º ÀüÀÌ¸é
-            instance = this; //»ı¼º
+        { //ìƒì„± ì „ì´ë©´
+            instance = this; //ìƒì„±
         }
         else if (instance != this)
-        { //ÀÌ¹Ì »ı¼ºµÇ¾î ÀÖÀ¸¸é
-            Destroy(this.gameObject); //»õ·Î¸¸µç°Å »èÁ¦
+        { //ì´ë¯¸ ìƒì„±ë˜ì–´ ìˆìœ¼ë©´
+            Destroy(this.gameObject); //ìƒˆë¡œë§Œë“ ê±° ì‚­ì œ
         }
     }
     private void Start()

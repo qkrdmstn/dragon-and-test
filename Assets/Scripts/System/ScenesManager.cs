@@ -46,6 +46,14 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeScene(SceneInfo _sceneInfo)
     {
+        GunManager.instance.SaveGunData();
+
+        StartCoroutine(LoadSceneCoroutine(_sceneInfo));
+
+    }
+    IEnumerator LoadSceneCoroutine(SceneInfo _sceneInfo)
+    {
+        yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(((int)_sceneInfo));
     }
 
@@ -61,19 +69,31 @@ public class ScenesManager : MonoBehaviour
             case SceneInfo.Tutorial:
                 UIManager.instance.SceneUI["Start"].SetActive(false);
                 UIManager.instance.SceneUI["Tutorial"].SetActive(true);
+                UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
+
+                UIManager.instance.InitUIReference();
+                GunManager.instance.Initialize();
                 break;
 
             case SceneInfo.Town_1:
                 UIManager.instance.SceneUI["Tutorial"].SetActive(false);
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
+                UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
+
+                UIManager.instance.InitUIReference();
+                GunManager.instance.Initialize();
                 break;
 
             case SceneInfo.Battle_1:
                 UIManager.instance.SceneUI["Town_1"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
+                UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
+
+                UIManager.instance.InitUIReference();
+                GunManager.instance.Initialize();
                 break;
         }
     }

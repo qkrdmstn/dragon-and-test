@@ -35,7 +35,8 @@ public class PlayerDashState : PlayerState
 
         //Attack Able Setting
         player.isAttackable = true;
-        player.gun.shootTimer -= player.dashDuration;
+        Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
+        curGun.shootTimer -= player.dashDuration;
 
         // 무적 해제
         player.gameObject.layer = 6;

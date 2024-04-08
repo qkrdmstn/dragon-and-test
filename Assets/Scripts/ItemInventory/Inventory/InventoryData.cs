@@ -73,7 +73,6 @@ public class InventoryData : MonoBehaviour
     //    amorDictionary.Add(_amorItem, amorItem);
     //}
 
-
     private void UpdateSlotUI()
     {
         for(int i=0; i<inventoryItems.Count; i++)
