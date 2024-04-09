@@ -31,7 +31,7 @@ public class MonsterPool : MonoBehaviour
         // 미리 오브젝트 생성 해놓기
         for (int i = 0; i < defaultCapacity; i++)
         {
-            MonsterBullet bullet = CreatePooledItem().GetComponent<Bullet>();
+            MonsterBullet bullet = CreatePooledItem().GetComponent<MonsterBullet>();
             bullet.Pool.Release(bullet.gameObject);
         }
     }
@@ -40,7 +40,7 @@ public class MonsterPool : MonoBehaviour
     private GameObject CreatePooledItem()
     {
         GameObject poolGo = Instantiate(monsterBullet);
-        poolGo.GetComponent<Bullet>().Pool = this.Pool;
+        poolGo.GetComponent<MonsterBullet>().Pool = this.Pool;
         return poolGo;
     }
 

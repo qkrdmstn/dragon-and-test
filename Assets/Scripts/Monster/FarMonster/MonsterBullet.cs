@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class MonsterBullet : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class MonsterBullet : MonoBehaviour
 
     #region Components
     private Rigidbody2D rigid;
+    public IObjectPool<GameObject> Pool { get; set; }
 
     #endregion
 
