@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
-public class Monster : MonoBehaviour
+public class MonsterBase : MonoBehaviour
 {
     #region Stats
     public int HP;
@@ -94,4 +94,7 @@ public class Monster : MonoBehaviour
         spawn.deathCount();
         temp.instance.killScore += 1;
     }
+
+    
+
 }

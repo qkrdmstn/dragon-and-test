@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8029816057679458804}
   - component: {fileID: 8029816057679458805}
   - component: {fileID: 773689965}
-  - component: {fileID: -4451933908903152547}
+  - component: {fileID: -4768012164003437300}
   m_Layer: 8
   m_Name: MonsterA
   m_TagString: Monster
@@ -109,7 +109,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!70 &8029816057679458804
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
   width: 0.5
   rayDist: 1
   tempDir: {x: 0, y: 0}
---- !u!114 &-4451933908903152547
+--- !u!114 &-4768012164003437300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,24 +172,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8029816057679458794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2586e940540a8cb4495dac65f0eded85, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bece85dc7c3300498a3df795ee1c8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 3
-  moveSpeed: 4
-  recognitionRange: 100
-  attackRange: 10
-  haltRange: 2
-  chase: {fileID: 0}
   playerMPGain: 20
   damage: 1
+  moveSpeed: 5
+  player: {fileID: 0}
+  playerScript: {fileID: 0}
+  eventManager: {fileID: 0}
+  spawn: {fileID: 0}
+  profile: {fileID: 0}
+  impulseSource: {fileID: 0}
   monsterShootTimer: 0
-  monsterShootDelay: 0.4
-  monsterReloadDelay: 1
+  monsterShootDelay: 0.7
+  monsterReloadDelay: 2
   isReloading: 0
   loadedBullet: 0
-  magazineSize: 6
-  player: {fileID: 0}
-  eventManager: {fileID: 0}
+  magazineSize: 3
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
-  tempSpeed: 0
+  attackRange: 5
+  haltRange: 2
+  chase: {fileID: 0}
+  distanceToPlayer: 0

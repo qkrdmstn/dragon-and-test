@@ -6,15 +6,11 @@ public class MonsterState
 {
     #region Components
     protected MonsterStateMachine stateMachine;
-    protected Monster monster;
     protected GameObject player;
     #endregion
-
-    protected float distanceToPlayer;
     
-    public MonsterState(Monster _monster, MonsterStateMachine _stateMachine, GameObject _player)
+    public MonsterState(MonsterStateMachine _stateMachine, GameObject _player)
     {
-        this.monster = _monster;
         this.stateMachine = _stateMachine;
         this.player = _player;
     }
@@ -26,7 +22,7 @@ public class MonsterState
 
     public virtual void Update()
     {
-        distanceToPlayer = Vector3.Distance(monster.transform.position, player.transform.position);
+        return;
     }
 
     public virtual void Exit()

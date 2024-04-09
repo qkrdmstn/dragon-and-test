@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class MonsterAttackState : MonsterState
 {
-    public MonsterAttackState(Monster _monster, MonsterStateMachine _stateMachine, GameObject _player) : base(_monster, _stateMachine, _player)
+    private MonsterFar monster;
+    public MonsterAttackState(MonsterStateMachine _stateMachine, GameObject _player, MonsterFar _monster) : base(_stateMachine, _player)
     {
+        monster = _monster;
     }
 
     public override void Enter()
@@ -25,12 +27,9 @@ public class MonsterAttackState : MonsterState
         //Attack
         monster.monsterShootTimer -= Time.deltaTime;
 
-        if(!monster.isReloading){
-            if (monster.loadedBullet > 0) monster.Shoot();
-            else if (monster.loadedBullet <= 0 ) monster.Reload();
-        }
+        if(!monster.isReloading) monster.Attack();
 
-        if (distanceToPlayer > monster.haltRange)
+        if (monster.distanceToPlayer > monster.haltRange)
             stateMachine.ChangeState(monster.chaseAttackState);
     }
 }

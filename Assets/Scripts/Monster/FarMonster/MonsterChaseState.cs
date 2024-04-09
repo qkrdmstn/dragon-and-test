@@ -5,8 +5,10 @@ using UnityEngine;
 public class MonsterChaseState : MonsterState
 {
     private Vector2 direction;
-    public MonsterChaseState(Monster _monster, MonsterStateMachine _stateMachine, GameObject _player) : base(_monster, _stateMachine, _player)
+    private MonsterFar monster;
+    public MonsterChaseState(MonsterStateMachine _stateMachine, GameObject _player, MonsterFar _monster) : base(_stateMachine, _player)
     {
+        monster = _monster;
     }
 
     public override void Enter()
@@ -24,9 +26,9 @@ public class MonsterChaseState : MonsterState
         base.Update();
 
         direction = monster.chase.tempDir;
-        monster.transform.Translate(direction * monster.tempSpeed * Time.deltaTime);
+        monster.transform.Translate(direction * monster.moveSpeed * Time.deltaTime);
         
-        if (distanceToPlayer < monster.attackRange)
+        if (monster.distanceToPlayer < monster.attackRange)
             stateMachine.ChangeState(monster.chaseAttackState);
     }
 }

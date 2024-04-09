@@ -109,7 +109,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!70 &8029816057679458804
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -172,27 +172,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 8029816057679458794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc32a858405a1e7488292c7d2fb37995, type: 3}
+  m_Script: {fileID: 11500000, guid: 00a0155ac6db4f041b82df4178704100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 4
-  moveSpeed: 7
-  recognitionRange: 100
-  attackRange: 2
-  chase: {fileID: 0}
-  playerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  HP: 5
+  playerMPGain: 20
   damage: 1
-  inAttack: 0
-  cooldown: 2
-  tempcool: 0
-  collider2Ds: []
-  boxSize: {x: 2, y: 2}
-  armLength: 1
+  moveSpeed: 10
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
+  profile: {fileID: 0}
+  impulseSource: {fileID: 0}
+  inAttack: 0
+  cooldown: 3
+  tempcool: 0
+  collider2Ds: []
+  boxSize: {x: 0, y: 0}
+  armLength: 1
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  attackRange: 1
+  chase: {fileID: 0}
   tempSpeed: 0
-  playerMPGain: 10
+  distanceToPlayer: 0

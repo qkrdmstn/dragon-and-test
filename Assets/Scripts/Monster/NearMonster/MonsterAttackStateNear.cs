@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterAttackStateNear : MonsterStateNear
+public class MonsterAttackStateNear : MonsterState
 {
-    public MonsterAttackStateNear(MonsterNear _monster, MonsterStateMachineNear _stateMachine, GameObject _player) : base(_monster, _stateMachine, _player)
+    private MonsterNear monster;
+    public MonsterAttackStateNear(MonsterStateMachine _stateMachine, GameObject _player, MonsterNear _monster) : base(_stateMachine, _player)
     {
+        monster = _monster;
     }
 
     public override void Enter()
@@ -26,7 +28,7 @@ public class MonsterAttackStateNear : MonsterStateNear
         monster.tempcool -= Time.deltaTime;
         if (monster.tempcool<=0.0) 
         {
-            if (distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
+            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
             else
             {
                 monster.tempcool = monster.cooldown;
