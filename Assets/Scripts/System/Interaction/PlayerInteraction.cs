@@ -70,7 +70,7 @@ public class PlayerInteraction : MonoBehaviour
 
             for (int i = 1; i < inRangeInteraction.Length; i++)
             {
-                Debug.Log(inRangeInteraction[i].gameObject.name);
+                //Debug.Log(inRangeInteraction[i].gameObject.name);
 
                 float tmp = minDistance;
                 minDistance = Mathf.Min(minDistance, Vector2.Distance(player.transform.position, inRangeInteraction[i].transform.position));
@@ -81,6 +81,8 @@ public class PlayerInteraction : MonoBehaviour
             }
 
             interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
+            Debug.Log(inRangeInteraction[curIdxInteraction].gameObject.name);
+
             inRangeInteraction[curIdxInteraction].gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
 
             for (int i = 0; i < inRangeInteraction.Length; i++)

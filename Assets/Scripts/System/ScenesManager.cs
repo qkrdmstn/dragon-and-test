@@ -47,14 +47,8 @@ public class ScenesManager : MonoBehaviour
     public void ChangeScene(SceneInfo _sceneInfo)
     {
         GunManager.instance.SaveGunData();
-
-        StartCoroutine(LoadSceneCoroutine(_sceneInfo));
-
-    }
-    IEnumerator LoadSceneCoroutine(SceneInfo _sceneInfo)
-    {
-        yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(((int)_sceneInfo));
+
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.

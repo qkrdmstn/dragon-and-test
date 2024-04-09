@@ -41,13 +41,13 @@ public class GunManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
-
-        gunDataList = new List<GunData>();
-        gunDictionary = new Dictionary<GunData, GameObject>();
     }
 
     private void Start()
     {
+        gunDataList = new List<GunData>();
+        gunDictionary = new Dictionary<GunData, GameObject>();
+
         if (SceneManager.GetActiveScene().name != "Start")
             Initialize();
     }
@@ -137,20 +137,15 @@ public class GunManager : MonoBehaviour
     {
         UpdateGunData();
         gunDictionary.Clear();
-        Debug.Log("end");
     }
 
     private void UpdateGunData()
     {
         for (int i = 0; i < gunDataList.Count; i++)
         {
-            if(gunDictionary.ContainsKey(gunDataList[i]))
-            {
-                GameObject _gunObj = gunDictionary[gunDataList[i]];
-                Gun _gun = _gunObj.GetComponent<Gun>();
-                gunDataList[i].gunDataUpdate(_gun);
-                Debug.Log("asd");
-            }
+            GameObject _gunObj = gunDictionary[gunDataList[i]];
+            Gun _gun = _gunObj.GetComponent<Gun>();
+            gunDataList[i].gunDataUpdate(_gun);
         }
     }
 
