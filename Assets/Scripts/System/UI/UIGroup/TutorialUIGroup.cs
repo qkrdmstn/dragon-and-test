@@ -8,18 +8,18 @@ public class TutorialUIGroup : UIGroup
     public bool isWASD, isAttack, isDash, isSkill, isReload; // UI가 뜨고 플레이어가 해당 UI에 대한 key를 누르면 활성화
     public Vector3 padding;
     Animator anim;
-    Player player;
+    //Player player;
 
     private void OnEnable()
     {
         padding = new Vector3(0, 175f, 0);
         anim = GetComponent<Animator>();
-        player = FindObjectOfType<Player>();
+        //player = FindObjectOfType<Player>();
     }
 
     private void Update()
     {
-        transform.position = Camera.main.WorldToScreenPoint(player.transform.position) + padding;
+        transform.position = Camera.main.WorldToScreenPoint(UIManager.instance.player.transform.position) + padding;
 
         if (!isWASD && UIManager.instance.fade.fadePanel.color.a < 0.1) anim.SetBool("isWASD", true);
         else if (isSkill) { anim.SetBool("isReload", true); }
@@ -61,7 +61,7 @@ public class TutorialUIGroup : UIGroup
             Debug.Log("isAttack");
         }
 
-        else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1))
+        else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1) && UIManager.instance.player.IsDash())
         {
             isDash = true;
             Debug.Log("isDash");

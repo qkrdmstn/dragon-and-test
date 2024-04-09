@@ -168,4 +168,12 @@ public class Player : MonoBehaviour
         SetVelocity(0, 0);
         stateMachine.ChangeState(idleState);
     }
+
+    public bool IsDash()
+    {
+        if (stateMachine.currentState == dashState)
+            return true;
+        return false;
+
+    }
 }
