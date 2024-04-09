@@ -8,7 +8,7 @@ public class Fade : MonoBehaviour
 {
     [SerializeField] float fadeTime;
     float start, end, time;
-    Image fadePanel;
+    public Image fadePanel;
 
     void Start()
     {
@@ -19,13 +19,14 @@ public class Fade : MonoBehaviour
         fadeTime = 2f;
     }
 
-    public void ManageFade(int _sceneNum) {
+    public void ManageFade(int _sceneNum)
+    {
         SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
 
         if (((int)_sceneInfo) == 1)
         {
             TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
-            for(int i=0; i<texts.Length; i++)
+            for (int i = 0; i < texts.Length; i++)
             {
                 StartCoroutine(TextFadeCoroutine(texts[i]));
             }
@@ -52,9 +53,9 @@ public class Fade : MonoBehaviour
             ScenesManager.instance.ChangeScene(_sceneInfo);
             yield return new WaitForSeconds(.5f);
         }
-        
+
         time = 0f;
-        while(fadeColor.a > 0f)
+        while (fadeColor.a > 0f)
         {
             time += Time.deltaTime / fadeTime;
 
@@ -68,7 +69,7 @@ public class Fade : MonoBehaviour
     IEnumerator TextFadeCoroutine(TextMeshProUGUI text)
     {   // Text
         //Color fadeColor = text.color;
-        
+
         time = 0f;
         while (text.alpha < 1f)
         {
