@@ -1336,10 +1336,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 9164923190227248136, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-      propertyPath: cameraManager
-      value: 
-      objectReference: {fileID: 1852969277}
     - target: {fileID: 9164923190227248141, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
       propertyPath: m_Name
       value: Player
@@ -6995,8 +6991,9 @@ MonoBehaviour:
   isWASD: 0
   isAttack: 0
   isDash: 0
+  isSkill: 0
   isReload: 0
-  imgs: []
+  padding: {x: 0, y: 0, z: 0}
 --- !u!1 &1192124034
 GameObject:
   m_ObjectHideFlags: 0
@@ -8945,6 +8942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeTime: 0
+  fadePanel: {fileID: 0}
 --- !u!114 &1551512297
 MonoBehaviour:
   m_ObjectHideFlags: 0
