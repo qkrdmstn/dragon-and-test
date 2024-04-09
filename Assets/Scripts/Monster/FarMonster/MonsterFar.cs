@@ -23,6 +23,7 @@ public class MonsterFar : MonsterBase
     #endregion
 
     public Chase chase;
+    public MonsterPool monsterPool;
     public float distanceToPlayer;
    
     public override void Awake()
@@ -39,6 +40,7 @@ public class MonsterFar : MonsterBase
         stateMachine.Initialize(chaseState); //state initialize
 
         chase = GetComponent<Chase>(); //get component of this code
+        monsterPool = GetComponent<MonsterPool>();
     }
 
     public override void Update()

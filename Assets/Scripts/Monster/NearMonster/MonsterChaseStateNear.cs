@@ -26,7 +26,7 @@ public class MonsterChaseStateNear : MonsterState
         base.Update();
 
         direction = monster.chase.tempDir;
-        if(monster.distanceToPlayer>1f) monster.transform.Translate(direction * monster.tempSpeed * Time.deltaTime);
+        if(monster.distanceToPlayer>1f) monster.rigidBody.velocity = direction * monster.tempSpeed;
         
         if (monster.distanceToPlayer < monster.attackRange && monster.tempcool<=0.0)
             stateMachine.ChangeState(monster.attackState);

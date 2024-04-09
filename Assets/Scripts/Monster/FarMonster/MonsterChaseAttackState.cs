@@ -27,7 +27,7 @@ public class MonsterChaseAttackState : MonsterState
 
         //Chase
         direction = monster.chase.tempDir;
-        monster.transform.Translate(direction * monster.moveSpeed * Time.deltaTime);
+        monster.rigidBody.velocity = direction * monster.moveSpeed;
 
         //Attack
         monster.monsterShootTimer -= Time.deltaTime;
