@@ -32,16 +32,23 @@ public class DialogueInteraction : Interaction
 {
     public int curIdx;
     public bool isFirst = true;
-    public bool isSelecting = false;
-    public List<TextMeshProUGUI> txt = new List<TextMeshProUGUI>();
-    //TextMeshProUGUI npcName, dialogTxt;
-    GameObject[] dialogueChild;
+    public bool isSelectFirst = true;
+
+    TextMeshProUGUI[] contentTxt;
+    public TextMeshProUGUI dialogueTxt;
+    public TextMeshProUGUI[] selectionTxt;
+
+    bool keyInput;
+    int result; // 선택된 답변의 배열 Idx
+    int count;  //현재 선택가능한 답변 갯수
 
     DialogueDB dialogues;
-    List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조첸
+    List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조체
+    List<bool> selections = new List<bool>();
 
     public override void LoadEvent(string eventName)
     {
+        UIManager.instance.SceneUI["Dialogue"].SetActive(true);
         Init();
         
         for(int i=0; i<dialogues.DialogueEntity.Count; i++)
@@ -58,6 +65,7 @@ public class DialogueInteraction : Interaction
                         dialogues.DialogueEntity[i].selectType
                     )
                 );
+                selections.Add(false);
             }
         }
 
@@ -66,6 +74,7 @@ public class DialogueInteraction : Interaction
             SetUPUI();
         }
         SetNextDialog();
+        SetActiveDialogUI(true);    // 첫 대화 세팅
 
         StartCoroutine(ManageEvent());
     }
@@ -73,64 +82,89 @@ public class DialogueInteraction : Interaction
     IEnumerator ManageEvent()
     {
         yield return new WaitUntil(() => UpdateDialogue());
+
+        UIManager.instance.SceneUI["Dialogue"].SetActive(false);
     }
 
     void SetUPUI() {
-        SetActiveDialogUI(true);
+        // 선택지가 2개라는 상황 종속
+        contentTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
 
-        dialogueChild = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>().childUI;
-        //TextMeshProUGUI[] txtUI = UIManager.instance.SceneUI["Dialogue"].GetComponentsInChildren<TextMeshProUGUI>();
+        dialogueTxt = contentTxt[0];
+        selectionTxt[0] = contentTxt[1];
+        selectionTxt[1] = contentTxt[2];
 
-        foreach(GameObject ele in dialogueChild)
-        {
-            TextMeshProUGUI[] tmp = ele.GetComponentsInChildren<TextMeshProUGUI>();
-            if (tmp != null) {
-                if (tmp.Length == 1) txt.Add(tmp[0]);
-                else {
-                    foreach(TextMeshProUGUI i in tmp) {
-                        txt.Add(i);     // 선택 텍스트 저장
-                    }
-                }
-            }
-        }
+        result = 0;
+        count = 1; // 0과 1 (max idx 입력)
     }
 
     bool UpdateDialogue()
     {   // manage Dialogue event
-        //if (isSelecting && Input.GetMouseButtonDown(0))
-        //{
-        //    SetNextSelect();
-
-        //    if (Input.GetKeyDown(KeyCode.W))
-        //    {
-        //        txt[2].color = Color.red;
-        //        txt[3].color = Color.cyan;
-        //        // 선택에 따른 처리
-
-        //        isSelecting = false;
-        //        SetActiveSelectUI(isSelecting);
-        //    }
-        //    else if (Input.GetKeyDown(KeyCode.S))
-        //    {
-        //        txt[2].color = Color.cyan;
-        //        txt[3].color = Color.red;
-
-        //        isSelecting = false;
-        //        SetActiveSelectUI(isSelecting);
-        //    }
-        //}
-        if (Input.GetMouseButtonDown(0))
+        if (isDone)
         {
-            if (dialogDatas.Count > curIdx + 1)
-            {   // 다음으로 출력할 대화가 존재하는 경우,
-                SetNextDialog();
-            }
-            else
+            SetActiveDialogUI(false);
+        }
+        if (keyInput)
+        {   // 선택 대화 출력
+            SetNextSelection();
+            if (isSelectFirst)
             {
+                SetActiveSelectUI(true);
                 SetActiveDialogUI(false);
-                isDone = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                Debug.Log("w");
+                if (result > 0)
+                {
+                    result--;
+                }
+                //else result = count;
+
+                Selection();
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                Debug.Log("s");
+
+                if (result < count)
+                {
+                    result++;
+                }
+                //else result = 0;
+                Selection();
+            }
+            else if (Input.GetKeyDown(KeyCode.Return))
+            {   // 특정 경우를 선택한 경우
+                Debug.Log("enter");
+                keyInput = false;
+                isSelectFirst = true;
+                selections[curIdx] = true;
+
+                SetActiveSelectUI(false);
+
+                // 분기를 끝내고 다음 대화 연결
+                SetActiveDialogUI(true);
+                SetNextDialog();
+                // TODO ------------------> 해당  선택 결과에 따른 대화 변경 혹은 퀘스트 시스템에 정보 연결 필요
+
             }
         }
+        else
+        {   //  일반 대화 출력
+            if (Input.GetMouseButtonDown(0))
+            {   // 현재 대화에 대한 선택여부가 있고 아직 선택하지 않았으면,
+                if (!selections[curIdx] && dialogDatas[curIdx]._isSelect) keyInput = true;
+
+                else
+                {
+                    SetNextDialog();
+                }
+            }
+        }
+        
         return isDone;
     }
 
@@ -141,47 +175,70 @@ public class DialogueInteraction : Interaction
         }
         else {
             // ToDo Func : Cam zoom-out
-        }       
+        }
 
-        UIManager.instance.SceneUI["Dialogue"].SetActive(visible);
+        dialogueTxt.gameObject.SetActive(visible);
     }
 
     void SetActiveSelectUI(bool visible)
     {   // manage select UI
         if (visible)
         {   // 선택의 경우 
-            dialogueChild[2].SetActive(false);
-            dialogueChild[3].SetActive(true);
+
         }
         else
         {   // 선택이 종료되어 다시 대화창이 나와야하는 경우
-            dialogueChild[3].SetActive(false);
-            dialogueChild[2].SetActive(true);
 
-            curIdx++;
         }
+
+        selectionTxt[0].gameObject.SetActive(visible);
+        selectionTxt[1].gameObject.SetActive(visible);
     }
 
     void SetNextDialog()
     {
-        curIdx++;
-
-        txt[0].text = dialogDatas[curIdx]._npcName;
-        txt[1].text = dialogDatas[curIdx]._dialogue;
+        if (dialogDatas.Count > curIdx + 1)
+        {
+            curIdx++;
+            dialogueTxt.text = dialogDatas[curIdx]._dialogue;
+        }
+        else isDone = true;
     }
 
-    void SetNextSelect()
+    void SetNextSelection()
     {
-        txt[2].text = dialogDatas[curIdx]._selectType[0];
-        txt[3].text = dialogDatas[curIdx]._selectType[1];
+        for(int i = 0; i < selectionTxt.Length; i++)
+        {
+            selectionTxt[i].text = dialogDatas[curIdx]._selectType[i];
+        }
+    }
+
+    void Selection()
+    {
+        Color color = selectionTxt[0].color;
+        color.a = 0.25f;
+
+        if(result == 0)
+        {   // 0번째 선택시 1번째는 반투명
+            selectionTxt[1].color = color;
+            color.a = 1f;
+            selectionTxt[0].color = color;
+        }
+        else
+        {   // 1번째 선택시 0번째는 반투명
+            selectionTxt[0].color = color;
+            color.a = 1f;
+            selectionTxt[1].color = color;
+        }
     }
 
     void Init()
     {
+        selectionTxt = new TextMeshProUGUI[2];
         isDone = false;
+        keyInput = false;
         curIdx = -1;
         dialogues = UIManager.instance.dialogueDB;
         dialogDatas.Clear();
-        txt.Clear();
     }
 }
