@@ -32,6 +32,7 @@ public class InventoryUIGroup : UIGroup
     private void OpenInventory()
     {
         Time.timeScale = 0.0f;
+        Debug.Log(UIManager.instance.player);
         UIManager.instance.player.isStateChangeable = false;
         UIManager.instance.player.isAttackable = false;
         childUI[0].SetActive(true);

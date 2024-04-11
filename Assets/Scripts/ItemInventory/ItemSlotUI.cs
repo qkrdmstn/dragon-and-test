@@ -7,6 +7,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemText;
+    [SerializeField] private InventoryInfoUI info;
 
     public InventoryItem item;
 
@@ -29,12 +30,18 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
         }
     }
 
+    //Show description when clicking on item slot
     public void OnPointerDown(PointerEventData evenData)
     {
         if(item.data != null)
         {
             Debug.Log("Item Name: " + item.data.itemName);
 
+            //Exception handling for click of dragonHwatu slot
+            if (item.data.itemType == ItemType.DragonHwatu)
+                return;
+
+            info.UpdateItemInfo(item.data);        
         }
     }
 }

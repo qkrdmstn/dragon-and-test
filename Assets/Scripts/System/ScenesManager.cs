@@ -55,6 +55,11 @@ public class ScenesManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneInfo _sceneInfo = (SceneInfo)scene.buildIndex;
+
+        //InventoryTest Scene Setting
+        if (scene.buildIndex == 9)
+            _sceneInfo = SceneInfo.Town_1;
+
         switch (_sceneInfo)
         {
             case SceneInfo.Start:
