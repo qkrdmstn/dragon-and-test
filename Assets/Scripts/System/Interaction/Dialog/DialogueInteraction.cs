@@ -34,12 +34,13 @@ public class DialogueInteraction : Interaction
     public bool isFirst = true;
     public bool isSelectFirst = true;
 
+    TextMeshProUGUI npcName;
     TextMeshProUGUI[] contentTxt;
     public TextMeshProUGUI dialogueTxt;
     public TextMeshProUGUI[] selectionTxt;
 
-    bool keyInput;
-    int result; // 선택된 답변의 배열 Idx
+    bool keyInput, isNegative;
+    public int result = -1; // 선택된 답변의 배열 Idx
     int count;  //현재 선택가능한 답변 갯수
 
     DialogueDB dialogues;
@@ -88,6 +89,7 @@ public class DialogueInteraction : Interaction
 
     void SetUPUI() {
         // 선택지가 2개라는 상황 종속
+        npcName = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>().childUI[1].GetComponent<TextMeshProUGUI>();
         contentTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
             .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
 
@@ -95,7 +97,9 @@ public class DialogueInteraction : Interaction
         selectionTxt[0] = contentTxt[1];
         selectionTxt[1] = contentTxt[2];
 
-        result = 0;
+        selectionTxt[0].color = Color.black;
+        selectionTxt[1].color = Color.black;
+
         count = 1; // 0과 1 (max idx 입력)
     }
 
@@ -117,26 +121,16 @@ public class DialogueInteraction : Interaction
             if (Input.GetKeyDown(KeyCode.W))
             {
                 Debug.Log("w");
-                if (result > 0)
-                {
-                    result--;
-                }
-                //else result = count;
-
+                result = 0;
                 Selection();
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
                 Debug.Log("s");
-
-                if (result < count)
-                {
-                    result++;
-                }
-                //else result = 0;
+                result = 1;
                 Selection();
             }
-            else if (Input.GetKeyDown(KeyCode.Return))
+            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
             {   // 특정 경우를 선택한 경우
                 Debug.Log("enter");
                 keyInput = false;
@@ -197,10 +191,20 @@ public class DialogueInteraction : Interaction
 
     void SetNextDialog()
     {
-        if (dialogDatas.Count > curIdx + 1)
+        if (isNegative) isDone = true;
+        else if (dialogDatas.Count > curIdx + 1)
         {
             curIdx++;
+            npcName.text = dialogDatas[curIdx]._npcName;
+
+            if (result == 0)
+            {   // [예] 선택에 따른 대화 지속 
+                curIdx++;
+            }
+            else if(result == 1)    isNegative = true; // [아니오] 선택에 따른 대화 종료
+
             dialogueTxt.text = dialogDatas[curIdx]._dialogue;
+            
         }
         else isDone = true;
     }
@@ -235,7 +239,14 @@ public class DialogueInteraction : Interaction
     void Init()
     {
         selectionTxt = new TextMeshProUGUI[2];
+        for(int i=0; i<selections.Count; i++)
+        {
+            selections[i] = false;
+        }
+
+        result = -1;
         isDone = false;
+        isNegative = false;
         keyInput = false;
         curIdx = -1;
         dialogues = UIManager.instance.dialogueDB;
