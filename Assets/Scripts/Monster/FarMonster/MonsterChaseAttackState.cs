@@ -27,7 +27,7 @@ public class MonsterChaseAttackState : MonsterState
 
         //Chase
         direction = monster.chase.tempDir;
-        monster.rigidBody.velocity = direction * monster.moveSpeed;
+        if(!monster.isKnockedBack) monster.rigidBody.velocity = direction * monster.moveSpeed;
 
         //Attack
         monster.monsterShootTimer -= Time.deltaTime;
