@@ -82,12 +82,15 @@ public class SoundManager : MonoBehaviour
     public void PlayBGM(int sceneNum)
     {   
         i = sceneNum;
-        if (!audioSourceBGM[i].isPlaying)
+        //Todo. 바꾸기
+        if (ScenesManager.instance.GetSceneNum() != 2 && !audioSourceBGM[i].isPlaying)
         {   // 재생중이지 않은 사운드에 대해서
             Debug.Log(bgmSound[i].name);
             playSoundName[audioSourceBGM.Length] = bgmSound[i].name;
             audioSourceBGM[i].clip = bgmSound[i].clip;
-            audioSourceBGM[i].PlayOneShot(bgmSound[i].clip, 0.1f);
+            //audioSourceBGM[i].PlayOneShot(bgmSound[i].clip, 0.1f);
+            audioSourceBGM[i].Play();
+            audioSourceBGM[i].volume = 0.1f;
             audioSourceBGM[i].loop = true;
             return;
         }   // 재생을 시켜주고 함수 종료
@@ -109,10 +112,10 @@ public class SoundManager : MonoBehaviour
             time = 0;
         }
 
-        if (i != -1 && audioSourceBGM[i].loop && !audioSourceBGM[i].isPlaying)
-        {   
-            PlayBGM(i);
-        }
+        //if (i != -1 && audioSourceBGM[i].loop && !audioSourceBGM[i].isPlaying)
+        //{   
+        //    PlayBGM(i);
+        //}
     }
     public void VolumeOutBGM()
     {
