@@ -179,14 +179,17 @@ MonoBehaviour:
   playerMPGain: 20
   damage: 1
   moveSpeed: 3
-  knockbackForce: 10
-  knockbackDuration: 0.2
+  knockbackForce: 5
+  knockbackDuration: 0.1
+  isKnockedBack: 0
+  knockbackTimer: 0
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
   profile: {fileID: 0}
   impulseSource: {fileID: 0}
+  temp: {fileID: 0}
   monsterShootTimer: 0
   monsterShootDelay: 0.7
   monsterReloadDelay: 2

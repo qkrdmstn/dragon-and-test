@@ -2,7 +2,6 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 public class ItemSlotUIBase : MonoBehaviour, IPointerDownHandler
 {

@@ -38,7 +38,10 @@ public class MonsterBase : MonoBehaviour
     [Header("CameraSetting")]
     public CamShakeProfile profile;
     public CinemachineImpulseSource impulseSource;
-   
+
+    public temp temp;
+
+
     public virtual void Awake()
     {
         stateMachine = new MonsterStateMachine();
@@ -48,6 +51,7 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void Start()
     {
+        temp = GameObject.FindObjectOfType<temp>();
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -120,6 +124,7 @@ public class MonsterBase : MonoBehaviour
         playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);
         spawn.deathCount();
-        temp.instance.killScore += 1;
+        temp.killScore += 1;
+        //temp.instance.killScore += 1;
     }
 }

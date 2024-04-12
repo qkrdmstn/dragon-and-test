@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 //using UnityEngine.UIElements;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class InventoryData : MonoBehaviour
 {
@@ -153,6 +151,11 @@ public class InventoryData : MonoBehaviour
     public void CloseUseUI()
     {
         itemUseUI.SetActive(false);
+
+        for (int i = 0; i < 2; i++)
+        {
+            itemUseBtns[i].onClick.RemoveAllListeners();
+        }
     }
 
     public void UseItemEffect(MaterialItemData materialItemData)
