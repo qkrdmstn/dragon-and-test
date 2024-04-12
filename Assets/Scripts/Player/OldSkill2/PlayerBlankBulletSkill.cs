@@ -10,7 +10,7 @@ public class PlayerBlankBulletSkill : MonoBehaviour
     [Space(10f)]
     public float impactRadius;
     public float impactForce;
-    public int impactLayerMask;
+    private int impactLayerMask;
 
     #region Components
     private Player player;
@@ -51,11 +51,11 @@ public class PlayerBlankBulletSkill : MonoBehaviour
             }
             else if(target.CompareTag("Monster"))
             {
-                Rigidbody2D targetRigid = inRangeTarget[i].GetComponent<Rigidbody2D>();
-                //Vector2 impactDir = target.transform.position - this.transform.position;
-                //impactDir.Normalize();
-                //targetRigid.AddForce(impactForce * impactDir);
+                MonsterBase monster = target.GetComponent<MonsterBase>();
+                Vector2 impactDir = target.transform.position - this.transform.position;
+                impactDir.Normalize();
 
+                monster.Knockback(impactDir, impactForce);
                 //Todo. Add knockback to monster state and call
             }
         }

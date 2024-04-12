@@ -80,22 +80,25 @@ public class MonsterBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         {
             OnDamaged(1);
-            Knockback();
+
+
+            Vector2 dir = this.transform.position - player.transform.position;
+            dir.Normalize();
+            Knockback(dir, knockbackForce);
         }
     }
 
     //넉백
-    public void Knockback()
+    public void Knockback(Vector2 dir, float force)
     {
         if (!isKnockedBack)
-            {
-                isKnockedBack = true;
-                knockbackTimer = knockbackDuration;
+        {
+            isKnockedBack = true;
+            knockbackTimer = knockbackDuration;
 
-                Bullet bullet = collision.gameObject.GetComponent<Bullet>();
-                rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
-                rigidBody.AddForce(bullet.dir * knockbackForce, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
-            }
+            rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
+            rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
+        }
     }
 
     //데미지 처리
@@ -119,7 +122,4 @@ public class MonsterBase : MonoBehaviour
         spawn.deathCount();
         temp.instance.killScore += 1;
     }
-
-    
-
 }
