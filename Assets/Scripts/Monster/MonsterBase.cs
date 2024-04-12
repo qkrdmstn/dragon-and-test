@@ -13,6 +13,10 @@ public class MonsterBase : MonoBehaviour
 
     #region Move
     public float moveSpeed;
+    public float knockbackForce; // 넉백 힘
+    public float knockbackDuration; // 넉백 지속 시간
+    public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
+    public float knockbackTimer; // 넉백 지속 시간을 계산하는 타이머
     #endregion
 
     #region Componets
@@ -56,6 +60,12 @@ public class MonsterBase : MonoBehaviour
     public virtual void Update()
     {
         stateMachine.currentState.Update();
+
+        if (isKnockedBack)
+        {
+            knockbackTimer -= Time.deltaTime;
+            if (knockbackTimer <= 0) isKnockedBack = false;
+        }
     }
 
     //공격
@@ -65,19 +75,31 @@ public class MonsterBase : MonoBehaviour
     }
 
     //피격
-    public void Hit(Collider2D collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
             OnDamaged(1);
+            if (!isKnockedBack)
+            {
+                isKnockedBack = true;
+                knockbackTimer = knockbackDuration;
+
+                Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+                rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
+                rigidBody.AddForce(bullet.dir * knockbackForce, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
+            }
         }
     }
+
+    //넉백
+
 
     //데미지 처리
     public void OnDamaged(int damage)
     {
-        // 피격에 따른 카메라 진동
-        //CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
+        //피격에 따른 카메라 진동
+        //  CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
 
         HP -= damage;
         if (HP <= 0)
@@ -87,7 +109,7 @@ public class MonsterBase : MonoBehaviour
     }
 
     //죽음
-    private void Dead()
+    public void Dead()
     {
         playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);

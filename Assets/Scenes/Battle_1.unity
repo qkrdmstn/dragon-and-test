@@ -1337,8 +1337,9 @@ MonoBehaviour:
   isWASD: 0
   isAttack: 0
   isDash: 0
+  isSkill: 0
   isReload: 0
-  imgs: []
+  padding: {x: 0, y: 0, z: 0}
 --- !u!1 &362413636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,7 +1712,7 @@ MonoBehaviour:
   player: {fileID: 2969474142249179003}
   spawnRadius: 20
   wave: 3
-  quantity: 9
+  quantity: 5
   prefabs: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
   positionDisplay: []
   positions: []
@@ -7981,6 +7982,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeTime: 0
+  fadePanel: {fileID: 0}
 --- !u!114 &1449552438
 MonoBehaviour:
   m_ObjectHideFlags: 0
