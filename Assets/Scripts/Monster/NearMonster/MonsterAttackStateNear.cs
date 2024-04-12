@@ -13,6 +13,7 @@ public class MonsterAttackStateNear : MonsterState
     public override void Enter()
     {
         base.Enter();
+        monster.rigidBody.velocity = Vector2.zero;
     }
 
     public override void Exit()
