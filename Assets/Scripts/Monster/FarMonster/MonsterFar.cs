@@ -53,7 +53,6 @@ public class MonsterFar : MonsterBase
     {
         Shoot();
     }
-
     
     public void Shoot()
     {

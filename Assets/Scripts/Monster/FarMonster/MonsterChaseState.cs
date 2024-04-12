@@ -26,7 +26,7 @@ public class MonsterChaseState : MonsterState
         base.Update();
 
         direction = monster.chase.tempDir;
-        monster.rigidBody.velocity = direction * monster.moveSpeed;
+        if(!monster.isKnockedBack) monster.rigidBody.velocity = direction * monster.moveSpeed;
         
         if (monster.distanceToPlayer < monster.attackRange)
             stateMachine.ChangeState(monster.chaseAttackState);

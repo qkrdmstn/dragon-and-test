@@ -178,7 +178,9 @@ MonoBehaviour:
   HP: 3
   playerMPGain: 20
   damage: 1
-  moveSpeed: 5
+  moveSpeed: 3
+  knockbackForce: 10
+  knockbackDuration: 0.2
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
@@ -195,4 +197,5 @@ MonoBehaviour:
   attackRange: 5
   haltRange: 2
   chase: {fileID: 0}
+  monsterPool: {fileID: 0}
   distanceToPlayer: 0

@@ -11,25 +11,32 @@ public class Spawner : MonoBehaviour
     public float spawnRadius = 5f;
     public int wave = 3;
     public int quantity = 10;
+    public int maxIteration = 50;
     private int waveLeft = 0;
     private int monsterLeft = 0;
     private GameObject[] spawnList;
     public GameObject prefabs;
-
+    public GameObject possibleArea;
+    public Collider2D areaCollider;
     public GameObject []positionDisplay;
     public Vector3[] positions;
+
     void Start()
     {
+        areaCollider = possibleArea.GetComponent<Collider2D>();
         waveLeft = wave;
         List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC};
+        /*
         spawnList = new GameObject[] { monsterList[2], monsterList[2],
                                         monsterList[1], monsterList[1], monsterList[1],
                                         monsterList[0],monsterList[0],monsterList[0],monsterList[0],monsterList[0]};
-        //for (int i=0;i<quantity;i++)
-        //{
-        //    if (i<monsterList.Count) spawnList[i] = monsterList[i];
-        //    else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
-        //}
+        */
+        spawnList = new GameObject[quantity];
+        for (int i=0;i<quantity;i++)
+        {
+            if (i<monsterList.Count) spawnList[i] = monsterList[i];
+            else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
+        }
         newWave();
     }
 
@@ -45,13 +52,21 @@ public class Spawner : MonoBehaviour
     void newWave()
     {
         positionDisplay = new GameObject[quantity];
-        positions = new Vector3[quantity]; 
-        for(int i=0; i<quantity; i++)
+        positions = new Vector3[quantity];
+        int spawnQuantity = 0;
+        for(int i=0; i<maxIteration; i++)
         {
             Vector3 spawnPosition = Random.insideUnitCircle * spawnRadius;
             spawnPosition += player.transform.position;
-            positions[i] = spawnPosition;
-            positionDisplay[i] = Instantiate(prefabs, spawnPosition, Quaternion.identity);
+            if(areaCollider.OverlapPoint(spawnPosition))
+            {
+                positions[spawnQuantity] = spawnPosition;
+                positionDisplay[spawnQuantity] = Instantiate(prefabs, spawnPosition, Quaternion.identity);
+                spawnQuantity += 1;
+            }
+            if (spawnQuantity >= quantity) break;
+
+            if (i==maxIteration-1) Debug.Log("Warning: space for monster spawn is too small. Monsters may not all spawn. Change maxIteration or spawnRadius");
         }
 
         Invoke("SpawnMonster", 2.0f);

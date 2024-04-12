@@ -53,7 +53,7 @@ public class MonsterNear : MonsterBase
         inAttack = true;
         anim.SetTrigger("attacking");
     }
-
+    
     public void AttackPoint()
     {
         GetComponent<Collider2D>().enabled = true;
