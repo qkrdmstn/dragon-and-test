@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
+using UnityEngine.UI;
 using static UnityEditor.Progress;
 
 public class InventoryData : MonoBehaviour
 {
     public static InventoryData instance;
 
-    public List<InventoryItem> inventoryItems;
-    public Dictionary<ItemData, InventoryItem> inventoryDictionary;
+    public List<InventoryItem> materialItems;
+    public Dictionary<ItemData, InventoryItem> materialDictionary;
 
     public List<InventoryItem> gunItems;
     public Dictionary<ItemData, InventoryItem> gunDictionary;
@@ -23,10 +24,14 @@ public class InventoryData : MonoBehaviour
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform gunSlotParent;
     [SerializeField] private Transform amorSlotParent;
-    private ItemSlotUI[] inventoryItemSlot;
+    private ItemSlotUI[] materialItemSlot;
     private ItemSlotUI[] gunItemSlot;
     private ItemSlotUI amorItemSlot;
 
+    [Header("ItemUse UI")]
+    [SerializeField] private GameObject itemUseUI;
+    private Button[] itemUseBtns;
+    
     private void Awake()
     {
         if (instance == null)
@@ -43,15 +48,22 @@ public class InventoryData : MonoBehaviour
 
     private void Start()
     {
-        inventoryItems = new List<InventoryItem>();
-        inventoryDictionary = new Dictionary<ItemData, InventoryItem>();
+        //Inventory UI Initialize
+        materialItems = new List<InventoryItem>();
+        materialDictionary = new Dictionary<ItemData, InventoryItem>();
 
         gunItems = new List<InventoryItem>();
         gunDictionary = new Dictionary<ItemData, InventoryItem>();
 
-        inventoryItemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
+        materialItemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
         gunItemSlot = gunSlotParent.GetComponentsInChildren<ItemSlotUI>();
         amorItemSlot = amorSlotParent.GetComponentInChildren<ItemSlotUI>();
+
+        //ItemUse UI Initialize
+        itemUseBtns = itemUseUI.GetComponentsInChildren<Button>();
+
+        for (int i = 0; i < itemUseBtns.Length; i++)
+            Debug.Log(itemUseBtns[i].name);
     }
 
     public void AddGunItem(ItemData _gunItem)
@@ -75,9 +87,14 @@ public class InventoryData : MonoBehaviour
 
     private void UpdateSlotUI()
     {
-        for(int i=0; i<inventoryItems.Count; i++)
+        for(int i=0; i< materialItemSlot.Length; i++)
         {
-            inventoryItemSlot[i].UpdateSlot(inventoryItems[i]);
+            materialItemSlot[i].ClearSlot();
+        }
+
+        for(int i=0; i<materialItems.Count; i++)
+        {
+            materialItemSlot[i].UpdateSlot(materialItems[i]);
         }
 
         for(int i=0; i<gunItems.Count; i++)
@@ -92,15 +109,15 @@ public class InventoryData : MonoBehaviour
     public void AddItem(ItemData _item)
     {
         //이미 인벤토리에 존재할 경우, Stack 크기만 증가
-        if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
+        if (materialDictionary.TryGetValue(_item, out InventoryItem value))
         {
             value.AddStack();
         }
         else
         {
             InventoryItem newItem = new InventoryItem(_item);
-            inventoryItems.Add(newItem);
-            inventoryDictionary.Add(_item, newItem);
+            materialItems.Add(newItem);
+            materialDictionary.Add(_item, newItem);
         }
 
         UpdateSlotUI();
@@ -108,16 +125,39 @@ public class InventoryData : MonoBehaviour
     
     public void RemoveItem(ItemData _item)
     {
-        if (inventoryDictionary.TryGetValue(_item, out InventoryItem value))
+        if (materialDictionary.TryGetValue(_item, out InventoryItem value))
         {
             if(value.stackSize <= 1)
             {
-                inventoryItems.Remove(value);
-                inventoryDictionary.Remove(_item);
+                materialItems.Remove(value);
+                materialDictionary.Remove(_item);
             }
             else
                 value.RemoveStack();
         }
         UpdateSlotUI();
+    }
+
+    public void ShowUseUI(MaterialItemData materialItemData)
+    {
+        itemUseUI.SetActive(true);
+        //Yes
+        itemUseBtns[0].onClick.AddListener(() => UseItemEffect(materialItemData));
+        itemUseBtns[0].onClick.AddListener(() => RemoveItem(materialItemData));
+        itemUseBtns[0].onClick.AddListener(CloseUseUI);
+
+        //No
+        itemUseBtns[1].onClick.AddListener(CloseUseUI);
+    }
+
+    public void CloseUseUI()
+    {
+        itemUseUI.SetActive(false);
+    }
+
+    public void UseItemEffect(MaterialItemData materialItemData)
+    {
+
+        materialItemData.ItemEffect();
     }
 }
