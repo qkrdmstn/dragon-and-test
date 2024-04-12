@@ -80,7 +80,14 @@ public class MonsterBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         {
             OnDamaged(1);
-            if (!isKnockedBack)
+            Knockback();
+        }
+    }
+
+    //넉백
+    public void Knockback()
+    {
+        if (!isKnockedBack)
             {
                 isKnockedBack = true;
                 knockbackTimer = knockbackDuration;
@@ -89,11 +96,7 @@ public class MonsterBase : MonoBehaviour
                 rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
                 rigidBody.AddForce(bullet.dir * knockbackForce, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
             }
-        }
     }
-
-    //넉백
-
 
     //데미지 처리
     public void OnDamaged(int damage)

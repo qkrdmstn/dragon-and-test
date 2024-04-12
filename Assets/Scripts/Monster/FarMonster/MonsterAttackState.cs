@@ -27,7 +27,7 @@ public class MonsterAttackState : MonsterState
         //Attack
         monster.monsterShootTimer -= Time.deltaTime;
 
-        if(!monster.isReloading) monster.Attack();
+        if(!monster.isReloading && !monster.isKnockedBack) monster.Attack();
 
         if (monster.distanceToPlayer > monster.haltRange)
             stateMachine.ChangeState(monster.chaseAttackState);
