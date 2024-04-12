@@ -51,7 +51,6 @@ public class InventoryUIGroup : UIGroup
 
     public void ChangePage(int idx)
     {
-        Debug.Log(idx);
         for(int i=0; i< inventoryPages.Length; i++)
         {
             if (i == idx)
