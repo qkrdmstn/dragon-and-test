@@ -130,7 +130,7 @@ public class DialogueInteraction : Interaction
                 result = 1;
                 Selection();
             }
-            else if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+            else if (result > -1 && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)))
             {   // 특정 경우를 선택한 경우
                 Debug.Log("enter");
                 keyInput = false;

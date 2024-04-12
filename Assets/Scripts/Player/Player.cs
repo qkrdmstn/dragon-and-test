@@ -147,6 +147,7 @@ public class Player : MonoBehaviour
 
     private void PlayerDead()
     {
+        UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
         //DeadUI.SetActive(true);
     }
 
