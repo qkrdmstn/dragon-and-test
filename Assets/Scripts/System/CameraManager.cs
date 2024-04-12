@@ -26,6 +26,10 @@ public class CameraManager : MonoBehaviour
         globalShakeForce = 0.25f;
         //DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
+    private void Start()
+    {
+        SoundManager.instnace.PlayBGM(0);
+    }
 
     public void CameraShake(CinemachineImpulseSource impulseSource)
     {   // global type by object

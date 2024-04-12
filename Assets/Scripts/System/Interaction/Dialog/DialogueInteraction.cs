@@ -148,7 +148,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   //  일반 대화 출력
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
             {   // 현재 대화에 대한 선택여부가 있고 아직 선택하지 않았으면,
                 if (!selections[curIdx] && dialogDatas[curIdx]._isSelect) keyInput = true;
 

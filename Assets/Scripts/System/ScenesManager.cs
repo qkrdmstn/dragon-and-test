@@ -68,6 +68,7 @@ public class ScenesManager : MonoBehaviour
                 break;
 
             case SceneInfo.Tutorial:
+                SoundManager.instnace.VolumeOutBGM();
                 UIManager.instance.SceneUI["Start"].SetActive(false);
                 UIManager.instance.SceneUI["Tutorial"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -75,6 +76,7 @@ public class ScenesManager : MonoBehaviour
 
                 UIManager.instance.InitUIReference();
                 GunManager.instance.Initialize();
+                SoundManager.instnace.PlayBGM(1);
                 break;
 
             case SceneInfo.Town_1:
