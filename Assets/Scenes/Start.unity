@@ -139,6 +139,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3263377852896062395, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
   m_PrefabInstance: {fileID: 3263377852785078573}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &265182981 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+  m_PrefabInstance: {fileID: 3263377852785078573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &431070484
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -334,7 +339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryItems: []
+  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
@@ -342,6 +347,7 @@ MonoBehaviour:
   inventorySlotParent: {fileID: 903720763}
   gunSlotParent: {fileID: 1888811804}
   amorSlotParent: {fileID: 1313210856}
+  itemUseUI: {fileID: 265182981}
 --- !u!4 &1078310380
 Transform:
   m_ObjectHideFlags: 0

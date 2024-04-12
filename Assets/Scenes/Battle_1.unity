@@ -1713,7 +1713,10 @@ MonoBehaviour:
   spawnRadius: 20
   wave: 3
   quantity: 5
+  maxIteration: 50
   prefabs: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
+  possibleArea: {fileID: 1762422580}
+  areaCollider: {fileID: 1762422582}
   positionDisplay: []
   positions: []
 --- !u!114 &390228689
@@ -2160,7 +2163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryItems: []
+  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
@@ -2168,6 +2171,7 @@ MonoBehaviour:
   inventorySlotParent: {fileID: 762009069}
   gunSlotParent: {fileID: 1068963561}
   amorSlotParent: {fileID: 1656936077}
+  itemUseUI: {fileID: 0}
 --- !u!4 &421113303
 Transform:
   m_ObjectHideFlags: 0
@@ -6593,7 +6597,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1172444859}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.061274, y: -0.06287241, z: -10}
+  m_LocalPosition: {x: -10.061274, y: -0.06287289, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

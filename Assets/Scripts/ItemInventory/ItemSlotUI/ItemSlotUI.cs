@@ -42,7 +42,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
     //Show description when clicking on item slot
     public void OnPointerDown(PointerEventData evenData)
     {
-        if(item.data != null)
+        if(item != null && item.data != null)
         {
             Debug.Log("Item Name: " + item.data.itemName);
 
@@ -54,7 +54,8 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
             {
                 InventoryData.instance.ShowUseUI(item.data as MaterialItemData);
             }
-            info.UpdateItemInfo(item.data);        
+
+            info.UpdateItemInfo(item.data);
         }
     }
 }

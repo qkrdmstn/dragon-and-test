@@ -78,6 +78,7 @@ public class GunManager : MonoBehaviour
 
         LoadGun();
         InitActiveGun();
+
     }
 
     public void LoadGun()
@@ -144,7 +145,9 @@ public class GunManager : MonoBehaviour
         for (int i = 0; i < gunDataList.Count; i++)
         {
             GameObject _gunObj = gunDictionary[gunDataList[i]];
+            Debug.Log(_gunObj);
             Gun _gun = _gunObj.GetComponent<Gun>();
+            Debug.Log(_gun);
             gunDataList[i].gunDataUpdate(_gun);
         }
     }
