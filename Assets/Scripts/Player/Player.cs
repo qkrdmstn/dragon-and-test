@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     public bool isCombatZone = true;
     public bool isStateChangeable = true;
     public bool isInteraction = false;
+    public bool isDamaged = false;
 
     #region Componets
     public Animator anim { get; private set; }
@@ -125,23 +126,27 @@ public class Player : MonoBehaviour
 
     public void OnDamamged(int damage)
     {
-        // monster에게 맞았을때 쉐이킹 
-        cameraManager.CameraShakeFromProfile(profile, impulseSource);
-
-        curHP -= damage;
-       // Debug.Log("HP: " + HP);
-        if (curHP <= 0)
+        if(!isDamaged)
         {
-            Debug.Log("Player Dead");
-            PlayerDead();
-            Time.timeScale = 0.0f;
-        }
-        else
-        {
-            //Change Layer & Change Color
-            gameObject.layer = 7;
+            isDamaged = true;
+            // monster에게 맞았을때 쉐이킹 
+            cameraManager.CameraShakeFromProfile(profile, impulseSource);
 
-            StartCoroutine(DamagedProcess());
+            curHP -= damage;
+            // Debug.Log("HP: " + HP);
+            if (curHP <= 0)
+            {
+                Debug.Log("Player Dead");
+                PlayerDead();
+                Time.timeScale = 0.0f;
+            }
+            else
+            {
+                //Change Layer & Change Color
+                gameObject.layer = 7;
+
+                StartCoroutine(DamagedProcess());
+            }
         }
     }
 
@@ -162,6 +167,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
         gameObject.layer = 6;
+        isDamaged = false;
     }
 
     public void SetIdleStatePlayer()
