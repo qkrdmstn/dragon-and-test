@@ -16,6 +16,9 @@ public class ScenesManager : MonoBehaviour
     public static ScenesManager instance = null;
     private void Awake()
     {
+        string curSceneName = SceneManager.GetActiveScene().name;
+        SoundManager.instance.OnSceneLoaded(curSceneName);
+
         if (instance == null)
         { //생성 전이면
             instance = this; //생성
@@ -46,11 +49,13 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeScene(SceneInfo _sceneInfo)
     {
-        Debug.Log(_sceneInfo);
         if(_sceneInfo != SceneInfo.Tutorial)
             GunManager.instance.SaveGunData();
+
         SceneManager.LoadScene(((int)_sceneInfo));
 
+        string curSceneName = SceneManager.GetActiveScene().name;
+        SoundManager.instance.OnSceneLoaded(curSceneName);
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
@@ -68,7 +73,6 @@ public class ScenesManager : MonoBehaviour
                 break;
 
             case SceneInfo.Tutorial:
-                SoundManager.instnace.VolumeOutBGM();
                 UIManager.instance.SceneUI["Start"].SetActive(false);
                 UIManager.instance.SceneUI["Tutorial"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -76,7 +80,6 @@ public class ScenesManager : MonoBehaviour
 
                 UIManager.instance.InitUIReference();
                 GunManager.instance.Initialize();
-                SoundManager.instnace.PlayBGM(1);
                 break;
 
             case SceneInfo.Town_1:

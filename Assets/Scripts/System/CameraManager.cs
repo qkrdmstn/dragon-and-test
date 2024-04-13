@@ -28,8 +28,7 @@ public class CameraManager : MonoBehaviour
     }
     private void Start()
     {
-       // if(ScenesManager.instance.GetSceneNum() == 0)
-            SoundManager.instnace.PlayBGM(0);
+
     }
 
     public void CameraShake(CinemachineImpulseSource impulseSource)

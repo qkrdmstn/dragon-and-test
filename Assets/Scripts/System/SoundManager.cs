@@ -1,133 +1,128 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-[System.Serializable]
-public class Sound
-{
-    public string name;     // 곡의 이름
-    public AudioClip clip;  // 곡 파일
-}
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
-    #region Singleton
-    static public SoundManager instnace;
+    public static SoundManager instance = null;
+    public AudioSource[] audioSources; //0: BGM, 1: Effect
+    public AudioClip[] BGMClips;
+    public AudioClip[] effectClips;
+
+    public float _bgmVolume = 0.6f;
+    public float _effectVolume = 0.6f;
+    public float fadeDuration;
+    public float fadeTimer;
+
+    public bool isChange = false;
+    //Singleton
     void Awake()
     {
-        if (instnace == null)
-        {
-            instnace = this;
-            DontDestroyOnLoad(gameObject);
+        if (instance == null)
+        { //생성 전이면
+            instance = this; //생성
         }
-        else
-            Destroy(gameObject);
+        else if (instance != this)
+        { //이미 생성되어 있으면
+            Destroy(this.gameObject); //새로만든거 삭제
+        }
 
-        playSoundName = new string[audioSourceBGM.Length + 1];  // 내가v등록한 오디오파일의 수와 맞게 초기화
+        DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
-    #endregion Singleton
-    // 실제 재생되고있는 음악 목록
-    public AudioSource[] audioSourceEffects;
-    public AudioSource[] audioSourceBGM;
 
-    public string[] playSoundName;
-
-    // 재생되고자 하는 음악 목록
-    public Sound[] effectSounds;
-    public Sound[] bgmSound;
-
-    public void PlaySE(string _name, float volume)
+    public void OnSceneLoaded(string sceneName)
     {
-        for (int i = 0; i < effectSounds.Length; i++)
+        if (sceneName == "Town_1" || sceneName == "Battle_1")
         {
-            if (_name.Equals(effectSounds[i].name))
-            {   // 일단 틀고자하는 파일이 존재하는가
-                for (int j = 0; j < audioSourceEffects.Length; j++)
-                {
-                    if (!audioSourceEffects[j].isPlaying)
-                    {   // 재생중이지 않은 사운드에 대해서
-                        playSoundName[j] = effectSounds[i].name;
-                        audioSourceEffects[j].clip = effectSounds[i].clip;
-                        audioSourceEffects[j].volume = volume;
-                        audioSourceEffects[j].Play();
-                        return;
-                    }   // 재생을 시켜주고 함수 종료
-                }
-                return;
-            }
-        }
-        Debug.Log(_name + " 사운드가 SoundManager에 등록되지 않았습니다");
-    }
-
-    public void StopAllSound()
-    {
-        for (int i = 0; i < audioSourceEffects.Length; i++)
-        {
-            audioSourceEffects[i].Stop();
-        }
-    }
-
-    public void StopSE(string _name)
-    {
-        for (int i = 0; i < audioSourceEffects.Length; i++)
-        {
-            if (playSoundName[i].Equals(_name))
-            {
-                audioSourceEffects[i].Stop();
-                break;
-            }
-        }
-    }
-    int i = -1;
-    public void PlayBGM(int sceneNum)
-    {   
-        i = sceneNum;
-        //Todo. 바꾸기
-        if (ScenesManager.instance.GetSceneNum() != 2 && !audioSourceBGM[i].isPlaying)
-        {   // 재생중이지 않은 사운드에 대해서
-            Debug.Log(bgmSound[i].name);
-            playSoundName[audioSourceBGM.Length] = bgmSound[i].name;
-            audioSourceBGM[i].clip = bgmSound[i].clip;
-            //audioSourceBGM[i].PlayOneShot(bgmSound[i].clip, 0.1f);
-            audioSourceBGM[i].Play();
-            audioSourceBGM[i].volume = 0.1f;
-            audioSourceBGM[i].loop = true;
+            Debug.Log("asd");
             return;
-        }   // 재생을 시켜주고 함수 종료
 
-    }
-    public float animTime = 5.5f;         // Fade 애니메이션 재생 시간 (단위:초). 
-    private float time = 0f;            // Mathf.Lerp 메소드의 시간 값.
-    private bool isStop = false;
-
-    private void Update()
-    {
-        if (isStop && i != -1)
-        {
-            time += Time.deltaTime / animTime;
-            audioSourceBGM[i].volume = Mathf.Lerp(audioSourceBGM[i].volume, 0, time);
-        }
-        else if (time != 0)
-        {
-            time = 0;
         }
 
-        //if (i != -1 && audioSourceBGM[i].loop && !audioSourceBGM[i].isPlaying)
-        //{   
-        //    PlayBGM(i);
-        //}
-    }
-    public void VolumeOutBGM()
-    {
-        isStop = true;
-        StartCoroutine(StopBGM());
+        for (int i = 0; i < BGMClips.Length; i++)
+        {
+            if (sceneName == BGMClips[i].name)
+                StartCoroutine(FadeInOutSound(BGMClips[i]));
+        }
     }
 
-    IEnumerator StopBGM()
+
+    IEnumerator FadeInOutSound(AudioClip _clip)
     {
-        yield return new WaitForSeconds(animTime);
-        audioSourceBGM[i].Stop();
-        isStop = false;
+        yield return null;
+
+        if(audioSources[0].isPlaying)
+        {
+            fadeTimer = 0;
+            while (fadeTimer <= 1)
+            {
+                yield return null;
+                fadeTimer += Time.deltaTime / fadeDuration;
+                audioSources[0].volume = Mathf.Lerp(_bgmVolume, 0, fadeTimer);
+
+            }
+        }
+
+        isChange = false;
+        ChangeBGM(_clip);
+        yield return new WaitUntil(() => isChange);
+
+        fadeTimer = 0;
+        while (fadeTimer <= 1)
+        {
+            yield return null;
+            fadeTimer += Time.deltaTime / fadeDuration; ;
+            audioSources[0].volume = Mathf.Lerp(0, _bgmVolume, fadeTimer);
+
+        }
     }
 
+
+    public void ChangeBGM(AudioClip _clip)
+    {
+        audioSources[0].clip = _clip;
+        audioSources[0].loop = true;
+        audioSources[0].volume = 0;
+        audioSources[0].Play();
+        isChange = true;
+    }
+
+    public void SetEffectSound(string _clipName)
+    {
+        int index = 0;
+        switch (_clipName)
+        {
+            case "Click":
+                index = 0;
+                break;
+            case "Jump":
+                index = 1;
+                break;
+            case "Hit":
+                index = 2;
+                break;
+            case "ShootWire":
+                index = 3;
+                break;
+            case "WireJump":
+                index = 4;
+                break;
+            case "Lose":
+                index = 5;
+                break;
+            default:
+                Debug.LogWarning("OutOfRange in SoundClips");
+                return;
+        }
+        PlayEffectSound(effectClips[index]);
+    }
+
+    public void PlayEffectSound(AudioClip _clip)
+    {
+        audioSources[1].clip = _clip;
+        audioSources[1].loop = false;
+        audioSources[1].volume = _effectVolume;
+        audioSources[1].Play();
+    }
 }
