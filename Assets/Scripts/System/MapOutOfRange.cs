@@ -10,6 +10,10 @@ public class MapOutOfRange : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             UIManager.instance.fade.ManageFade(_sceneInfo);
+
+            if (_sceneInfo < 3)
+                SoundManager.instance.ManageSound(_sceneInfo);
+            else StartCoroutine(SoundManager.instance.FadeOutSound());
         }
     }
 }

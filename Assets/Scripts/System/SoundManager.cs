@@ -15,7 +15,6 @@ public class SoundManager : MonoBehaviour
     public float fadeDuration;
     public float fadeTimer;
 
-    public bool isChange = false;
     //Singleton
     void Awake()
     {
@@ -31,61 +30,66 @@ public class SoundManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    public void OnSceneLoaded(string sceneName)
+    // sceneNum과 BGMClips 배열의 순서동일
+    // sceneNum : BGM clip
+    // 0 : start
+    // 1 : tutorial
+    // 2 : town
+    // 3 : battle
+
+    public void ManageSound(int _sceneNum)
     {
-        if (sceneName == "Town_1" || sceneName == "Battle_1")
-        {
-            Debug.Log("asd");
-            return;
+        if(_sceneNum > 1) 
+            _sceneNum = 1;
 
-        }
-
-        for (int i = 0; i < BGMClips.Length; i++)
-        {
-            if (sceneName == BGMClips[i].name)
-                StartCoroutine(FadeInOutSound(BGMClips[i]));
-        }
+        StartCoroutine(FadeSound(BGMClips[_sceneNum]));
     }
 
 
-    IEnumerator FadeInOutSound(AudioClip _clip)
+    IEnumerator FadeSound(AudioClip _clip)
     {
-        yield return null;
+        yield return StartCoroutine(FadeOutSound());
 
-        if(audioSources[0].isPlaying)
-        {
+        yield return new WaitUntil(() => ChangeBGM(_clip));
+
+        StartCoroutine(FadeInSound());
+    }
+
+   public IEnumerator FadeOutSound()
+    {
+        if (audioSources[0].isPlaying)
+        {   // 음악이 서서히 작아집니다
             fadeTimer = 0;
             while (fadeTimer <= 1)
             {
-                yield return null;
                 fadeTimer += Time.deltaTime / fadeDuration;
                 audioSources[0].volume = Mathf.Lerp(_bgmVolume, 0, fadeTimer);
-
+                yield return null;
             }
+            audioSources[0].mute = true;
         }
-
-        isChange = false;
-        ChangeBGM(_clip);
-        yield return new WaitUntil(() => isChange);
-
+    }
+    public IEnumerator FadeInSound()
+    {
+        audioSources[0].mute = false;
         fadeTimer = 0;
+
         while (fadeTimer <= 1)
-        {
+        {   // 음악이 서서히 커집니다
             yield return null;
             fadeTimer += Time.deltaTime / fadeDuration; ;
             audioSources[0].volume = Mathf.Lerp(0, _bgmVolume, fadeTimer);
-
         }
     }
 
-
-    public void ChangeBGM(AudioClip _clip)
+    public bool ChangeBGM(AudioClip _clip)
     {
+        //audioSources[0].loop = true;
+        //audioSources[0].volume = 0;
         audioSources[0].clip = _clip;
-        audioSources[0].loop = true;
-        audioSources[0].volume = 0;
         audioSources[0].Play();
-        isChange = true;
+
+        return true;
     }
 
     public void SetEffectSound(string _clipName)
