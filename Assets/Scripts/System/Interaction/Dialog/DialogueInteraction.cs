@@ -41,7 +41,7 @@ public class DialogueInteraction : Interaction
 
     bool keyInput, isNegative;
     public int result = -1; // 선택된 답변의 배열 Idx
-    int count;  //현재 선택가능한 답변 갯수
+    //int count;  //현재 선택가능한 답변 갯수
 
     DialogueDB dialogues;
     List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조체
@@ -74,14 +74,15 @@ public class DialogueInteraction : Interaction
         {
             SetUPUI();
         }
-        SetNextDialog();
-        SetActiveDialogUI(true);    // 첫 대화 세팅
-
         StartCoroutine(ManageEvent());
     }
 
     IEnumerator ManageEvent()
     {
+        curIdx = SetNextDialog(curIdx);
+        SetActiveDialogUI(true);    // 첫 대화 세팅
+        yield return new WaitUntil(() => !isFirst);
+
         yield return new WaitUntil(() => UpdateDialogue());
 
         UIManager.instance.SceneUI["Dialogue"].SetActive(false);
@@ -94,21 +95,18 @@ public class DialogueInteraction : Interaction
             .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
 
         dialogueTxt = contentTxt[0];
+ 
         selectionTxt[0] = contentTxt[1];
         selectionTxt[1] = contentTxt[2];
 
         selectionTxt[0].color = Color.black;
         selectionTxt[1].color = Color.black;
-
-        count = 1; // 0과 1 (max idx 입력)
     }
 
     bool UpdateDialogue()
     {   // manage Dialogue event
-        if (isDone)
-        {
-            SetActiveDialogUI(false);
-        }
+        if (isDone)  SetActiveDialogUI(false);
+
         if (keyInput)
         {   // 선택 대화 출력
             SetNextSelection();
@@ -120,13 +118,11 @@ public class DialogueInteraction : Interaction
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Debug.Log("w");
                 result = 0;
                 Selection();
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
-                Debug.Log("s");
                 result = 1;
                 Selection();
             }
@@ -135,27 +131,23 @@ public class DialogueInteraction : Interaction
                 Debug.Log("enter");
                 keyInput = false;
                 isSelectFirst = true;
-                selections[curIdx] = true;
+                selections[curIdx] = true;  // 현 대화 분기에 대한 선택 완료
 
                 SetActiveSelectUI(false);
 
                 // 분기를 끝내고 다음 대화 연결
                 SetActiveDialogUI(true);
-                SetNextDialog();
-                // TODO ------------------> 해당  선택 결과에 따른 대화 변경 혹은 퀘스트 시스템에 정보 연결 필요
+                curIdx = SetNextDialog(curIdx+1);
+                // TODO ------------------> 해당  선택 결과에 따른 퀘스트 시스템에 정보 연결 필요
 
             }
         }
         else
-        {   //  일반 대화 출력
-            if (Input.GetMouseButtonDown(0))
-            {   // 현재 대화에 대한 선택여부가 있고 아직 선택하지 않았으면,
-                if (!selections[curIdx] && dialogDatas[curIdx]._isSelect) keyInput = true;
-
-                else
-                {
-                    SetNextDialog();
-                }
+        {   
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
+            {   //  일반 대화 출력
+                if (dialogDatas.Count == curIdx) isDone = true;
+                else curIdx = SetNextDialog(curIdx);
             }
         }
         
@@ -172,41 +164,41 @@ public class DialogueInteraction : Interaction
         }
 
         dialogueTxt.gameObject.SetActive(visible);
+
+        if (isFirst) isFirst = false;
     }
 
     void SetActiveSelectUI(bool visible)
     {   // manage select UI
-        if (visible)
-        {   // 선택의 경우 
-
-        }
-        else
-        {   // 선택이 종료되어 다시 대화창이 나와야하는 경우
-
-        }
-
         selectionTxt[0].gameObject.SetActive(visible);
         selectionTxt[1].gameObject.SetActive(visible);
     }
 
-    void SetNextDialog()
+    int SetNextDialog(int idx)
     {
         if (isNegative) isDone = true;
-        else if (dialogDatas.Count > curIdx + 1)
+        else if (dialogDatas.Count > idx)
         {
-            curIdx++;
-            npcName.text = dialogDatas[curIdx]._npcName;
+            npcName.text = dialogDatas[idx]._npcName;
 
-            if (result == 0)
-            {   // [예] 선택에 따른 대화 지속 
-                curIdx++;
+            if (result > -1)
+            {   // 선택 결과에 따른 답변 분기 조절
+                if (result == 0) idx++;                     // [예] ---- 선택에 따른 대화 지속 
+                else if (result == 1) isNegative = true;    // [아니오] - 선택에 따른 대화 종료
+
+                result = -1;
             }
-            else if(result == 1)    isNegative = true; // [아니오] 선택에 따른 대화 종료
-
-            dialogueTxt.text = dialogDatas[curIdx]._dialogue;
+            else if (!selections[idx] && dialogDatas[idx]._isSelect)
+            {   // 현재 대화에 대해 선택이 필요한 경우,
+                keyInput = true;
+                return idx;
+            }
             
+            dialogueTxt.text = dialogDatas[idx]._dialogue;
+            idx++;  // 다음 대화 idx 준비
         }
-        else isDone = true;
+
+        return idx;
     }
 
     void SetNextSelection()
@@ -247,8 +239,9 @@ public class DialogueInteraction : Interaction
         result = -1;
         isDone = false;
         isNegative = false;
+        isFirst = true;
         keyInput = false;
-        curIdx = -1;
+        curIdx = 0;
         dialogues = UIManager.instance.dialogueDB;
         dialogDatas.Clear();
     }
