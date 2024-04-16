@@ -45,11 +45,12 @@ public class SoundManager : MonoBehaviour
         StartCoroutine(FadeSound(BGMClips[_sceneNum]));
     }
 
-
     IEnumerator FadeSound(AudioClip _clip)
     {
-        yield return StartCoroutine(FadeOutSound());
-
+        if (!audioSources[0].mute) {
+            yield return StartCoroutine(FadeOutSound());
+        }
+            
         yield return new WaitUntil(() => ChangeBGM(_clip));
 
         StartCoroutine(FadeInSound());

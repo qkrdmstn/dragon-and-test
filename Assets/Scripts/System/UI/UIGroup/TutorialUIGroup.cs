@@ -8,13 +8,16 @@ public class TutorialUIGroup : UIGroup
     public bool isWASD, isAttack, isDash, isSkill, isReload; // UI가 뜨고 플레이어가 해당 UI에 대한 key를 누르면 활성화
     public Vector3 padding;
     Animator anim;
-    //Player player;
 
-    private void OnEnable()
+    private void Start()
     {
         padding = new Vector3(0, 175f, 0);
         anim = GetComponent<Animator>();
-        //player = FindObjectOfType<Player>();
+    }
+
+    private void OnEnable()
+    {
+        anim.enabled = true;
     }
 
     private void Update()
@@ -22,25 +25,38 @@ public class TutorialUIGroup : UIGroup
         transform.position = Camera.main.WorldToScreenPoint(UIManager.instance.player.transform.position) + padding;
 
         if (!isWASD && UIManager.instance.fade.fadePanel.color.a < 0.1) anim.SetBool("isWASD", true);
-        else if (isSkill) { anim.SetBool("isReload", true); }
-        else if (isWASD) { anim.SetBool("isSkill", true); }
+    }
+
+    private void OnDisable()
+    {
+        isWASD = false;
+        isAttack = false;
+        isDash  = false;
+        isSkill = false;
+        isReload = false;
+
+        anim.Rebind();
+        anim.enabled = false;
     }
 
     IEnumerator CheckStateCouroutine(string curType)
     {   // UI 활성화 애니메이션이 끝나면 호출되는 코루틴, UI 비활성화 ON
         yield return new WaitUntil(() => CheckState(curType));
 
-        if(curType == "Move" && isWASD)
+        if (curType == "Reload" && isReload)
         {
-            anim.SetBool("isWASDOut", true);
+            Debug.Log("reload-false");
+            anim.SetBool("isReload", false);
         }
         else if (curType == "Skill" && isSkill)
         {
-            anim.SetBool("isSkillOut", true);
+            anim.SetBool("isSkill", false);
+            anim.SetBool("isReload", true);
         }
-        else if (curType == "Reload" && isReload)
+        else if (curType == "Move" && isWASD)
         {
-            anim.SetBool("isReloadOut", true);
+            anim.SetBool("isWASD", false);
+            anim.SetBool("isSkill", true);
         }
     }
 
