@@ -10,107 +10,107 @@ public class SkillManager: MonoBehaviour
     {
         
     }
-    public void SkillEffect(HwatuCombination result)
+    public void SkillEffect(SeotdaHwatuCombination result)
     {
         Debug.Log(result.ToString());
         switch (result)
         {
-            case HwatuCombination.GTT38:
+            case SeotdaHwatuCombination.GTT38:
 
                 break;
-            case HwatuCombination.GTT18:
+            case SeotdaHwatuCombination.GTT18:
 
                 break;
-            case HwatuCombination.GTT13:
+            case SeotdaHwatuCombination.GTT13:
 
                 break;
-            case HwatuCombination.JTT:
+            case SeotdaHwatuCombination.JTT:
 
                 break;
-            case HwatuCombination.TT9:
+            case SeotdaHwatuCombination.TT9:
 
                 break;
-            case HwatuCombination.TT8:
+            case SeotdaHwatuCombination.TT8:
 
                 break;
-            case HwatuCombination.TT7:
+            case SeotdaHwatuCombination.TT7:
 
                 break;
-            case HwatuCombination.TT6:
+            case SeotdaHwatuCombination.TT6:
 
                 break;
-            case HwatuCombination.TT5:
+            case SeotdaHwatuCombination.TT5:
 
                 break;
-            case HwatuCombination.TT4:
+            case SeotdaHwatuCombination.TT4:
 
                 break;
-            case HwatuCombination.TT3:
+            case SeotdaHwatuCombination.TT3:
 
                 break;
-            case HwatuCombination.TT2:
+            case SeotdaHwatuCombination.TT2:
 
                 break;
-            case HwatuCombination.TT1:
+            case SeotdaHwatuCombination.TT1:
 
                 break;
-            case HwatuCombination.AL12:
+            case SeotdaHwatuCombination.AL12:
 
                 break;
-            case HwatuCombination.DS14:
+            case SeotdaHwatuCombination.DS14:
 
                 break;
-            case HwatuCombination.GPP19:
+            case SeotdaHwatuCombination.GPP19:
 
                 break;
-            case HwatuCombination.JPP110:
+            case SeotdaHwatuCombination.JPP110:
 
                 break;
-            case HwatuCombination.JS410:
+            case SeotdaHwatuCombination.JS410:
 
                 break;
-            case HwatuCombination.SR46:
+            case SeotdaHwatuCombination.SR46:
 
                 break;
-            case HwatuCombination.KK9:
+            case SeotdaHwatuCombination.KK9:
 
                 break;
-            case HwatuCombination.KK8:
+            case SeotdaHwatuCombination.KK8:
 
                 break;
-            case HwatuCombination.KK7:
+            case SeotdaHwatuCombination.KK7:
 
                 break;
-            case HwatuCombination.KK6:
+            case SeotdaHwatuCombination.KK6:
 
                 break;
-            case HwatuCombination.KK5:
+            case SeotdaHwatuCombination.KK5:
 
                 break;
-            case HwatuCombination.KK4:
+            case SeotdaHwatuCombination.KK4:
 
                 break;
-            case HwatuCombination.KK3:
+            case SeotdaHwatuCombination.KK3:
 
                 break;
-            case HwatuCombination.KK2:
+            case SeotdaHwatuCombination.KK2:
 
                 break;
-            case HwatuCombination.KK1:
+            case SeotdaHwatuCombination.KK1:
 
                 break;
-            case HwatuCombination.KK0:
+            case SeotdaHwatuCombination.KK0:
                 break;
-            case HwatuCombination.AHES74:
+            case SeotdaHwatuCombination.AHES74:
 
                 break;
-            case HwatuCombination.TTCatch73:
+            case SeotdaHwatuCombination.TTCatch73:
 
                 break;
-            case HwatuCombination.MTGR94:
+            case SeotdaHwatuCombination.MTGR94:
 
                 break;
-            case HwatuCombination.PT94:
+            case SeotdaHwatuCombination.PT94:
 
                 break;
         }

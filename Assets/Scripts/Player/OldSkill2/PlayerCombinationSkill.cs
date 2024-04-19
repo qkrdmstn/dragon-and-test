@@ -270,7 +270,7 @@ public class PlayerCombinationSkill : MonoBehaviour
         }
     }
 
-    private void SkillEffect(HwatuCombination result)
+    private void SkillEffect(SeotdaHwatuCombination result)
     {
         //skillManager.SkillEffect(result);
 

@@ -9,6 +9,8 @@ public enum SceneInfo
     Tutorial,
     Town_1,
     Battle_1,
+    Puzzle_1,
+    Boss_1
 };
 
 public class ScenesManager : MonoBehaviour
@@ -87,6 +89,15 @@ public class ScenesManager : MonoBehaviour
                 break;
 
             case SceneInfo.Battle_1:
+                UIManager.instance.SceneUI["Town_1"].SetActive(false);
+                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
+                UIManager.instance.SceneUI["Inventory"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
+
+                UIManager.instance.InitUIReference();
+                GunManager.instance.Initialize();
+                break;
+            case SceneInfo.Puzzle_1:
                 UIManager.instance.SceneUI["Town_1"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
