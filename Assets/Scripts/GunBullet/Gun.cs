@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class Gun : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class Gun : MonoBehaviour
     public int maxBullet;
     public int magazineSize;
     public int loadedBullet;
+    public float maxRecoilDegree;
     public GameObject gunPrefab;
 
     [Header("Bullet Prefabs")]
@@ -98,6 +100,7 @@ public class Gun : MonoBehaviour
         maxBullet = _data.maxBullet;
         magazineSize = _data.magazineSize;
         loadedBullet = _data.loadedBullet;
+        maxRecoilDegree = _data.maxRecoilDegree;
 
         gunPrefab = _data.gunPrefab;
         bulletPrefab = _data.bulletPrefab;
@@ -108,7 +111,7 @@ public class Gun : MonoBehaviour
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
             if(cameraManager != null)
-            {   // player 총 반동
+            {   // player 카메라 총 반동
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
             shootTimer = shootDelay;
@@ -121,8 +124,7 @@ public class Gun : MonoBehaviour
             Rigidbody2D rigid = bulletObj.GetComponent<Rigidbody2D>();
             Bullet bullet = bulletObj.GetComponent<Bullet>();
 
-            Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            dir.Normalize();
+            Vector2 dir = GetShootingDirection();
 
             bullet.BulletInitialize(damage, dir);
             StartCoroutine(InactiveIsAttacking());
@@ -132,6 +134,20 @@ public class Gun : MonoBehaviour
         }
     }
     
+    private Vector2 GetShootingDirection()
+    {
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        dir.Normalize();
+
+        float degree = Random.Range(-maxRecoilDegree, maxRecoilDegree);
+        Debug.Log(degree);
+        Vector3 direction = Quaternion.AngleAxis(degree, Vector3.forward) * dir;
+
+        Vector2 result = direction;
+        result.Normalize();
+        return result;
+    }
+
     IEnumerator InactiveIsAttacking()
     {
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
