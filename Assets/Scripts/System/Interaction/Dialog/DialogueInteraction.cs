@@ -40,7 +40,7 @@ public class DialogueInteraction : Interaction
     public TextMeshProUGUI[] selectionTxt;
 
     bool keyInput, isNegative;
-    public int result = -1; // 선택된 답변의 배열 Idx
+    public int result; // 선택된 답변의 배열 Idx
     //int count;  //현재 선택가능한 답변 갯수
 
     DialogueDB dialogues;
@@ -85,7 +85,17 @@ public class DialogueInteraction : Interaction
 
         yield return new WaitUntil(() => UpdateDialogue());
 
+        SetFalseUI();
+    }
+
+    void SetFalseUI()
+    {
         UIManager.instance.SceneUI["Dialogue"].SetActive(false);
+
+        if (GetSelectUI())
+        {
+            SetActiveSelectUI(false);
+        }
     }
 
     void SetUPUI() {
@@ -105,11 +115,14 @@ public class DialogueInteraction : Interaction
 
     bool UpdateDialogue()
     {   // manage Dialogue event
+        if (Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 대화 도중 나갈 수 있습니다.
         if (isDone)  SetActiveDialogUI(false);
 
         if (keyInput)
         {   // 선택 대화 출력
+            if(result == -1) Selection(2);  // 처음 선택에 대한 디폴트 선택을 지정합니다. 이후 방향키 입력이 있다면, 발동되지 않습니다
             SetNextSelection();
+
             if (isSelectFirst)
             {
                 SetActiveSelectUI(true);
@@ -118,15 +131,17 @@ public class DialogueInteraction : Interaction
 
             if (Input.GetKeyDown(KeyCode.W))
             {
+                Debug.Log("w-0");
                 result = 0;
-                Selection();
+                Selection(0);
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
+                Debug.Log("s-1");
                 result = 1;
-                Selection();
+                Selection(1);
             }
-            else if (result > -1 && (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0)))
+            else if ((Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)) && result > -1)
             {   // 특정 경우를 선택한 경우
                 Debug.Log("enter");
                 keyInput = false;
@@ -173,6 +188,10 @@ public class DialogueInteraction : Interaction
         selectionTxt[0].gameObject.SetActive(visible);
         selectionTxt[1].gameObject.SetActive(visible);
     }
+    bool GetSelectUI()
+    {
+        return selectionTxt[0].gameObject.activeSelf;
+    }
 
     int SetNextDialog(int idx)
     {
@@ -209,13 +228,18 @@ public class DialogueInteraction : Interaction
         }
     }
 
-    void Selection()
-    {
+    void Selection(int idx)
+    {   // input = 선택한 분기의 인덱스 : w - 0 / s - 1
         Color color = selectionTxt[0].color;
         color.a = 0.25f;
 
-        if(result == 0)
-        {   // 0번째 선택시 1번째는 반투명
+        selectionTxt[(idx+1) % 2].color = color;    // 반투명
+        color.a = 1f;
+        selectionTxt[idx % 2].color = color;        
+
+        /*
+        if (idx%2 == 0)
+        { // 0번째 선택시 1번째는 반투명
             selectionTxt[1].color = color;
             color.a = 1f;
             selectionTxt[0].color = color;
@@ -225,6 +249,12 @@ public class DialogueInteraction : Interaction
             selectionTxt[0].color = color;
             color.a = 1f;
             selectionTxt[1].color = color;
+        }
+        */
+
+        if(idx == 2)
+        {
+            result = 0;
         }
     }
 
@@ -236,7 +266,8 @@ public class DialogueInteraction : Interaction
             selections[i] = false;
         }
 
-        result = -1;
+        //result = -1;
+        result = 2;
         isDone = false;
         isNegative = false;
         isFirst = true;
