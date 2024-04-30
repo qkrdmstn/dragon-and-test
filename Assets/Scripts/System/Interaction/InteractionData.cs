@@ -12,4 +12,13 @@ public class InteractionData : MonoBehaviour
 
     public InteractionType type;
     public string eventName;
+    public ItemData itemData;
+    private void OnValidate()
+    {
+        if (itemData!=null)
+        {
+            GetComponent<SpriteRenderer>().sprite = itemData.icon;
+            gameObject.name = "Item Obj - " + itemData.itemName;
+        }
+    }
 }

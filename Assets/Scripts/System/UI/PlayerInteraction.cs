@@ -52,6 +52,9 @@ public class PlayerInteraction : MonoBehaviour
                 break;
             case InteractionData.InteractionType.Item:
                 // ToDo ITEM INTERACTION
+                Debug.Log(interaction.itemData.itemName + "Get Item!!");
+                InventoryData.instance.AddItem(interaction.itemData);
+                Destroy(interaction.gameObject);
                 break;
         }
     }
