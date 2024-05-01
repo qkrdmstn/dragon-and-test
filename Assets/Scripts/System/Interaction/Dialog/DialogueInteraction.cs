@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public struct DialogData
 {
@@ -13,11 +14,12 @@ public struct DialogData
     public bool _isSelect;
     public string[] _selectType;
 
-    public DialogData(int eventOrder, string eventName, string npcName, string dialogue, bool isSelect, string selectType)
+    public DialogData(int eventOrder, string eventName, string npcName, string dialogue, bool isSelect, string selectType, int price)
     {
         _eventOrder = eventOrder;
         _eventName = eventName;
         _npcName = npcName;
+        if (dialogue.Contains("dd")) dialogue = dialogue.Replace("dd", price.ToString());
         _dialogue = dialogue;
         _isSelect = isSelect;
 
@@ -33,6 +35,7 @@ public class DialogueInteraction : Interaction
     public int curIdx;
     public bool isFirst = true;
     public bool isSelectFirst = true;
+    public bool isShop = false;
 
     TextMeshProUGUI npcName;
     TextMeshProUGUI[] contentTxt;
@@ -46,15 +49,27 @@ public class DialogueInteraction : Interaction
     DialogueDB dialogues;
     List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조체
     List<bool> selections = new List<bool>();
+    InteractionData data;
 
-    public override void LoadEvent(string eventName)
+    int SetItemPrice()
     {
+        if (isShop) return data.itemData.price;
+        else
+            return 0;
+    }
+
+    public override void LoadEvent(InteractionData data)
+    {
+        this.data = data;
+
         UIManager.instance.SceneUI["Dialogue"].SetActive(true);
         Init();
         
+        if(data.eventName == "상점") isShop = true;
+
         for(int i=0; i<dialogues.DialogueEntity.Count; i++)
         {
-            if(dialogues.DialogueEntity[i].eventName == eventName)
+            if(dialogues.DialogueEntity[i].eventName == data.eventName)
             {   // 현재 이벤트에 맞는 대화DB를 저장합니다.
                 dialogDatas.Add(new DialogData
                     (
@@ -63,7 +78,8 @@ public class DialogueInteraction : Interaction
                         dialogues.DialogueEntity[i].npcName,
                         dialogues.DialogueEntity[i].dialogue,
                         dialogues.DialogueEntity[i].isSelect,
-                        dialogues.DialogueEntity[i].selectType
+                        dialogues.DialogueEntity[i].selectType,
+                        SetItemPrice()
                     )
                 );
                 selections.Add(false);
@@ -150,11 +166,14 @@ public class DialogueInteraction : Interaction
 
                 SetActiveSelectUI(false);
 
+                // TODO ------------------> 해당  선택 결과에 따른 퀘스트 시스템에 정보 연결 필요
+                if (isShop)
+                {
+                    gameObject.GetComponent<ShopInteraction>().state = result == 1 ? StateOfBuy.NoBuy : StateOfBuy.YesBuy;
+                }
                 // 분기를 끝내고 다음 대화 연결
                 SetActiveDialogUI(true);
                 curIdx = SetNextDialog(curIdx+1);
-                // TODO ------------------> 해당  선택 결과에 따른 퀘스트 시스템에 정보 연결 필요
-
             }
         }
         else
@@ -200,23 +219,30 @@ public class DialogueInteraction : Interaction
         {
             npcName.text = dialogDatas[idx]._npcName;
 
-            if (result > -1)
+            if (isFirst)
+            {   // 첫 대화 출력
+                dialogueTxt.text = dialogDatas[idx]._dialogue;
+                if (!dialogDatas[idx]._isSelect) idx++;
+            }
+            else if (result > -1)
             {   // 선택 결과에 따른 답변 분기 조절
                 if (result == 0) idx++;                     // [예] ---- 선택에 따른 대화 지속 
                 else if (result == 1) isNegative = true;    // [아니오] - 선택에 따른 대화 종료
 
                 result = -1;
+                dialogueTxt.text = dialogDatas[idx]._dialogue;
+                idx++;  // 다음 대화 idx 준비
             }
             else if (!selections[idx] && dialogDatas[idx]._isSelect)
             {   // 현재 대화에 대해 선택이 필요한 경우,
                 keyInput = true;
-                return idx;
             }
-            
-            dialogueTxt.text = dialogDatas[idx]._dialogue;
-            idx++;  // 다음 대화 idx 준비
+            else
+            {   // 이외 일반 대화 출력
+                dialogueTxt.text = dialogDatas[idx]._dialogue;
+                idx++;
+            }
         }
-
         return idx;
     }
 
@@ -237,21 +263,6 @@ public class DialogueInteraction : Interaction
         color.a = 1f;
         selectionTxt[idx % 2].color = color;        
 
-        /*
-        if (idx%2 == 0)
-        { // 0번째 선택시 1번째는 반투명
-            selectionTxt[1].color = color;
-            color.a = 1f;
-            selectionTxt[0].color = color;
-        }
-        else
-        {   // 1번째 선택시 0번째는 반투명
-            selectionTxt[0].color = color;
-            color.a = 1f;
-            selectionTxt[1].color = color;
-        }
-        */
-
         if(idx == 2)
         {
             result = 0;
@@ -266,11 +277,11 @@ public class DialogueInteraction : Interaction
             selections[i] = false;
         }
 
-        //result = -1;
-        result = 2;
+        result = -1;
         isDone = false;
         isNegative = false;
         isFirst = true;
+        isShop = false;
         keyInput = false;
         curIdx = 0;
         dialogues = UIManager.instance.dialogueDB;

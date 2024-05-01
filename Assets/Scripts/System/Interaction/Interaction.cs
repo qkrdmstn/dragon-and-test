@@ -7,5 +7,5 @@ public class Interaction : MonoBehaviour
     public bool isDone;
 
     public virtual void LoadEvent() { }
-    public virtual void LoadEvent(string eventName) { }
+    public virtual void LoadEvent(InteractionData data) { }
 }

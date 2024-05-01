@@ -10,7 +10,7 @@ public class PlayerInteraction : MonoBehaviour
     bool isBounded;
     int curIdxInteraction;
 
-    Interaction dialogueInteraction;
+    Interaction dialogueInteraction, shopInteraction;
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
 
@@ -24,6 +24,7 @@ public class PlayerInteraction : MonoBehaviour
         player = GetComponentInParent<Player>();
         col = GetComponent<CircleCollider2D>();
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
+        shopInteraction = gameObject.AddComponent<ShopInteraction>();
     }
 
     void Update()
@@ -38,24 +39,25 @@ public class PlayerInteraction : MonoBehaviour
 
     void DoInteraction()
     {
-        switch (interaction.type)
+        if (!player.isInteraction)
         {
-            case InteractionData.InteractionType.NPC:
-                // ToDo DIALOGUE INTERACTION
-                if (!player.isInteraction)
-                {
-                    player.isInteraction = true;
-                    player.SetIdleStatePlayer();
-                    player.isStateChangeable = false;
-                    dialogueInteraction.LoadEvent(interaction.eventName);
-                }
-                break;
-            case InteractionData.InteractionType.Item:
-                // ToDo ITEM INTERACTION
-                Debug.Log(interaction.itemData.itemName + "Get Item!!");
-                InventoryData.instance.AddItem(interaction.itemData);
-                Destroy(interaction.gameObject);
-                break;
+            player.isInteraction = true;
+            player.SetIdleStatePlayer();
+            player.isStateChangeable = false;
+            dialogueInteraction.LoadEvent(interaction);
+
+            switch (interaction.type)
+            {
+                case InteractionData.InteractionType.NPC:
+                    // ToDo DIALOGUE INTERACTION
+
+                    break;
+                case InteractionData.InteractionType.Item:
+                    // ToDo ITEM INTERACTION
+                    shopInteraction.LoadEvent(interaction);
+
+                    break;
+            }
         }
     }
 
