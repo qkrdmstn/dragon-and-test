@@ -10,7 +10,8 @@ public class PlayerInteraction : MonoBehaviour
     bool isBounded;
     int curIdxInteraction;
 
-    Interaction dialogueInteraction, shopInteraction;
+    Interaction dialogueInteraction, shopInteraction, blanketInteraction;
+
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
 
@@ -25,15 +26,17 @@ public class PlayerInteraction : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
         shopInteraction = gameObject.AddComponent<ShopInteraction>();
+        blanketInteraction = gameObject.AddComponent<BlanketInteraction>();
     }
 
     void Update()
     {
         if (isBounded && Input.GetKeyDown(KeyCode.E)) DoInteraction();
-        if (dialogueInteraction.isDone)
+        if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
             player.isInteraction = false;   // player의 상호작용 여부 관찰
             player.isStateChangeable = true;
+            player.isAttackable = true;
         }
     }
 
@@ -44,18 +47,30 @@ public class PlayerInteraction : MonoBehaviour
             player.isInteraction = true;
             player.SetIdleStatePlayer();
             player.isStateChangeable = false;
-            dialogueInteraction.LoadEvent(interaction);
+            player.isAttackable = false;
 
             switch (interaction.type)
             {
                 case InteractionData.InteractionType.NPC:
                     // ToDo DIALOGUE INTERACTION
+                    dialogueInteraction.LoadEvent(interaction);
 
                     break;
                 case InteractionData.InteractionType.Item:
                     // ToDo ITEM INTERACTION
+                    dialogueInteraction.LoadEvent(interaction);
                     shopInteraction.LoadEvent(interaction);
 
+                    break;
+                case InteractionData.InteractionType.Blanket:
+                    BlanketInteractionData data = interaction as BlanketInteractionData;
+                    if (!data.isClear)
+                    {
+                        blanketInteraction.isDone = true;
+                        return;
+                    }
+                    else
+                        blanketInteraction.LoadEvent();
                     break;
             }
         }

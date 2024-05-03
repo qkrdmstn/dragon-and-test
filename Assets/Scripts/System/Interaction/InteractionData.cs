@@ -7,7 +7,8 @@ public class InteractionData : MonoBehaviour
     public enum InteractionType
     {
         NPC,
-        Item
+        Item,
+        Blanket
     };
 
     public InteractionType type;

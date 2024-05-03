@@ -21,6 +21,10 @@ public class Spawner : MonoBehaviour
     public GameObject []positionDisplay;
     public Vector3[] positions;
 
+    //임시 구현
+    public bool waveEnd = false;
+    public int killCount = 0;
+
     void Start()
     {
         areaCollider = possibleArea.GetComponent<Collider2D>();
@@ -37,13 +41,17 @@ public class Spawner : MonoBehaviour
             if (i<monsterList.Count) spawnList[i] = monsterList[i];
             else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
         }
-        newWave();
+
+        //newWave();
     }
 
     public void deathCount()
     {
+        killCount++;
         monsterLeft--;
-        if (monsterLeft==0)
+        if (killCount >= 10)
+            waveEnd = true;
+        if (monsterLeft==0 && !waveEnd)
         {
             newWave();
         }

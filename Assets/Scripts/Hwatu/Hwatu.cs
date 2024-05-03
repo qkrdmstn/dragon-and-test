@@ -140,4 +140,5 @@ public class Hwatu
 
         return SeotdaHwatuCombination.KK0;
     }
+
 }

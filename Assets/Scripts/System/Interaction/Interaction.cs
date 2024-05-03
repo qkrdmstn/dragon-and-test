@@ -8,4 +8,5 @@ public class Interaction : MonoBehaviour
 
     public virtual void LoadEvent() { }
     public virtual void LoadEvent(InteractionData data) { }
+
 }

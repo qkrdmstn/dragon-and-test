@@ -151,7 +151,7 @@ public class Gun : MonoBehaviour
 
         //Recoil Setting
         float degree = Random.Range(-maxRecoilDegree, maxRecoilDegree);
-        Debug.Log(degree);
+        //Debug.Log(degree);
         Vector3 direction = Quaternion.AngleAxis(degree * continuousShootCnt * recoilIncrease, Vector3.forward) * dir;
 
         Vector2 result = direction;

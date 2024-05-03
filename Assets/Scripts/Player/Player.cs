@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "Battle_1"
             || SceneManager.GetActiveScene().name == "Puzzle_1"
-            || SceneManager.GetActiveScene().name == "Tutorial")
+            || SceneManager.GetActiveScene().name == "Tutorial" || SceneManager.GetActiveScene().name == "Skill")
             isCombatZone = true;
         else
             isCombatZone = false;
