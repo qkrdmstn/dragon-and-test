@@ -167,13 +167,13 @@ public class DialogueInteraction : Interaction
                 SetActiveSelectUI(false);
 
                 // TODO ------------------> 해당  선택 결과에 따른 퀘스트 시스템에 정보 연결 필요
-                if (isShop)
-                {
-                    gameObject.GetComponent<ShopInteraction>().state = result == 1 ? StateOfBuy.NoBuy : StateOfBuy.YesBuy;
-                }
+
+                // 상점 상호작용의 경우, moneyCheck & state에 따른 송출 대화 분기 생성
+                if (isShop) result = gameObject.GetComponent<ShopInteraction>().CheckBuyState(result);
+
                 // 분기를 끝내고 다음 대화 연결
                 SetActiveDialogUI(true);
-                curIdx = SetNextDialog(curIdx+1);
+                curIdx = SetNextDialog(curIdx + 1);
             }
         }
         else
@@ -226,8 +226,20 @@ public class DialogueInteraction : Interaction
             }
             else if (result > -1)
             {   // 선택 결과에 따른 답변 분기 조절
-                if (result == 0) idx++;                     // [예] ---- 선택에 따른 대화 지속 
-                else if (result == 1) isNegative = true;    // [아니오] - 선택에 따른 대화 종료
+                switch (result)
+                {
+                    case 0:     // [예] ---- 선택에 따른 대화 지속    
+                        idx++; 
+                        break;
+                    case 1:     // [아니오] - 선택에 따른 대화 종료
+                        isNegative = true;   
+                        break;
+                    case 2:     // [그외] -- 구매불가
+                        idx += 2;
+                        break;
+                }
+
+                if (isShop) isNegative = true;
 
                 result = -1;
                 dialogueTxt.text = dialogDatas[idx]._dialogue;

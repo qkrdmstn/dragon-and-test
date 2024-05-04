@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [Header("Life info")]
     public int curHP = 3;
     public int maxHP = 3;
+    public int money = 0;
     [SerializeField] private float hitDuration;
 
     [Header("Skill info")]
