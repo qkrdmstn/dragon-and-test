@@ -9,12 +9,18 @@ using Unity.VisualScripting;
 
 public class BlanketInteraction : Interaction
 {
+    private Player player;
+    private HwatuData[] hwatuData;
+
     public GameObject blanketUI;
     public BlanketHwatuButton[] buttons;
+    Hwatu selectedHwatu;
 
-    public int selectCnt = 0;
-    public int selectedIdx1 = -1;
-    Hwatu[] selectedHwatu;
+    private void Awake()
+    {
+        player = GetComponentInParent<Player>();
+        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
+    }
 
     public override void LoadEvent()
     {
@@ -26,11 +32,9 @@ public class BlanketInteraction : Interaction
         isDone = false;
         blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
         blanketUI.SetActive(true);
-        selectCnt = 0;
-        selectedIdx1 = -1;
 
         buttons = blanketUI.GetComponentsInChildren<BlanketHwatuButton>();
-        selectedHwatu = new Hwatu[2];
+        selectedHwatu = new Hwatu();
 
         InitButton();
     }
@@ -44,7 +48,7 @@ public class BlanketInteraction : Interaction
         }
 
         for (int i=0; i<3; i++)
-            buttons[i].SetButtonImage(index[i]);
+            buttons[i].SetButtonImage(hwatuData[index[i]]);
 
         buttons[0].button.onClick.AddListener(() => btnEvent(0));
         buttons[1].button.onClick.AddListener(() => btnEvent(1));
@@ -63,9 +67,14 @@ public class BlanketInteraction : Interaction
     {
         for(int i=0; i<3; i++)
         {
-            if (index[i] == selectedIdx1)
-                return false;
-            for(int j=i+1; j<3; j++)
+            List<Hwatu> usedHwatu = SkillManager.instance.hwatuCardSlotData; //이미 사용된 화투 
+            for (int j = 0; j < usedHwatu.Count; j++) 
+            {
+                if (hwatuData[index[i]].hwatu == usedHwatu[j])
+                    return false;
+            }
+
+            for(int j=i+1; j<3; j++) //3개 중 중복
             {
                 if (index[i] == index[j])
                     return false;
@@ -79,22 +88,11 @@ public class BlanketInteraction : Interaction
         for (int i = 0; i < 3; i++)
             buttons[i].button.onClick.RemoveAllListeners();
 
-        if (selectedIdx1 == -1) // 첫 번째 선택
-        {
-            selectedHwatu[selectCnt] = buttons[selectedBtn].hwatu;
-            selectedIdx1 = buttons[selectedBtn].hwatuIdx;
-            selectCnt++;
-            InitButton();
+        selectedHwatu = buttons[selectedBtn].hwatu;
+        SkillManager.instance.AddSkill(selectedHwatu);
 
-        }
-        else
-        {
-            selectedHwatu[selectCnt] = buttons[selectedBtn].hwatu;
-            SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(selectedHwatu[0], selectedHwatu[1]);
-            Debug.Log(result);
-            
-            blanketUI.SetActive(false);
-            isDone = true;
-        }
+        blanketUI.SetActive(false);
+        isDone = true;
     }
+
 }

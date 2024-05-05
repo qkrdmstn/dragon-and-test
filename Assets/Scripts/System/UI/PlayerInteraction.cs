@@ -63,14 +63,7 @@ public class PlayerInteraction : MonoBehaviour
 
                     break;
                 case InteractionData.InteractionType.Blanket:
-                    BlanketInteractionData data = interaction as BlanketInteractionData;
-                    if (!data.isClear)
-                    {
-                        blanketInteraction.isDone = true;
-                        return;
-                    }
-                    else
-                        blanketInteraction.LoadEvent();
+                    BlanketDoInteraction();
                     break;
             }
         }
@@ -131,4 +124,18 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    private void BlanketDoInteraction()
+    {
+        BlanketInteractionData data = interaction as BlanketInteractionData;
+        if (!data.isClear)
+        {
+            blanketInteraction.isDone = true;
+            return;
+        }
+        else if (data.isActive)
+        {
+            //data.isActive = false;
+            blanketInteraction.LoadEvent();
+        }
+    }
 }

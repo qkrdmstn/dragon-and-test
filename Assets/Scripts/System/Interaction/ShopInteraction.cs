@@ -30,7 +30,7 @@ public class ShopInteraction : Interaction
     {
         if(result == 1) state = StateOfBuy.NoBuy;
 
-        else if(UIManager.instance.player.money < itemData.price)
+        else if(GameManager.instance.player.money < itemData.price)
         {   // checkMoney
             state = StateOfBuy.CantBuy;
             return 2;
@@ -56,7 +56,7 @@ public class ShopInteraction : Interaction
                 case ItemType.Armor:
                     break;
             }
-            UIManager.instance.player.money -= itemData.price;
+            GameManager.instance.player.money -= itemData.price;
             Debug.Log(itemData.itemName + "Get Item!!");
             Destroy(interaction);
         }

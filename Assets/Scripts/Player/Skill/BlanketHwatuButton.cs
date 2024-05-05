@@ -10,23 +10,19 @@ public class BlanketHwatuButton : MonoBehaviour
     public Image image;
     public TextMeshProUGUI text;
     public Button button;
-    public HwatuData[] hwatuData;
 
-    public int hwatuIdx;
     // Start is called before the first frame update
     private void Awake()
     {
         image = transform.GetChild(0).GetComponent<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
         button = GetComponent<Button>();
-        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
     }
 
-    public void SetButtonImage(int idx)
+    public void SetButtonImage(HwatuData data)
     {
-        hwatuIdx = idx;
-        hwatu = hwatuData[idx].hwatu;
-        image.sprite = hwatuData[idx].sprite;
-        text.text = hwatuData[idx].info;
+        hwatu = data.hwatu;
+        image.sprite = data.sprite;
+        text.text = data.info;
     }
 }

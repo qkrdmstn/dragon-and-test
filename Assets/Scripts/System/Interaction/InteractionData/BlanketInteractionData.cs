@@ -6,8 +6,11 @@ public class BlanketInteractionData : InteractionData
 {
     public Spawner spawner;
     public bool isClear;
+    public bool isActive;
+
     private void Start()
     {
+        isActive = true;
         spawner = GameObject.FindObjectOfType<Spawner>();
     }
 

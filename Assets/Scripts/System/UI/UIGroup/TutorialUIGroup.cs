@@ -22,7 +22,7 @@ public class TutorialUIGroup : UIGroup
 
     private void Update()
     {
-        transform.position = Camera.main.WorldToScreenPoint(UIManager.instance.player.transform.position) + padding;
+        transform.position = Camera.main.WorldToScreenPoint(GameManager.instance.player.transform.position) + padding;
 
         if (!isWASD && UIManager.instance.fade.fadePanel.color.a < 0.1) anim.SetBool("isWASD", true);
     }
@@ -77,7 +77,7 @@ public class TutorialUIGroup : UIGroup
             Debug.Log("isAttack");
         }
 
-        else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1) && UIManager.instance.player.IsDash())
+        else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1) && GameManager.instance.player.IsDash())
         {
             isDash = true;
             Debug.Log("isDash");
