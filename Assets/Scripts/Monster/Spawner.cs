@@ -42,7 +42,7 @@ public class Spawner : MonoBehaviour
             else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
         }
 
-        //newWave();
+        newWave();
     }
 
     public void deathCount()

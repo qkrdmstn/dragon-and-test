@@ -14,6 +14,6 @@ public class TempHPUI : MonoBehaviour
     }
     private void Update()
     {
-        txt.text = "HP: " + player.curHP + " / " + player.maxHP + "\n" + "MP: " + player.curMP + " / " + player.maxMP + "\n BlankBullet: " + player.blankBulletNum;
+        txt.text = "HP: " + player.curHP + " / " + player.maxHP;
     }
 }

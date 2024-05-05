@@ -157,7 +157,7 @@ public class DialogueInteraction : Interaction
                 result = 1;
                 Selection(1);
             }
-            else if ((Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)) && result > -1)
+            else if ((Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0)) && result > -1)
             {   // 특정 경우를 선택한 경우
                 Debug.Log("enter");
                 keyInput = false;
@@ -178,7 +178,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
             {   //  일반 대화 출력
                 if (dialogDatas.Count == curIdx) isDone = true;
                 else curIdx = SetNextDialog(curIdx);

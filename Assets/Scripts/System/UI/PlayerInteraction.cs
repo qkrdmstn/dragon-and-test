@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (isBounded && Input.GetKeyDown(KeyCode.E)) DoInteraction();
+        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
             player.isInteraction = false;   // player의 상호작용 여부 관찰
@@ -134,7 +134,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         else if (data.isActive)
         {
-            //data.isActive = false;
+            data.isActive = false;
             blanketInteraction.LoadEvent();
         }
     }

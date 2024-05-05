@@ -14,11 +14,6 @@ public class Player : MonoBehaviour
     public int money = 0;
     [SerializeField] private float hitDuration;
 
-    [Header("Skill info")]
-    public int blankBulletNum = 4;
-    public float curMP = 100.0f;
-    public float maxMP = 100.0f;
-
     [Header("Move info")]
     public float moveSpeed = 12.0f;
     public float dashSpeed = 24.0f;

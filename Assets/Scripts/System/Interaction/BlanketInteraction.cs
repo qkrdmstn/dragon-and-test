@@ -4,22 +4,35 @@ using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.UIElements;
 using Unity.VisualScripting;
+using UnityEditor.Hardware;
 
 public class BlanketInteraction : Interaction
 {
     private Player player;
-    private HwatuData[] hwatuData;
 
+    [Header("UI info")]
     public GameObject blanketUI;
-    public BlanketHwatuButton[] buttons;
-    Hwatu selectedHwatu;
+    public BlanketHwatuSelectBtn[] selectBtns;
+    public GameObject cancleUI;
+    public Button[] cancleBtns;
 
     private void Awake()
     {
         player = GetComponentInParent<Player>();
-        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && player.isCombatZone && !isDone)
+        {
+            if (SkillManager.instance.isSaving)
+                SkillManager.instance.InactiveOverwritingUI();
+            else
+            {
+                ActiveCancleUI();
+            }
+        }
     }
 
     public override void LoadEvent()
@@ -31,11 +44,12 @@ public class BlanketInteraction : Interaction
     {
         isDone = false;
         blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
+        selectBtns = blanketUI.GetComponentsInChildren<BlanketHwatuSelectBtn>();
+
+        cancleUI = blanketUI.transform.GetChild(2).gameObject;
+        cancleBtns = cancleUI.GetComponentsInChildren<Button>();
+
         blanketUI.SetActive(true);
-
-        buttons = blanketUI.GetComponentsInChildren<BlanketHwatuButton>();
-        selectedHwatu = new Hwatu();
-
         InitButton();
     }
 
@@ -48,11 +62,12 @@ public class BlanketInteraction : Interaction
         }
 
         for (int i=0; i<3; i++)
-            buttons[i].SetButtonImage(hwatuData[index[i]]);
-
-        buttons[0].button.onClick.AddListener(() => btnEvent(0));
-        buttons[1].button.onClick.AddListener(() => btnEvent(1));
-        buttons[2].button.onClick.AddListener(() => btnEvent(2));
+        {
+            HwatuData data = SkillManager.instance.hwatuData[index[i]];
+            selectBtns[i].UpdateBtn(data);
+            selectBtns[i].button.onClick.RemoveAllListeners();
+            selectBtns[i].button.onClick.AddListener(() => SelectBtnEvent(data));
+        }
     }
 
     private int[] GetRandomIndex()
@@ -67,10 +82,12 @@ public class BlanketInteraction : Interaction
     {
         for(int i=0; i<3; i++)
         {
-            List<Hwatu> usedHwatu = SkillManager.instance.hwatuCardSlotData; //이미 사용된 화투 
-            for (int j = 0; j < usedHwatu.Count; j++) 
+            HwatuData[] usedHwatu = SkillManager.instance.hwatuCardSlotData; //이미 사용된 화투 
+            for (int j = 0; j < 2; j++) 
             {
-                if (hwatuData[index[i]].hwatu == usedHwatu[j])
+                if (usedHwatu[j] == null)
+                    continue;
+                if (SkillManager.instance.hwatuData[index[i]].hwatu == usedHwatu[j].hwatu)
                     return false;
             }
 
@@ -83,16 +100,41 @@ public class BlanketInteraction : Interaction
         return true;
     }
 
-    public void btnEvent(int selectedBtn)
+    public void SelectBtnEvent(HwatuData data)
     {
-        for (int i = 0; i < 3; i++)
-            buttons[i].button.onClick.RemoveAllListeners();
+        
+        SkillManager.instance.AddSkill(data);
 
-        selectedHwatu = buttons[selectedBtn].hwatu;
-        SkillManager.instance.AddSkill(selectedHwatu);
+        StartCoroutine(WaitOverwriting());
+    }
 
+    IEnumerator WaitOverwriting()
+    {
+        yield return new WaitUntil(() => !SkillManager.instance.isSaving && SkillManager.instance.saveSuccess);
+        InactiveUI();
+    }
+
+    public void CancleBtnEvent(int i)
+    {
+        if (i == 0)
+            InactiveUI();
+        cancleUI.SetActive(false);
+    }
+
+    public void ActiveCancleUI()
+    {
+        cancleUI.SetActive(true);
+        for (int i = 0; i < 2; i++)
+        {
+            int index = i;
+            cancleBtns[index].onClick.RemoveAllListeners();
+            cancleBtns[index].onClick.AddListener(() => CancleBtnEvent(index));
+        }
+    }
+
+    public void InactiveUI()
+    {
         blanketUI.SetActive(false);
         isDone = true;
     }
-
 }

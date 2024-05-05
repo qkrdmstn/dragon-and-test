@@ -36,7 +36,7 @@ public enum SeotdaHwatuCombination
     TT9, TT8, TT7, TT6, TT5, TT4, TT3, TT2, TT1,
     AL12, DS14, GPP19, JPP110, JS410, SR46,
     KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0,
-    AHES74, TTCatch73, MTGR94, PT94,
+    AHES74, TTCatch73, MTGR94, PT94, blank
 }
 #endregion
 
@@ -48,6 +48,9 @@ public class Hwatu
 
     public static SeotdaHwatuCombination GetHwatuCombination(Hwatu card1, Hwatu card2)
     {
+        if (card1 == null || card2 == null)
+            return SeotdaHwatuCombination.blank;
+
         int[] months = new int[2] { (int)card1.month + 1, (int)card2.month + 1 };
         SeotdaHwatuName[] types = new SeotdaHwatuName[2] { card1.type, card2.type };
 
