@@ -9,9 +9,10 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] float globalShakeForce;
     [SerializeField] CinemachineImpulseListener impulseListener;
+    [SerializeField] CinemachineConfiner confiner;
 
     private CinemachineImpulseDefinition impulseDefinition;
-
+   
     private void Awake()
     {
         //if(instance == null)
@@ -29,6 +30,11 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
 
+    }
+
+    public void UpdateConfineArea(PolygonCollider2D coll)
+    {
+        confiner.m_BoundingShape2D = coll;
     }
 
     public void CameraShake(CinemachineImpulseSource impulseSource)

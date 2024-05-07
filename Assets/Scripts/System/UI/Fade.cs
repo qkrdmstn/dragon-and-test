@@ -33,6 +33,11 @@ public class Fade : MonoBehaviour
         StartCoroutine(FadeCoroutine(_sceneInfo));
     }
 
+    public void ManageFade(MapControl mapControl)
+    {   // if Nothing in params, transition of Inner-Map
+        StartCoroutine(FadeCoroutine(mapControl));
+    }
+
     IEnumerator FadeCoroutine(SceneInfo _sceneInfo)
     {   // Image
         Color fadeColor = fadePanel.color;
@@ -50,7 +55,44 @@ public class Fade : MonoBehaviour
 
         {
             ScenesManager.instance.ChangeScene(_sceneInfo);
+        }
+        yield return new WaitForSeconds(.5f);
+
+        time = 0f;
+        while (fadeColor.a > 0f)
+        {
+            time += Time.deltaTime / fadeTime;
+
+            fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
+            fadePanel.color = fadeColor;
+
+            yield return null;
+        }
+        Time.timeScale = 1f;
+
+        yield return null;
+    }
+
+    IEnumerator FadeCoroutine(MapControl mapControl)
+    {   // 맵 내부 이동에 관련된 코루틴
+        Color fadeColor = fadePanel.color;
+
+        time = 0f;
+        while (fadeColor.a < 1f)
+        {
+            time += Time.deltaTime / fadeTime;
+
+            fadeColor.a = Mathf.Lerp(end, start, time); // 0 ~ 1
+            fadePanel.color = fadeColor;
+
+            yield return null;
+        }
+
+        {   
+            GameManager.instance.player.transform.position = mapControl.gotoPos.position;
+            GameManager.instance.player.cameraManager.UpdateConfineArea(mapControl.confineColl);
             yield return new WaitForSeconds(.5f);
+            GameManager.instance.player.isStateChangeable = true;
         }
 
         time = 0f;
@@ -64,6 +106,8 @@ public class Fade : MonoBehaviour
             yield return null;
         }
         Time.timeScale = 1f;
+
+        yield return null;
     }
 
     IEnumerator TextFadeCoroutine(TextMeshProUGUI text)
