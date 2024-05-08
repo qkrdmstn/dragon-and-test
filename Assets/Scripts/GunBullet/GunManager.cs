@@ -33,6 +33,9 @@ public class GunManager : MonoBehaviour
         if (instance == null)
         { //생성 전이면
             instance = this; //생성
+            // 처음 생성을 위한 변수 생성 
+            gunDataList = new List<GunData>();
+            gunDictionary = new Dictionary<GunData, GameObject>();
         }
         else if (instance != this)
         { //이미 생성되어 있으면
@@ -44,11 +47,8 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-        gunDataList = new List<GunData>();
-        gunDictionary = new Dictionary<GunData, GameObject>();
-
-        if (SceneManager.GetActiveScene().name != "Start")
-            Initialize();
+        //if (SceneManager.GetActiveScene().name != "Start")
+        //    Initialize(); ----> ScenesManager와 동시 호출 불필요로 인한 주석처리
     }
 
     private void Update()
@@ -74,10 +74,9 @@ public class GunManager : MonoBehaviour
     {
         player = GameObject.FindObjectOfType<Player>();
         gunParent = player.gunParent.transform;
-
+        
         LoadGun();
         InitActiveGun();
-
     }
 
     public void LoadGun()
@@ -195,7 +194,6 @@ public class GunManager : MonoBehaviour
     public void AddGunDataList(GunData _data)
     {
         gunDataList.Add(_data);
-
         //Inventory Update
         InventoryData.instance.AddGunItem(_data.gunItemData);
     }

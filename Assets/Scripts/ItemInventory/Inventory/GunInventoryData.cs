@@ -23,6 +23,7 @@ public class GunInventoryData : MonoBehaviour
         if (instance == null)
         { //생성 전이면
             instance = this; //생성
+            curGunItemSlot = gunSlotParent.GetComponentInChildren<ItemSlotUI>(true);    //비활성화된 자식객체도 할당할 수 있게 true
         }
         else if (instance != this)
         { //이미 생성되어 있으면
@@ -30,11 +31,6 @@ public class GunInventoryData : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
-    }
-
-    private void Start()
-    {
-        curGunItemSlot = gunSlotParent.GetComponentInChildren<ItemSlotUI>();
     }
 
     public void UpdateGunInventorySlotUI(ItemData _curGunItem)

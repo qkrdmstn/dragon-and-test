@@ -133,6 +133,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
   m_PrefabInstance: {fileID: 3263377852785078573}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &290267079 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3263377851369766893, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+  m_PrefabInstance: {fileID: 3263377852785078573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &431070484
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,6 +279,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!224 &528306080 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3263377852909646532, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+  m_PrefabInstance: {fileID: 3263377852785078573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &652162872
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,8 +401,11 @@ MonoBehaviour:
     data: {fileID: 0}
     stackSize: 0
   inventorySlotParent: {fileID: 903720763}
-  gunSlotParent: {fileID: 1888811804}
-  amorSlotParent: {fileID: 1313210856}
+  gunSlotParent: {fileID: 290267079}
+  amorSlotParent: {fileID: 528306080}
+  materialItemSlot: []
+  gunItemSlot: []
+  amorItemSlot: {fileID: 0}
   itemUseUI: {fileID: 265182981}
 --- !u!4 &1078310380
 Transform:
@@ -576,6 +589,7 @@ MonoBehaviour:
   swapDelay: 0.1
   swapTimer: 0
   tempPrefab: {fileID: 2618088524873001669, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+  childCnt: 0
 --- !u!4 &1264017607
 Transform:
   m_ObjectHideFlags: 0
@@ -591,11 +605,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &1313210856 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377851883696325, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 3263377852785078573}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1358343262
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,6 +667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalShakeForce: 0.25
   impulseListener: {fileID: 0}
+  confiner: {fileID: 0}
 --- !u!4 &1415717212
 Transform:
   m_ObjectHideFlags: 0
@@ -741,11 +751,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1519551289 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2252652623288363, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 3263377852785078573}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1733791207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,11 +1046,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!224 &1888811804 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377850915703345, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 3263377852785078573}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1926487228 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3263377850886155665, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
@@ -1156,10 +1156,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3263377852241448134, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-      propertyPath: SceneUI.array.Array.data[3].Value
-      value: 
-      objectReference: {fileID: 1519551289}
     - target: {fileID: 3263377852241448135, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_Name
       value: UIManager

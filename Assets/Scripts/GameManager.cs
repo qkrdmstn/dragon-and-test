@@ -23,10 +23,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C) && ScenesManager.instance.GetSceneNum() != (int)SceneInfo.Battle_1)
-        {
-            ScenesManager.instance.ChangeScene((SceneInfo)(ScenesManager.instance.GetSceneNum() + 1));
-        }
+        //if (Input.GetKeyDown(KeyCode.C) && ScenesManager.instance.GetSceneNum() != (int)SceneInfo.Battle_1_A)
+        //{
+        //    ScenesManager.instance.ChangeScene((SceneInfo)(ScenesManager.instance.GetSceneNum() + 1));
+        //}
     }
 
     public void GoToScene(int _sceneInfo)

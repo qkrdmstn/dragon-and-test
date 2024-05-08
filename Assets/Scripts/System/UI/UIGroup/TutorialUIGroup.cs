@@ -17,6 +17,8 @@ public class TutorialUIGroup : UIGroup
 
     private void OnEnable()
     {
+        if (anim == null) return;
+
         anim.enabled = true;
     }
 

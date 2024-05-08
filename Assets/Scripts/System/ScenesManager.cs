@@ -8,7 +8,9 @@ public enum SceneInfo
     Start,
     Tutorial,
     Town_1,
-    Battle_1,
+    Battle_1_A,
+    Battle_1_B,
+    Battle_1_C,
     Puzzle_1,
     Boss_1
 };
@@ -65,10 +67,10 @@ public class ScenesManager : MonoBehaviour
 
         switch (_sceneInfo)
         {
-            case SceneInfo.Start:
+            case SceneInfo.Start:       // 0
                 break;
 
-            case SceneInfo.Tutorial:
+            case SceneInfo.Tutorial:    // 1
                 UIManager.instance.SceneUI["Start"].SetActive(false);
                 UIManager.instance.SceneUI["Tutorial"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -78,7 +80,7 @@ public class ScenesManager : MonoBehaviour
                 GunManager.instance.Initialize();
                 break;
 
-            case SceneInfo.Town_1:
+            case SceneInfo.Town_1:      // 2
                 UIManager.instance.SceneUI["Tutorial"].SetActive(false);
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -88,7 +90,7 @@ public class ScenesManager : MonoBehaviour
                 GunManager.instance.Initialize();
                 break;
 
-            case SceneInfo.Battle_1:
+            case SceneInfo.Puzzle_1:    // 3
                 UIManager.instance.SceneUI["Town_1"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -97,7 +99,10 @@ public class ScenesManager : MonoBehaviour
                 GameManager.instance.InitReference();
                 GunManager.instance.Initialize();
                 break;
-            case SceneInfo.Puzzle_1:
+
+            case SceneInfo.Battle_1_A:
+            case SceneInfo.Battle_1_B:
+            case SceneInfo.Battle_1_C:
                 UIManager.instance.SceneUI["Town_1"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
@@ -106,6 +111,7 @@ public class ScenesManager : MonoBehaviour
                 GameManager.instance.InitReference();
                 GunManager.instance.Initialize();
                 break;
+            
             case SceneInfo.Boss_1:
                 UIManager.instance.SceneUI["Town_1"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
