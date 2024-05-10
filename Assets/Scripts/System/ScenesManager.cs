@@ -78,6 +78,9 @@ public class ScenesManager : MonoBehaviour
 
                 GameManager.instance.InitReference();
                 GunManager.instance.Initialize();
+
+                UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>().LoadTutorialEvent();
+
                 break;
 
             case SceneInfo.Town_1:      // 2

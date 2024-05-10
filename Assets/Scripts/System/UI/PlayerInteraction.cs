@@ -53,6 +53,14 @@ public class PlayerInteraction : MonoBehaviour
             {
                 case InteractionData.InteractionType.NPC:
                     // ToDo DIALOGUE INTERACTION
+                    if (interaction.eventName == "튜토리얼")
+                    {
+                        Debug.Log("interaction scarecrow");
+                        // TODO ----- 허수아비와 상호작용했다는 정보를 튜토리얼 함수쪽으로 전달 필요
+                        dialogueInteraction.isDone = true;
+                        break;
+                    }
+
                     dialogueInteraction.LoadEvent(interaction);
 
                     break;
