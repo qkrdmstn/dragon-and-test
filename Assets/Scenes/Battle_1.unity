@@ -3734,7 +3734,7 @@ MonoBehaviour:
   areaCollider: {fileID: 1762422582}
   positionDisplay: []
   positions: []
-  waveEnd: 0
+  waveEnd: 1
   killCount: 0
 --- !u!114 &390228689
 MonoBehaviour:
@@ -27776,13 +27776,14 @@ GameObject:
   - component: {fileID: 1690434183}
   - component: {fileID: 1690434185}
   - component: {fileID: 1690434184}
+  - component: {fileID: 1690434186}
   m_Layer: 5
   m_Name: SynergyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1690434183
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27846,6 +27847,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690434182}
   m_CullTransparentMesh: 1
+--- !u!114 &1690434186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690434182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2412a984d6f2dc46884d232fb03da52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  images: []
+  synergyNameTxt: {fileID: 0}
+  synergyInfoTxt: {fileID: 0}
 --- !u!1001 &1692918935
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28828,7 +28844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1748274217
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32823,17 +32839,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hwatuData: []
   skillTable: {fileID: 11400000, guid: ae0ea3bdc80633944a40d2be7ba1cb26, type: 2}
-  synergyTable: {fileID: 0}
+  synergyTable: {fileID: 11400000, guid: 7ddf3ef6436f8e248bac75c1e9ed12b1, type: 2}
   skillCnt: 0
   hwatuCardSlotData: []
   curSynergy: 0
   skillData: []
   overwritingUI: {fileID: 0}
   skillSlotParent: {fileID: 0}
-  synergyUI: {fileID: 0}
   isSaving: 0
   saveSuccess: 0
-  isSynergy: 0
 --- !u!4 &2137007116
 Transform:
   m_ObjectHideFlags: 0
