@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class Gun : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class Gun : MonoBehaviour
     public int maxBullet;
     public int magazineSize;
     public int loadedBullet;
+    public float maxRecoilDegree;
+    public float recoilIncrease;
     public GameObject gunPrefab;
 
     [Header("Bullet Prefabs")]
@@ -30,6 +33,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private bool isReloading = false;
     [SerializeField] private bool clickReloadFlag = false;
     [SerializeField] private bool isAttacking = false;
+    [SerializeField] private int continuousShootCnt = 0;
 
     [Header("CameraSetting")]
     // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
@@ -76,6 +80,9 @@ public class Gun : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+            continuousShootCnt = 0;
+
         player.anim.SetBool("isAttacking", isAttacking);
     }
 
@@ -87,6 +94,7 @@ public class Gun : MonoBehaviour
             clickReloadFlag = true;
             //Reload Visulaize
             renderer.color = new Color(1, 1, 1);
+            continuousShootCnt = 0;
         }
     }
 
@@ -98,6 +106,8 @@ public class Gun : MonoBehaviour
         maxBullet = _data.maxBullet;
         magazineSize = _data.magazineSize;
         loadedBullet = _data.loadedBullet;
+        maxRecoilDegree = _data.maxRecoilDegree;
+        recoilIncrease = _data.recoilIncrease;
 
         gunPrefab = _data.gunPrefab;
         bulletPrefab = _data.bulletPrefab;
@@ -108,21 +118,22 @@ public class Gun : MonoBehaviour
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
             if(cameraManager != null)
-            {   // player 총 반동
+            {   // player 카메라 총 반동
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
+
+            //Shoot Setting
             shootTimer = shootDelay;
             loadedBullet--;
             isAttacking = true;
-
+            continuousShootCnt++;
 
             //Create Bullet
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
             Rigidbody2D rigid = bulletObj.GetComponent<Rigidbody2D>();
             Bullet bullet = bulletObj.GetComponent<Bullet>();
 
-            Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            dir.Normalize();
+            Vector2 dir = GetShootingDirection();
 
             bullet.BulletInitialize(damage, dir);
             StartCoroutine(InactiveIsAttacking());
@@ -132,6 +143,22 @@ public class Gun : MonoBehaviour
         }
     }
     
+    private Vector2 GetShootingDirection()
+    {
+        //Initial Direction Setting
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        dir.Normalize();
+
+        //Recoil Setting
+        float degree = Random.Range(-maxRecoilDegree, maxRecoilDegree);
+        //Debug.Log(degree);
+        Vector3 direction = Quaternion.AngleAxis(degree * continuousShootCnt * recoilIncrease, Vector3.forward) * dir;
+
+        Vector2 result = direction;
+        result.Normalize();
+        return result;
+    }
+
     IEnumerator InactiveIsAttacking()
     {
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
@@ -142,12 +169,6 @@ public class Gun : MonoBehaviour
             isAttacking = false;
         }
     }
-
-    //public void InactiveIsAttacking()
-    //{
-    //    isAttacking = false;
-    //    player.anim.SetBool("isAttacking", isAttacking);
-    //}
 
     public void Reload()
     {

@@ -52,7 +52,7 @@ public class PlayerCombinationSkill : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && player.curMP >= player.maxMP && !isCombinationSkill)
+        if (Input.GetKeyDown(KeyCode.E) && !isCombinationSkill)
             StartCombinationSkill();
 
     }
@@ -74,7 +74,6 @@ public class PlayerCombinationSkill : MonoBehaviour
 
     private void StartCombinationSkill()
     {
-        player.curMP -= player.maxMP;
         isCombinationSkill = true;
         selectedCards = new ImoogiHwatuUI[2];
 
@@ -270,7 +269,7 @@ public class PlayerCombinationSkill : MonoBehaviour
         }
     }
 
-    private void SkillEffect(HwatuCombination result)
+    private void SkillEffect(SeotdaHwatuCombination result)
     {
         //skillManager.SkillEffect(result);
 

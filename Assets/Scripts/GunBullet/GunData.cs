@@ -9,6 +9,8 @@ public class GunData : ScriptableObject
     public int maxBullet;
     public int magazineSize;
     public int loadedBullet;
+    public float maxRecoilDegree;
+    public float recoilIncrease;
 
     [Header("Item Data")]
     public ItemData gunItemData;
@@ -25,6 +27,8 @@ public class GunData : ScriptableObject
         this.maxBullet = _data.maxBullet;
         this.magazineSize = _data.magazineSize;
         this.loadedBullet = _data.loadedBullet;
+        this.maxRecoilDegree = _data.maxRecoilDegree;
+        this.recoilIncrease = _data.recoilIncrease;
 
         this.gunItemData = _data.gunItemData;
 
@@ -40,6 +44,8 @@ public class GunData : ScriptableObject
         this.maxBullet = _gun.maxBullet;
         this.magazineSize = _gun.magazineSize;
         this.loadedBullet = _gun.loadedBullet;
+        this.maxRecoilDegree = _gun.maxRecoilDegree;
+        this.recoilIncrease = _gun.recoilIncrease;
 
         this.gunPrefab = _gun.gunPrefab;
         this.bulletPrefab = _gun.bulletPrefab;

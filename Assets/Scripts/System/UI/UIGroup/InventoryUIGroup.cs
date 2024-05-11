@@ -14,7 +14,7 @@ public class InventoryUIGroup : UIGroup
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I) && !childUI[0].activeSelf)
+        if (Input.GetKeyDown(KeyCode.I) && !childUI[0].activeSelf && !GameManager.instance.player.isInteraction)
         {
             OpenInventory();
         }
@@ -32,9 +32,8 @@ public class InventoryUIGroup : UIGroup
     private void OpenInventory()
     {
         Time.timeScale = 0.0f;
-        Debug.Log(UIManager.instance.player);
-        UIManager.instance.player.isStateChangeable = false;
-        UIManager.instance.player.isAttackable = false;
+        GameManager.instance.player.isStateChangeable = false;
+        GameManager.instance.player.isAttackable = false;
         childUI[0].SetActive(true);
 
     }
@@ -42,8 +41,8 @@ public class InventoryUIGroup : UIGroup
     public void CloseInventory()
     {
         Time.timeScale = 1.0f;
-        UIManager.instance.player.isStateChangeable = true;
-        UIManager.instance.player.isAttackable = true;
+        GameManager.instance.player.isStateChangeable = true;
+        GameManager.instance.player.isAttackable = true;
         childUI[0].SetActive(false);
 
         ChangePage(0);

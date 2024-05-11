@@ -53,7 +53,12 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Monster") || collision.gameObject.CompareTag("Ground"))
         {
-            Destroy(this.gameObject);
+            InActiveBullet();
         }
+    }
+
+    public void InActiveBullet()
+    {
+        Destroy(this.gameObject);
     }
 }

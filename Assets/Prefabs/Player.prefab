@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 9164923190227248142}
   - component: {fileID: 9164923190227248139}
   - component: {fileID: 7819983375755603537}
-  - component: {fileID: 5757264022711841888}
+  - component: {fileID: 6413855705096871728}
   - component: {fileID: 6026035233142154471}
   m_Layer: 6
   m_Name: Player
@@ -378,12 +378,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7592358beb283f45b96cfff14cbc74a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curHP: 39
-  maxHP: 41
+  curHP: 10
+  maxHP: 10
+  money: 0
   hitDuration: 0.6
-  blankBulletNum: 4
-  curMP: 100
-  maxMP: 100
   moveSpeed: 5.65
   dashSpeed: 13
   dashDuration: 0.58
@@ -394,9 +392,10 @@ MonoBehaviour:
   isCombatZone: 1
   isStateChangeable: 1
   isInteraction: 0
+  isDamaged: 0
   profile: {fileID: 11400000, guid: 10e4dfeb3157b48799b562bf7cdd96cc, type: 2}
   cameraManager: {fileID: 0}
---- !u!114 &5757264022711841888
+--- !u!114 &6413855705096871728
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -405,7 +404,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9164923190227248141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c60577686334908489401d18a5da68c6, type: 3}
+  m_Script: {fileID: 11500000, guid: dec5631d42bb88249a1f4fb50502f7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blankBulletDelay: 0
@@ -538,18 +537,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gun
       objectReference: {fileID: 0}
-    - target: {fileID: 2618088524873001670, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
-      propertyPath: gunData
-      value: 
-      objectReference: {fileID: 11400000, guid: c80b36205577d3c4898750a97d092685, type: 2}
-    - target: {fileID: 2618088524873001670, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
-      propertyPath: gunPrefab
-      value: 
-      objectReference: {fileID: 2618088524873001669, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
-    - target: {fileID: 2618088524873001670, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
-      propertyPath: bulletPrefab
-      value: 
-      objectReference: {fileID: 1331701923673328244, guid: a30701ba901da9d46b23ea081ca8b3cf, type: 3}
     - target: {fileID: 2618088524873001671, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
       propertyPath: m_RootOrder
       value: 0

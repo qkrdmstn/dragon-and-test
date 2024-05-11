@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
+    public Player player;
 
     private void Awake()
     {
@@ -22,10 +23,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C) && ScenesManager.instance.GetSceneNum() != (int)SceneInfo.Battle_1)
-        {
-            ScenesManager.instance.ChangeScene((SceneInfo)(ScenesManager.instance.GetSceneNum() + 1));
-        }
+        //if (Input.GetKeyDown(KeyCode.C) && ScenesManager.instance.GetSceneNum() != (int)SceneInfo.Battle_1_A)
+        //{
+        //    ScenesManager.instance.ChangeScene((SceneInfo)(ScenesManager.instance.GetSceneNum() + 1));
+        //}
     }
 
     public void GoToScene(int _sceneInfo)
@@ -37,8 +38,8 @@ public class GameManager : MonoBehaviour
 
         // player 관련 변수 Init() 필..요 ---- 아래는 임시로 해둔겁니당
         Time.timeScale = 1f;
-        UIManager.instance.player.curHP = UIManager.instance.player.maxHP;
-
+        GameManager.instance.player.curHP = GameManager.instance.player.maxHP;
+        
         switch (_sceneInfo)
         {
             case (int)SceneInfo.Start:
@@ -53,5 +54,10 @@ public class GameManager : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+
+    public void InitReference()
+    {
+        player = FindObjectOfType<Player>();
     }
 }

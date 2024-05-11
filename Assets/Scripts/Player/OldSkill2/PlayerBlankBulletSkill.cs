@@ -30,14 +30,14 @@ public class PlayerBlankBulletSkill : MonoBehaviour
     {
         blankBulletTimer -= Time.deltaTime;
 
-        if(Input.GetKeyDown(KeyCode.Q) && blankBulletTimer < 0.0f && player.blankBulletNum > 0)
-            BlankBullet();
+        //if(Input.GetKeyDown(KeyCode.Q) && blankBulletTimer < 0.0f && player.blankBulletNum > 0)
+        //    BlankBullet();
     }
 
     private void BlankBullet()
     {
         blankBulletTimer = blankBulletDelay;
-        player.blankBulletNum--;
+        //player.blankBulletNum--;
 
         Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(this.transform.position, impactRadius, impactLayerMask);
         for(int i=0; i< inRangeTarget.Length; i++)

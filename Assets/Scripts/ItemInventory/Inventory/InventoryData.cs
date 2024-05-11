@@ -35,6 +35,12 @@ public class InventoryData : MonoBehaviour
         if (instance == null)
         { //생성 전이면
             instance = this; //생성
+
+            gunDictionary = new Dictionary<ItemData, InventoryItem>();
+
+            materialItemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>(true);
+            gunItemSlot = gunSlotParent.GetComponentsInChildren<ItemSlotUI>(true);
+            amorItemSlot = amorSlotParent.GetComponentInChildren<ItemSlotUI>(true);
         }
         else if (instance != this)
         { //이미 생성되어 있으면
@@ -51,12 +57,7 @@ public class InventoryData : MonoBehaviour
         materialDictionary = new Dictionary<ItemData, InventoryItem>();
 
         gunItems = new List<InventoryItem>();
-        gunDictionary = new Dictionary<ItemData, InventoryItem>();
-
-        materialItemSlot = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
-        gunItemSlot = gunSlotParent.GetComponentsInChildren<ItemSlotUI>();
-        amorItemSlot = amorSlotParent.GetComponentInChildren<ItemSlotUI>();
-
+        
         //ItemUse UI Initialize
         itemUseBtns = itemUseUI.GetComponentsInChildren<Button>();
 

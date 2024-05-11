@@ -11,12 +11,8 @@ public class Player : MonoBehaviour
     [Header("Life info")]
     public int curHP = 3;
     public int maxHP = 3;
+    public int money = 0;
     [SerializeField] private float hitDuration;
-
-    [Header("Skill info")]
-    public int blankBulletNum = 4;
-    public float curMP = 100.0f;
-    public float maxMP = 100.0f;
 
     [Header("Move info")]
     public float moveSpeed = 12.0f;
@@ -36,6 +32,7 @@ public class Player : MonoBehaviour
     public bool isCombatZone = true;
     public bool isStateChangeable = true;
     public bool isInteraction = false;
+    public bool isDamaged = false;
 
     #region Componets
     public Animator anim { get; private set; }
@@ -64,9 +61,9 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
 
-        if (SceneManager.GetActiveScene().name == "Battle_1"
-            || SceneManager.GetActiveScene().name == "Character"
-            || SceneManager.GetActiveScene().name == "Tutorial")
+        if (SceneManager.GetActiveScene().name.Contains("Battle")
+            || SceneManager.GetActiveScene().name == "Puzzle_1"
+            || SceneManager.GetActiveScene().name == "Tutorial" || SceneManager.GetActiveScene().name == "Skill")
             isCombatZone = true;
         else
             isCombatZone = false;
@@ -125,23 +122,27 @@ public class Player : MonoBehaviour
 
     public void OnDamamged(int damage)
     {
-        // monster에게 맞았을때 쉐이킹 
-        cameraManager.CameraShakeFromProfile(profile, impulseSource);
-
-        curHP -= damage;
-       // Debug.Log("HP: " + HP);
-        if (curHP <= 0)
+        if(!isDamaged)
         {
-            Debug.Log("Player Dead");
-            PlayerDead();
-            Time.timeScale = 0.0f;
-        }
-        else
-        {
-            //Change Layer & Change Color
-            gameObject.layer = 7;
+            isDamaged = true;
+            // monster에게 맞았을때 쉐이킹 
+            cameraManager.CameraShakeFromProfile(profile, impulseSource);
 
-            StartCoroutine(DamagedProcess());
+            curHP -= damage;
+            // Debug.Log("HP: " + HP);
+            if (curHP <= 0)
+            {
+                Debug.Log("Player Dead");
+                PlayerDead();
+                Time.timeScale = 0.0f;
+            }
+            else
+            {
+                //Change Layer & Change Color
+                gameObject.layer = 7;
+
+                StartCoroutine(DamagedProcess());
+            }
         }
     }
 
@@ -162,6 +163,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
         gameObject.layer = 6;
+        isDamaged = false;
     }
 
     public void SetIdleStatePlayer()

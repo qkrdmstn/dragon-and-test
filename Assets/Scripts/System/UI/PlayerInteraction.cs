@@ -10,7 +10,8 @@ public class PlayerInteraction : MonoBehaviour
     bool isBounded;
     int curIdxInteraction;
 
-    Interaction dialogueInteraction;
+    Interaction dialogueInteraction, shopInteraction, blanketInteraction;
+
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
 
@@ -24,35 +25,55 @@ public class PlayerInteraction : MonoBehaviour
         player = GetComponentInParent<Player>();
         col = GetComponent<CircleCollider2D>();
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
+        shopInteraction = gameObject.AddComponent<ShopInteraction>();
+        blanketInteraction = gameObject.AddComponent<BlanketInteraction>();
     }
 
     void Update()
     {
-        if (isBounded && Input.GetKeyDown(KeyCode.E)) DoInteraction();
-        if (dialogueInteraction.isDone)
+        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
+        if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
             player.isInteraction = false;   // player의 상호작용 여부 관찰
             player.isStateChangeable = true;
+            player.isAttackable = true;
         }
     }
 
     void DoInteraction()
     {
-        switch (interaction.type)
+        if (!player.isInteraction)
         {
-            case InteractionData.InteractionType.NPC:
-                // ToDo DIALOGUE INTERACTION
-                if (!player.isInteraction)
-                {
-                    player.isInteraction = true;
-                    player.SetIdleStatePlayer();
-                    player.isStateChangeable = false;
-                    dialogueInteraction.LoadEvent(interaction.eventName);
-                }
-                break;
-            case InteractionData.InteractionType.Item:
-                // ToDo ITEM INTERACTION
-                break;
+            player.isInteraction = true;
+            player.SetIdleStatePlayer();
+            player.isStateChangeable = false;
+            player.isAttackable = false;
+
+            switch (interaction.type)
+            {
+                case InteractionData.InteractionType.NPC:
+                    // ToDo DIALOGUE INTERACTION
+                    if (interaction.eventName == "튜토리얼")
+                    {
+                        Debug.Log("interaction scarecrow");
+                        // TODO ----- 허수아비와 상호작용했다는 정보를 튜토리얼 함수쪽으로 전달 필요
+                        dialogueInteraction.isDone = true;
+                        break;
+                    }
+
+                    dialogueInteraction.LoadEvent(interaction);
+
+                    break;
+                case InteractionData.InteractionType.Item:
+                    // ToDo ITEM INTERACTION
+                    dialogueInteraction.LoadEvent(interaction);
+                    shopInteraction.LoadEvent(interaction);
+
+                    break;
+                case InteractionData.InteractionType.Blanket:
+                    BlanketDoInteraction();
+                    break;
+            }
         }
     }
 
@@ -111,4 +132,18 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    private void BlanketDoInteraction()
+    {
+        BlanketInteractionData data = interaction as BlanketInteractionData;
+        if (!data.isClear)
+        {
+            blanketInteraction.isDone = true;
+            return;
+        }
+        else if (data.isActive)
+        {
+            data.isActive = false;
+            blanketInteraction.LoadEvent();
+        }
+    }
 }

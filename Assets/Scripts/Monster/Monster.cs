@@ -97,7 +97,6 @@ public class Monster : MonoBehaviour
     //죽음
     private void Dead()
     {
-        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
         Destroy(gameObject);
         spawn.deathCount();
         temp.instance.killScore += 1;
