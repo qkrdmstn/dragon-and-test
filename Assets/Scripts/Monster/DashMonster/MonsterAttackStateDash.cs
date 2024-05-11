@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterAttackStateNear : MonsterState
+public class MonsterAttackStateDash : MonsterState
 {
-    private MonsterNear monster;
-    public MonsterAttackStateNear(MonsterStateMachine _stateMachine, GameObject _player, MonsterNear _monster) : base(_stateMachine, _player)
+    private MonsterDash monster;
+    public MonsterAttackStateDash(MonsterStateMachine _stateMachine, GameObject _player, MonsterDash _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }
@@ -13,13 +13,11 @@ public class MonsterAttackStateNear : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SpeedToZero();
     }
 
     public override void Exit()
     {
         base.Exit();
-        monster.SpeedReturn();
     }
 
     public override void Update()
@@ -27,14 +25,14 @@ public class MonsterAttackStateNear : MonsterState
         base.Update();
 
         //Attack
-        monster.tempcool -= Time.deltaTime;
         if (monster.tempcool<=0.0) 
         {
-            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
+            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.idleState);
             else if(!monster.isKnockedBack)
             {
                 monster.tempcool = monster.cooldown;
                 monster.Attack();
+                stateMachine.ChangeState(monster.idleState);
             }
         }
         

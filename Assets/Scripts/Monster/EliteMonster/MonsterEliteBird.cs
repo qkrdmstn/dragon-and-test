@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterFar : MonsterBase
+public class MonsterEliteBird : MonsterBase
 {
     #region MonsterShoot
     public float monsterShootTimer;
@@ -14,34 +14,50 @@ public class MonsterFar : MonsterBase
     public GameObject monsterBullet;
     #endregion
 
+    #region States
+    public MonsterIdleStateBird idleState { get; private set; }
+    public MonsterChaseStateBird chaseState { get; private set; }
+    public MonsterEscapeStateBird escapeState { get; private set; }
+    public MonsterAttackStateBird attackState { get; private set; }
+    public float chaseRange = 20.0f;
+    public float attackRange = 4.0f;
+    public float distanceToPlayer;
+    #endregion
+
     #region Navigate
-    private UnityEngine.AI.NavMeshAgent agent;
+    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
     {
         base.Awake();
+        idleState = new MonsterIdleStateBird(stateMachine, player, this);
+        chaseState = new MonsterChaseStateBird(stateMachine, player, this);
+        escapeState = new MonsterEscapeStateBird(stateMachine, player, this);
+        attackState = new MonsterAttackStateBird(stateMachine, player, this);
     }
 
     public override void Start()
     {
         base.Start();
+        stateMachine.Initialize(idleState);
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        SpeedToZero();
     }
 
     public override void Update()
     {
         base.Update();
+        stateMachine.currentState.Update();
+
+        distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
         //Attack
         monsterShootTimer -= Time.deltaTime;
-        if(!isReloading && !isKnockedBack && Vector3.Distance(transform.position, player.transform.position)<50.0f) Attack();
-
-        //navigate
-        agent.SetDestination(player.transform.position);
+        
     }
     
     public override void Attack()
@@ -80,6 +96,18 @@ public class MonsterFar : MonsterBase
         yield return new WaitForSeconds(monsterReloadDelay);
         loadedBullet = magazineSize;
         isReloading = false;
+    }
+
+    public void SpeedToZero()
+    {
+        agent.speed = 0;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = 0;
+    }
+
+    public void SpeedReturn()
+    {
+        agent.speed = moveSpeed;
     }
 
 }

@@ -2,48 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterNear : MonsterBase
+public class MonsterDash : MonsterBase
 {
     
     #region MonsterAttack
     public bool inAttack = false;
-    public float cooldown = 3.0f;
+    public float cooldown = 8.0f;
+    public float attackSpeed = 10.0f;
     public float tempcool;
-    public Collider2D[] collider2Ds;
-    public Vector2 boxSize;
-    public float armLength;
-    private Vector3 newpos;
-    public LayerMask playerMask;  
+    public Vector3 direction;
     #endregion
 
     #region States
-    public MonsterChaseStateNear chaseState { get; private set; }
-    public MonsterAttackStateNear attackState { get; private set; }
-    public float attackRange = 1.0f;
+    public MonsterIdleStateDash idleState { get; private set; }
+    public MonsterChaseStateDash chaseState { get; private set; }
+    public MonsterAttackStateDash attackState { get; private set; }
+    public float chaseRange = 10.0f;
+    public float attackRange = 4.0f;
+    
+    public float distanceToPlayer;
     #endregion
 
     #region Navigate
     private UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
-    public float distanceToPlayer;
-    public Vector3 direction;
-
     public override void Awake()
     {
         base.Awake();
-        chaseState = new MonsterChaseStateNear(stateMachine, player, this);
-        attackState = new MonsterAttackStateNear(stateMachine, player, this);
+        idleState = new MonsterIdleStateDash(stateMachine, player, this);
+        chaseState = new MonsterChaseStateDash(stateMachine, player, this);
+        attackState = new MonsterAttackStateDash(stateMachine, player, this);
     }
 
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(chaseState);
+        stateMachine.Initialize(idleState);
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        SpeedToZero();
     }
 
     public override void Update()
@@ -51,6 +51,8 @@ public class MonsterNear : MonsterBase
         base.Update();
         stateMachine.currentState.Update();
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+
+        tempcool -= Time.deltaTime;
 
         //navigate
         agent.SetDestination(player.transform.position);
@@ -65,39 +67,20 @@ public class MonsterNear : MonsterBase
     
     public void AttackPoint()
     {
-        GetComponent<Collider2D>().enabled = true;
-        newpos = transform.position+(direction * armLength);
-        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, playerMask);
-        foreach(Collider2D collider in collider2Ds)
-        {
-            if(collider.CompareTag("Player"))
-            {
-                playerScript.OnDamamged(damage);
-            }
-        }
+        rigidBody.AddForce(direction * attackSpeed);
     }
 
     public void OutAttack()
     {
+        rigidBody.velocity = Vector3.zero;
         inAttack = false;
-    }
-
-
-    private void OnDrawGizmos()
-    {
-        if(inAttack)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(newpos, boxSize);
-        }
-        
     }
 
     public void SpeedToZero()
     {
         agent.speed = 0;
         rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0;
+        rigidBody.angularVelocity = 0.0f;
     }
 
     public void SpeedReturn()

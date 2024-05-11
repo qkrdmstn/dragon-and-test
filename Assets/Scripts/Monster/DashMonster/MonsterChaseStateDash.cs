@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterChaseStateNear : MonsterState
+public class MonsterChaseStateDash : MonsterState
 {
     private Vector2 direction;
-    private MonsterNear monster;
-    public MonsterChaseStateNear(MonsterStateMachine _stateMachine, GameObject _player, MonsterNear _monster) : base(_stateMachine, _player)
+    private MonsterDash monster;
+    public MonsterChaseStateDash(MonsterStateMachine _stateMachine, GameObject _player, MonsterDash _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }
@@ -14,11 +14,13 @@ public class MonsterChaseStateNear : MonsterState
     public override void Enter()
     {
         base.Enter();
+        monster.SpeedReturn();
     }
 
     public override void Exit()
     {
         base.Exit();
+        monster.SpeedToZero();
     }
 
     public override void Update()
@@ -29,5 +31,7 @@ public class MonsterChaseStateNear : MonsterState
         
         if (monster.distanceToPlayer < monster.attackRange && monster.tempcool<=0.0)
             stateMachine.ChangeState(monster.attackState);
+
+        if (monster.distanceToPlayer > monster.chaseRange) stateMachine.ChangeState(monster.idleState);
     }
 }
