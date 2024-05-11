@@ -7,5 +7,6 @@ public class SkillBalanceEntity
     public float coolTime;
     public float range;
     public float force;
+    public float duration;
 }
 
