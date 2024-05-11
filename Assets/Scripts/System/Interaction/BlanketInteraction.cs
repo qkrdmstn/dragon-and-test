@@ -6,16 +6,18 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Hardware;
+using UnityEditor.Experimental.GraphView;
 
 public class BlanketInteraction : Interaction
 {
     private Player player;
 
     [Header("UI info")]
-    public GameObject blanketUI;
+    [SerializeField] private GameObject blanketUI;
     public BlanketHwatuSelectBtn[] selectBtns;
-    public GameObject cancleUI;
+    [SerializeField] private GameObject cancleUI;
     public Button[] cancleBtns;
+    [SerializeField] private SynergyUI synergyUI;
 
     private void Awake()
     {
@@ -26,7 +28,9 @@ public class BlanketInteraction : Interaction
     {
         if (Input.GetKeyDown(KeyCode.Escape) && player.isCombatZone && !isDone)
         {
-            if (SkillManager.instance.isSaving)
+            if(synergyUI.gameObject.activeSelf)
+                synergyUI.gameObject.SetActive(false);
+            else if (SkillManager.instance.isSaving)
                 SkillManager.instance.InactiveOverwritingUI();
             else
             {
@@ -48,6 +52,8 @@ public class BlanketInteraction : Interaction
 
         cancleUI = blanketUI.transform.GetChild(2).gameObject;
         cancleBtns = cancleUI.GetComponentsInChildren<Button>();
+
+        synergyUI = blanketUI.transform.GetChild(3).GetComponent<SynergyUI>();
 
         blanketUI.SetActive(true);
         InitButton();
@@ -121,7 +127,7 @@ public class BlanketInteraction : Interaction
         cancleUI.SetActive(false);
     }
 
-    public void ActiveCancleUI()
+    private void ActiveCancleUI()
     {
         cancleUI.SetActive(true);
         for (int i = 0; i < 2; i++)
@@ -132,8 +138,25 @@ public class BlanketInteraction : Interaction
         }
     }
 
-    public void InactiveUI()
+    private void InactiveUI()
     {
+        if (SkillManager.instance.skillCnt == 2)
+            StartCoroutine(ActiveSynergyUI());
+        else
+        {
+            blanketUI.SetActive(false);
+            isDone = true;
+        }
+    }
+
+    IEnumerator ActiveSynergyUI()
+    {
+        synergyUI.gameObject.SetActive(true);
+        SynergyEntity entity = SkillManager.instance.GetCurSynergyEntity();
+        HwatuData[] hwatuDatas = SkillManager.instance.hwatuCardSlotData;
+        synergyUI.UpdateSynergyUI(entity, hwatuDatas);
+
+        yield return new WaitUntil(() => !synergyUI.gameObject.activeSelf);
         blanketUI.SetActive(false);
         isDone = true;
     }
