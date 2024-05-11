@@ -14,39 +14,23 @@ public class MonsterFar : MonsterBase
     public GameObject monsterBullet;
     #endregion
 
-    #region States
-    public MonsterChaseState chaseState { get; private set; }
-    public MonsterChaseAttackState chaseAttackState { get; private set; }
-    public MonsterAttackState attackState { get; private set; }
-    public float attackRange = 5.0f;
-    public float haltRange = 2.0f;
-    #endregion
-
-    public Chase chase;
-    public MonsterPool monsterPool;
-    public float distanceToPlayer;
-   
     public override void Awake()
     {
         base.Awake();
-        chaseState = new MonsterChaseState(stateMachine, player, this);
-        chaseAttackState = new MonsterChaseAttackState(stateMachine, player, this);
-        attackState = new MonsterAttackState(stateMachine, player, this);
     }
 
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(chaseState); //state initialize
-
-        chase = GetComponent<Chase>(); //get component of this code
-        monsterPool = GetComponent<MonsterPool>();
     }
 
     public override void Update()
     {
         base.Update();
-        distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        
+        //Attack
+        monsterShootTimer -= Time.deltaTime;
+        if(!isReloading && !isKnockedBack && Vector3.Distance(transform.position, player.transform.position)<50.0f) Attack();
     }
     
     public override void Attack()
@@ -62,14 +46,11 @@ public class MonsterFar : MonsterBase
             loadedBullet--;
 
             //Create Bullet
-            GameObject bulletObj = Instantiate(monsterBullet, transform.position, transform.rotation);
-            Rigidbody2D rigid = bulletObj.GetComponent<Rigidbody2D>();
-            MonsterBullet bullet = bulletObj.GetComponent<MonsterBullet>();
+            var bulletGo = MonsterPool.instance.pool.Get();
+            var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
+            bulletGo.transform.position = transform.position;
+            bulletComponent.BulletInitialize(player.transform.position-transform.position);
 
-            Vector2 dir = player.transform.position - transform.position; 
-            dir.Normalize();
-
-            bullet.BulletInitialize(damage, dir);
         } 
         else if (loadedBullet <= 0)
         {

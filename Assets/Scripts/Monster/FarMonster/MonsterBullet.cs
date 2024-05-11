@@ -5,12 +5,10 @@ using UnityEngine.Pool;
 
 public class MonsterBullet : MonoBehaviour
 {
-    public float lifeTimer;
 
     [Header("Bullet Information")]
     public int damage;
     //public int bounce;
-    public float lifeTime;
 
     [Header("Bullet Movement")]
     public Vector2 dir;
@@ -18,7 +16,7 @@ public class MonsterBullet : MonoBehaviour
 
     #region Components
     private Rigidbody2D rigid;
-    public IObjectPool<GameObject> Pool { get; set; }
+    public IObjectPool<GameObject> pool { get; set; }
 
     #endregion
 
@@ -29,39 +27,27 @@ public class MonsterBullet : MonoBehaviour
 
     void Update()
     {
-        lifeTimer -= Time.deltaTime;
-
         rigid.velocity = dir * bulletSpeed;
 
-        if (!IsInDomain() || lifeTimer < 0.0f)
-            Destroy(this.gameObject);
+        if (!IsInDomain())
+            pool.Release(this.gameObject);
     }
 
-    public void BulletInitialize(int _damage, Vector2 _dir)
+    public void BulletInitialize(Vector2 _dir)
     {
-        damage = _damage;
         dir = _dir;
-        lifeTimer = lifeTime;
     }
 
     private bool IsInDomain()
     {
         return transform.position.x <= 100 && transform.position.x >= -100 && transform.position.y <= 100 && transform.position.y >= -100;
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Ground"))
+        if (other.CompareTag("Player") || other.CompareTag("Ground"))
         {
-            Destroy(this.gameObject);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Ground"))
-        {
-            Destroy(this.gameObject);
+            pool.Release(gameObject);
         }
     }
 }

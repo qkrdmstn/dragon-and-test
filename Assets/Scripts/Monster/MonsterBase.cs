@@ -34,6 +34,10 @@ public class MonsterBase : MonoBehaviour
     public MonsterStateMachine stateMachine { get; private set; }
     #endregion
 
+    #region Navigate
+    private UnityEngine.AI.NavMeshAgent agent;
+    #endregion
+
 
     [Header("CameraSetting")]
     public CamShakeProfile profile;
@@ -59,17 +63,23 @@ public class MonsterBase : MonoBehaviour
         playerScript = player.GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+
+        //navigate
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
     }
 
     public virtual void Update()
     {
-        stateMachine.currentState.Update();
-
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
             if (knockbackTimer <= 0) isKnockedBack = false;
         }
+        
+        //navigate
+        agent.SetDestination(player.transform.position);
     }
 
     //공격

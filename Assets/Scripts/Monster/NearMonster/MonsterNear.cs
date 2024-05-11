@@ -45,6 +45,7 @@ public class MonsterNear : MonsterBase
     public override void Update()
     {
         base.Update();
+        stateMachine.currentState.Update();
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
     }
 

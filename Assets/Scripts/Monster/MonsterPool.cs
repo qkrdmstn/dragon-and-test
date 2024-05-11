@@ -10,7 +10,7 @@ public class MonsterPool : MonoBehaviour
     public int maxPoolSize = 30;
     public GameObject monsterBullet;
 
-    public IObjectPool<GameObject> Pool { get; private set; }
+    public IObjectPool<GameObject> pool { get; private set; }
 
     private void Awake()
     {
@@ -25,14 +25,14 @@ public class MonsterPool : MonoBehaviour
 
     private void Init()
     {
-        Pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
+        pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
         OnDestroyPoolObject, true, defaultCapacity, maxPoolSize);
 
         // 미리 오브젝트 생성 해놓기
         for (int i = 0; i < defaultCapacity; i++)
         {
             MonsterBullet bullet = CreatePooledItem().GetComponent<MonsterBullet>();
-            bullet.Pool.Release(bullet.gameObject);
+            bullet.pool.Release(bullet.gameObject);
         }
     }
 
@@ -40,7 +40,7 @@ public class MonsterPool : MonoBehaviour
     private GameObject CreatePooledItem()
     {
         GameObject poolGo = Instantiate(monsterBullet);
-        poolGo.GetComponent<MonsterBullet>().Pool = this.Pool;
+        poolGo.GetComponent<MonsterBullet>().pool = this.pool;
         return poolGo;
     }
 
