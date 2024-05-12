@@ -5,28 +5,12 @@ using UnityEngine.UI;
 
 public class SkillCoolTimeImg : MonoBehaviour
 {
-    Image coolTimeImg;
-
+    public Image img;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        coolTimeImg = GetComponent<Image>(); 
+        img = GetComponent<Image>(); 
     }
 
-    public void SetCoolTimeUI(float coolTime)
-    {
-        StartCoroutine(CoolTimeFunc(coolTime));
-    }
 
-    IEnumerator CoolTimeFunc(float coolTime)
-    {
-        float timer = coolTime;
-        while (timer > 0.0f)
-        {
-            timer -= Time.deltaTime;
-            coolTimeImg.fillAmount = timer / coolTime;
-            yield return new WaitForFixedUpdate();
-        }
-        gameObject.SetActive(false);
-    }
 }

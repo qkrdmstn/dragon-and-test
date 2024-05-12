@@ -87,13 +87,10 @@ public class SkillManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Tab) && !GameManager.instance.player.isInteraction) //Skill Slot Swap
         {
-            HwatuData temp = hwatuCardSlotData[0];
-            hwatuCardSlotData[0] = hwatuCardSlotData[1];
-            hwatuCardSlotData[1] = temp;
-            UpdateSkillData();
+            SkillSwap();
         }
 
-        if(Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.player.isInteraction)
         {
             if (timer[0] > 0.0f)
                 Debug.Log("Q Skill is cooldown time");
@@ -108,10 +105,26 @@ public class SkillManager : MonoBehaviour
             else
                 Skill(1);
         }
+    }
 
-        //CoolTime
-        timer[0] -= Time.deltaTime;
-        timer[1] -= Time.deltaTime;
+    private void SkillSwap()
+    {
+        HwatuData temp = hwatuCardSlotData[0];
+        hwatuCardSlotData[0] = hwatuCardSlotData[1];
+        hwatuCardSlotData[1] = temp;
+        UpdateSkillData();
+
+        //CoolTime UI Swap
+        float tempTimer = timer[0];
+        timer[0] = timer[1];
+        timer[1] = tempTimer;
+        for (int i = 0; i < coolTimeImg.Length; i++)
+        {
+            if (skillData[i] == null)
+                continue;
+            coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
+            StartCoroutine(CoolTimeFunc(skillData[i].coolTime, i, false));
+        }
     }
 
     private void Skill(int i)
@@ -122,10 +135,10 @@ public class SkillManager : MonoBehaviour
             return;
         skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force);
 
-        //CoolTimer UI setting
+        //CoolTime UI setting
         timer[i] = data.coolTime;
         coolTimeImg[i].gameObject.SetActive(true);
-        coolTimeImg[i].SetCoolTimeUI(data.coolTime);
+        StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
     }
 
     public void AddSkill(HwatuData data)
@@ -162,12 +175,11 @@ public class SkillManager : MonoBehaviour
          if (skillCnt == 2)
         {
             UpdateSynergy();
-            //Sunergy UI Open
         }
 
     }
 
-    public void UpdateSynergy()
+    private void UpdateSynergy()
     {
         curSynergy = Hwatu.GetHwatuCombination(hwatuCardSlotData[0].hwatu, hwatuCardSlotData[1].hwatu);
     }
@@ -197,7 +209,7 @@ public class SkillManager : MonoBehaviour
         isSaving = false;
     }
 
-    public void UpdateSkillData()
+    private void UpdateSkillData()
     {
         for(int i=0; i < 2; i++)
         {
@@ -206,8 +218,11 @@ public class SkillManager : MonoBehaviour
                 string cardName = skillTable.SkillTableEntity[j].cardName;
                 SeotdaHwatuName type = (SeotdaHwatuName)Enum.Parse(typeof(SeotdaHwatuName), cardName);
                 if (hwatuCardSlotData[i] == null)
-                    continue;
-                if (hwatuCardSlotData[i].hwatu.type == type)
+                {
+                    skillData[i] = null;
+                    break;
+                }
+                else if (hwatuCardSlotData[i].hwatu.type == type)
                 {
                     skillData[i] = skillTable.SkillTableEntity[j];
                 }
@@ -216,15 +231,24 @@ public class SkillManager : MonoBehaviour
         UpdateSkillSlot();
     }
 
-    public void UpdateSkillSlot()
+    private void UpdateSkillSlot()
     {
         for(int i=0; i<2; i++)
-        {
             skillSlot[i].ClearSlot();
-        }
         for (int i = 0; i < 2; i++)
-        {
             skillSlot[i].UpdateSlot(hwatuCardSlotData[i]);
+    }
+
+    IEnumerator CoolTimeFunc(float coolTime, int i, bool flag)
+    {
+        if(flag)
+            timer[i] = coolTime;
+        while (timer[i] > 0.0f)
+        {
+            timer[i] -= Time.deltaTime;
+            coolTimeImg[i].img.fillAmount = timer[i] / coolTime;
+            yield return new WaitForFixedUpdate();
         }
+        coolTimeImg[i].gameObject.SetActive(false);
     }
 }
