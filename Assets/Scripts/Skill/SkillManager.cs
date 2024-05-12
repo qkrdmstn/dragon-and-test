@@ -21,12 +21,14 @@ public class SkillManager : MonoBehaviour
     public HwatuData[] hwatuCardSlotData;
     public SeotdaHwatuCombination curSynergy;
     public SkillBalanceEntity[] skillData;
+    public float[] timer;
 
     [Header("Skill UI info")]
     [SerializeField] private GameObject overwritingUI;
     private CardOverwirteBtn[] overwriteBtns;
     [SerializeField] private Transform skillSlotParent;
     private SkillSlotUI[] skillSlot;
+    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
 
     [Header("Skill State info")]
     public bool isSaving;
@@ -68,6 +70,13 @@ public class SkillManager : MonoBehaviour
         skillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4].transform;
         skillSlot = skillSlotParent.GetComponentsInChildren<SkillSlotUI>();
 
+        Transform cooltimeUIParent = skillSlotParent.GetChild(1);
+        coolTimeImg = new SkillCoolTimeImg[2];
+        coolTimeImg[0] = cooltimeUIParent.GetChild(0).GetComponent<SkillCoolTimeImg>();
+        coolTimeImg[1] = cooltimeUIParent.GetChild(1).GetComponent<SkillCoolTimeImg>();
+
+        timer = new float[2];
+
         hwatuCardSlotData = new HwatuData[2];
         skillData = new SkillBalanceEntity[2];
         skillCnt = 0;
@@ -85,9 +94,24 @@ public class SkillManager : MonoBehaviour
         }
 
         if(Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.player.isInteraction)
-            Skill(0);
+        {
+            if (timer[0] > 0.0f)
+                Debug.Log("Q Skill is cooldown time");
+            else
+                Skill(0);
+        }
+
         if (Input.GetKeyDown(KeyCode.E) && !GameManager.instance.player.isInteraction)
-            Skill(1);
+        {
+            if (timer[1] > 0.0f)
+                Debug.Log("E Skill is cooldown time");
+            else
+                Skill(1);
+        }
+
+        //CoolTime
+        timer[0] -= Time.deltaTime;
+        timer[1] -= Time.deltaTime;
     }
 
     private void Skill(int i)
@@ -97,6 +121,11 @@ public class SkillManager : MonoBehaviour
         if (hwatuCardSlotData[i] == null)
             return;
         skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force);
+
+        //CoolTimer UI setting
+        timer[i] = data.coolTime;
+        coolTimeImg[i].gameObject.SetActive(true);
+        coolTimeImg[i].SetCoolTimeUI(data.coolTime);
     }
 
     public void AddSkill(HwatuData data)
