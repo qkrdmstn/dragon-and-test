@@ -28,7 +28,7 @@ public class MonsterEscapeStateBird : MonsterState
         base.Update();
 
         //navigate
-        Vector3 targetPosition = monster.transform.position - player.transform.position.normalized * 5.0f;
+        Vector3 targetPosition = monster.transform.position - player.transform.position.normalized * monster.chaseRange * 1.2f;
         monster.agent.SetDestination(targetPosition);
 
         if(monster.distanceToPlayer > 0.6*monster.chaseRange) stateMachine.ChangeState(monster.attackState);

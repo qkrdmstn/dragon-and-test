@@ -15,7 +15,6 @@ public class MonsterEliteBird : MonsterBase
     #endregion
 
     #region States
-    public MonsterIdleStateBird idleState { get; private set; }
     public MonsterChaseStateBird chaseState { get; private set; }
     public MonsterEscapeStateBird escapeState { get; private set; }
     public MonsterAttackStateBird attackState { get; private set; }
@@ -31,7 +30,6 @@ public class MonsterEliteBird : MonsterBase
     public override void Awake()
     {
         base.Awake();
-        idleState = new MonsterIdleStateBird(stateMachine, player, this);
         chaseState = new MonsterChaseStateBird(stateMachine, player, this);
         escapeState = new MonsterEscapeStateBird(stateMachine, player, this);
         attackState = new MonsterAttackStateBird(stateMachine, player, this);
@@ -40,12 +38,11 @@ public class MonsterEliteBird : MonsterBase
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(idleState);
+        stateMachine.Initialize(chaseState);
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-        SpeedToZero();
     }
 
     public override void Update()

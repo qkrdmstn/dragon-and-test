@@ -29,6 +29,5 @@ public class MonsterChaseStateBird : MonsterState
         monster.agent.SetDestination(player.transform.position);
 
         if(monster.distanceToPlayer < monster.attackRange) stateMachine.ChangeState(monster.attackState);
-        if(monster.distanceToPlayer > monster.chaseRange) stateMachine.ChangeState(monster.idleState);
     }
 }
