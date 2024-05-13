@@ -197,6 +197,7 @@ public class SkillManager : MonoBehaviour
     public void OverwriteBtnEvent(int i, HwatuData data)
     {
         hwatuCardSlotData[i] = data;
+        timer[i] = 0.0f;
         saveSuccess = true;
         UpdateSynergy();
         InactiveOverwritingUI();
