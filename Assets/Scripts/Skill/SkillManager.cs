@@ -60,6 +60,17 @@ public class SkillManager : MonoBehaviour
     void Start()
     {
         hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
+        for(int i=0; i<20; i++)
+        {
+            for(int j=0; j<20; j++)
+            {
+                if(skillTable.SkillTableEntity[i].cardName == hwatuData[j].hwatu.type.ToString())
+                {
+                    hwatuData[j].info = skillTable.SkillTableEntity[i].info;
+                    break;
+                }
+            }
+        }
 
         GameObject blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
         overwritingUI = blanketUI.transform.GetChild(1).gameObject;
