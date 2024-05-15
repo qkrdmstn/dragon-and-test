@@ -387,6 +387,7 @@ MonoBehaviour:
   monsterA: {fileID: 2677914713688998695, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
   monsterB: {fileID: 3987194541163320713, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
   monsterC: {fileID: 559349037222028756, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
+  monsterElite: {fileID: 0}
   player: {fileID: 1053477274}
   spawnRadius: 2
   wave: 3
@@ -857,7 +858,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1890091215
 Transform:
   m_ObjectHideFlags: 0
@@ -1263,6 +1264,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MonsterA
       objectReference: {fileID: 0}
+    - target: {fileID: 1094389181774956580, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7031568284754073032, guid: 4437031ffb647724f90a31c98aaa1f55, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -1364,6 +1369,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MonsterB
       objectReference: {fileID: 0}
+    - target: {fileID: 8234548814235232306, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac023873cc9790c43b879f667d724b5f, type: 3}
 --- !u!1001 &4579592183115625274
@@ -1376,6 +1385,10 @@ PrefabInstance:
     - target: {fileID: 591381870279450078, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
       propertyPath: m_Name
       value: MonsterC
+      objectReference: {fileID: 0}
+    - target: {fileID: 591381870279450078, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1119852429590028280, guid: 40aa91234d3452f4a9bc5bde98d22749, type: 3}
       propertyPath: m_RootOrder
