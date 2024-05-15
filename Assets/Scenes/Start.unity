@@ -403,9 +403,6 @@ MonoBehaviour:
   inventorySlotParent: {fileID: 903720763}
   gunSlotParent: {fileID: 290267079}
   amorSlotParent: {fileID: 528306080}
-  materialItemSlot: []
-  gunItemSlot: []
-  amorItemSlot: {fileID: 0}
   itemUseUI: {fileID: 265182981}
 --- !u!4 &1078310380
 Transform:
@@ -589,7 +586,6 @@ MonoBehaviour:
   swapDelay: 0.1
   swapTimer: 0
   tempPrefab: {fileID: 2618088524873001669, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
-  childCnt: 0
 --- !u!4 &1264017607
 Transform:
   m_ObjectHideFlags: 0
@@ -1108,10 +1104,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3263377851302421784, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 652162874}
     - target: {fileID: 3263377852241448129, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_RootOrder
       value: 7
