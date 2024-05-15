@@ -14,7 +14,7 @@ public class PlayerSkill : MonoBehaviour
 
     public GameObject[] projectilePrefabs;
     public GameObject prefabs;
-    Dictionary<SeotdaHwatuName, GameObject> projectileDictionary;
+    Dictionary<SeotdaHwatuName, GameObject> projectileDictionary = new Dictionary<SeotdaHwatuName, GameObject>();
 
     #region Components
     private Player player;
@@ -38,6 +38,7 @@ public class PlayerSkill : MonoBehaviour
             }
         }
         player = GetComponent<Player>();
+
         impactLayerMask = LayerMask.GetMask("Monster", "MonsterBullet");
     }
 
@@ -49,7 +50,12 @@ public class PlayerSkill : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
-            SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
+            //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
+            DashSkill(7, 40);
+        }
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            BlankBullet(2, 6, 30);
         }
     }
     public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float speed)
@@ -163,7 +169,6 @@ public class PlayerSkill : MonoBehaviour
         player.isStateChangeable = false;
 
         float curDist = 0.0f;
-
         //Initial Direction Setting
         Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
         dir.Normalize();
