@@ -7,6 +7,7 @@ public class Spawner : MonoBehaviour
     public GameObject monsterA;
     public GameObject monsterB;
     public GameObject monsterC;
+    public GameObject monsterElite;
     public GameObject player;
     public float spawnRadius = 5f;
     public int wave = 3;
@@ -30,7 +31,7 @@ public class Spawner : MonoBehaviour
     {
         //areaCollider = possibleArea.GetComponent<Collider2D>();
         waveLeft = wave;
-        List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC};
+        List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC, monsterElite};
         /*
         spawnList = new GameObject[] { monsterList[2], monsterList[2],
                                         monsterList[1], monsterList[1], monsterList[1],
