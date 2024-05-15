@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
+        if (isBounded && Input.GetButtonDown("Interaction")) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
             player.isInteraction = false;   // player의 상호작용 여부 관찰
@@ -53,26 +53,20 @@ public class PlayerInteraction : MonoBehaviour
             {
                 case InteractionData.InteractionType.NPC:
                     // ToDo DIALOGUE INTERACTION
-                    if (interaction.eventName == "튜토리얼")
-                    {
-                        Debug.Log("interaction scarecrow");
-                        // TODO ----- 허수아비와 상호작용했다는 정보를 튜토리얼 함수쪽으로 전달 필요
-                        dialogueInteraction.isDone = true;
-                        break;
-                    }
-
                     dialogueInteraction.LoadEvent(interaction);
-
                     break;
                 case InteractionData.InteractionType.Item:
                     // ToDo ITEM INTERACTION
                     dialogueInteraction.LoadEvent(interaction);
                     shopInteraction.LoadEvent(interaction);
-
                     break;
                 case InteractionData.InteractionType.Blanket:
                     BlanketDoInteraction();
                     break;
+                case InteractionData.InteractionType.Tutorial:
+                    TutorialInteaction();
+                    break;
+
             }
         }
     }
@@ -145,5 +139,24 @@ public class PlayerInteraction : MonoBehaviour
             data.isActive = false;
             blanketInteraction.LoadEvent();
         }
+    }
+
+    private void TutorialInteaction()
+    {
+        TutorialUIGroup instance = UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>();
+        if (interaction.eventName == "족보")
+        {
+            if (instance.jokboInstantiate != null)
+            {
+                instance.jokboInstantiate.SetActive(false);
+                instance.isJokbo = true;
+            }
+        }
+        else if (interaction.eventName == "허수아비")
+        {
+            instance.isScarecrow = true;
+        }
+
+        dialogueInteraction.isDone = true;
     }
 }
