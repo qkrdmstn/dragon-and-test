@@ -91,12 +91,6 @@ public class MonsterBase : MonoBehaviour
             dir.Normalize();
             Knockback(dir, knockbackForce);
         }
-
-        if (collision.gameObject.CompareTag("State Effect"))
-        {
-            tempState = stateMachine.currentState;
-            stateMachine.ChangeState(effectState);
-        }
     }
 
     //넉백
@@ -123,6 +117,13 @@ public class MonsterBase : MonoBehaviour
         {
             Dead();
         }
+    }
+
+    //상태이상
+    public void EffectState()
+    {
+        tempState = stateMachine.currentState;
+        stateMachine.ChangeState(effectState);
     }
 
     //죽음
