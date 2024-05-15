@@ -26,7 +26,7 @@ public class BlanketInteraction : Interaction
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && player.isCombatZone && !isDone)
+        if (Input.GetKeyDown(KeyCode.Escape) && player.isCombatZone && !isDone && player.isInteraction)
         {
             if(synergyUI.gameObject.activeSelf)
                 synergyUI.gameObject.SetActive(false);
