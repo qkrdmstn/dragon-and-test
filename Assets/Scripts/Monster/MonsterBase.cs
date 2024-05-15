@@ -32,10 +32,8 @@ public class MonsterBase : MonoBehaviour
 
     #region States
     public MonsterStateMachine stateMachine { get; private set; }
-    #endregion
-
-    #region Navigate
-    private UnityEngine.AI.NavMeshAgent agent;
+    public MonsterEffectState effectState { get; private set; }
+    public MonsterState tempState { get; private set; }
     #endregion
 
 
@@ -49,6 +47,8 @@ public class MonsterBase : MonoBehaviour
     public virtual void Awake()
     {
         stateMachine = new MonsterStateMachine();
+        effectState = new MonsterEffectState(stateMachine, player, this);
+
         player = GameObject.FindWithTag("Player");
         eventManager = GameObject.FindObjectOfType <Spawner>().gameObject;
     }
@@ -63,11 +63,6 @@ public class MonsterBase : MonoBehaviour
         playerScript = player.GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
-
-        //navigate
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
     }
 
     public virtual void Update()
@@ -77,9 +72,6 @@ public class MonsterBase : MonoBehaviour
             knockbackTimer -= Time.deltaTime;
             if (knockbackTimer <= 0) isKnockedBack = false;
         }
-        
-        //navigate
-        agent.SetDestination(player.transform.position);
     }
 
     //공격
@@ -94,7 +86,6 @@ public class MonsterBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         {
             OnDamaged(1);
-
 
             Vector2 dir = this.transform.position - player.transform.position;
             dir.Normalize();
@@ -126,6 +117,13 @@ public class MonsterBase : MonoBehaviour
         {
             Dead();
         }
+    }
+
+    //상태이상
+    public void EffectState()
+    {
+        tempState = stateMachine.currentState;
+        stateMachine.ChangeState(effectState);
     }
 
     //죽음

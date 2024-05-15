@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterFar : MonsterBase
+public class MonsterEliteBird : MonsterBase
 {
     #region MonsterShoot
     public float monsterShootTimer;
@@ -15,9 +15,12 @@ public class MonsterFar : MonsterBase
     #endregion
 
     #region States
-    public MonsterChaseState chaseState { get; private set; }
-    public MonsterAttackState attackState { get; private set; }
+    public MonsterChaseStateBird chaseState { get; private set; }
+    public MonsterEscapeStateBird escapeState { get; private set; }
+    public MonsterAttackStateBird attackState { get; private set; }
+    public float chaseRange = 20.0f;
     public float attackRange = 8.0f;
+    public float escapeRange = 4.0f;
     public float distanceToPlayer;
     #endregion
 
@@ -28,9 +31,9 @@ public class MonsterFar : MonsterBase
     public override void Awake()
     {
         base.Awake();
-
-        chaseState = new MonsterChaseState(stateMachine, player, this);
-        attackState = new MonsterAttackState(stateMachine, player, this);
+        chaseState = new MonsterChaseStateBird(stateMachine, player, this);
+        escapeState = new MonsterEscapeStateBird(stateMachine, player, this);
+        attackState = new MonsterAttackStateBird(stateMachine, player, this);
     }
 
     public override void Start()
@@ -39,7 +42,7 @@ public class MonsterFar : MonsterBase
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
-        agent.updateUpAxis = false; 
+        agent.updateUpAxis = false;
 
         stateMachine.Initialize(chaseState);
     }
@@ -51,7 +54,9 @@ public class MonsterFar : MonsterBase
 
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
+        //Attack
         monsterShootTimer -= Time.deltaTime;
+        
     }
     
     public override void Attack()

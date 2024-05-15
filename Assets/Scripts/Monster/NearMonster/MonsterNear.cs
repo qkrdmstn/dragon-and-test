@@ -22,24 +22,29 @@ public class MonsterNear : MonsterBase
     public float attackRange = 1.0f;
     #endregion
 
-    public Chase chase;
-    public float tempSpeed;
+    #region Navigate
+    public UnityEngine.AI.NavMeshAgent agent;
+    #endregion
+
     public float distanceToPlayer;
+    public Vector3 direction;
 
     public override void Awake()
     {
         base.Awake();
         chaseState = new MonsterChaseStateNear(stateMachine, player, this);
         attackState = new MonsterAttackStateNear(stateMachine, player, this);
-        tempSpeed = moveSpeed;
     }
 
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(chaseState);
 
-        chase = GetComponent<Chase>();
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
+
+        stateMachine.Initialize(chaseState);
     }
 
     public override void Update()
@@ -53,13 +58,14 @@ public class MonsterNear : MonsterBase
     {
         inAttack = true;
         anim.SetTrigger("attacking");
+        direction = player.transform.position - transform.position;
     }
     
     public void AttackPoint()
     {
         GetComponent<Collider2D>().enabled = true;
-        newpos = transform.position+(Vector3)(chase.tempDir * armLength);
-        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, Mathf.Atan2(chase.tempDir.y, chase.tempDir.x) * Mathf.Rad2Deg, playerMask);
+        newpos = transform.position+(direction * armLength);
+        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, playerMask);
         foreach(Collider2D collider in collider2Ds)
         {
             if(collider.CompareTag("Player"))
@@ -77,11 +83,23 @@ public class MonsterNear : MonsterBase
 
     private void OnDrawGizmos()
     {
-        if(newpos != null)
+        if(inAttack)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(newpos, boxSize);
         }
         
+    }
+
+    public void SpeedToZero()
+    {
+        agent.speed = 0;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = 0;
+    }
+
+    public void SpeedReturn()
+    {
+        agent.speed = moveSpeed;
     }
 }

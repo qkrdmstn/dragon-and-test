@@ -19,11 +19,12 @@ public class Spawner : MonoBehaviour
     public GameObject possibleArea;
     public Collider2D areaCollider;
     public GameObject []positionDisplay;
-    public Vector3[] positions;
+    //public Vector3[] positions;
 
     //임시 구현
     public bool waveEnd = false;
     public int killCount = 0;
+    public Transform[] points;
 
     void Start()
     {
@@ -42,7 +43,8 @@ public class Spawner : MonoBehaviour
             else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
         }
 
-        //newWave();
+        points = GameObject.Find("SpawnPoint").GetComponentsInChildren<Transform>();
+        newWave();
     }
 
     public void deathCount()
@@ -59,34 +61,24 @@ public class Spawner : MonoBehaviour
 
     void newWave()
     {
+        waveLeft--;
         positionDisplay = new GameObject[quantity];
-        positions = new Vector3[quantity];
-        int spawnQuantity = 0;
-        for(int i=0; i<maxIteration; i++)
-        {
-            Vector3 spawnPosition = Random.insideUnitCircle * spawnRadius;
-            spawnPosition += player.transform.position;
-            if(areaCollider.OverlapPoint(spawnPosition))
-            {
-                positions[spawnQuantity] = spawnPosition;
-                positionDisplay[spawnQuantity] = Instantiate(prefabs, spawnPosition, Quaternion.identity);
-                spawnQuantity += 1;
-            }
-            if (spawnQuantity >= quantity) break;
 
-            if (i==maxIteration-1) Debug.Log("Warning: space for monster spawn is too small. Monsters may not all spawn. Change maxIteration or spawnRadius");
+        for (int i=0; i<quantity; i++)
+        {
+            positionDisplay[i] = Instantiate(prefabs, points[i].position, Quaternion.identity);
         }
 
-        Invoke("SpawnMonster", 2.0f);
-
+        Invoke("SpawnMonster", 1.5f);
     }
 
     void SpawnMonster()
     {
         for (int i = 0; i < quantity; i++)
         {
+            Debug.Log(spawnList[i]);
             Destroy(positionDisplay[i]);
-            Instantiate(spawnList[i], positions[i], Quaternion.identity);
+            Instantiate(spawnList[i], points[i].position, Quaternion.identity);
             monsterLeft++;
         }
     }
