@@ -23,7 +23,7 @@ public class MonsterNear : MonsterBase
     #endregion
 
     #region Navigate
-    private UnityEngine.AI.NavMeshAgent agent;
+    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public float distanceToPlayer;
@@ -39,11 +39,12 @@ public class MonsterNear : MonsterBase
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(chaseState);
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+
+        stateMachine.Initialize(chaseState);
     }
 
     public override void Update()
@@ -51,9 +52,6 @@ public class MonsterNear : MonsterBase
         base.Update();
         stateMachine.currentState.Update();
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-
-        //navigate
-        agent.SetDestination(player.transform.position);
     }
 
     public override void Attack()

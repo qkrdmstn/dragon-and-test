@@ -14,13 +14,23 @@ public class MonsterFar : MonsterBase
     public GameObject monsterBullet;
     #endregion
 
+    #region States
+    public MonsterChaseState chaseState { get; private set; }
+    public MonsterAttackState attackState { get; private set; }
+    public float attackRange = 8.0f;
+    public float distanceToPlayer;
+    #endregion
+
     #region Navigate
-    private UnityEngine.AI.NavMeshAgent agent;
+    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
     {
         base.Awake();
+
+        chaseState = new MonsterChaseState(stateMachine, player, this);
+        attackState = new MonsterAttackState(stateMachine, player, this);
     }
 
     public override void Start()
@@ -29,19 +39,19 @@ public class MonsterFar : MonsterBase
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
-        agent.updateUpAxis = false;
+        agent.updateUpAxis = false; 
+
+        stateMachine.Initialize(chaseState);
     }
 
     public override void Update()
     {
         base.Update();
-        
-        //Attack
-        monsterShootTimer -= Time.deltaTime;
-        if(!isReloading && !isKnockedBack && Vector3.Distance(transform.position, player.transform.position)<50.0f) Attack();
+        stateMachine.currentState.Update();
 
-        //navigate
-        agent.SetDestination(player.transform.position);
+        distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        
+        monsterShootTimer -= Time.deltaTime;
     }
     
     public override void Attack()
@@ -80,6 +90,18 @@ public class MonsterFar : MonsterBase
         yield return new WaitForSeconds(monsterReloadDelay);
         loadedBullet = magazineSize;
         isReloading = false;
+    }
+
+    public void SpeedToZero()
+    {
+        agent.speed = 0;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = 0;
+    }
+
+    public void SpeedReturn()
+    {
+        agent.speed = moveSpeed;
     }
 
 }

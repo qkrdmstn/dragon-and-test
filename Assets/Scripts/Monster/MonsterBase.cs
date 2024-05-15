@@ -32,6 +32,8 @@ public class MonsterBase : MonoBehaviour
 
     #region States
     public MonsterStateMachine stateMachine { get; private set; }
+    public MonsterEffectState effectState { get; private set; }
+    public MonsterState tempState { get; private set; }
     #endregion
 
 
@@ -45,6 +47,8 @@ public class MonsterBase : MonoBehaviour
     public virtual void Awake()
     {
         stateMachine = new MonsterStateMachine();
+        effectState = new MonsterEffectState(stateMachine, player, this);
+
         player = GameObject.FindWithTag("Player");
         eventManager = GameObject.FindObjectOfType <Spawner>().gameObject;
     }
@@ -83,10 +87,15 @@ public class MonsterBase : MonoBehaviour
         {
             OnDamaged(1);
 
-
             Vector2 dir = this.transform.position - player.transform.position;
             dir.Normalize();
             Knockback(dir, knockbackForce);
+        }
+
+        if (collision.gameObject.CompareTag("State Effect"))
+        {
+            tempState = stateMachine.currentState;
+            stateMachine.ChangeState(effectState);
         }
     }
 
