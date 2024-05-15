@@ -16,7 +16,7 @@ public class BlanketInteractionData : InteractionData
 
     private void Update()
     {
-        if(isClear != spawner.waveEnd)
-            isClear = spawner.waveEnd;
+        //if(isClear != spawner.waveEnd)
+        //    isClear = spawner.waveEnd;
     }
 }

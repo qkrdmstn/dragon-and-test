@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 
 public class PlayerSkill : MonoBehaviour
 {
-    public IObjectPool<GameObject> pool { get; set; }
+    //public IObjectPool<GameObject> pool { get; set; }
 
     [Header("Skill info")]
     [Space(10f)]
@@ -44,19 +44,19 @@ public class PlayerSkill : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
-        }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
-            DashSkill(7, 40);
-        }
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            BlankBullet(2, 6, 30);
-        }
+        //if(Input.GetKeyDown(KeyCode.G))
+        //{
+        //    SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
+        //}
+        //if (Input.GetKeyDown(KeyCode.H))
+        //{
+        //    //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
+        //    DashSkill(7, 40);
+        //}
+        //if(Input.GetKeyDown(KeyCode.J))
+        //{
+        //    BlankBullet(2, 6, 30);
+        //}
     }
     public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float speed)
     {
@@ -135,8 +135,8 @@ public class PlayerSkill : MonoBehaviour
             if (target.CompareTag("MonsterBullet"))
             {
                 //Todo. Change from Monster Bullet Pool to inactive
-                pool.Release(inRangeTarget[i].gameObject);
-
+                MonsterPool.instance.pool.Release(inRangeTarget[i].gameObject);
+                
 
             }
             else if (target.CompareTag("Monster"))
