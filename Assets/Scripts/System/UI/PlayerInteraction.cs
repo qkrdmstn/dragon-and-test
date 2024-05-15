@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (isBounded && Input.GetButtonDown("Interaction")) DoInteraction();
+        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
             player.isInteraction = false;   // player의 상호작용 여부 관찰

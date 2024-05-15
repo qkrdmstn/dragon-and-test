@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class PlayerSkill : MonoBehaviour
 {
+    public IObjectPool<GameObject> pool { get; set; }
+
     [Header("Skill info")]
     [Space(10f)]
     private int impactLayerMask;
@@ -126,7 +129,8 @@ public class PlayerSkill : MonoBehaviour
             if (target.CompareTag("MonsterBullet"))
             {
                 //Todo. Change from Monster Bullet Pool to inactive
-                Destroy(inRangeTarget[i].gameObject);
+                pool.Release(inRangeTarget[i].gameObject);
+
 
             }
             else if (target.CompareTag("Monster"))

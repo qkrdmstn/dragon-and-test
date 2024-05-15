@@ -28,7 +28,7 @@ public class Spawner : MonoBehaviour
 
     void Start()
     {
-        areaCollider = possibleArea.GetComponent<Collider2D>();
+        //areaCollider = possibleArea.GetComponent<Collider2D>();
         waveLeft = wave;
         List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC};
         /*

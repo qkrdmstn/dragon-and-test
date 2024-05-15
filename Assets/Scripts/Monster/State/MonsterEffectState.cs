@@ -15,6 +15,7 @@ public class MonsterEffectState : MonsterState
     {
         base.Enter();
         Debug.Log("속박됨");
+        monster.inEffect = true;
         monster.rigidBody.velocity = Vector3.zero;
         monster.rigidBody.angularVelocity = 0;
         effectTime = 2.0f;
@@ -22,6 +23,8 @@ public class MonsterEffectState : MonsterState
 
     public override void Exit()
     {
+        Debug.Log("속박해제");
+        monster.inEffect = false;
         base.Exit();
     }
 

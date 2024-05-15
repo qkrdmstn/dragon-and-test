@@ -42,6 +42,7 @@ public class MonsterBase : MonoBehaviour
     public CinemachineImpulseSource impulseSource;
 
     public temp temp;
+    public bool inEffect = false;
 
 
     public virtual void Awake()
@@ -50,7 +51,7 @@ public class MonsterBase : MonoBehaviour
         effectState = new MonsterEffectState(stateMachine, player, this);
 
         player = GameObject.FindWithTag("Player");
-        eventManager = GameObject.FindObjectOfType <Spawner>().gameObject;
+        eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
 
     public virtual void Start()
@@ -122,7 +123,8 @@ public class MonsterBase : MonoBehaviour
     //상태이상
     public void EffectState()
     {
-        tempState = stateMachine.currentState;
+        if (!inEffect) tempState = stateMachine.currentState;
+        //Debug.Log(tempState);
         stateMachine.ChangeState(effectState);
     }
 
