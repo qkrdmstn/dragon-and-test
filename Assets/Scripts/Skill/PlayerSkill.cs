@@ -8,7 +8,11 @@ public class PlayerSkill : MonoBehaviour
     [Space(10f)]
     private int impactLayerMask;
     float _impactRadius;
-    public float testDashRange;
+
+    public GameObject[] projectilePrefabs;
+    public GameObject prefabs;
+    Dictionary<SeotdaHwatuName, GameObject> projectileDictionary;
+
     #region Components
     private Player player;
     #endregion
@@ -16,6 +20,20 @@ public class PlayerSkill : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        projectilePrefabs = Resources.LoadAll<GameObject>("Prefabs/SkillProjectile");
+        for(int i=0; i<projectilePrefabs.Length; i++)
+        {
+            string objectName = projectilePrefabs[i].name;
+            for (int j=0; j<20; j++)
+            {
+                string cardName = ((SeotdaHwatuName)j).ToString();
+                if (objectName.Contains(cardName))
+                {
+                    projectileDictionary.Add((SeotdaHwatuName)j, projectilePrefabs[i]);
+                    break;
+                }
+            }
+        }
         player = GetComponent<Player>();
         impactLayerMask = LayerMask.GetMask("Monster", "MonsterBullet");
     }
@@ -24,12 +42,16 @@ public class PlayerSkill : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.G))
         {
-            DashSkill(testDashRange);
+            SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
         }
     }
-    public void UseSkill(SeotdaHwatuName name, int damage, float range, float force)
+    public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float speed)
     {
-        Debug.Log(name + " " + damage + " " + range + " " + force);
+        Debug.Log(name + " damage:" + damage + " range:" + range + " force:" + force + " speed:" + speed);
         switch(name)
         {
             //Main Card
@@ -40,6 +62,7 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuName.MarCherryLight:
                 break;
             case SeotdaHwatuName.AprCuckoo:
+                SokbakSkill(name, damage, range, speed);
                 break;
             case SeotdaHwatuName.MayBridge:
                 break;
@@ -49,6 +72,7 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuName.JulBoar:
                 break;
             case SeotdaHwatuName.AugMoon:
+                SokbakSkill(name, damage, range, speed);
                 break;
             case SeotdaHwatuName.SepSakajuki:
                 BlankBullet(damage, range, force);
@@ -57,34 +81,34 @@ public class PlayerSkill : MonoBehaviour
                 break;
             //Sub Card
             case SeotdaHwatuName.JanPine:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.FebPrunus:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.MarCherry:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.AprWisteria:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.MayIris:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.JunPeony:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.JulLespedeza:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.AugGoose:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.SepChrysanthemum:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
             case SeotdaHwatuName.OctFoliage:
-                DashSkill(range);
+                DashSkill(range, speed);
                 break;
         }
 
@@ -123,19 +147,18 @@ public class PlayerSkill : MonoBehaviour
         Gizmos.DrawWireSphere(this.transform.position, _impactRadius);
     }
 
-    private void DashSkill(float dist)
+    private void DashSkill(float dist, float speed)
     {
-        StartCoroutine(DashSkillCoroutine(dist));
+        StartCoroutine(DashSkillCoroutine(dist, speed));
     }
 
-    IEnumerator DashSkillCoroutine(float dist)
+    IEnumerator DashSkillCoroutine(float dist, float speed)
     {
         //Change Layer & Change Color
         gameObject.layer = 14;
         player.isStateChangeable = false;
 
         float curDist = 0.0f;
-        float vel = 40;
 
         //Initial Direction Setting
         Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
@@ -143,8 +166,8 @@ public class PlayerSkill : MonoBehaviour
 
         while (dist >= curDist)
         {
-            float dv = Time.deltaTime * vel;
-            Vector2 ds = Time.deltaTime * vel * dir;
+            float dv = Time.deltaTime * speed;
+            Vector2 ds = Time.deltaTime * speed * dir;
             gameObject.transform.position += new Vector3(ds.x, ds.y, 0);
             curDist += dv;
             yield return new WaitForFixedUpdate();
@@ -152,5 +175,30 @@ public class PlayerSkill : MonoBehaviour
 
         player.isStateChangeable = true;
         gameObject.layer = 6;
+    }
+
+    private void SokbakSkill(SeotdaHwatuName name, int damage, float dist, float projectileSpeed)
+    {
+        //방위
+        int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
+        int[] dy = { 1, 0, -1, 0, 1, 1, -1, -1 };
+        float[] degree = { 90.0f, 0.0f, -90.0f, 180.0f, 135.0f, 45.0f, -45.0f, -135.0f};
+
+        int numProjectile = 0;
+        if (name == SeotdaHwatuName.AprCuckoo)
+            numProjectile = 4;
+        else if (name == SeotdaHwatuName.AugMoon)
+            numProjectile = 8;
+        
+        for(int i=0; i< numProjectile; i++)
+        {
+            Vector2 dir = new Vector2(dx[i], dy[i]);
+            dir.Normalize();
+
+            GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
+            SkillProjectile projectile = projectilObj.GetComponent<SkillProjectile>();
+
+            projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+        }
     }
 }

@@ -60,7 +60,8 @@ public class SkillManager : MonoBehaviour
     void Start()
     {
         hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
-        for(int i=0; i<20; i++)
+        skillTable = Resources.Load<SkillBalanceTable>("SkillDB/SkillBalanceTable");
+        for (int i=0; i<20; i++)
         {
             for(int j=0; j<20; j++)
             {
@@ -120,6 +121,7 @@ public class SkillManager : MonoBehaviour
 
     private void SkillSwap()
     {
+        //Data Swap
         HwatuData temp = hwatuCardSlotData[0];
         hwatuCardSlotData[0] = hwatuCardSlotData[1];
         hwatuCardSlotData[1] = temp;
@@ -138,13 +140,14 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    //Use Skill
     private void Skill(int i)
     {
         PlayerSkill skill = GameManager.instance.player.GetComponent<PlayerSkill>();
         SkillBalanceEntity data = skillData[i];
         if (hwatuCardSlotData[i] == null)
             return;
-        skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force);
+        skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force, data.speed);
 
         //CoolTime UI setting
         timer[i] = data.coolTime;
@@ -152,6 +155,7 @@ public class SkillManager : MonoBehaviour
         StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
     }
 
+    //Skill Add on Slot
     public void AddSkill(HwatuData data)
     {
         isSaving = true;

@@ -130,7 +130,6 @@ public class Gun : MonoBehaviour
 
             //Create Bullet
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
-            Rigidbody2D rigid = bulletObj.GetComponent<Rigidbody2D>();
             Bullet bullet = bulletObj.GetComponent<Bullet>();
 
             Vector2 dir = GetShootingDirection();

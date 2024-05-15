@@ -117,13 +117,13 @@ public class BlanketInteraction : Interaction
     IEnumerator WaitOverwriting()
     {
         yield return new WaitUntil(() => !SkillManager.instance.isSaving && SkillManager.instance.saveSuccess);
-        InactiveUI();
+        InactiveUI(false);
     }
 
     public void CancleBtnEvent(int i)
     {
         if (i == 0)
-            InactiveUI();
+            InactiveUI(true);
         cancleUI.SetActive(false);
     }
 
@@ -138,9 +138,9 @@ public class BlanketInteraction : Interaction
         }
     }
 
-    private void InactiveUI()
+    private void InactiveUI(bool isCancle)
     {
-        if (SkillManager.instance.skillCnt == 2)
+        if (SkillManager.instance.skillCnt == 2 && !isCancle) //스킬 획득 포기 시, SynergyUI Active X
             StartCoroutine(ActiveSynergyUI());
         else
         {
