@@ -12,7 +12,8 @@ public class MapOutOfRange : MonoBehaviour
         {
             if (gameObject.name.Contains("Battle"))
             {
-                _sceneInfo = Random.Range(4, 6);
+                //_sceneInfo = Random.Range(4, 6);
+                _sceneInfo = 4;
             }
             UIManager.instance.fade.ManageFade(_sceneInfo);
 

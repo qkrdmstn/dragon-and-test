@@ -52,6 +52,7 @@ public class MonsterEliteBird : MonsterBase
         base.Update();
         stateMachine.currentState.Update();
 
+        Debug.Log(stateMachine.currentState);
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
         //Attack

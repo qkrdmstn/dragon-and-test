@@ -42,14 +42,14 @@ public class SkillManager : MonoBehaviour
         }
         else if (instance != this)
         { //이미 생성되어 있으면
-            if (ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
-                || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
-                || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C
-                || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Puzzle_1
-                || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Boss_1)
-            {
-                Destroy(instance); //새로만든거 삭제
-            }
+            //if (ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
+            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
+            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C
+            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Puzzle_1
+            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Boss_1)
+            //{
+            //    Destroy(instance); //새로만든거 삭제
+            //}
             Destroy(this.gameObject); //새로만든거 삭제
         }
 

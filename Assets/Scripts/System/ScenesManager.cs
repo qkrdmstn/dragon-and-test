@@ -85,6 +85,7 @@ public class ScenesManager : MonoBehaviour
 
             case SceneInfo.Town_1:      // 2
                 UIManager.instance.SceneUI["Tutorial"].SetActive(false);
+                UIManager.instance.SceneUI["Battle_1"].SetActive(false);
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();

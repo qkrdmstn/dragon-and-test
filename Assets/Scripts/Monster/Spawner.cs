@@ -52,8 +52,7 @@ public class Spawner : MonoBehaviour
     {
         killCount++;
         monsterLeft--;
-        if (killCount >= 10)
-            waveEnd = true;
+
         if (monsterLeft==0 && !waveEnd)
         {
             newWave();
@@ -63,6 +62,9 @@ public class Spawner : MonoBehaviour
     void newWave()
     {
         waveLeft--;
+        if (waveLeft < 0)
+            waveEnd = true;
+
         positionDisplay = new GameObject[quantity];
 
         for (int i=0; i<quantity; i++)

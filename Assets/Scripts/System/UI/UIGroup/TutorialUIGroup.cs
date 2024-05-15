@@ -144,7 +144,7 @@ public class TutorialUIGroup : UIGroup
                 }
                 break;
             default:    // 이외 일반 대화 출력
-                if (Input.GetButtonDown("Tutorial"))
+                if (Input.GetKeyDown(KeyCode.F))
                 {
                     if (curIdx > 9)
                     {

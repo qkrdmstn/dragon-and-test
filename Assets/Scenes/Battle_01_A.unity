@@ -4331,7 +4331,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052798229}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.51, y: 11.21, z: 0}
+  m_LocalPosition: {x: 0.78, y: 7.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5224,7 +5224,7 @@ MonoBehaviour:
   monsterElite: {fileID: 521576205608481204, guid: 64593d39f84525f48ae70fe80936047b, type: 3}
   player: {fileID: 306135834}
   spawnRadius: 20
-  wave: 3
+  wave: 0
   quantity: 5
   maxIteration: 50
   prefabs: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
@@ -7827,7 +7827,7 @@ PrefabInstance:
     - target: {fileID: 3263377852241448134, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: SceneUI.array.Array.data[3].Value
       value: 
-      objectReference: {fileID: 2017299580}
+      objectReference: {fileID: 0}
     - target: {fileID: 3263377852241448135, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_Name
       value: UIManager
@@ -8316,11 +8316,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1157968673030122329, guid: 111efdddea8895e4dbfc6494cb05cf2c, type: 3}
   m_PrefabInstance: {fileID: 2007671761}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2017299580 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2252652623288363, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 1933356449}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2043631389
 PrefabInstance:
@@ -14014,7 +14009,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -4
   m_Sprite: {fileID: 21300000, guid: 5713548b6189076489ecae57b8e4b902, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -14771,6 +14766,7 @@ GameObject:
   - component: {fileID: 7477828930962924889}
   - component: {fileID: 566309023610947850}
   - component: {fileID: 7477828930962924890}
+  - component: {fileID: 7477828930962924891}
   m_Layer: 0
   m_Name: 00_BG
   m_TagString: Untagged
@@ -31603,6 +31599,35 @@ MonoBehaviour:
   m_Area: 0
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!60 &7477828930962924891
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380887530885910638}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 25, y: 25}
+    newSize: {x: 25, y: 25}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -12.5, y: 25}
+      - {x: -12.5, y: 0}
+      - {x: 12.5, y: 0}
+      - {x: 12.5, y: 25}
 --- !u!1 &7641686146327839016
 GameObject:
   m_ObjectHideFlags: 0
