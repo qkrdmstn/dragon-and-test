@@ -198,7 +198,7 @@ public class PlayerSkill : MonoBehaviour
             GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
             SkillProjectile projectile = projectilObj.GetComponent<SkillProjectile>();
 
-            projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+            projectile.Initialize(0, dist, dir, projectileSpeed, StatusEffect.Sokbak);
         }
     }
 }
