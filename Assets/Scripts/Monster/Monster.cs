@@ -98,7 +98,6 @@ public class Monster : MonoBehaviour
     private void Dead()
     {
         Destroy(gameObject);
-        spawn.deathCount();
         temp.instance.killScore += 1;
     }
 }

@@ -1,88 +1,199 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+
+//public enum MonsterType1
+//{
+//    BirdWarrior,
+//    BirdTanker,
+//    BirdAcher,
+//    BirdCrossbowman,
+//    BirdBerserker
+//}
 
 public class Spawner : MonoBehaviour
 {
-    public GameObject monsterA;
-    public GameObject monsterB;
-    public GameObject monsterC;
-    public GameObject monsterElite;
-    public GameObject player;
-    public float spawnRadius = 5f;
-    public int wave = 3;
-    public int quantity = 10;
-    public int maxIteration = 50;
-    private int waveLeft = 0;
-    private int monsterLeft = 0;
-    private GameObject[] spawnList;
-    public GameObject prefabs;
-    public GameObject possibleArea;
-    public Collider2D areaCollider;
-    public GameObject []positionDisplay;
-    //public Vector3[] positions;
+    [Header("Spawn Table")]
+    [SerializeField] private string fileName;
+    [SerializeField] private int stage;
+    List<Dictionary<string, object>> spawnTable;
 
-    //임시 구현
-    public bool waveEnd = false;
-    public int killCount = 0;
-    public Transform[] points;
+    [Header("DB")]
+    [SerializeField] private GameObject[] monsterPrefabs;
+    [SerializeField] private GameObject circle; //몬스터 생성 위치
+    [SerializeField] private Dictionary<string, GameObject> monsterDictionary;
+    [SerializeField] private List<SpawnDB> spawnDB;
 
-    void Start()
+    [Header("Block info")]
+    public BlockInfo[] blocks;
+    public int curBlockNum;
+
+    [Header("Wave info")]
+    [SerializeField] private int curWave;
+    [SerializeField] private int numMonster;
+
+    [Header("Spawn info")]
+    [SerializeField] private float spawnDelay = 1.5f;
+
+    // Start is called before the first frame update
+    void Awake()
     {
-        //areaCollider = possibleArea.GetComponent<Collider2D>();
-        waveLeft = wave;
-        List<GameObject> monsterList = new List<GameObject> {monsterA, monsterB, monsterC, monsterElite};
-        /*
-        spawnList = new GameObject[] { monsterList[2], monsterList[2],
-                                        monsterList[1], monsterList[1], monsterList[1],
-                                        monsterList[0],monsterList[0],monsterList[0],monsterList[0],monsterList[0]};
-        */
-        spawnList = new GameObject[quantity];
-        for (int i=0;i<quantity;i++)
-        {
-            if (i<monsterList.Count) spawnList[i] = monsterList[i];
-            else spawnList[i] = monsterList[Random.Range(0, monsterList.Count)];
-        }
-
-        points = GameObject.Find("SpawnPoint").GetComponentsInChildren<Transform>();
-        newWave();
+        InitializeMonsterDictionary();
+        InitializeBlockInfo();
+        InitializeSpawnDB();
     }
 
-    public void deathCount()
+    public void Start()
     {
-        killCount++;
-        monsterLeft--;
+        UpdateCurBlockNumber(ComputeInitialBlockNumber());
+    }
 
-        if (monsterLeft==0 && !waveEnd)
+    #region Initialize Func
+    private void InitializeBlockInfo()
+    {
+        blocks = FindObjectsOfType<BlockInfo>();
+        Array.Sort(blocks);
+
+        for (int i = 0; i < blocks.Length; i++)
+            blocks[i].InitializeBlockInfo(i);
+    }
+
+    private void InitializeSpawnDB()
+    {
+        //CSV parsing
+        spawnTable = CSVReader.Read("SpawnDB/" + fileName);
+        spawnDB = new List<SpawnDB>();
+        for (int i = 0; i < spawnTable.Count; i++)
         {
+            int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
+            int wave = int.Parse(spawnTable[i]["wave"].ToString());
+            string monsterType = spawnTable[i]["monsterType"].ToString();
+            float posX = float.Parse(spawnTable[i]["gridPosX"].ToString());
+            float posY = float.Parse(spawnTable[i]["gridPosY"].ToString());
+            Vector2 spawnPosition = new Vector2(posX, posY);
+
+            SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
+            spawnDB.Add(data);
+        }
+    }
+
+    private void InitializeMonsterDictionary()
+    {
+        //Monster Dictionary Setting
+        monsterPrefabs = Resources.LoadAll<GameObject>("Prefabs/Monster/Stage" + stage.ToString());
+        monsterDictionary = new Dictionary<string, GameObject>();
+        for (int i = 0; i < monsterPrefabs.Length; i++)
+        {
+            monsterDictionary.Add(monsterPrefabs[i].name, monsterPrefabs[i]);
+        }
+    }
+    #endregion
+
+    private int ComputeInitialBlockNumber()
+    {
+        //플레이어와 가장 가까운 block이 시작 block
+        Vector3 playerPos = GameManager.instance.player.transform.position; //GameManager.instance.player 초기화는 Awake 이후
+        int idx = 0;
+        float minDist = Vector3.Magnitude(blocks[0].transform.position - playerPos);
+        for (int i = 1; i < blocks.Length; i++)
+        {
+            float dist = Vector3.Magnitude(blocks[i].transform.position - playerPos);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                idx = i;
+            }
+        }
+
+        curWave = 0;
+        return blocks[idx].blockNumber;
+    }
+
+    public void UpdateCurBlockNumber(int blockNum)
+    {
+        curBlockNum = blockNum;
+        if (!blocks[curBlockNum].blockClear)
+        {
+            //Wave Start
             newWave();
         }
     }
 
-    void newWave()
+    private void newWave()
     {
-        waveLeft--;
-        if (waveLeft < 0)
-            waveEnd = true;
-
-        positionDisplay = new GameObject[quantity];
-
-        for (int i=0; i<quantity; i++)
+        //Setting Wave Data
+        numMonster = 0; //wave monster count
+        int idx = 0;
+        while (spawnDB[idx].blockNum != curBlockNum || spawnDB[idx].wave != curWave)
         {
-            positionDisplay[i] = Instantiate(prefabs, points[i].position, Quaternion.identity);
+            idx++;
+            if(idx >= spawnDB.Count) //끝까지 일치하는 정보를 못 찾은 경우
+            {
+                BlockClear();
+                return;
+            }
         }
+        
+        List<GameObject> monsters = new List<GameObject>();
+        List<Vector3> positions = new List<Vector3>();
+        while (spawnDB[idx].blockNum == curBlockNum && spawnDB[idx].wave == curWave)
+        {
+            GameObject monster = monsterDictionary[spawnDB[idx].monsterType];
+            //GridPos -> WorldPos
+            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].spawnGridPos);
+            monsters.Add(monster);
+            positions.Add(worldPos);
+            idx++;
+            numMonster++;
 
-        Invoke("SpawnMonster", 1.5f);
+            if (idx >= spawnDB.Count) //끝까지 찾음
+                break;
+        }       
+        StartCoroutine(SpawnMonster(monsters, positions));
     }
 
-    void SpawnMonster()
+    IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
     {
-        for (int i = 0; i < quantity; i++)
+        //위치 미리보기
+        List<GameObject> displayPos = new List<GameObject>();
+        for(int i=0; i< positions.Count; i++)
+            displayPos.Add(Instantiate(circle, positions[i], Quaternion.identity));
+
+        //Spawn Delay
+        float spawnTimer = spawnDelay;
+        while(spawnTimer >= 0.0)
         {
-            Debug.Log(spawnList[i]);
-            Destroy(positionDisplay[i]);
-            Instantiate(spawnList[i], points[i].position, Quaternion.identity);
-            monsterLeft++;
+            spawnTimer -= Time.deltaTime;
+            yield return null;
         }
+
+        //몬스터 생성
+        for (int i = 0; i < positions.Count; i++)
+        {
+            Destroy(displayPos[i]);
+            Instantiate(monsters[i], positions[i], Quaternion.identity);
+        }
+    }
+
+    public void DeathCount()
+    {
+        numMonster--;
+        //Wave End
+        if (numMonster <= 0)
+            WaveClear();
+    }
+
+    private void WaveClear()
+    {
+        curWave++;
+        newWave();
+    }
+
+    private void BlockClear()
+    {
+        curWave = 0;
+        blocks[curBlockNum].blockClear = true;
     }
 }

@@ -132,7 +132,7 @@ public class MonsterBase : MonoBehaviour
     public void Dead()
     {
         Destroy(gameObject);
-        spawn.deathCount();
+        spawn.DeathCount();
         temp.killScore += 1;
         //temp.instance.killScore += 1;
     }
