@@ -31,7 +31,9 @@ public class GameManager : MonoBehaviour
 
     public void GoToScene(int _sceneInfo)
     {
-        ScenesManager.instance.ChangeScene((SceneInfo)_sceneInfo);
+        UIManager.instance.fade.ManageFade(_sceneInfo);
+        //ScenesManager.instance.ChangeScene((SceneInfo)_sceneInfo);
+        SoundManager.instance.ManageSound(_sceneInfo);
 
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(false);
         UIManager.instance.SceneUI["Battle_1"].SetActive(false);

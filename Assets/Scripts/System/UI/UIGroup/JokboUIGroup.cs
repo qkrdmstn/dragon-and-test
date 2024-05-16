@@ -20,6 +20,8 @@ public class JokboUIGroup : UIGroup {
 
     private void Update()
     {
+        if (ScenesManager.instance.GetSceneNum() == 0) return;
+
         if (Input.GetKeyDown(KeyCode.K))
         {   // ????? ???? k? ??? ?? UI? ????
             SetUI();

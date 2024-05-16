@@ -34,13 +34,17 @@ public class SoundManager : MonoBehaviour
     // sceneNum : BGM clip
     // 0 : start
     // 1 : tutorial
-    // 2 : town
-    // 3 : battle
+    // 2 : town 아직 없어서 배틀이 2
+    // 2 : battle
 
     public void ManageSound(int _sceneNum)
     {
-        if(_sceneNum > 1) 
+        
+        if(_sceneNum == 2) 
             _sceneNum = 1;
+        else if(_sceneNum >= 3)
+            _sceneNum = 2;
+
 
         StartCoroutine(FadeSound(BGMClips[_sceneNum]));
     }
