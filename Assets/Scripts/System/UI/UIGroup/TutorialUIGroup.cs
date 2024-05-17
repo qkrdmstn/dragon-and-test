@@ -264,17 +264,40 @@ public class TutorialUIGroup : UIGroup
         }
 
         else if (!isSkill && curType == "Skill" && Input.GetKeyDown(KeyCode.Q))
-        {    
+        {
+            FindBlankBullet();
+
             Vector2 impactDir = testMonsterInstantiate.transform.position - GameManager.instance.player.transform.position;
             impactDir.Normalize();
 
             testMonsterInstantiate.GetComponent<MonsterTutorial>().Knockback(impactDir, impactForce);
-            //testMonsterInstantiate.SetActive(false);
+            StartCoroutine(KnockBackDone());
 
             return isSkill = true;
         }
 
         return false;
+    }
+
+    private static void FindBlankBullet()
+    {
+        for (int i = 0; i < SkillManager.instance.hwatuData.Length; i++)
+        {
+            if (SkillManager.instance.hwatuData[i].hwatu.type == SeotdaHwatuName.JunButterfly)
+            {
+                HwatuData blankBullet = SkillManager.instance.hwatuData[i];
+                SkillManager.instance.AddSkill(blankBullet);
+                break;
+            }
+        }
+    }
+
+    IEnumerator KnockBackDone()
+    {   // 넉백이 완료되면 몬스터가 사라짐
+        while (testMonsterInstantiate.GetComponent<MonsterTutorial>().isKnockedBack) yield return null;
+
+        yield return new WaitForSeconds(0.5f);
+        testMonsterInstantiate.SetActive(false);
     }
 
     //IEnumerator CheckStateCouroutine(string curType)
