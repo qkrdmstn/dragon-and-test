@@ -302,7 +302,7 @@ public class TutorialUIGroup : UIGroup
 
     IEnumerator KnockBackDone()
     {   // 넉백이 완료되면 몬스터가 사라짐
-        while (testMonsterInstantiate.GetComponent<MonsterTutorial>().isKnockedBack) yield return null;
+        yield return new WaitUntil(() => testMonsterInstantiate.GetComponent<MonsterTutorial>().isKnockedBack);
 
         yield return new WaitForSeconds(0.5f);
         testMonsterInstantiate.SetActive(false);

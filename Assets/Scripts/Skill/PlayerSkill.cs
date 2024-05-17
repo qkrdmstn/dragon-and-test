@@ -141,11 +141,15 @@ public class PlayerSkill : MonoBehaviour
             else if (target.CompareTag("Monster"))
             {
                 MonsterBase monster = target.GetComponent<MonsterBase>();
-                Vector2 impactDir = target.transform.position - this.transform.position;
-                impactDir.Normalize();
 
-                monster.Knockback(impactDir, impactForce);
-                monster.OnDamaged(damage);
+                if(monster != null)
+                {
+                    Vector2 impactDir = target.transform.position - this.transform.position;
+                    impactDir.Normalize();
+
+                    monster.Knockback(impactDir, impactForce);
+                    monster.OnDamaged(damage);
+                }
             }
         }
     }

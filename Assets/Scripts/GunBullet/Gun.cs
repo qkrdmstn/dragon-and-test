@@ -43,14 +43,16 @@ public class Gun : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
+       
+       // player = GameObject.FindWithTag("Player").GetComponent<Player>();
         renderer = gameObject.GetComponent<SpriteRenderer>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Start()
     {
-        if(player.isCombatZone)
+        player = GameManager.instance.player;
+        if (player.isCombatZone)
             cameraManager = FindObjectOfType<CameraManager>();
     }
 
