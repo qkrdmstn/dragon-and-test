@@ -16,6 +16,8 @@ public class TutorialUIGroup : UIGroup
     public bool isSkill, isOpenJokbo, isGetJokbo;   // variable of SetTutoTxt_3
     public bool isScarecrow;
 
+    bool isBlankBulletCard = false;
+
     public static bool isJokbo; // 족보를 먹었는지 playerInteraction에서 체크합니다.
     public static bool isCloseJokbo;
 
@@ -262,18 +264,24 @@ public class TutorialUIGroup : UIGroup
             if(isCloseJokbo) isOpenJokbo = true;
             return isOpenJokbo;
         }
-
-        else if (!isSkill && curType == "Skill" && Input.GetKeyDown(KeyCode.Q))
+        else if(!isSkill && curType == "Skill")
         {
-            FindBlankBullet();
+            if (!isBlankBulletCard)
+            {
+                FindBlankBullet();
+                isBlankBulletCard = true;
+            }
 
-            Vector2 impactDir = testMonsterInstantiate.transform.position - GameManager.instance.player.transform.position;
-            impactDir.Normalize();
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                Vector2 impactDir = testMonsterInstantiate.transform.position - GameManager.instance.player.transform.position;
+                impactDir.Normalize();
 
-            testMonsterInstantiate.GetComponent<MonsterTutorial>().Knockback(impactDir, impactForce);
-            StartCoroutine(KnockBackDone());
+                testMonsterInstantiate.GetComponent<MonsterTutorial>().Knockback(impactDir, impactForce);
+                StartCoroutine(KnockBackDone());
 
-            return isSkill = true;
+                return isSkill = true;
+            }
         }
 
         return false;
