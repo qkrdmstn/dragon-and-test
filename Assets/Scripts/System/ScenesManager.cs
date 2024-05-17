@@ -48,12 +48,12 @@ public class ScenesManager : MonoBehaviour
         return SceneManager.GetActiveScene().buildIndex;
     }
 
-    public void ChangeScene(SceneInfo _sceneInfo)
+    public void ChangeScene(int _sceneInfo)
     {
-        if(_sceneInfo != SceneInfo.Tutorial)
+        if(_sceneInfo != (int)SceneInfo.Tutorial)
             GunManager.instance.SaveGunData();
 
-        SceneManager.LoadScene(((int)_sceneInfo));
+        SceneManager.LoadScene(_sceneInfo);
     }
 
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.

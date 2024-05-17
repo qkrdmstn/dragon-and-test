@@ -21,8 +21,8 @@ public class Fade : MonoBehaviour
 
     public void ManageFade(int _sceneNum)
     {
-        SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
-        if (((int)_sceneInfo) == 1)
+       // SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
+        if (_sceneNum == 1)
         {
             TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
             for (int i = 0; i < texts.Length; i++)
@@ -30,7 +30,7 @@ public class Fade : MonoBehaviour
                 StartCoroutine(TextFadeCoroutine(texts[i]));
             }
         }
-        StartCoroutine(FadeCoroutine(_sceneInfo));
+        StartCoroutine(FadeCoroutine(_sceneNum));
     }
 
     public void ManageFade(MapControl mapControl, Spawner spawner, int curMapNum)
@@ -38,7 +38,7 @@ public class Fade : MonoBehaviour
         StartCoroutine(FadeCoroutine(mapControl, spawner, curMapNum));
     }
 
-    IEnumerator FadeCoroutine(SceneInfo _sceneInfo)
+    IEnumerator FadeCoroutine(int _sceneInfo)
     {   // Image
         Color fadeColor = fadePanel.color;
 
