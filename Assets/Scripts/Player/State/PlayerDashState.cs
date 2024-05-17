@@ -7,7 +7,6 @@ public class PlayerDashState : PlayerState
     private Vector2 dashDir;
     private Vector2 dash;
 
-    private bool attackFlag;
     public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
     }
@@ -49,7 +48,7 @@ public class PlayerDashState : PlayerState
         base.Update();
 
         //Exponantial
-        dash = dashDir * player.dashSpeed * Mathf.Exp(player.expCoefficient * (player.dashDuration - stateTimer));
+        dash = dashDir * player.dashSpeed * Mathf.Exp(player.dashExpCoefficient * (player.dashDuration - stateTimer));
         player.SetVelocity(dash.x, dash.y);
 
         //Dash Duration

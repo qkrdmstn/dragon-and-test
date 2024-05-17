@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &943492726326771548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2517500149474597282}
+  - component: {fileID: 1486836010004622}
+  - component: {fileID: 1812547856562227180}
+  m_Layer: 6
+  m_Name: HitCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2517500149474597282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943492726326771548}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9164923190227248143}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &1486836010004622
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943492726326771548}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.013782978, y: -0.16769552}
+  m_Size: {x: 0.5826998, y: 0.66460896}
+  m_Direction: 0
+--- !u!114 &1812547856562227180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943492726326771548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe32860f7cd4d834e8a92445625adc3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!1 &3176419107218324586
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,8 +361,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9164923190227248143}
   - component: {fileID: 9164923190227248142}
-  - component: {fileID: 9164923190227248139}
   - component: {fileID: 7819983375755603537}
+  - component: {fileID: 2235913714671493526}
   - component: {fileID: 6413855705096871728}
   - component: {fileID: 6026035233142154471}
   m_Layer: 6
@@ -326,6 +388,7 @@ Transform:
   - {fileID: 4179389522080398408}
   - {fileID: 9164923189420165133}
   - {fileID: 5633218439107059582}
+  - {fileID: 2517500149474597282}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -350,22 +413,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!58 &9164923190227248139
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9164923190227248141}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.000000029802322, y: -0.3529384}
-  serializedVersion: 2
-  m_Radius: 0.23062968
 --- !u!114 &7819983375755603537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +442,22 @@ MonoBehaviour:
   isDamaged: 0
   profile: {fileID: 11400000, guid: 10e4dfeb3157b48799b562bf7cdd96cc, type: 2}
   cameraManager: {fileID: 0}
+--- !u!70 &2235913714671493526
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9164923190227248141}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.009189129, y: -0.2779622}
+  m_Size: {x: 0.49081135, y: 0.49081135}
+  m_Direction: 0
 --- !u!114 &6413855705096871728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,10 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec5631d42bb88249a1f4fb50502f7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blankBulletDelay: 0
-  blankBulletTimer: 0
-  impactRadius: 0
-  impactForce: 0
+  projectilePrefabs: []
 --- !u!114 &6026035233142154471
 MonoBehaviour:
   m_ObjectHideFlags: 0

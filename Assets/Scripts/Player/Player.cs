@@ -9,20 +9,28 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     [Header("Life info")]
-    public int curHP = 3;
-    public int maxHP = 3;
+    public int curHP = 10;
+    public int maxHP = 10;
     public int money = 0;
-    [SerializeField] private float hitDuration;
+    [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]
-    public float moveSpeed = 12.0f;
-    public float dashSpeed = 24.0f;
-    public float dashDuration = 2.0f;
-    public float expCoefficient = -3.0f;
+    public float moveSpeed = 5.65f;
+    public float dashSpeed = 13.0f;
+    public float dashDuration = 0.58f;
+    public float dashExpCoefficient = -3.5f;
 
+    [Header("Knockback info")]
+    public Vector2 knockbackDir;
+    public float knockbackMagnitude;
+    public float knockbackExpCoefficient = -0.1f;
+
+    [Header("Knockback Tempinfo")]
+    public Vector2 knockbackDi2;
+    public float knockbackMagnitude2;
     //Temp variable
     //public GameObject DeadUI;
-   
+
     [Header("Gun info")]
     public Gun gun;
     public GameObject gunParent;
@@ -46,6 +54,8 @@ public class Player : MonoBehaviour
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
     public PlayerDashState dashState { get; private set; }
+    public PlayerKnockbackState knockbackState { get; private set; }
+
     #endregion
 
     [Header("CameraSetting")]
@@ -60,6 +70,7 @@ public class Player : MonoBehaviour
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
+        knockbackState = new PlayerKnockbackState(this, stateMachine, "Knockback");
 
         if (SceneManager.GetActiveScene().name.Contains("Battle")
             || SceneManager.GetActiveScene().name == "Puzzle_1"
@@ -92,32 +103,19 @@ public class Player : MonoBehaviour
             gunParent.gameObject.SetActive(true);
         else if (!isCombatZone && gunParent.gameObject.activeSelf)
             gunParent.gameObject.SetActive(false);
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
-        {
-            OnDamamged(1);
-        }
+        if (Input.GetKeyDown(KeyCode.L))
+            PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
-        {
-            OnDamamged(1);
-        }
-    }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
-    //}
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
+    }
+
+    public void SetVelocity(Vector2 vel)
+    {
+        rb.velocity = vel;
     }
 
     public void OnDamamged(int damage)
@@ -178,5 +176,14 @@ public class Player : MonoBehaviour
             return true;
         return false;
 
+    }
+
+    public void PlayerKnockBack(Vector2 dir, float mag)
+    {
+        knockbackDir = dir;
+        knockbackMagnitude = mag;
+
+        SetVelocity(0, 0);
+        stateMachine.ChangeState(knockbackState);
     }
 }

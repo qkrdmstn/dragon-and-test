@@ -55,7 +55,7 @@ public class GunManager : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().name != "Start")
         {
-            if (player.isCombatZone)
+            if (player.isCombatZone && !player.isInteraction)
             {
                 swapTimer -= Time.deltaTime;
                 float scroll = Input.GetAxisRaw("Mouse ScrollWheel");

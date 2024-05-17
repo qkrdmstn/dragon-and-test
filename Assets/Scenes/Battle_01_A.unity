@@ -1331,14 +1331,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6413855705096871728, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-      propertyPath: prefabs
-      value: 
-      objectReference: {fileID: 823787256844036911, guid: 279a29c8d3869dd419399030a3f7522f, type: 3}
-    - target: {fileID: 9164923188876154999, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
-      propertyPath: cameraManager
-      value: 
-      objectReference: {fileID: 1174794638}
+    - target: {fileID: 1486836010004622, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4613133219027906963, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164923190227248139, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9164923190227248141, guid: f4443df4d64e9724fa9eedafcc922890, type: 3}
       propertyPath: m_Name
       value: Player
@@ -3460,7 +3464,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5555556, y: 0.6111111}
+    oldSize: {x: 0.51, y: 0.55}
     newSize: {x: 1, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3510,7 +3514,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 934571490, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a57249e2d7c954cd6a961b7edfab8534, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
