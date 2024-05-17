@@ -19,6 +19,7 @@ public class TutorialUIGroup : UIGroup
     public static bool isJokbo; // 족보를 먹었는지 playerInteraction에서 체크합니다.
     public static bool isCloseJokbo;
 
+    public float impactForce;
     #region DialogueInfo
     public int curIdx;
     public float waitTime = 0f;
@@ -263,9 +264,13 @@ public class TutorialUIGroup : UIGroup
         }
 
         else if (!isSkill && curType == "Skill" && Input.GetKeyDown(KeyCode.Q))
-        {   // todo ------- 넉백 스킬 사용을 햇다는 상태확인 후 다음으로 넘어갈 수 있게 함
-            testMonsterInstantiate.SetActive(false);
-            Debug.Log("isSkill");
+        {    
+            Vector2 impactDir = testMonsterInstantiate.transform.position - GameManager.instance.player.transform.position;
+            impactDir.Normalize();
+
+            testMonsterInstantiate.GetComponent<MonsterTutorial>().Knockback(impactDir, impactForce);
+            //testMonsterInstantiate.SetActive(false);
+
             return isSkill = true;
         }
 
