@@ -131,15 +131,15 @@ public class PlayerInteraction : MonoBehaviour
     private void BlanketDoInteraction()
     {
         BlanketInteractionData data = interaction as BlanketInteractionData;
-        if (!data.isClear)
-        {
-            blanketInteraction.isDone = true;
-            return;
-        }
-        else if (data.isActive)
+        if (data.isActive && data.isClear)
         {
             data.isActive = false;
             blanketInteraction.LoadEvent();
+        }
+        else
+        {
+            blanketInteraction.isDone = true;
+            return;
         }
     }
 

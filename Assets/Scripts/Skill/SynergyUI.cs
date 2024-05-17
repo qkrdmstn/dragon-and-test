@@ -26,6 +26,7 @@ public class SynergyUI : MonoBehaviour
         images[0].sprite = hwatuDatas[0].sprite;
         images[1].sprite = hwatuDatas[1].sprite;
 
+        Debug.Log(entity);
         synergyNameTxt.text = entity.synergyName;
         synergyInfoTxt.text = entity.info;
     }
