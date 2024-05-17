@@ -157,7 +157,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 5
+  m_Speed: 3
   m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -182,7 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 10
-  playerMPGain: 20
   damage: 1
   moveSpeed: 5
   knockbackForce: 5
@@ -199,14 +198,14 @@ MonoBehaviour:
   temp: {fileID: 0}
   inEffect: 0
   monsterShootTimer: 0
-  monsterShootDelay: 0.7
+  monsterShootDelay: 0.8
   monsterReloadDelay: 2
   isReloading: 0
   loadedBullet: 0
   magazineSize: 3
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
-  chaseRange: 10
-  attackRange: 6
-  escapeRange: 3
+  chaseRange: 15
+  attackRange: 10
+  escapeRange: 4
   distanceToPlayer: 0
   agent: {fileID: 0}

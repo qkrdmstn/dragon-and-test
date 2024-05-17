@@ -129,10 +129,12 @@ public class Gun : MonoBehaviour
             continuousShootCnt++;
 
             //Create Bullet
-            GameObject bulletObj = Instantiate(bulletPrefab, transform.position, transform.rotation);
-            Bullet bullet = bulletObj.GetComponent<Bullet>();
-
             Vector2 dir = GetShootingDirection();
+            float theta = Vector2.Angle(Vector2.right, dir);
+            if (dir.y < 0)
+                theta *= -1;
+            GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
 
             bullet.BulletInitialize(damage, dir);
             StartCoroutine(InactiveIsAttacking());

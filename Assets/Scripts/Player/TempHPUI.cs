@@ -10,10 +10,10 @@ public class TempHPUI : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindObjectOfType<Player>();
+        
     }
     private void Update()
     {
-        txt.text = "HP: " + player.curHP + " / " + player.maxHP;
+        txt.text = "HP: " + GameManager.instance.player.curHP + " / " + GameManager.instance.player.maxHP;
     }
 }
