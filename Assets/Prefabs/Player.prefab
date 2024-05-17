@@ -432,7 +432,12 @@ MonoBehaviour:
   moveSpeed: 5.65
   dashSpeed: 13
   dashDuration: 0.58
-  expCoefficient: -3.5
+  dashExpCoefficient: -3.5
+  knockbackDir: {x: 0, y: 0}
+  knockbackMagnitude: 0
+  knockbackExpCoefficient: -0.1
+  knockbackDi2: {x: -1, y: 0}
+  knockbackMagnitude2: 10
   gun: {fileID: 9164923188876154999}
   gunParent: {fileID: 3176419107218324586}
   isAttackable: 1

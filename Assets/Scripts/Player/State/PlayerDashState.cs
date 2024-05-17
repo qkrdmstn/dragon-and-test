@@ -19,7 +19,7 @@ public class PlayerDashState : PlayerState
         player.isAttackable = false;
 
         // 대시 중 무적
-        player.gameObject.layer = 7;
+        player.ChangeOnDamagedLayer();
 
         //Dash Direction Setting
         dashDir = new Vector2(xInput, yInput);
@@ -38,8 +38,7 @@ public class PlayerDashState : PlayerState
         curGun.shootTimer -= player.dashDuration;
 
         // 무적 해제
-        player.gameObject.layer = 6;
-
+        player.ChangePlayerLayer();
         player.SetVelocity(0, 0);
     }
 

@@ -47,11 +47,11 @@ public class PlayerSkill : MonoBehaviour
         //{
         //    SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
         //}
-        //if (Input.GetKeyDown(KeyCode.H))
-        //{
-        //    //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
-        //    DashSkill(7, 40);
-        //}
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
+            DashSkill(7, 40);
+        }
         //if(Input.GetKeyDown(KeyCode.J))
         //{
         //    BlankBullet(2, 6, 30);
@@ -166,6 +166,8 @@ public class PlayerSkill : MonoBehaviour
         //Change Layer & Change Color
         gameObject.layer = 14;
         player.isStateChangeable = false;
+        player.isAttackable = false;
+
 
         float curDist = 0.0f;
         //Initial Direction Setting
@@ -175,13 +177,15 @@ public class PlayerSkill : MonoBehaviour
         while (dist >= curDist)
         {
             float dv = Time.deltaTime * speed;
-            Vector2 ds = Time.deltaTime * speed * dir;
-            gameObject.transform.position += new Vector3(ds.x, ds.y, 0);
+            Vector2 dashVel = speed * dir;
+            player.SetVelocity(dashVel);
             curDist += dv;
             yield return new WaitForFixedUpdate();
         }
+        player.SetVelocity(0, 0);
 
         player.isStateChangeable = true;
+        player.isAttackable = true;
         gameObject.layer = 6;
     }
 

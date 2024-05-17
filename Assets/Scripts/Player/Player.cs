@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D rb { get; private set; }
     public SpriteRenderer spriteRenderer { get; private set; }
     public Collider2D col { get; private set; }
+    public PlayerHit playerHit { get; private set; }
     #endregion
 
     #region States
@@ -86,6 +87,7 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        playerHit = GetComponentInChildren<PlayerHit>();
 
         stateMachine.Initialize(idleState);
 
@@ -137,8 +139,7 @@ public class Player : MonoBehaviour
             else
             {
                 //Change Layer & Change Color
-                gameObject.layer = 7;
-
+                ChangeOnDamagedLayer();
                 StartCoroutine(DamagedProcess());
             }
         }
@@ -160,7 +161,7 @@ public class Player : MonoBehaviour
             spriteRenderer.color = new Color(1, 1, 1, 1);
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
-        gameObject.layer = 6;
+        ChangePlayerLayer();
         isDamaged = false;
     }
 
@@ -181,9 +182,22 @@ public class Player : MonoBehaviour
     public void PlayerKnockBack(Vector2 dir, float mag)
     {
         knockbackDir = dir;
+        knockbackDir.Normalize();
         knockbackMagnitude = mag;
 
         SetVelocity(0, 0);
         stateMachine.ChangeState(knockbackState);
+    }
+
+    public void ChangeOnDamagedLayer()
+    {
+        gameObject.layer = 7;
+        playerHit.gameObject.layer = 7;
+    }
+
+    public void ChangePlayerLayer()
+    {
+        gameObject.layer = 6;
+        playerHit.gameObject.layer = 6;
     }
 }
