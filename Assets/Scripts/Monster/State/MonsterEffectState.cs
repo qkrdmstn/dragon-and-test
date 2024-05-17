@@ -18,6 +18,7 @@ public class MonsterEffectState : MonsterState
         monster.inEffect = true;
         monster.rigidBody.velocity = Vector3.zero;
         monster.rigidBody.angularVelocity = 0;
+        monster.spriteRenderer.color = Color.cyan;
         effectTime = 2.0f;
     }
 
@@ -25,6 +26,7 @@ public class MonsterEffectState : MonsterState
     {
         Debug.Log("속박해제");
         monster.inEffect = false;
+        monster.spriteRenderer.color = Color.white;
         base.Exit();
     }
 
