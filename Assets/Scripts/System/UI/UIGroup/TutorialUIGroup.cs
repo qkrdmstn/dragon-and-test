@@ -19,6 +19,7 @@ public class TutorialUIGroup : UIGroup
     public static bool isJokbo; // 족보를 먹었는지 playerInteraction에서 체크합니다.
     public static bool isCloseJokbo;
 
+    public float impactForce;
     #region DialogueInfo
     public int curIdx;
     public float waitTime = 0f;
@@ -263,13 +264,40 @@ public class TutorialUIGroup : UIGroup
         }
 
         else if (!isSkill && curType == "Skill" && Input.GetKeyDown(KeyCode.Q))
-        {   // todo ------- 넉백 스킬 사용을 햇다는 상태확인 후 다음으로 넘어갈 수 있게 함
-            testMonsterInstantiate.SetActive(false);
-            Debug.Log("isSkill");
+        {
+            FindBlankBullet();
+
+            Vector2 impactDir = testMonsterInstantiate.transform.position - GameManager.instance.player.transform.position;
+            impactDir.Normalize();
+
+            testMonsterInstantiate.GetComponent<MonsterTutorial>().Knockback(impactDir, impactForce);
+            StartCoroutine(KnockBackDone());
+
             return isSkill = true;
         }
 
         return false;
+    }
+
+    private static void FindBlankBullet()
+    {
+        for (int i = 0; i < SkillManager.instance.hwatuData.Length; i++)
+        {
+            if (SkillManager.instance.hwatuData[i].hwatu.type == SeotdaHwatuName.JunButterfly)
+            {
+                HwatuData blankBullet = SkillManager.instance.hwatuData[i];
+                SkillManager.instance.AddSkill(blankBullet);
+                break;
+            }
+        }
+    }
+
+    IEnumerator KnockBackDone()
+    {   // 넉백이 완료되면 몬스터가 사라짐
+        while (testMonsterInstantiate.GetComponent<MonsterTutorial>().isKnockedBack) yield return null;
+
+        yield return new WaitForSeconds(0.5f);
+        testMonsterInstantiate.SetActive(false);
     }
 
     //IEnumerator CheckStateCouroutine(string curType)
