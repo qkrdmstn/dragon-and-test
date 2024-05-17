@@ -164,7 +164,7 @@ public class PlayerSkill : MonoBehaviour
     IEnumerator DashSkillCoroutine(float dist, float speed)
     {
         //Change Layer & Change Color
-        gameObject.layer = 14;
+        player.ChangePlayerLayer(14);
         player.isStateChangeable = false;
         player.isAttackable = false;
 
@@ -184,9 +184,9 @@ public class PlayerSkill : MonoBehaviour
         }
         player.SetVelocity(0, 0);
 
+        player.ChangePlayerLayer(6);
         player.isStateChangeable = true;
         player.isAttackable = true;
-        gameObject.layer = 6;
     }
 
     private void SokbakSkill(SeotdaHwatuName name, int damage, float dist, float projectileSpeed)

@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
             else
             {
                 //Change Layer & Change Color
-                ChangeOnDamagedLayer();
+                ChangePlayerLayer(7);
                 StartCoroutine(DamagedProcess());
             }
         }
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
             spriteRenderer.color = new Color(1, 1, 1, 1);
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
-        ChangePlayerLayer();
+        ChangePlayerLayer(6);
         isDamaged = false;
     }
 
@@ -189,15 +189,10 @@ public class Player : MonoBehaviour
         stateMachine.ChangeState(knockbackState);
     }
 
-    public void ChangeOnDamagedLayer()
+    public void ChangePlayerLayer(int layer)
     {
-        gameObject.layer = 7;
-        playerHit.gameObject.layer = 7;
+        gameObject.layer = layer;
+        playerHit.gameObject.layer = layer;
     }
 
-    public void ChangePlayerLayer()
-    {
-        gameObject.layer = 6;
-        playerHit.gameObject.layer = 6;
-    }
 }

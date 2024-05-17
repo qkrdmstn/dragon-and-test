@@ -88,9 +88,9 @@ public class MonsterBase : MonoBehaviour
         {
             OnDamaged(1);
 
-            Vector2 dir = this.transform.position - player.transform.position;
-            dir.Normalize();
-            Knockback(dir, knockbackForce);
+            //Vector2 dir = this.transform.position - player.transform.position;
+            //dir.Normalize();
+            //Knockback(dir, knockbackForce);
         }
     }
 
