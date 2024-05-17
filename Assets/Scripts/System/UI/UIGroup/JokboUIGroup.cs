@@ -131,6 +131,7 @@ public class JokboUIGroup : UIGroup {
     {   // true : open / false : close
         GameManager.instance.player.isStateChangeable = !state;
         GameManager.instance.player.isAttackable = !state;
+        GameManager.instance.player.isInteraction = state;
         
         Time.timeScale = state ? 0.0f : 1.0f;
         childUI[0].SetActive(state);

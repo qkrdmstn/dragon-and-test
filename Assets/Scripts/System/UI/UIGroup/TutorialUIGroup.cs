@@ -58,9 +58,7 @@ public class TutorialUIGroup : UIGroup
     {
         // 튜토리얼에 대한 대화는 여기서 따로 관리하는 식으로 진행 <-> dialogueInteraction
         dialogues = UIManager.instance.dialogueDB;
-        Debug.Log("dd");
-        ToggleUI(childUI[0].gameObject);
-
+        
         Init();
 
         for (int i = 0; i < dialogues.DialogueEntity.Count; i++)
@@ -87,6 +85,8 @@ public class TutorialUIGroup : UIGroup
     }
     IEnumerator ManageEvent()
     {
+        yield return new WaitForSeconds(1.5f);
+        ToggleUI(childUI[0].gameObject);
         yield return new WaitUntil(() => SetTutoTxt_1());
 
         yield return new WaitUntil(() => SetTutoTxt_3());
