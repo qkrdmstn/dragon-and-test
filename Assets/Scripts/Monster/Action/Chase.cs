@@ -32,7 +32,6 @@ public class Chase : MonoBehaviour
             float angle = i * angleInterval;
             Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             directions[i] = direction;
-
             forwardCoef[i] = true;
         }
     }

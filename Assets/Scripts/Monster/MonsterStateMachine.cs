@@ -14,7 +14,7 @@ public class MonsterStateMachine
 
     public void ChangeState(MonsterState _newState)
     {
-        if (currentState == _newState) return;
+        //if (currentState == _newState) return;
         if (currentState != null) currentState.Exit();
         currentState = _newState;
         currentState.Enter();

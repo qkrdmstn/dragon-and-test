@@ -6,7 +6,11 @@ public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
     public Fade fade;
-    public GameObject[] SceneUI;
+    public DialogueDB dialogueDB;
+
+    //public GameObject[] SceneUI;
+    public SerializableDictionary<string, GameObject> SceneUI;
+    public UIGroup curUIGroup;
 
     private void Awake()
     {
@@ -39,10 +43,5 @@ public class UIManager : MonoBehaviour
         }
         else
             return sprite.texture;
-    }
-
-    public void SetScene_start()
-    {
-
     }
 }

@@ -1,0 +1,164 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerInteraction : MonoBehaviour
+{
+    public InteractionData interaction;
+    public Player player;
+
+    bool isBounded;
+    int curIdxInteraction;
+
+    Interaction dialogueInteraction, shopInteraction, blanketInteraction;
+
+    CircleCollider2D col;
+    Collider2D[] inRangeInteraction;
+
+    [SerializeField] LayerMask layer;
+    //DialogueInteraction dialogueInteraction;
+
+    void Awake()
+    {
+        isBounded = false;
+
+        player = GetComponentInParent<Player>();
+        col = GetComponent<CircleCollider2D>();
+        dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
+        shopInteraction = gameObject.AddComponent<ShopInteraction>();
+        blanketInteraction = gameObject.AddComponent<BlanketInteraction>();
+    }
+
+    void Update()
+    {
+        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
+        if (dialogueInteraction.isDone || blanketInteraction.isDone)
+        {
+            player.isInteraction = false;   // player의 상호작용 여부 관찰
+            player.isStateChangeable = true;
+            player.isAttackable = true;
+
+            dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+        }
+    }
+
+    void DoInteraction()
+    {
+        if (!player.isInteraction)
+        {
+            player.isInteraction = true;
+            player.SetIdleStatePlayer();
+            player.isStateChangeable = false;
+            player.isAttackable = false;
+
+            switch (interaction.type)
+            {
+                case InteractionData.InteractionType.NPC:
+                    // ToDo DIALOGUE INTERACTION
+                    dialogueInteraction.LoadEvent(interaction);
+                    break;
+                case InteractionData.InteractionType.Item:
+                    // ToDo ITEM INTERACTION
+                    dialogueInteraction.LoadEvent(interaction);
+                    shopInteraction.LoadEvent(interaction);
+                    break;
+                case InteractionData.InteractionType.Blanket:
+                    BlanketDoInteraction();
+                    break;
+                case InteractionData.InteractionType.Tutorial:
+                    TutorialInteaction();
+                    break;
+
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Interaction"))
+        {
+            isBounded = true;
+            // 근처 상호작용물 검사
+
+            inRangeInteraction = Physics2D.OverlapCircleAll(transform.position, col.radius, layer);
+
+            curIdxInteraction = 0;
+            float minDistance = Vector2.Distance(player.transform.position, inRangeInteraction[0].transform.position);
+
+            for (int i = 1; i < inRangeInteraction.Length; i++)
+            {
+                //Debug.Log(inRangeInteraction[i].gameObject.name);
+
+                float tmp = minDistance;
+                minDistance = Mathf.Min(minDistance, Vector2.Distance(player.transform.position, inRangeInteraction[i].transform.position));
+                if (tmp != minDistance)
+                {
+                    curIdxInteraction = i;
+                }
+            }
+
+            interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
+            Debug.Log(inRangeInteraction[curIdxInteraction].gameObject.name);
+
+            inRangeInteraction[curIdxInteraction].gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
+
+            for (int i = 0; i < inRangeInteraction.Length; i++)
+            {   // 제일 가까운 색외에는 다 Hover effect X
+                if (i == curIdxInteraction)
+                {
+                    inRangeInteraction[curIdxInteraction].gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
+                }
+                else inRangeInteraction[i].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Interaction"))
+        {
+            isBounded = false;
+            interaction = null;
+
+            //inRangeInteraction = Physics2D.OverlapCircleAll(transform.position, col.radius, layer);
+            for (int i=0; i<inRangeInteraction.Length; i++)
+            {
+                inRangeInteraction[i].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+            }
+        }
+    }
+
+    private void BlanketDoInteraction()
+    {
+        BlanketInteractionData data = interaction as BlanketInteractionData;
+        if (data.isActive && data.isClear)
+        {
+            data.isActive = false;
+            blanketInteraction.LoadEvent();
+        }
+        else
+        {
+            blanketInteraction.isDone = true;
+            return;
+        }
+    }
+
+    private void TutorialInteaction()
+    {
+        TutorialUIGroup instance = UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>();
+        if (interaction.eventName == "족보")
+        {
+            if (instance.jokboInstantiate != null)
+            {
+                instance.jokboInstantiate.SetActive(false);
+                TutorialUIGroup.isJokbo = true;
+            }
+        }
+        else if (interaction.eventName == "허수아비")
+        {
+            instance.isScarecrow = true;
+        }
+
+        dialogueInteraction.isDone = true;
+    }
+}

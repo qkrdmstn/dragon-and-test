@@ -1,27 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Monster : MonoBehaviour
 {
-    public int HP = 3;
+    #region Stats
+    public int HP;
+    public float playerMPGain;
+    public int damage;
+    #endregion
 
-    public float moveSpeed = 9.0f;
-
-    public float recognitionRange = 100.0f;
-    public float attackRange = 5.0f;
-    public float haltRange = 2.0f;
-    public Chase chase;
-    public float playerMPGain = 40.0f;
-
-    #region MonsterShoot
-    public int damage = 1;
-    public float monsterShootTimer;
-    public float monsterShootDelay = 0.7f;
-    public float monsterReloadDelay = 2f;
-    public bool isReloading = false;
-    public int loadedBullet;
-    public int magazineSize=3;
+    #region Move
+    public float moveSpeed;
     #endregion
 
     #region Componets
@@ -29,70 +20,60 @@ public class Monster : MonoBehaviour
     public Rigidbody2D rigidBody { get; private set; }
     public SpriteRenderer spriteRenderer { get; private set; }
     public Collider2D col { get; private set; }
+    public GameObject player;
+    public Player playerScript;
+    public GameObject eventManager;
+    public Spawner spawn;
     #endregion
 
     #region States
     public MonsterStateMachine stateMachine { get; private set; }
-    public MonsterIdleState idleState { get; private set; }
-    public MonsterChaseState chaseState { get; private set; }
-    public MonsterChaseAttackState chaseAttackState { get; private set; }
-    public MonsterAttackState attackState { get; private set; }
     #endregion
 
-    public GameObject player;
-    private Player playerScript;
-    public GameObject eventManager;
-    private Spawner spawn;
-    public GameObject monsterBullet;
-    public float tempSpeed;
+    #region Navigate
+    private UnityEngine.AI.NavMeshAgent agent;
+    #endregion
+
+
+    [Header("CameraSetting")]
+    public CamShakeProfile profile;
+    public CinemachineImpulseSource impulseSource;
    
-    private void Awake()
+    public virtual void Awake()
     {
         stateMachine = new MonsterStateMachine();
         player = GameObject.FindWithTag("Player");
         eventManager = GameObject.FindObjectOfType <Spawner>().gameObject;
-        idleState = new MonsterIdleState(this, stateMachine, player);
-        chaseState = new MonsterChaseState(this, stateMachine, player);
-        chaseAttackState = new MonsterChaseAttackState(this, stateMachine, player);
-        attackState = new MonsterAttackState(this, stateMachine, player);
-        tempSpeed = moveSpeed;
     }
 
-    private void Start()
+    public virtual void Start()
     {
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
-        chase = GetComponent<Chase>();
         playerScript = player.GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
-        stateMachine.Initialize(idleState);
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+        //navigate
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
     }
 
-    private void Update()
+    public virtual void Update()
     {
-        stateMachine.currentState.Update();
+        agent.SetDestination(player.transform.position);
     }
 
-    public void OnDamaged(int damage)
+    //공격
+    public virtual void Attack()
     {
-        HP -= damage;
-        if (HP <= 0)
-        {
-            Dead();
-        }
+        return;
     }
 
-    private void Dead()
-    {
-        playerScript.curMP = Mathf.Min(playerScript.maxMP, playerScript.curMP + playerMPGain);
-        Destroy(gameObject);
-        spawn.deathCount();
-        temp.instance.killScore += 1;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    //피격
+    public void Hit(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
@@ -100,36 +81,23 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public void Shoot()
+    //데미지 처리
+    public void OnDamaged(int damage)
     {
-        if(loadedBullet > 0 && monsterShootTimer < 0.0)
+        // 피격에 따른 카메라 진동
+        //CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
+
+        HP -= damage;
+        if (HP <= 0)
         {
-            monsterShootTimer = monsterShootDelay;
-            loadedBullet--;
-
-            //Create Bullet
-            GameObject bulletObj = Instantiate(monsterBullet, transform.position, transform.rotation);
-            Rigidbody2D rigid = bulletObj.GetComponent<Rigidbody2D>();
-            MonsterBullet bullet = bulletObj.GetComponent<MonsterBullet>();
-
-            Vector2 dir = player.transform.position - transform.position; 
-            dir.Normalize();
-
-            bullet.BulletInitialize(damage, dir);
+            Dead();
         }
     }
 
-    public void Reload()
+    //죽음
+    private void Dead()
     {
-        isReloading = true;
-        StartCoroutine(ReloadProcess());
+        Destroy(gameObject);
+        temp.instance.killScore += 1;
     }
-
-    IEnumerator ReloadProcess()
-    {
-        yield return new WaitForSeconds(monsterReloadDelay);
-        loadedBullet = magazineSize;
-        isReloading = false;
-    }
-
 }
