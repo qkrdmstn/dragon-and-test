@@ -9,12 +9,15 @@ public class TutorialUIGroup : UIGroup
 {
     public Vector3 padding;
     public Transform scarecrowPos;
-    public GameObject jokbo, jokboInstantiate;
+    public GameObject jokbo, jokboInstantiate, testMonster, testMonsterInstantiate;
     //Animator anim;
 
     public bool isWASD, isAttack, isDash, isReload, isInteraction;  // variable of SetTutoTxt_1
     public bool isSkill, isOpenJokbo, isGetJokbo;   // variable of SetTutoTxt_3
-    public bool isScarecrow, isJokbo, isCloseJokbo;
+    public bool isScarecrow;
+
+    public static bool isJokbo; // 족보를 먹었는지 playerInteraction에서 체크합니다.
+    public static bool isCloseJokbo;
 
     #region DialogueInfo
     public int curIdx;
@@ -167,7 +170,7 @@ public class TutorialUIGroup : UIGroup
                 if (jokboInstantiate == null)
                 {
                     jokboInstantiate = Instantiate(jokbo,
-                    (GameManager.instance.player.transform.position + Vector3.right),
+                    (GameManager.instance.player.transform.position + Vector3.left),
                     Quaternion.identity, scarecrowPos.parent);
                 }
                 else if (CheckState("GetJokbo"))
@@ -185,7 +188,13 @@ public class TutorialUIGroup : UIGroup
                 }
                 break;
             case 16: // UseSkill - knockback
-                if (CheckState("Skill"))
+                if (testMonsterInstantiate == null)
+                {
+                    testMonsterInstantiate = Instantiate(testMonster,
+                    (GameManager.instance.player.transform.position + (Vector3.right*2f)),
+                    Quaternion.identity, scarecrowPos.parent);
+                }
+                else if (CheckState("Skill"))
                 {
                     curIdx++;
                     Debug.Log("17 - isSkill");
@@ -213,13 +222,6 @@ public class TutorialUIGroup : UIGroup
             return isWASD;
         }
 
-        else if (isWASD && !isAttack && Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            // todo ------- 허수아비를 맞췄다는 상태 확인 후 다음으로 넘어갈 수 있게 함
-            isAttack = true;
-            Debug.Log("isAttack");
-        }
-
         else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1) && GameManager.instance.player.IsDash())
         {
             isDash = true;
@@ -227,7 +229,7 @@ public class TutorialUIGroup : UIGroup
         }
 
         else if (isAttack && isDash && curType == "AttacknDash")
-        {
+        {   // isAttack은 ScarecrowAttacked에서 상태확인
             Debug.Log("isAttacknDash");
             return isAttack | isDash;
         }
@@ -255,13 +257,14 @@ public class TutorialUIGroup : UIGroup
         }
 
         else if(!isOpenJokbo && curType=="OpenJokbo" && Input.GetKeyDown(KeyCode.K))
-        {   // todo ------- UI가 닫혔는지 확인 후 다음으로 넘어갈 수 있게 함
-            Debug.Log("isOpenJokbo");
-            return isOpenJokbo = true;
+        {   // UI가 닫혔는지 JolboUIGroup에서 상태확인
+            if(isCloseJokbo) isOpenJokbo = true;
+            return isOpenJokbo;
         }
 
         else if (!isSkill && curType == "Skill" && Input.GetKeyDown(KeyCode.Q))
         {   // todo ------- 넉백 스킬 사용을 햇다는 상태확인 후 다음으로 넘어갈 수 있게 함
+            testMonsterInstantiate.SetActive(false);
             Debug.Log("isSkill");
             return isSkill = true;
         }

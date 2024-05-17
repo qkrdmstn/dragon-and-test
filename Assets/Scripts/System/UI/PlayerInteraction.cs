@@ -37,6 +37,8 @@ public class PlayerInteraction : MonoBehaviour
             player.isInteraction = false;   // player의 상호작용 여부 관찰
             player.isStateChangeable = true;
             player.isAttackable = true;
+
+            dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
@@ -149,7 +151,7 @@ public class PlayerInteraction : MonoBehaviour
             if (instance.jokboInstantiate != null)
             {
                 instance.jokboInstantiate.SetActive(false);
-                instance.isJokbo = true;
+                TutorialUIGroup.isJokbo = true;
             }
         }
         else if (interaction.eventName == "허수아비")
