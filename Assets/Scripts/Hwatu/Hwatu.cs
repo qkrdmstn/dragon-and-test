@@ -37,7 +37,7 @@ public enum SeotdaHwatuCombination
     AL12, DS14, GPP19, JPP110, JS410, SR46,
     AHES74, TTCatch73, MTGR94,
     KK9, KK8, KK7, KK6, KK5, KK4, KK3, KK2, KK1, KK0,
-    PT94, blank
+    blank
 }
 #endregion
 
@@ -95,7 +95,7 @@ public class Hwatu
         else if (Array.Exists(types, x => x == SeotdaHwatuName.JulBoar) && Array.Exists(types, x => x == SeotdaHwatuName.AprCuckoo))
             return SeotdaHwatuCombination.AHES74;
         else if (Array.Exists(months, x => x == 9) && Array.Exists(months, x => x == 4))
-            return SeotdaHwatuCombination.PT94;
+            return SeotdaHwatuCombination.MTGR94; //PT94
         else if (Array.Exists(months, x => x == 7) && Array.Exists(months, x => x == 3))
             return SeotdaHwatuCombination.TTCatch73;
         else if (Array.Exists(months, x => x == 1) && Array.Exists(months, x => x == 2))
