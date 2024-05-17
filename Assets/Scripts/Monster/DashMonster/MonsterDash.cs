@@ -58,6 +58,15 @@ public class MonsterDash : MonsterBase
         agent.SetDestination(player.transform.position);
     }
 
+    public override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+        if (inAttack && collision.gameObject.CompareTag("Player"))
+        {
+            playerScript.PlayerKnockBack(player.transform.position - transform.position, 10f); //Vector2 dir, float mag
+        }
+    }
+
     public override void Attack()
     {
         inAttack = true;
