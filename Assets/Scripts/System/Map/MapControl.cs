@@ -13,6 +13,8 @@ public class MapControl : MonoBehaviour
     public static int curMapNum;
 
     private Spawner spawner;
+    public bool flag;
+
     private void Start()
     {
         spawner = FindObjectOfType<Spawner>();
@@ -28,11 +30,12 @@ public class MapControl : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         BlockInfo myBlockInfo = myMapType.GetComponent<BlockInfo>();
-        if (collision.CompareTag("Player") && myBlockInfo.blockClear)
+        if (collision.CompareTag("Player") && myBlockInfo.blockClear && !flag)
         {
             int myMapNum = myBlockInfo.blockNumber;
             if (curMapNum != myMapNum)
             {
+                flag = true;
                 curMapNum = gotoMapType.GetComponent<BlockInfo>().blockNumber;
                 UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
                 Debug.Log(curMapNum);

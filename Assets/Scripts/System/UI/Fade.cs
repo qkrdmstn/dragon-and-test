@@ -93,8 +93,9 @@ public class Fade : MonoBehaviour
             GameManager.instance.player.cameraManager.UpdateConfineArea(mapControl.confineColl);
             yield return new WaitForSeconds(.5f);
             GameManager.instance.player.isStateChangeable = true;
+            spawner.UpdateCurBlockNumber(curMapNum);
+            mapControl.flag = false;
         }
-        spawner.UpdateCurBlockNumber(curMapNum);
         time = 0f;
         while (fadeColor.a > 0f)
         {

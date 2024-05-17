@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -14,6 +15,7 @@ public class MonsterBullet : MonoBehaviour
     public Vector2 dir;
     public float bulletSpeed;
 
+    public bool isRelease;
     #region Components
     private Rigidbody2D rigid;
     public IObjectPool<GameObject> pool { get; set; }
@@ -29,12 +31,16 @@ public class MonsterBullet : MonoBehaviour
     {
         rigid.velocity = dir * bulletSpeed;
 
-        if (!IsInDomain())
+        if (!IsInDomain() && !isRelease)
+        {
+            isRelease = true;
             pool.Release(this.gameObject);
+        }
     }
 
     public void BulletInitialize(Vector2 _dir)
     {
+        isRelease = false;
         dir = _dir;
     }
 
@@ -47,7 +53,11 @@ public class MonsterBullet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Ground"))
         {
-            pool.Release(gameObject);
+            if(!isRelease)
+            {
+                isRelease = true;
+                pool.Release(gameObject);
+            }
         }
     }
 }

@@ -150,14 +150,12 @@ public class Spawner : MonoBehaviour
 
             if (idx >= spawnDB.Count) //끝까지 찾음
                 break;
-        }       
+        }
         StartCoroutine(SpawnMonster(monsters, positions));
     }
 
     IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
     {
-        Debug.Log("DD" + monsters.Count);
-        Debug.Log("DD" + positions.Count);
         //위치 미리보기
         List<GameObject> displayPos = new List<GameObject>();
         for(int i=0; i< positions.Count; i++)
