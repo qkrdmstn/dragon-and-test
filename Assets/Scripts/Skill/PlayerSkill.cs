@@ -165,6 +165,7 @@ public class PlayerSkill : MonoBehaviour
     {
         //Change Layer & Change Color
         player.ChangePlayerLayer(14);
+        player.SetIdleStatePlayer();
         player.isStateChangeable = false;
         player.isAttackable = false;
 
