@@ -160,13 +160,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 5
-  playerMPGain: 20
   damage: 1
   moveSpeed: 6
   knockbackForce: 5
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
+  knockbackVel: {x: 0, y: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
@@ -176,7 +176,7 @@ MonoBehaviour:
   temp: {fileID: 0}
   inEffect: 0
   inAttack: 0
-  cooldown: 3
+  cooldown: 1.5
   tempcool: 0
   collider2Ds: []
   boxSize: {x: 1.5, y: 1.5}

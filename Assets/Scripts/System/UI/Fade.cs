@@ -33,9 +33,9 @@ public class Fade : MonoBehaviour
         StartCoroutine(FadeCoroutine(_sceneInfo));
     }
 
-    public void ManageFade(MapControl mapControl)
+    public void ManageFade(MapControl mapControl, Spawner spawner, int curMapNum)
     {   // if Nothing in params, transition of Inner-Map
-        StartCoroutine(FadeCoroutine(mapControl));
+        StartCoroutine(FadeCoroutine(mapControl, spawner, curMapNum));
     }
 
     IEnumerator FadeCoroutine(SceneInfo _sceneInfo)
@@ -73,7 +73,7 @@ public class Fade : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator FadeCoroutine(MapControl mapControl)
+    IEnumerator FadeCoroutine(MapControl mapControl, Spawner spawner, int curMapNum)
     {   // 맵 내부 이동에 관련된 코루틴
         Color fadeColor = fadePanel.color;
 
@@ -94,7 +94,7 @@ public class Fade : MonoBehaviour
             yield return new WaitForSeconds(.5f);
             GameManager.instance.player.isStateChangeable = true;
         }
-
+        spawner.UpdateCurBlockNumber(curMapNum);
         time = 0f;
         while (fadeColor.a > 0f)
         {

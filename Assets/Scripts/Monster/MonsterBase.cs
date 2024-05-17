@@ -7,7 +7,6 @@ public class MonsterBase : MonoBehaviour
 {
     #region Stats
     public int HP;
-    public float playerMPGain;
     public int damage;
     #endregion
 
@@ -17,6 +16,7 @@ public class MonsterBase : MonoBehaviour
     public float knockbackDuration; // 넉백 지속 시간
     public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
     public float knockbackTimer; // 넉백 지속 시간을 계산하는 타이머
+    public Vector2 knockbackVel;
     #endregion
 
     #region Componets
@@ -70,8 +70,15 @@ public class MonsterBase : MonoBehaviour
     {
         if (isKnockedBack)
         {
-            knockbackTimer -= Time.deltaTime;
-            if (knockbackTimer <= 0) isKnockedBack = false;
+            knockbackTimer += Time.deltaTime;
+            //Exponantial
+            knockbackVel = knockbackVel * Mathf.Exp(-0.1f * knockbackTimer);
+            rigidBody.velocity = knockbackVel;
+            if (rigidBody.velocity.magnitude <= 0.1f)
+            {
+                rigidBody.velocity = Vector2.zero;
+                isKnockedBack = false;
+            }
         }
     }
 
@@ -88,22 +95,24 @@ public class MonsterBase : MonoBehaviour
         {
             OnDamaged(1);
 
-            //Vector2 dir = this.transform.position - player.transform.position;
-            //dir.Normalize();
-            //Knockback(dir, knockbackForce);
+            Vector2 dir = this.transform.position - player.transform.position;
+            dir.Normalize();
+            Knockback(dir, knockbackForce);
         }
     }
 
     //넉백
-    public void Knockback(Vector2 dir, float force)
+    public void Knockback(Vector2 dir, float vel)
     {
         if (!isKnockedBack)
         {
             isKnockedBack = true;
-            knockbackTimer = knockbackDuration;
-
-            rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
-            rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
+            knockbackTimer = 0.0f;
+            dir.Normalize();
+            knockbackVel = vel * dir;
+            rigidBody.velocity = knockbackVel;
+            //rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
+            //rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
         }
     }
 
