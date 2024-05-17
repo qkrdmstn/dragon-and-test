@@ -13,7 +13,6 @@ public class PlayerSkill : MonoBehaviour
     float _impactRadius;
 
     public GameObject[] projectilePrefabs;
-    public GameObject prefabs;
     Dictionary<SeotdaHwatuName, GameObject> projectileDictionary = new Dictionary<SeotdaHwatuName, GameObject>();
 
     #region Components
@@ -204,6 +203,7 @@ public class PlayerSkill : MonoBehaviour
             Vector2 dir = new Vector2(dx[i], dy[i]);
             dir.Normalize();
 
+            GameObject prefabs = projectileDictionary[name];
             GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
             SkillProjectile projectile = projectilObj.GetComponent<SkillProjectile>();
 

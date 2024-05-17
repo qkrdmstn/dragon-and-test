@@ -40,11 +40,12 @@ public class BlockInfo : MonoBehaviour, IComparable
         else
         {
             Debug.LogWarning("SpawnPosition is not Block Domain");
-            return min;
+            return (min + max)/2;
         }
     }
 
-    private bool IsInBlock(Vector3 pos)
+    //매개변수 position이 현재 블록 내에 존재하는지 판단
+    public bool IsInBlock(Vector3 pos)
     {
         if (pos.x > this.max.x || pos.x < this.min.x)
             return false;

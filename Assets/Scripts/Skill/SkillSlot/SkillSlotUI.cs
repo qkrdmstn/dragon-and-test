@@ -27,6 +27,6 @@ public class SkillSlotUI : MonoBehaviour
     public void ClearSlot()
     {
         skillImage.sprite = null;
-        skillImage.color = Color.red;
+        skillImage.color = Color.white;
     }
 }

@@ -42,30 +42,40 @@ public class SkillManager : MonoBehaviour
         }
         else if (instance != this)
         { //이미 생성되어 있으면
-            //if (ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
-            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
-            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C
-            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Puzzle_1
-            //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Boss_1)
-            //{
-            //    Destroy(instance); //새로만든거 삭제
-            //}
+
             Destroy(this.gameObject); //새로만든거 삭제
         }
 
-        DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+        //배틀 씬에서만 유지
+        if (ScenesManager.instance == null || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
+            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
+            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
+        {
+            DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        //Initialize
+        InitializeSkillData();
+        InitializeUI();
+
+    }
+
+    #region Initialize Func
+    private void InitializeSkillData()
+    {
         hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
         skillTable = Resources.Load<SkillBalanceTable>("SkillDB/SkillBalanceTable");
-        for (int i=0; i<20; i++)
+        synergyTable = Resources.Load<SynergyInfo>("SynergyDB/SynergyInfo");
+
+        for (int i = 0; i < 20; i++)
         {
-            for(int j=0; j<20; j++)
+            for (int j = 0; j < 20; j++)
             {
-                if(skillTable.SkillTableEntity[i].cardName == hwatuData[j].hwatu.type.ToString())
+                if (skillTable.SkillTableEntity[i].cardName == hwatuData[j].hwatu.type.ToString())
                 {
                     hwatuData[j].info = skillTable.SkillTableEntity[i].info;
                     break;
@@ -73,6 +83,15 @@ public class SkillManager : MonoBehaviour
             }
         }
 
+        timer = new float[2];
+
+        hwatuCardSlotData = new HwatuData[2];
+        skillData = new SkillBalanceEntity[2];
+        skillCnt = 0;
+    }
+
+    private void InitializeUI()
+    {
         GameObject blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
         overwritingUI = blanketUI.transform.GetChild(1).gameObject;
         overwriteBtns = overwritingUI.GetComponentsInChildren<CardOverwirteBtn>();
@@ -81,18 +100,16 @@ public class SkillManager : MonoBehaviour
 
         skillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4].transform;
         skillSlot = skillSlotParent.GetComponentsInChildren<SkillSlotUI>();
-
         Transform cooltimeUIParent = skillSlotParent.GetChild(1);
         coolTimeImg = new SkillCoolTimeImg[2];
-        coolTimeImg[0] = cooltimeUIParent.GetChild(0).GetComponent<SkillCoolTimeImg>();
-        coolTimeImg[1] = cooltimeUIParent.GetChild(1).GetComponent<SkillCoolTimeImg>();
-
-        timer = new float[2];
-
-        hwatuCardSlotData = new HwatuData[2];
-        skillData = new SkillBalanceEntity[2];
-        skillCnt = 0;
+        for (int i = 0; i < 2; i++)
+        {
+            skillSlot[i].ClearSlot();
+            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
+            coolTimeImg[i].gameObject.SetActive(false);
+        }
     }
+    #endregion
 
     // Update is called once per frame
     void Update()
