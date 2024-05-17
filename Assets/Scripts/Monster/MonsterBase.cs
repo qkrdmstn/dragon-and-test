@@ -89,7 +89,7 @@ public class MonsterBase : MonoBehaviour
     }
 
     //피격
-    public void OnTriggerEnter2D(Collider2D collision)
+    public virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {

@@ -51,8 +51,7 @@ public class MonsterEliteBird : MonsterBase
     {
         base.Update();
         stateMachine.currentState.Update();
-
-        Debug.Log(stateMachine.currentState);
+        
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
         //Attack
@@ -72,12 +71,18 @@ public class MonsterEliteBird : MonsterBase
             monsterShootTimer = monsterShootDelay;
             loadedBullet--;
 
-            //Create Bullet
-            var bulletGo = MonsterPool.instance.pool.Get();
-            var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
-            bulletGo.transform.position = transform.position;
-            bulletComponent.BulletInitialize(player.transform.position-transform.position);
+            Vector3 dir = player.transform.position-transform.position;
 
+            //Create Bullet
+            for (int i=0; i < 3; i++)
+            {
+                var bulletGo = MonsterPool.instance.pool.Get();
+                var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
+                bulletGo.transform.position = transform.position;
+                
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(30*(i-1), Vector3.forward) * dir);
+            }
+            
         } 
         else if (loadedBullet <= 0)
         {
