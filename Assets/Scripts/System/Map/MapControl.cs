@@ -34,8 +34,7 @@ public class MapControl : MonoBehaviour
             if (curMapNum != myMapNum)
             {
                 curMapNum = gotoMapType.GetComponent<BlockInfo>().blockNumber;
-                spawner.UpdateCurBlockNumber(curMapNum);
-                UIManager.instance.fade.ManageFade(this);   // 맵 이동에 따른 전환 효과 실행
+                UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
                 Debug.Log(curMapNum);
 
                 GameManager.instance.player.SetIdleStatePlayer();
@@ -49,6 +48,7 @@ public class MapControl : MonoBehaviour
         int myMapNum = myMapType.GetComponent<BlockInfo>().blockNumber;
         if (collision.CompareTag("Player") && curMapNum == myMapNum)
         {
+
             curMapNum = -1;
             Debug.Log(curMapNum);
         }
