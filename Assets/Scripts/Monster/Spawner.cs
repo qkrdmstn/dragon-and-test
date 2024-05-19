@@ -70,9 +70,9 @@ public class Spawner : MonoBehaviour
             int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
             int wave = int.Parse(spawnTable[i]["wave"].ToString());
             string monsterType = spawnTable[i]["monsterType"].ToString();
-            float posX = float.Parse(spawnTable[i]["gridPosX"].ToString());
-            float posY = float.Parse(spawnTable[i]["gridPosY"].ToString());
-            Vector2 spawnPosition = new Vector2(posX, posY);
+            int posX = int.Parse(spawnTable[i]["gridPosX"].ToString());
+            int posY = int.Parse(spawnTable[i]["gridPosY"].ToString());
+            Vector2Int spawnPosition = new Vector2Int(posX, posY);
 
             SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
             spawnDB.Add(data);
