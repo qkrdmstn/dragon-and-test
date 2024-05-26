@@ -9,5 +9,6 @@ public class SkillBalanceEntity
     public float force;
     public float duration;
     public float speed;
+    public float period;
 }
 

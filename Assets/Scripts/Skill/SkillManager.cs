@@ -164,7 +164,7 @@ public class SkillManager : MonoBehaviour
         SkillBalanceEntity data = skillData[i];
         if (hwatuCardSlotData[i] == null)
             return;
-        skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force, data.speed);
+        skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force, data.duration, data.speed, data.period);
 
         //CoolTime UI setting
         timer[i] = data.coolTime;

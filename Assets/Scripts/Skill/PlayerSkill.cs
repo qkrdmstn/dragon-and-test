@@ -12,8 +12,8 @@ public class PlayerSkill : MonoBehaviour
     private int impactLayerMask;
     float _impactRadius;
 
-    public GameObject[] projectilePrefabs;
-    Dictionary<SeotdaHwatuName, GameObject> projectileDictionary = new Dictionary<SeotdaHwatuName, GameObject>();
+    public GameObject[] skillPrefabs;
+    Dictionary<SeotdaHwatuName, GameObject> skillObjDictionary = new Dictionary<SeotdaHwatuName, GameObject>();
 
     #region Components
     private Player player;
@@ -22,16 +22,16 @@ public class PlayerSkill : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        projectilePrefabs = Resources.LoadAll<GameObject>("Prefabs/SkillProjectile");
-        for(int i=0; i<projectilePrefabs.Length; i++)
+        skillPrefabs = Resources.LoadAll<GameObject>("Prefabs/Skill");
+        for(int i=0; i<skillPrefabs.Length; i++)
         {
-            string objectName = projectilePrefabs[i].name;
+            string objectName = skillPrefabs[i].name;
             for (int j=0; j<20; j++)
             {
                 string cardName = ((SeotdaHwatuName)j).ToString();
                 if (objectName.Contains(cardName))
                 {
-                    projectileDictionary.Add((SeotdaHwatuName)j, projectilePrefabs[i]);
+                    skillObjDictionary.Add((SeotdaHwatuName)j, skillPrefabs[i]);
                     break;
                 }
             }
@@ -43,36 +43,43 @@ public class PlayerSkill : MonoBehaviour
 
     private void Update()
     {
-        //if(Input.GetKeyDown(KeyCode.G))
-        //{
-        //    SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
-        //}
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            //SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
+            FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
+            //Flooring(SeotdaHwatuName.JanCrane, 1, 10, 15f, 1.5f);
+
+        }
         if (Input.GetKeyDown(KeyCode.H))
         {
-            //SokbakSkill(SeotdaHwatuName.AugMoon, 5, 6, 15);
-            DashSkill(7, 40);
+            Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
+            //FlameThrower(SeotdaHwatuName.MarCherryLight, 1, 5, 0.3f);
         }
         //if(Input.GetKeyDown(KeyCode.J))
         //{
         //    BlankBullet(2, 6, 30);
         //}
     }
-    public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float speed)
+    public void UseSkill(SeotdaHwatuName name, int damage, float range, float duration, float force, float speed, float period)
     {
         Debug.Log(name + " damage:" + damage + " range:" + range + " force:" + force + " speed:" + speed);
         switch(name)
         {
             //Main Card
             case SeotdaHwatuName.JanCrane:
+                Flooring(name, damage, duration, speed, period);
                 break;
             case SeotdaHwatuName.FebBird:
+                FlameThrower(name, damage, duration, period);
                 break;
             case SeotdaHwatuName.MarCherryLight:
+                FlameThrower(name, damage, duration, period);
                 break;
             case SeotdaHwatuName.AprCuckoo:
                 SokbakSkill(name, damage, range, speed);
                 break;
             case SeotdaHwatuName.MayBridge:
+                Flooring(name, damage, duration, speed, period);
                 break;
             case SeotdaHwatuName.JunButterfly:
                 BlankBullet(damage, range, force);
@@ -122,6 +129,7 @@ public class PlayerSkill : MonoBehaviour
 
     }
 
+    #region BlankBullet
     private void BlankBullet(int damage, float impactRadius, float impactForce)
     {
         _impactRadius = impactRadius;
@@ -153,13 +161,9 @@ public class PlayerSkill : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, _impactRadius);
-    }
-
+    #region Dash
     private void DashSkill(float dist, float speed)
     {
         StartCoroutine(DashSkillCoroutine(dist, speed));
@@ -193,7 +197,9 @@ public class PlayerSkill : MonoBehaviour
         player.isStateChangeable = true;
         player.isAttackable = true;
     }
+    #endregion
 
+    #region Sokbak
     private void SokbakSkill(SeotdaHwatuName name, int damage, float dist, float projectileSpeed)
     {
         //방위
@@ -212,11 +218,78 @@ public class PlayerSkill : MonoBehaviour
             Vector2 dir = new Vector2(dx[i], dy[i]);
             dir.Normalize();
 
-            GameObject prefabs = projectileDictionary[name];
+            GameObject prefabs = skillObjDictionary[name];
             GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
-            SkillProjectile projectile = projectilObj.GetComponent<SkillProjectile>();
-
+            SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
+            Debug.Log(projectile);
             projectile.Initialize(0, dist, dir, projectileSpeed, StatusEffect.Sokbak);
         }
     }
+    #endregion
+
+    #region Flooring
+    private void Flooring(SeotdaHwatuName name, int damage, float duration, float speed, float period)
+    {
+        StartCoroutine(FlooringCoroutine(name, damage, duration, speed, period));
+    }
+
+    IEnumerator FlooringCoroutine(SeotdaHwatuName name, int damage, float duration, float speed, float period)
+    {
+        //Initial Direction Setting
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 dir = mousePos - this.transform.position;
+        dir.Normalize();
+        float theta = Vector2.Angle(Vector2.right, dir);
+        if (dir.y < 0)
+            theta *= -1;
+
+        //Create Object
+        GameObject prefabs = skillObjDictionary[name];
+        GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.Euler(0,0, theta));
+        SkillObj_Flooring flame = Obj.GetComponent<SkillObj_Flooring>();
+        flame.Initialize(damage, dir, mousePos, speed, StatusEffect.Slow, period);
+
+        float timer = duration;
+        while (timer >= 0.0f)
+        {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        Destroy(Obj);
+    }
+    #endregion
+
+    #region flame
+    private void FlameThrower(SeotdaHwatuName name, int damage, float duration, float period)
+    {
+        StartCoroutine(FlameThrowerCoroutine(name, damage, duration, period));
+    }
+
+    IEnumerator FlameThrowerCoroutine(SeotdaHwatuName name, int damage, float duration, float period)
+    {
+        player.isAttackable = false;
+
+        float timer = duration;
+
+
+        GameObject prefabs = skillObjDictionary[name];
+        GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.identity);
+        SkillObj_Flame flame = Obj.GetComponent<SkillObj_Flame>();
+        flame.Initialize(damage, new Vector2(0,0), StatusEffect.None, period);
+        while (timer >= 0.0f)
+        {
+            timer -= Time.deltaTime;
+
+            yield return null;
+        }
+        Destroy(Obj);
+        player.isAttackable = true;
+    }
+    #endregion
+
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(this.transform.position, _impactRadius);
+    //}
 }

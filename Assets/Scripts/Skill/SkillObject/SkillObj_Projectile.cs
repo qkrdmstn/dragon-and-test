@@ -1,41 +1,34 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
-public class SkillProjectile : MonoBehaviour
+public class SkillObj_Projectile : SkillObject
 {
-    [Header("Projectile info")]
-    public SkillStatusEffects statusEffect;
-    public int damage;
     public float range;
-    public Vector2 dir;
     public float projectileSpeed;
 
     #region Components
-    private Rigidbody2D rigid;
-
+    public Rigidbody2D rigid;
     #endregion
+
+    public SkillObj_Projectile() : base()
+    {
+    }
 
     private void Awake()
     {
-        statusEffect = new SkillStatusEffects();
         rigid = gameObject.GetComponent<Rigidbody2D>();
     }
 
     public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed, StatusEffect _statusEffect)
     {
-        damage = _damage;
+        base.Initialize(_damage, _dir, _statusEffect);
         range = _range;
-        dir = _dir;
         projectileSpeed = _projectileSpeed;
-        statusEffect.status = _statusEffect;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         rigid.velocity = dir * projectileSpeed;
 
@@ -50,19 +43,27 @@ public class SkillProjectile : MonoBehaviour
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
 
-            if(statusEffect != null)
-                statusEffect.ApplyStatusEffect(monster);
+            SkillAttack(monster);
 
-            monster.OnDamaged(damage);
+            if (statusEffect != null || statusEffect.status != StatusEffect.None)
+                statusEffect.ApplyStatusEffect(monster);
         }
-        if(collision.gameObject.CompareTag("Ground"))
+
+        if (collision.gameObject.CompareTag("Ground"))
         {
             InActiveProjectile();
         }
+    }
+
+    public override void SkillAttack(MonsterBase monster)
+    {
+        monster.OnDamaged(damage);
     }
 
     public void InActiveProjectile()
     {
         Destroy(this.gameObject);
     }
+
 }
+
