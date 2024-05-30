@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c3c162243c4488a45b04de8aa7f46999
+guid: 7d8e107fe83b63b438f9e3af533cfa69
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -90,7 +90,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: Server
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -102,7 +102,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: WebGL
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -117,22 +117,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HorizonWall_Long_0
+      name: 08_Stones_0
       rect:
         serializedVersion: 2
-        x: 37
+        x: 0
         y: 0
-        width: 1830
-        height: 158
+        width: 308
+        height: 348
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ec8dd3de9a13d438ea9fa34839d5d230
-      internalID: 1938545226
+      spriteID: dd19621c7974b4e49b13b06585bdc240
+      internalID: 1045241851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 08_Stones_1
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 53
+        width: 169
+        height: 223
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4939f0e3cfdf12b4ca0ab24b21cd53f4
+      internalID: 824503862
       vertices: []
       indices: 
       edges: []
@@ -148,7 +169,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      HorizonWall_Long_0: 1938545226
+      08_Stones_0: 1045241851
+      08_Stones_1: -34890022
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
