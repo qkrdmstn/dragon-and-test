@@ -35,7 +35,7 @@ public class TutorialUIGroup : UIGroup
 
     private void Update()
     {
-        transform.position = Camera.main.WorldToScreenPoint(scarecrowPos.position) + padding;
+        //transform.position = Camera.main.WorldToScreenPoint(scarecrowPos.position) + padding;
     }
 
     private void OnDisable()
@@ -228,19 +228,16 @@ public class TutorialUIGroup : UIGroup
         else if (isWASD && !isDash && Input.GetKeyDown(KeyCode.Mouse1) && GameManager.instance.player.IsDash())
         {
             isDash = true;
-            Debug.Log("isDash");
         }
 
         else if (isAttack && isDash && curType == "AttacknDash")
         {   // isAttack은 ScarecrowAttacked에서 상태확인
-            Debug.Log("isAttacknDash");
             return isAttack | isDash;
         }
 
         else if (!isReload && curType == "Reload" && Input.GetKeyDown(KeyCode.R))
         {
             isReload = true;
-            Debug.Log("isReload");
             return isReload;
         }
 
@@ -248,14 +245,12 @@ public class TutorialUIGroup : UIGroup
         {
             // 허수아비에게 가서 F키를 눌렀는가 체크
             isInteraction = true;
-            Debug.Log("isInteraction");
             return isInteraction;
         }
 
         // ---------- tuto3 : 섯다 족보 소개
         else if(!isGetJokbo && isJokbo && curType == "GetJokbo")
         {
-            Debug.Log("isGetJokbo");
             return isGetJokbo = true;
         }
 
@@ -283,7 +278,6 @@ public class TutorialUIGroup : UIGroup
                 return isSkill = true;
             }
         }
-
         return false;
     }
 

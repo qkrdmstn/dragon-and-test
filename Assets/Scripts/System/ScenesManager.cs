@@ -80,7 +80,7 @@ public class ScenesManager : MonoBehaviour
                 GameManager.instance.InitReference();
                 GunManager.instance.Initialize();
 
-                UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>().LoadTutorialEvent();
+                //UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>().LoadTutorialEvent();
 
                 break;
 

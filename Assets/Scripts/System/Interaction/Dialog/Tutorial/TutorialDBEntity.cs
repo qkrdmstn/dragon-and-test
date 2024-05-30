@@ -3,6 +3,6 @@
 public class TutorialDBEntity
 {
     public int eventOrder;
-    public string eventName;
+    public int sequence;
     public string dialogue;
 }

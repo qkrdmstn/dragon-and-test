@@ -10,7 +10,7 @@ public class PlayerInteraction : MonoBehaviour
     bool isBounded;
     int curIdxInteraction;
 
-    Interaction dialogueInteraction, shopInteraction, blanketInteraction;
+    public Interaction dialogueInteraction, shopInteraction, blanketInteraction;
 
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
@@ -143,22 +143,33 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    Tutorial tuto;
     private void TutorialInteaction()
     {
-        TutorialUIGroup instance = UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>();
-        if (interaction.eventName == "족보")
+        if(tuto == null)
+            tuto = GameObject.Find("System").GetComponent<Tutorial>();
+
+        if(interaction.sequence > 0) tuto.LoadEvent(interaction.sequence);
+
+        if(interaction.sequence == 0)
         {
-            if (instance.jokboInstantiate != null)
-            {
-                instance.jokboInstantiate.SetActive(false);
-                TutorialUIGroup.isJokbo = true;
-            }
-        }
-        else if (interaction.eventName == "허수아비")
-        {
-            instance.isScarecrow = true;
+            tuto.isInteraction = true;
+            dialogueInteraction.isDone = true;
         }
 
-        dialogueInteraction.isDone = true;
+
+
+        //if (interaction.eventName == "족보")
+        //{
+        //    if (instance.jokboInstantiate != null)
+        //    {
+        //        instance.jokboInstantiate.SetActive(false);
+        //        TutorialUIGroup.isJokbo = true;
+        //    }
+        //}
+        //else if (interaction.eventName == "허수아비")
+        //{
+        //    instance.isScarecrow = true;
+        //}
     }
 }

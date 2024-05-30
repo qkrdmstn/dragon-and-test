@@ -14,6 +14,7 @@ public class InteractionData : MonoBehaviour
 
     public InteractionType type;
     public string eventName;
+    public int sequence;
     public ItemData itemData;
     private void OnValidate()
     {
