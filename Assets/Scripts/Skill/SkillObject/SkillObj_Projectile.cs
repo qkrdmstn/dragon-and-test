@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class SkillObj_Projectile : SkillObject
 {
-    public float range;
-    public float projectileSpeed;
+    [SerializeField] private float range;
+    [SerializeField] private float projectileSpeed;
 
     #region Components
     public Rigidbody2D rigid;
@@ -16,13 +16,9 @@ public class SkillObj_Projectile : SkillObject
     {
     }
 
-    private void Awake()
-    {
-        rigid = gameObject.GetComponent<Rigidbody2D>();
-    }
-
     public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed, StatusEffect _statusEffect)
     {
+        rigid = gameObject.GetComponent<Rigidbody2D>();
         base.Initialize(_damage, _dir, _statusEffect);
         range = _range;
         projectileSpeed = _projectileSpeed;

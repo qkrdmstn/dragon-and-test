@@ -46,14 +46,16 @@ public class PlayerSkill : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.G))
         {
             //SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
-            FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
+            //FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
             //Flooring(SeotdaHwatuName.JanCrane, 1, 10, 15f, 1.5f);
+            GuidedMissile(SeotdaHwatuName.OctDeer, 1, 10, 10, 2.5f);
 
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
-            Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
+            //Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
             //FlameThrower(SeotdaHwatuName.MarCherryLight, 1, 5, 0.3f);
+            GuidedMissile(SeotdaHwatuName.JulBoar, 1, 10, 10, 2.5f);
         }
         //if(Input.GetKeyDown(KeyCode.J))
         //{
@@ -259,7 +261,7 @@ public class PlayerSkill : MonoBehaviour
     }
     #endregion
 
-    #region flame
+    #region Flame
     private void FlameThrower(SeotdaHwatuName name, int damage, float duration, float period)
     {
         StartCoroutine(FlameThrowerCoroutine(name, damage, duration, period));
@@ -287,6 +289,37 @@ public class PlayerSkill : MonoBehaviour
     }
     #endregion
 
+    #region GuidedMissile 
+    private void GuidedMissile(SeotdaHwatuName name, int damage, float speed, float duration, float range)
+    {
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+        dir.Normalize();
+
+        int numProjectile = 0;
+        if (name == SeotdaHwatuName.OctDeer)
+            numProjectile = 10;
+        else if (name == SeotdaHwatuName.JulBoar)
+            numProjectile = 7;
+
+        GameObject prefab = skillObjDictionary[name];
+        //List<GameObject> projectiles =
+        for(int i=0; i< numProjectile; i++)
+        {
+            float angle = 90.0f / numProjectile * (i - numProjectile/2);
+            Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * dir;
+            GameObject projectile = Instantiate(prefab, transform.position, Quaternion.identity);
+            SkillObj_Missile missile = projectile.GetComponent<SkillObj_Missile>();
+            missile.Initialize(damage, direction, StatusEffect.None, speed, range);
+        }
+    }
+
+    //IEnumerator GuidedMissileCoroutine(SeotdaHwatuName name, int damage, float speed, float duration, int numProjectile)
+    //{
+
+    //}
+
+
+    #endregion
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = Color.red;
