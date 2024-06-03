@@ -5,4 +5,5 @@ public class TutorialDBEntity
     public int eventOrder;
     public int sequence;
     public string dialogue;
+    public bool isInteraction;
 }

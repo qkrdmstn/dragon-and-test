@@ -34,22 +34,25 @@ public class PlayerInteraction : MonoBehaviour
         if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone)
         {
-            player.isInteraction = false;   // player의 상호작용 여부 관찰
-            player.isStateChangeable = true;
-            player.isAttackable = true;
-
+            ChangePlayerInteractionState(false);
             dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
+    }
+
+    public void ChangePlayerInteractionState(bool state)
+    {
+        player.isInteraction = state;   // player의 상호작용 여부 관찰
+        if (state) player.SetIdleStatePlayer();
+
+        player.isStateChangeable = !state;
+        player.isAttackable = !state;
     }
 
     void DoInteraction()
     {
         if (!player.isInteraction)
         {
-            player.isInteraction = true;
-            player.SetIdleStatePlayer();
-            player.isStateChangeable = false;
-            player.isAttackable = false;
+            ChangePlayerInteractionState(true);
 
             switch (interaction.type)
             {
@@ -149,27 +152,19 @@ public class PlayerInteraction : MonoBehaviour
         if(tuto == null)
             tuto = GameObject.Find("System").GetComponent<Tutorial>();
 
-        if(interaction.sequence > 0) tuto.LoadEvent(interaction.sequence);
-
-        if(interaction.sequence == 0)
+        if (interaction.sequence == 0 && tuto.curIdx >= 2)
         {
+            Debug.Log("Interaction scarescrow by 0");
             tuto.isInteraction = true;
-            dialogueInteraction.isDone = true;
+            ChangePlayerInteractionState(false);
         }
 
+        else if (interaction.sequence > 0 && !tuto.isInteraction) tuto.LoadEvent(interaction.sequence);
+        else ChangePlayerInteractionState(false);
 
-
-        //if (interaction.eventName == "족보")
-        //{
-        //    if (instance.jokboInstantiate != null)
-        //    {
-        //        instance.jokboInstantiate.SetActive(false);
-        //        TutorialUIGroup.isJokbo = true;
-        //    }
-        //}
-        //else if (interaction.eventName == "허수아비")
-        //{
-        //    instance.isScarecrow = true;
-        //}
+        if (interaction.eventName == "족보")
+        {
+            tuto.getJokbo = true;
+        }
     }
 }
