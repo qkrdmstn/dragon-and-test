@@ -8,13 +8,15 @@ public class MonsterBullet : MonoBehaviour
 {
 
     [Header("Bullet Information")]
+    public float lifeTimer;
+    public float lifeTime;
     public int damage;
     //public int bounce;
 
     [Header("Bullet Movement")]
     public Vector2 dir;
-    public float bulletSpeed;
-
+    //public float bulletSpeed = 1f;
+    private float speed;
     public bool isRelease;
     #region Components
     private Rigidbody2D rigid;
@@ -29,20 +31,22 @@ public class MonsterBullet : MonoBehaviour
 
     void Update()
     {
-        rigid.velocity = dir * bulletSpeed;
+        lifeTimer -= Time.deltaTime;
+        rigid.velocity = dir * speed;
 
-        if (!IsInDomain() && !isRelease)
+        if ((!IsInDomain() || lifeTimer < 0.0f) && !isRelease)
         {
             isRelease = true;
             pool.Release(this.gameObject);
         }
     }
 
-    public void BulletInitialize(Vector2 _dir)
+    public void BulletInitialize(Vector2 _dir, float _speed = 1f)
     {
         isRelease = false;
         dir = _dir;
-
+        lifeTimer = lifeTime;
+        speed = _speed;
         
         float theta = Vector2.Angle(Vector2.right, _dir);
         if (_dir.y < 0)

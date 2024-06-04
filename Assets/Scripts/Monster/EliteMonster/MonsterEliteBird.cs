@@ -5,10 +5,10 @@ using UnityEngine;
 public class MonsterEliteBird : MonsterBase
 {
     #region MonsterShoot
-    public float monsterShootTimer;
-    public float monsterShootDelay = 0.7f;
+    public float fireInterval = 0.2f;
     public float monsterReloadDelay = 2f;
     public bool isReloading = false;
+    public bool isAttacking = false;
     public int loadedBullet;
     public int magazineSize=3;
     public GameObject monsterBullet;
@@ -22,6 +22,7 @@ public class MonsterEliteBird : MonsterBase
     public float attackRange = 8.0f;
     public float escapeRange = 4.0f;
     public float distanceToPlayer;
+    private Vector3 dir;
     #endregion
 
     #region Navigate
@@ -50,44 +51,46 @@ public class MonsterEliteBird : MonsterBase
     public override void Update()
     {
         base.Update();
+        //Debug.Log(stateMachine.currentState);
         stateMachine.currentState.Update();
         
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
-        //Attack
-        monsterShootTimer -= Time.deltaTime;
-        
+        if(loadedBullet<=0 && !isAttacking && !isReloading) Reload();
+
+        Debug.Log(stateMachine.currentState);
     }
     
     public override void Attack()
     {
-        Shoot();
+        if (!isAttacking && !isReloading) Shoot();
     }
     
     public void Shoot()
     {
-        if(loadedBullet > 0 && monsterShootTimer < 0.0)
+        isAttacking = true;
+        if(loadedBullet > 0 && (!isReloading))
         {
-            monsterShootTimer = monsterShootDelay;
             loadedBullet--;
+            dir = player.transform.position - transform.position;
 
-            Vector3 dir = player.transform.position-transform.position;
+            StartCoroutine(SpawnBullets());
+        }
 
-            //Create Bullet
-            for (int i=0; i < 3; i++)
+        isAttacking = false;
+    }
+
+    IEnumerator SpawnBullets()
+    {
+        for (int i=0; i < 6; i++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
-                bulletGo.transform.position = transform.position;
+                bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
                 
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(30*(i-1), Vector3.forward) * dir);
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(30*(i-2.5f), Vector3.forward) * dir);
+                yield return new WaitForSeconds(fireInterval);
             }
-            
-        } 
-        else if (loadedBullet <= 0)
-        {
-            Reload();
-        }
     }
 
     public void Reload()

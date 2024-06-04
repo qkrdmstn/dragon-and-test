@@ -9,11 +9,10 @@ public class MonsterNear : MonsterBase
     public bool inAttack = false;
     public float cooldown = 3.0f;
     public float tempcool;
-    public Collider2D[] collider2Ds;
-    public Vector2 boxSize;
-    public float armLength;
-    private Vector3 newpos;
     public LayerMask playerMask;  
+    private Collider2D swordCollider;
+    public float attackDuration = 0.3f;
+    private float[] directions = { 0, 45, 90, 180, 270, 315, 360};
     #endregion
 
     #region States
@@ -27,7 +26,7 @@ public class MonsterNear : MonsterBase
     #endregion
 
     public float distanceToPlayer;
-    public Vector3 direction;
+    public GameObject sword;
 
     public override void Awake()
     {
@@ -40,6 +39,7 @@ public class MonsterNear : MonsterBase
     {
         base.Start();
 
+        swordCollider = sword.GetComponent<Collider2D>();
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -58,37 +58,74 @@ public class MonsterNear : MonsterBase
     {
         inAttack = true;
         anim.SetTrigger("attacking");
-        direction = player.transform.position - transform.position;
     }
     
-    public void AttackPoint()
+    public virtual void AttackPoint()
     {
-        GetComponent<Collider2D>().enabled = true;
-        newpos = transform.position+(direction * armLength);
-        collider2Ds = Physics2D.OverlapBoxAll(newpos, boxSize, playerMask);
-        foreach(Collider2D collider in collider2Ds)
+        swordCollider.enabled = true;
+
+        Vector3 direction = player.transform.position - transform.position;
+        direction.Normalize();
+
+        float angle = Quaternion.FromToRotation(Vector3.up, direction).eulerAngles.z;
+        Debug.Log(angle);
+
+        float closestDirection = directions[0];
+        float minDifference = Mathf.Abs(angle - directions[0]);
+        Debug.Log(minDifference);
+        for (int i = 1; i < directions.Length; i++)
         {
-            if(collider.CompareTag("Player"))
+            float difference = Mathf.Abs(angle - directions[i]);
+            if (difference < minDifference)
             {
-                playerScript.OnDamamged(damage);
+                minDifference = difference;
+                closestDirection = directions[i];
             }
         }
+        Debug.Log(closestDirection);
+        if (closestDirection <= 180)
+        {
+            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
+            StartCoroutine(RotateOverTime(90, attackDuration));
+        }
+        else
+        {
+            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection+45));
+            StartCoroutine(RotateOverTime(-90, attackDuration));
+        }
+        
+    }
+
+    IEnumerator RotateOverTime(float angle, float duration)
+    {
+        float startTime = Time.time;
+        Quaternion startRotation = sword.transform.rotation;
+        Quaternion endRotation = Quaternion.Euler(sword.transform.eulerAngles + new Vector3(0, 0, angle));
+        bool isDamagedOnce = false;
+
+        while (Time.time < startTime + duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            sword.transform.rotation = Quaternion.Lerp(startRotation, endRotation, t);
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(swordCollider.bounds.center, swordCollider.bounds.size, 0);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.CompareTag("Player") && !isDamagedOnce)
+                {
+                    isDamagedOnce = true;
+                    playerScript.OnDamamged(1);
+                    Debug.Log("player damaged");
+                }
+            }
+            yield return null;
+        }
+
+        sword.transform.rotation = endRotation;
     }
 
     public void OutAttack()
     {
         inAttack = false;
-    }
-
-
-    private void OnDrawGizmos()
-    {
-        if(inAttack)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(newpos, boxSize);
-        }
-        
     }
 
     public void SpeedToZero()
