@@ -9,6 +9,7 @@ public class MonsterFar : MonsterBase
     public float monsterShootDelay = 0.7f;
     public float monsterReloadDelay = 2f;
     public bool isReloading = false;
+    public bool isAttacking = false;
     public int loadedBullet;
     public int magazineSize=3;
     public GameObject monsterBullet;
@@ -56,21 +57,23 @@ public class MonsterFar : MonsterBase
     
     public override void Attack()
     {
-        Shoot();
+        if (!isAttacking && !isReloading) Shoot();
     }
     
-    public void Shoot()
+    public virtual void Shoot()
     {
         if(loadedBullet > 0 && monsterShootTimer < 0.0)
         {
             monsterShootTimer = monsterShootDelay;
             loadedBullet--;
+            Vector3 dir = player.transform.position-transform.position;
 
             //Create Bullet
             var bulletGo = MonsterPool.instance.pool.Get();
             var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
             bulletGo.transform.position = transform.position;
-            bulletComponent.BulletInitialize(player.transform.position-transform.position);
+                
+            bulletComponent.BulletInitialize(dir);
 
         } 
         else if (loadedBullet <= 0)

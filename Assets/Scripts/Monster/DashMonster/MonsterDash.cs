@@ -7,10 +7,14 @@ public class MonsterDash : MonsterBase
     
     #region MonsterAttack
     public bool inAttack = false;
+    private bool warning = false;
     public float cooldown = 8.0f;
     public float attackSpeed = 10.0f;
     public float tempcool;
     public Vector3 direction;
+    private Vector3 endPosition;
+    public SpriteRenderer spriteRenderer;
+    public GameObject attackWarning;
     #endregion
 
     #region States
@@ -40,6 +44,8 @@ public class MonsterDash : MonsterBase
         base.Start();
         stateMachine.Initialize(idleState);
 
+        spriteRenderer = attackWarning.GetComponent<SpriteRenderer>();
+
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -56,6 +62,21 @@ public class MonsterDash : MonsterBase
 
         //navigate
         agent.SetDestination(player.transform.position);
+
+        //draw warning sign
+        if (inAttack)
+        {   
+            if (warning)
+            {
+                endPosition = player.transform.position;
+                spriteRenderer.transform.localScale = new Vector3(1f, direction.magnitude*1.35f, 1f);
+                spriteRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                spriteRenderer.transform.position = transform.position + (direction*1.35f)/2;
+            }
+            direction = endPosition - transform.position;
+            direction.Normalize();
+            direction *= 5f;
+        }
     }
 
     public override void OnTriggerEnter2D(Collider2D collision)
@@ -70,12 +91,15 @@ public class MonsterDash : MonsterBase
     public override void Attack()
     {
         inAttack = true;
+        warning = true;
+        attackWarning.SetActive(true);
         anim.SetTrigger("attacking");
-        direction = player.transform.position - transform.position;
     }
     
     public void AttackPoint()
     {
+        warning = false;
+        attackWarning.SetActive(false);
         rigidBody.AddForce(direction * attackSpeed);
     }
 
