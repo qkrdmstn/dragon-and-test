@@ -20,10 +20,10 @@ public class MonsterBase : MonoBehaviour
     #endregion
 
     #region Componets
-    public Animator anim { get; private set; }
-    public Rigidbody2D rigidBody { get; private set; }
+    public Animator anim { get; protected set; }
+    public Rigidbody2D rigidBody { get; protected set; }
     public SpriteRenderer spriteRenderer { get; private set; }
-    public Collider2D col { get; private set; }
+    public Collider2D col { get; protected set; }
     public GameObject player;
     public Player playerScript;
     public GameObject eventManager;
@@ -31,15 +31,10 @@ public class MonsterBase : MonoBehaviour
     #endregion
 
     #region States
-    public MonsterStateMachine stateMachine { get; private set; }
-    public MonsterEffectState effectState { get; private set; }
-    public MonsterState tempState { get; private set; }
+    public MonsterStateMachine stateMachine { get; protected set; }
+    public MonsterEffectState effectState { get; protected set; }
+    public MonsterState tempState { get; protected set; }
     #endregion
-
-
-    [Header("CameraSetting")]
-    public CamShakeProfile profile;
-    public CinemachineImpulseSource impulseSource;
 
     public temp temp;
     public bool inEffect = false;
@@ -63,7 +58,6 @@ public class MonsterBase : MonoBehaviour
         col = GetComponent<Collider2D>();
         playerScript = player.GetComponent<Player>();
         spawn = eventManager.GetComponent<Spawner>();
-        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     public virtual void Update()
@@ -117,11 +111,8 @@ public class MonsterBase : MonoBehaviour
     }
 
     //데미지 처리
-    public void OnDamaged(int damage)
+    public virtual void OnDamaged(int damage)
     {
-        //피격에 따른 카메라 진동
-        //  CameraManager.instance.CameraShakeFromProfile(profile, impulseSource);
-
         HP -= damage;
         if (HP <= 0)
         {
@@ -138,7 +129,7 @@ public class MonsterBase : MonoBehaviour
     }
 
     //죽음
-    public void Dead()
+    public virtual void Dead()
     {
         Destroy(gameObject);
         spawn.DeathCount();

@@ -20,6 +20,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] TutorialDB tutoDB;
     [SerializeField] GameObject monsters;
     [SerializeField] GameObject jokbo;
+    [SerializeField] GameObject blanket;
 
     public Vector3 padding;
     public GameObject curScarescrow = null;
@@ -70,9 +71,12 @@ public class Tutorial : MonoBehaviour
     public int curSequence;
     public int curIdx = 0;
 
+    public bool[] checkSequenceDone;
+
     private void Awake()
     {
         LoadDialog();
+        checkSequenceDone = new bool[tutorialDatas.Count];
         Invoke("StartFirstDialog", 1.5f);
     }
 
@@ -92,7 +96,10 @@ public class Tutorial : MonoBehaviour
 
         if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
         {   // 일반 대화 출력
-            if (isActiveDone) isActiveDone = false;
+            if (isActiveDone) { isActiveDone = false; canSpeak = true; }
+            //GameManager.instance.player
+            //.GetComponentInChildren<PlayerInteraction>()
+            //.ChangePlayerInteractionState(true);
 
             SetNextDialog();
             if (curIdx >= tutorialDatas[curSequence].dialogues.Count)
@@ -161,13 +168,19 @@ public class Tutorial : MonoBehaviour
             case 1:
                 if (curIdx == 1)
                 {
-                    // 매를 소환하기 -> 이동 x, 공격 x
                     monsters.transform.GetChild(0).gameObject.SetActive(true);
-
                     onTutorials = CheckAttack;
                 }
-                else if (curIdx == 2) onTutorials = CheckDash;
+                else if (curIdx == 2)
+                {
+                    onTutorials = CheckDash;
+                }
                 else if (curIdx == 3)
+                {
+                    killState = 2;
+                    onTutorials = CheckKill;
+                }
+                else if (curIdx == 4)
                 {
                     GetComponentInChildren<BulletGenerator>(true).gameObject.SetActive(true);
                     isInteraction = false;
@@ -176,6 +189,17 @@ public class Tutorial : MonoBehaviour
 
             case 2:
                 if (curIdx == 0) onTutorials = CheckReload;
+                break;
+            case 3:
+                if (curIdx == 1)
+                {
+                    monsters.transform.GetChild(0).gameObject.SetActive(true);
+                    monsters.transform.GetChild(1).gameObject.SetActive(true);
+                    monsters.transform.GetChild(2).gameObject.SetActive(true);
+                    boundColliders[6].isTrigger = true;
+
+                    onTutorials = CheckBattle;
+                }
                 break;
 
             case 4:
@@ -190,9 +214,20 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 5:
-                if (curIdx == 2) onTutorials = CheckGiveSkill;
-                if (curIdx == 3) onTutorials = CheckSkill;
-                if (curIdx == 4) onTutorials = CheckTab;
+                if (curIdx == 1)
+                {
+                    blanket = Instantiate(blanket,
+                        GameManager.instance.player.transform.position + Vector3.right,
+                        Quaternion.identity, transform);
+                    onTutorials = CheckGiveSkill;
+                }
+                else if (curIdx == 2) onTutorials = CheckSkill;
+                else if (curIdx == 3) onTutorials = CheckTab;
+                else if (curIdx == 4)
+                {
+                    onTutorials = CheckKnockBack;
+                    monsters.transform.GetChild(0).gameObject.SetActive(true);  // 넉백 당할 참새 소환
+                }
                 break;
         }
     }
@@ -235,6 +270,7 @@ public class Tutorial : MonoBehaviour
     void IsDone()
     {
         UIManager.instance.curUIGroup.childUI[0].SetActive(false);  // 말풍선 종료
+        checkSequenceDone[curSequence] = true;
 
         // -------------- 다음을 위한 초기화
         curSequence = -1;   
@@ -245,14 +281,17 @@ public class Tutorial : MonoBehaviour
 
         curScarescrow = null;
         curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
-        
-        GameManager.instance.player.GetComponentInChildren<PlayerInteraction>().dialogueInteraction.isDone = true;
+
+        GameManager.instance.player
+            .GetComponentInChildren<PlayerInteraction>()
+            .ChangePlayerInteractionState(false);    // 상호작용 종료
     }
 
-    // ---------- check tutorial situation
+    #region CheckTutorialSituation
+    public static int killState = 0;
     bool CheckAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (killState == 1)
         {
             isInteraction = false;
             return true;
@@ -262,8 +301,19 @@ public class Tutorial : MonoBehaviour
 
     bool CheckDash()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1) && GameManager.instance.player.IsDash())
+        if (GameManager.instance.player.IsDash())
         {
+            isInteraction = false;
+            return true;
+        }
+        else return false;
+    }
+
+    bool CheckKill()
+    {
+        if (killState == 3)
+        {
+            killState = 4;
             isInteraction = false;
             return true;
         }
@@ -280,7 +330,18 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
-    public bool getJokbo = false;
+    public static int deadCnt = 0;
+    bool CheckBattle()
+    {
+        if (deadCnt >= 3)
+        {
+            isInteraction = false;
+            return true;
+        }
+        return false;
+    }
+
+    public static bool getJokbo = false;
     bool CheckGetJokbo()
     {
         if (getJokbo)
@@ -292,9 +353,10 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
+    public static bool closeJokbo = false;
     bool CheckOpenJokbo()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
+    {   // 한번 열었다가 닫아야 다음 대화 진행
+        if (closeJokbo)
         {
             isInteraction = false;
             return true;
@@ -302,12 +364,19 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
+    public static bool isBlankBulletCard = false;
     bool CheckGiveSkill()
     {
+        if (isBlankBulletCard)
+        {
+            blanket.SetActive(false);
+            isInteraction = false;
+            return true;
+        }
         return false;
-
     }
 
+    public float impactForce;
     bool CheckSkill()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -316,17 +385,51 @@ public class Tutorial : MonoBehaviour
             return true;
         }
         return false;
-
     }
 
+    public static bool isTab = false;
+    public static bool isWarriorKnockBacked = false;
     bool CheckTab()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
+            isTab = true;
             isInteraction = false;
             return true;
         }
         return false;
-
     }
+
+    bool CheckKnockBack()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && monsters.transform.GetChild(0).GetComponent<MonsterTutorial>().isKnockedBack)
+        {
+            isInteraction = false;
+            StartCoroutine(KnockBackDone());
+            return true;
+        }
+        return false;
+    }
+
+    IEnumerator KnockBackDone()
+    {   // 넉백이 완료되면 몬스터가 사라짐
+        yield return new WaitUntil(() => isWarriorKnockBacked);
+
+        yield return new WaitForSeconds(0.5f);
+        monsters.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public static void FindBlankBullet()
+    {   // 튜토리얼 스킬 지급 (공포탄)
+        for (int i = 0; i < SkillManager.instance.hwatuData.Length; i++)
+        {
+            if (SkillManager.instance.hwatuData[i].hwatu.type == SeotdaHwatuName.JunButterfly)
+            {
+                HwatuData blankBullet = SkillManager.instance.hwatuData[i];
+                SkillManager.instance.AddSkill(blankBullet);
+                break;
+            }
+        }
+    }
+    #endregion
 }

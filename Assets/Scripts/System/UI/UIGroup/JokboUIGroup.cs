@@ -20,7 +20,7 @@ public class JokboUIGroup : UIGroup {
 
     private void Update()
     {
-        if (ScenesManager.instance.GetSceneNum() == 0 || !TutorialUIGroup.isJokbo) return;
+        if (ScenesManager.instance.GetSceneNum() == 0 || !Tutorial.getJokbo) return;
         // start이거나 튜토리얼에서 족보를 아직 획득하지 않았다면 열리지 않습니다.
 
         if (Input.GetKeyDown(KeyCode.K))
@@ -28,6 +28,11 @@ public class JokboUIGroup : UIGroup {
             SetUI();
             JokboState(!childUI[0].activeSelf); // 현재 족보 상태에 따라 열고 닫습니다.
         }   // activeSelf = true : close / false : open
+        if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+            SetUI();
+            JokboState(!childUI[0].activeSelf);
+        }
     }
 
     void SetUI()
@@ -136,6 +141,6 @@ public class JokboUIGroup : UIGroup {
         Time.timeScale = state ? 0.0f : 1.0f;
         childUI[0].SetActive(state);
 
-        if (!TutorialUIGroup.isCloseJokbo && !state) TutorialUIGroup.isCloseJokbo = true;
+        if (!Tutorial.closeJokbo && !state) Tutorial.closeJokbo = true;
     }
 }

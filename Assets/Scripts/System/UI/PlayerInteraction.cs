@@ -152,19 +152,29 @@ public class PlayerInteraction : MonoBehaviour
         if(tuto == null)
             tuto = GameObject.Find("System").GetComponent<Tutorial>();
 
+        if (interaction.eventName == "족보")
+        {
+            Tutorial.getJokbo = true;
+            ChangePlayerInteractionState(false);
+            return;
+        }
+        else if (interaction.eventName == "모포")
+        {
+            Tutorial.FindBlankBullet();
+            Tutorial.isBlankBulletCard = true;
+            ChangePlayerInteractionState(false);
+            return;
+        }
+
         if (interaction.sequence == 0 && tuto.curIdx >= 2)
         {
-            Debug.Log("Interaction scarescrow by 0");
             tuto.isInteraction = true;
             ChangePlayerInteractionState(false);
         }
+        else if (!tuto.checkSequenceDone[interaction.sequence] &&
+            interaction.sequence > 0 && !tuto.isInteraction)
+                tuto.LoadEvent(interaction.sequence);
 
-        else if (interaction.sequence > 0 && !tuto.isInteraction) tuto.LoadEvent(interaction.sequence);
         else ChangePlayerInteractionState(false);
-
-        if (interaction.eventName == "족보")
-        {
-            tuto.getJokbo = true;
-        }
     }
 }
