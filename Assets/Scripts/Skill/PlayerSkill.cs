@@ -60,7 +60,7 @@ public class PlayerSkill : MonoBehaviour
         //    BlankBullet(2, 6, 30);
         //}
     }
-    public void UseSkill(SeotdaHwatuName name, int damage, float range, float duration, float force, float speed, float period)
+    public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float duration, float speed, float period)
     {
         Debug.Log(name + " damage:" + damage + " range:" + range + " force:" + force + " speed:" + speed);
         switch(name)
