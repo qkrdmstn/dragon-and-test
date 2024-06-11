@@ -13,4 +13,12 @@ public class UIGroup : MonoBehaviour
         else
             _ui.SetActive(true);
     }
+
+    public virtual void SwitchAnim(string animName, bool state)
+    {
+    }
+
+    public virtual void AttachUIforPlayer(int childUIIdx)
+    {
+    }
 }

@@ -48,6 +48,11 @@ public class ScenesManager : MonoBehaviour
         return SceneManager.GetActiveScene().buildIndex;
     }
 
+    public SceneInfo GetSceneEnum()
+    {
+        return (SceneInfo)SceneManager.GetActiveScene().buildIndex;
+    }
+
     public void ChangeScene(int _sceneInfo)
     {
         if(_sceneInfo != (int)SceneInfo.Tutorial)

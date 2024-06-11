@@ -12,6 +12,16 @@ public enum ScareScrowType
     Jokbo,
     Skill
 }
+public enum TutorialUIListOrder
+{
+    Dialogue,
+    Interation,
+    BasicSkill,
+    Reload,
+    OpenJokbo,
+    HwatuSkill,
+    Move
+}
 
 public class Tutorial : MonoBehaviour
 {
@@ -23,8 +33,8 @@ public class Tutorial : MonoBehaviour
     [SerializeField] GameObject blanket;
 
     public Vector3 padding;
-    public GameObject curScarescrow = null;
-    public BoxCollider2D curBoundCollider = null;
+    GameObject curScarescrow = null;
+    BoxCollider2D curBoundCollider = null;
     PlayerInteraction playerInteraction;
 
     delegate bool OnTutorials();
@@ -35,7 +45,7 @@ public class Tutorial : MonoBehaviour
         return tutoFunction();
     }
 
-    // DialogInteraction Info
+    # region DialogInteractionInfo
     List<TutorialData> tutorialDatas = new List<TutorialData>();
     struct TutorialData {
         // sequence별로 대화를 저장하는 구조체
@@ -60,6 +70,7 @@ public class Tutorial : MonoBehaviour
             isAction = _isAction;
         }
     }
+    #endregion
 
     // DialogUI
     TextMeshProUGUI dialogTxt;
@@ -90,7 +101,7 @@ public class Tutorial : MonoBehaviour
 
         if(curScarescrow != null)
         {   // 허수아비의 머리 위에 말풍선을 위치
-            UIManager.instance.curUIGroup.transform.position = 
+            UIManager.instance.curUIGroup.childUI[0].transform.position = 
                 Camera.main.WorldToScreenPoint(curScarescrow.transform.position) + padding;
         }
 
@@ -113,8 +124,14 @@ public class Tutorial : MonoBehaviour
             if (OccurTutorial(onTutorials))
             {
                 isActiveDone = true;
+                UIManager.instance.curUIGroup.AttachUIforPlayer(-1);
             }
         }
+    }
+
+    public GameObject GetCurScarescrow()
+    {
+        return curScarescrow;
     }
 
     void LoadDialog()
@@ -161,6 +178,12 @@ public class Tutorial : MonoBehaviour
         curBoundCollider = boundColliders[(int)type];
     }
 
+    void TutorialUIforAnim(string animName, bool state, TutorialUIListOrder attachUIIdx)
+    {
+        UIManager.instance.curUIGroup.SwitchAnim(animName, state);
+        UIManager.instance.curUIGroup.AttachUIforPlayer((int)attachUIIdx);
+    }
+
     void ManageEvent()
     {
         switch (curSequence)
@@ -169,10 +192,12 @@ public class Tutorial : MonoBehaviour
                 if (curIdx == 1)
                 {
                     monsters.transform.GetChild(0).gameObject.SetActive(true);
+                    TutorialUIforAnim("isAttack", true, TutorialUIListOrder.BasicSkill);
                     onTutorials = CheckAttack;
                 }
                 else if (curIdx == 2)
                 {
+                    TutorialUIforAnim("isDash", true, TutorialUIListOrder.BasicSkill);
                     onTutorials = CheckDash;
                 }
                 else if (curIdx == 3)
@@ -188,7 +213,10 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 2:
-                if (curIdx == 0) onTutorials = CheckReload;
+                if (curIdx == 0) {
+                    TutorialUIforAnim("isReload", true, TutorialUIListOrder.Reload);
+                    onTutorials = CheckReload;
+                }
                 break;
             case 3:
                 if (curIdx == 1)
@@ -210,7 +238,10 @@ public class Tutorial : MonoBehaviour
                         Quaternion.identity, transform);
                     onTutorials = CheckGetJokbo;
                 }
-                else if (curIdx == 5) onTutorials = CheckOpenJokbo;
+                else if (curIdx == 5) {
+                    TutorialUIforAnim("isOpenJokbo", true, TutorialUIListOrder.OpenJokbo);
+                    onTutorials = CheckOpenJokbo;
+                }
                 break;
 
             case 5:
@@ -221,8 +252,15 @@ public class Tutorial : MonoBehaviour
                         Quaternion.identity, transform);
                     onTutorials = CheckGiveSkill;
                 }
-                else if (curIdx == 2) onTutorials = CheckSkill;
-                else if (curIdx == 3) onTutorials = CheckTab;
+                else if (curIdx == 2) {
+                    TutorialUIforAnim("isHwatuSkill", true, TutorialUIListOrder.HwatuSkill);
+                    onTutorials = CheckSkill;
+                } 
+                else if (curIdx == 3)
+                {
+                    TutorialUIforAnim("isTab", true, TutorialUIListOrder.HwatuSkill);
+                    onTutorials = CheckTab;
+                }
                 else if (curIdx == 4)
                 {
                     onTutorials = CheckKnockBack;
@@ -240,13 +278,17 @@ public class Tutorial : MonoBehaviour
         {
             SetNextDialog();    // curIdx = 0
             curIdx++;
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(.5f);
+            TutorialUIforAnim("isInteraction", true, TutorialUIListOrder.Interation);
+            yield return new WaitForSeconds(1f);
 
             SetNextDialog();    // curIdx = 1
             curIdx++;
         }
 
         yield return new WaitUntil(() => isInteraction);
+        UIManager.instance.curUIGroup.SwitchAnim("isInteraction", false);
+
         canSpeak = true;
         isActiveDone = true;
     }
@@ -293,6 +335,7 @@ public class Tutorial : MonoBehaviour
     {
         if (killState == 1)
         {
+            UIManager.instance.curUIGroup.SwitchAnim("isAttack", false);
             isInteraction = false;
             return true;
         }
@@ -303,6 +346,7 @@ public class Tutorial : MonoBehaviour
     {
         if (GameManager.instance.player.IsDash())
         {
+            UIManager.instance.curUIGroup.SwitchAnim("isDash", false);
             isInteraction = false;
             return true;
         }
@@ -324,6 +368,7 @@ public class Tutorial : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            UIManager.instance.curUIGroup.SwitchAnim("isReload", false);
             isInteraction = false;
             return true;
         }
@@ -356,6 +401,10 @@ public class Tutorial : MonoBehaviour
     public static bool closeJokbo = false;
     bool CheckOpenJokbo()
     {   // 한번 열었다가 닫아야 다음 대화 진행
+        if (!closeJokbo && Input.GetKeyDown(KeyCode.K))
+        {
+            UIManager.instance.curUIGroup.SwitchAnim("isOpenJokbo", false);
+        }
         if (closeJokbo)
         {
             isInteraction = false;
@@ -376,11 +425,11 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
-    public float impactForce;
     bool CheckSkill()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            UIManager.instance.curUIGroup.SwitchAnim("isHwatuSkill", false);
             isInteraction = false;
             return true;
         }
@@ -393,6 +442,7 @@ public class Tutorial : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
+            UIManager.instance.curUIGroup.SwitchAnim("isTab", false);
             isTab = true;
             isInteraction = false;
             return true;
