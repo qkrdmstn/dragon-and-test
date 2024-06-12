@@ -19,9 +19,10 @@ public class MonsterTutorial : MonsterBase
     public float distanceToPlayer;
     #endregion
 
-    //#region Navigate
-    //public UnityEngine.AI.NavMeshAgent agent;
-    //#endregion
+    #region Navigate
+    public UnityEngine.AI.NavMeshAgent agent;
+    public bool isChase = true;
+    #endregion
 
     public override void Awake()
     {
@@ -40,14 +41,11 @@ public class MonsterTutorial : MonsterBase
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
-        //spawn = eventManager.GetComponent<Spawner>();
-        
+
         // 추격 관련 진행중 -> 맵 베이크 알기
-        /*
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-        */
 
         stateMachine.Initialize(chaseState);
     }
@@ -146,5 +144,22 @@ public class MonsterTutorial : MonsterBase
         else Tutorial.deadCnt++;
 
         Destroy(gameObject);
+    }
+
+    public void SpeedToZero()
+    {
+        agent.speed = 0;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = 0;
+    }
+
+    public void SpeedReturn()
+    {
+        agent.speed = moveSpeed;
+    }
+
+    public void ChangeChaseState(bool state)
+    {
+        isChase = state;
     }
 }

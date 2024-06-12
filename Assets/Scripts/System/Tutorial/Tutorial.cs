@@ -189,9 +189,10 @@ public class Tutorial : MonoBehaviour
         switch (curSequence)
         {
             case 1:
+                MonsterTutorial monster = monsters.transform.GetChild(0).GetComponent<MonsterTutorial>();
                 if (curIdx == 1)
                 {
-                    monsters.transform.GetChild(0).gameObject.SetActive(true);
+                    monster.gameObject.SetActive(true);
                     TutorialUIforAnim("isAttack", true, TutorialUIListOrder.BasicSkill);
                     onTutorials = CheckAttack;
                 }
@@ -203,6 +204,7 @@ public class Tutorial : MonoBehaviour
                 else if (curIdx == 3)
                 {
                     killState = 2;
+                    monster.ChangeChaseState(true);
                     onTutorials = CheckKill;
                 }
                 else if (curIdx == 4)
@@ -452,7 +454,7 @@ public class Tutorial : MonoBehaviour
 
     bool CheckKnockBack()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && monsters.transform.GetChild(0).GetComponent<MonsterTutorial>().isKnockedBack)
+        if ((Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E)) && monsters.transform.GetChild(0).GetComponent<MonsterTutorial>().isKnockedBack)
         {
             isInteraction = false;
             StartCoroutine(KnockBackDone());
