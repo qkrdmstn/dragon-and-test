@@ -63,7 +63,7 @@ public class SpawnEditorManager : MonoBehaviour
     private void InitializeWaveSettingInfo()
     {
         curWave = 0;
-        curMonsterType = "BirdWarrior";
+        curMonsterType = "BirdWarrior1";
 
         waveSettingUI.UpdateWaveInfoUI();
     }
