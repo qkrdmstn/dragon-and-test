@@ -10,6 +10,7 @@ public class DialogueInteraction : Interaction
     public bool isSelectFirst = true;
     public bool isShop = false;
 
+    UnityEngine.UI.Image npcImg;
     TextMeshProUGUI npcName;
     TextMeshProUGUI[] contentTxt;
     public TextMeshProUGUI dialogueTxt;
@@ -17,7 +18,6 @@ public class DialogueInteraction : Interaction
 
     bool keyInput, isNegative;
     public int result; // 선택된 답변의 배열 Idx
-    //int count;  //현재 선택가능한 답변 갯수
 
     DialogueDB dialogues;
     List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조체
@@ -89,10 +89,14 @@ public class DialogueInteraction : Interaction
 
     void SetUPUI() {
         // 선택지가 2개라는 상황 종속
-        npcName = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>().childUI[1].GetComponent<TextMeshProUGUI>();
+        npcImg = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[0].GetComponent<UnityEngine.UI.Image>();
+        npcName = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[1].GetComponent<TextMeshProUGUI>();
         contentTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
             .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
 
+        npcImg.sprite = data.npcImg;
         dialogueTxt = contentTxt[0];
  
         selectionTxt[0] = contentTxt[1];
@@ -151,7 +155,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
+            if (/*Input.GetMouseButtonDown(0) ||*/ Input.GetKeyDown(KeyCode.F))
             {   //  일반 대화 출력
                 if (dialogDatas.Count == curIdx) isDone = true;
                 else curIdx = SetNextDialog(curIdx);
