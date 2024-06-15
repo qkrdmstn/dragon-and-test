@@ -63,7 +63,6 @@ public class MonsterTutorial : MonsterBase
         {
             rigidBody.velocity = Vector2.zero;
             isKnockedBack = false;
-            Tutorial.isWarriorKnockBacked = true;
         }
     }
 
@@ -134,6 +133,10 @@ public class MonsterTutorial : MonsterBase
                     base.OnDamaged(damage);
                 }
                 break;
+            case MonsterType.Warrior:
+                if(Tutorial.useSkill) 
+                    base.OnDamaged(damage);
+                break;
         }
     }
 
@@ -142,6 +145,8 @@ public class MonsterTutorial : MonsterBase
     {
         if (Tutorial.killState < 3) Tutorial.killState = 3;
         else Tutorial.deadCnt++;
+
+        if (myType == MonsterType.Warrior) Tutorial.isWarriorDied = true;
 
         Destroy(gameObject);
     }

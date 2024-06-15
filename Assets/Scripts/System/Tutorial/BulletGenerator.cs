@@ -9,8 +9,28 @@ public class BulletGenerator : MonoBehaviour
     [SerializeField] float spawnSpeed;
     bool isStart = false;
 
+    float posX, collX;
+
+    private void Start()
+    {
+        posX = transform.position.x;
+        collX = posX + GetComponent<BoxCollider2D>().offset.x;
+    }
+
+    private void Update()
+    {
+        if (isStart)
+        {
+            if(GameManager.instance.player.transform.position.x > collX)
+            {
+                GetComponent<BoxCollider2D>().isTrigger = false;
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!Tutorial.generateBullet) return;
         if (!isStart && collision.CompareTag("Player"))
         {
             GetComponentInParent<Tutorial>().isActiveDone = true;

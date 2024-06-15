@@ -81,6 +81,7 @@ public class Tutorial : MonoBehaviour
     public bool isActiveDone = false;
     public int curSequence;
     public int curIdx = 0;
+    public static bool generateBullet = false;
 
     public bool[] checkSequenceDone;
 
@@ -168,6 +169,7 @@ public class Tutorial : MonoBehaviour
         SetScarescrow((ScareScrowType)sequence);
         curSequence = sequence;
         canSpeak = true;
+        boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
     }
 
     void SetScarescrow(ScareScrowType type)
@@ -209,7 +211,8 @@ public class Tutorial : MonoBehaviour
                 }
                 else if (curIdx == 4)
                 {
-                    GetComponentInChildren<BulletGenerator>(true).gameObject.SetActive(true);
+                    generateBullet = true;
+                    curBoundCollider.isTrigger = true;
                     isInteraction = false;
                 }
                 break;
@@ -248,7 +251,7 @@ public class Tutorial : MonoBehaviour
 
             case 5:
                 if (curIdx == 1)
-                {
+                {   // skill - JunButterfly
                     blanket = Instantiate(blanket,
                         GameManager.instance.player.transform.position + Vector3.right,
                         Quaternion.identity, transform);
@@ -439,7 +442,6 @@ public class Tutorial : MonoBehaviour
     }
 
     public static bool isTab = false;
-    public static bool isWarriorKnockBacked = false;
     bool CheckTab()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -452,23 +454,20 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
+    public static bool useSkill = false;
+    public static bool isWarriorDied = false;
     bool CheckKnockBack()
     {
         if ((Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E)) && monsters.transform.GetChild(0).GetComponent<MonsterTutorial>().isKnockedBack)
         {
+            useSkill = true;
+        }
+        if(useSkill && isWarriorDied)
+        {
             isInteraction = false;
-            StartCoroutine(KnockBackDone());
             return true;
         }
         return false;
-    }
-
-    IEnumerator KnockBackDone()
-    {   // 넉백이 완료되면 몬스터가 사라짐
-        yield return new WaitUntil(() => isWarriorKnockBacked);
-
-        yield return new WaitForSeconds(0.5f);
-        monsters.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public static void FindBlankBullet()
