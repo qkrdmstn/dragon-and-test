@@ -29,6 +29,7 @@ public class Spawner : MonoBehaviour
     [Header("Block info")]
     public BlockInfo[] blocks;
     public int curBlockNum;
+    MapIndicator mapIndicator;
 
     [Header("Wave info")]
     [SerializeField] private int curWave;
@@ -53,6 +54,8 @@ public class Spawner : MonoBehaviour
     #region Initialize Func
     private void InitializeBlockInfo()
     {
+        mapIndicator = FindObjectOfType<MapIndicator>();
+
         blocks = FindObjectsOfType<BlockInfo>();
         Array.Sort(blocks);
 
@@ -197,5 +200,6 @@ public class Spawner : MonoBehaviour
     {
         curWave = 0;
         blocks[curBlockNum].blockClear = true;
+        mapIndicator.BlockClear(curBlockNum);
     }
 }

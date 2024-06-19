@@ -10,6 +10,8 @@ public class MapControl : MonoBehaviour
     public Transform gotoPos;
     public PolygonCollider2D confineColl;
 
+    MapIndicator mapIndicator;
+
     public static int curMapNum;
 
     private Spawner spawner;
@@ -18,7 +20,7 @@ public class MapControl : MonoBehaviour
     private void Start()
     {
         spawner = FindObjectOfType<Spawner>();
-
+        mapIndicator = FindObjectOfType<MapIndicator>();
         confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
 
         if (gameObject.name.Equals("GoToRight")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToLeft");
@@ -37,8 +39,9 @@ public class MapControl : MonoBehaviour
             {
                 flag = true;
                 curMapNum = gotoMapType.GetComponent<BlockInfo>().blockNumber;
+
                 UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
-                Debug.Log(curMapNum);
+                mapIndicator.MoveBlockPlayer(curMapNum);
 
                 GameManager.instance.player.SetIdleStatePlayer();
                 GameManager.instance.player.isStateChangeable = false;
@@ -51,7 +54,6 @@ public class MapControl : MonoBehaviour
         int myMapNum = myMapType.GetComponent<BlockInfo>().blockNumber;
         if (collision.CompareTag("Player") && curMapNum == myMapNum)
         {
-
             curMapNum = -1;
             Debug.Log(curMapNum);
         }
