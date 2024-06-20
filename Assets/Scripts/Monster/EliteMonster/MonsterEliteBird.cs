@@ -11,6 +11,7 @@ public class MonsterEliteBird : MonsterBase
     public bool isAttacking = false;
     public int loadedBullet;
     public int magazineSize=3;
+    public float bulletAngle = 20;
     public GameObject monsterBullet;
     #endregion
 
@@ -57,8 +58,6 @@ public class MonsterEliteBird : MonsterBase
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         
         if(loadedBullet<=0 && !isAttacking && !isReloading) Reload();
-
-        Debug.Log(stateMachine.currentState);
     }
     
     public override void Attack()
@@ -88,7 +87,7 @@ public class MonsterEliteBird : MonsterBase
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
                 
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(30*(i-2.5f), Vector3.forward) * dir);
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(bulletAngle*(i-2.5f), Vector3.forward) * dir);
                 yield return new WaitForSeconds(fireInterval);
             }
     }

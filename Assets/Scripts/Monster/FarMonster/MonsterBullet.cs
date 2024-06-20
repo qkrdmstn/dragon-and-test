@@ -32,7 +32,7 @@ public class MonsterBullet : MonoBehaviour
     void Update()
     {
         lifeTimer -= Time.deltaTime;
-        rigid.velocity = dir * speed;
+        rigid.velocity = dir.normalized * speed;
 
         if ((!IsInDomain() || lifeTimer < 0.0f) && !isRelease)
         {
@@ -41,7 +41,7 @@ public class MonsterBullet : MonoBehaviour
         }
     }
 
-    public void BulletInitialize(Vector2 _dir, float _speed = 1f)
+    public void BulletInitialize(Vector2 _dir, float _speed = 5f)
     {
         isRelease = false;
         dir = _dir;
