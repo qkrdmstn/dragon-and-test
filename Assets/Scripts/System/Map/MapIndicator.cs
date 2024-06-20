@@ -17,8 +17,11 @@ public class MapIndicator : MonoBehaviour
         Array.Sort(blockUIInfos);   // ordered by pos
 
         isVisited = new bool[blockUIInfos.Length];
-        MoveBlockPlayer(firstBlock);  // First Setting
      }
+    void Start()
+    {
+        MoveBlockPlayer(firstBlock);  // First Setting
+    }
 
     public void MoveBlockPlayer(int goToBlockNum)   // goToBlockNum is a Hierarchy Order
     {   
