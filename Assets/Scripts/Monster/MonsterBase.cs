@@ -113,6 +113,8 @@ public class MonsterBase : MonoBehaviour
     //데미지 처리
     public virtual void OnDamaged(int damage)
     {
+        SoundManager.instance.SetEffectSound(SoundType.Monster, "Damage");
+
         HP -= damage;
         if (HP <= 0)
         {

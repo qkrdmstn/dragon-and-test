@@ -129,6 +129,7 @@ public class Gun : MonoBehaviour
             loadedBullet--;
             isAttacking = true;
             continuousShootCnt++;
+            SoundManager.instance.SetEffectSound(SoundType.Player, "Breath");
 
             //Create Bullet
             Vector2 dir = GetShootingDirection();

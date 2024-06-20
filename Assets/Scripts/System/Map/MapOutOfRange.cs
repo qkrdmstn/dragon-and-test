@@ -16,10 +16,6 @@ public class MapOutOfRange : MonoBehaviour
                 _sceneInfo = 4;
             }
             UIManager.instance.fade.ManageFade(_sceneInfo);
-
-            if (_sceneInfo < 5)
-                SoundManager.instance.ManageSound(_sceneInfo);
-            else StartCoroutine(SoundManager.instance.FadeOutSound());
         }
     }
 }

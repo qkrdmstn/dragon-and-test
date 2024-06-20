@@ -28,6 +28,7 @@ public class PlayerMoveState : PlayerState
 
         Vector2 move = dir * player.moveSpeed;
         player.SetVelocity(move.x, move.y);
+        SoundManager.instance.PlayWalkEffect();
 
         //Change State
         if (Input.GetKeyDown(KeyCode.Mouse1))

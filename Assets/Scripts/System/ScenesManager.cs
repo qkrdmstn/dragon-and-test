@@ -36,11 +36,13 @@ public class ScenesManager : MonoBehaviour
     {
         // 씬 매니저의 sceneLoaded에 체인을 건다.
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnLoaded;
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnLoaded;
     }
 
     public int GetSceneNum()
@@ -61,6 +63,11 @@ public class ScenesManager : MonoBehaviour
         SceneManager.LoadScene(_sceneInfo);
     }
 
+    void OnSceneUnLoaded(Scene scene)
+    {
+        StartCoroutine(SoundManager.instance.FadeOutSound());
+    }
+
     // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -70,9 +77,12 @@ public class ScenesManager : MonoBehaviour
         if (scene.buildIndex == 9)
             _sceneInfo = SceneInfo.Town_1;
 
+        StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
+
         switch (_sceneInfo)
         {
             case SceneInfo.Start:       // 0
+                
                 break;
 
             case SceneInfo.Tutorial:    // 1

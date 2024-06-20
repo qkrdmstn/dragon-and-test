@@ -1,19 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Pool;
+
+public enum SoundType
+{
+    Player,
+    Monster,
+    UI
+}
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance = null;
-    public AudioSource[] audioSources; //0: BGM, 1: Effect
-    public AudioClip[] BGMClips;
-    public AudioClip[] effectClips;
 
-    public float _bgmVolume = 0.6f;
-    public float _effectVolume = 0.6f;
+    #region SoundClipDatas
+    [Header("----- AudioClipData")]
+    public AudioClip[] BGMClips;
+    public AudioClip[] effectPlayer;
+    public AudioClip[] effectMonster;
+    public AudioClip[] effectUI;
+    #endregion
+
+    [Header("----- AudioState")]
+    public float _bgmVolume;
+    public float _effectVolume;
     public float fadeDuration;
     public float fadeTimer;
+
+    [Header("----- AudioSources")]
+    AudioSource BGMSource;
+    AudioSource[] walkSources;
+    AudioSource[] effectSources;
+    public int channels;
+    int channelIndex;
+    int walkChannelIndex;
+
+    public bool isFadeOut = false;
 
     //Singleton
     void Awake()
@@ -28,8 +51,35 @@ public class SoundManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+
+        InitAudio();
     }
 
+    void InitAudio()
+    {   // BGM
+        BGMSource = transform.GetChild(0).gameObject.AddComponent<AudioSource>();
+        BGMSource.playOnAwake = false;
+        BGMSource.volume = _bgmVolume;
+        BGMSource.loop = true;
+
+        // Effect
+        effectSources = new AudioSource[channels];
+        for (int i = 0; i < channels; i++)
+        {
+            effectSources[i] = transform.GetChild(1).gameObject.AddComponent<AudioSource>();
+            effectSources[i].playOnAwake = false;
+            effectSources[i].volume = _effectVolume;
+        }
+
+        walkSources = new AudioSource[channels];
+        for (int i = 0; i < channels; i++)
+        {
+            walkSources[i] = transform.GetChild(2).gameObject.AddComponent<AudioSource>();
+            walkSources[i].playOnAwake = false;
+            walkSources[i].volume = _effectVolume;
+            walkSources[i].clip = effectPlayer[0];
+        }
+    }
     // sceneNum과 BGMClips 배열의 순서동일
     // sceneNum : BGM clip
     // 0 : start
@@ -37,101 +87,116 @@ public class SoundManager : MonoBehaviour
     // 2 : town 아직 없어서 배틀이 2
     // 2 : battle
 
-    public void ManageSound(int _sceneNum)
+    public bool SetBGMClip(SceneInfo sceneNum)
     {
-        
-        if(_sceneNum == 2) 
+        int _sceneNum = (int)sceneNum;
+        // BGM
+        if (_sceneNum == 2)
             _sceneNum = 1;
-        else if(_sceneNum >= 3)
+        else if (_sceneNum >= 3)
             _sceneNum = 2;
 
-
-        StartCoroutine(FadeSound(BGMClips[_sceneNum]));
+        BGMSource.volume = _bgmVolume;
+        BGMSource.clip = BGMClips[_sceneNum];
+        return true;
     }
 
-    IEnumerator FadeSound(AudioClip _clip)
+    public IEnumerator FadeOutSound()
     {
-        if (!audioSources[0].mute) {
-            yield return StartCoroutine(FadeOutSound());
-        }
-            
-        yield return new WaitUntil(() => ChangeBGM(_clip));
-
-        StartCoroutine(FadeInSound());
-    }
-
-   public IEnumerator FadeOutSound()
-    {
-        if (audioSources[0].isPlaying)
+        if (BGMSource.isPlaying)
         {   // 음악이 서서히 작아집니다
+            isFadeOut = true;
             fadeTimer = 0;
             while (fadeTimer <= 1)
             {
                 fadeTimer += Time.deltaTime / fadeDuration;
-                audioSources[0].volume = Mathf.Lerp(_bgmVolume, 0, fadeTimer);
+                BGMSource.volume = Mathf.Lerp(_bgmVolume, 0, fadeTimer);
                 yield return null;
             }
-            audioSources[0].mute = true;
+            BGMSource.Stop();
+            isFadeOut = false;
         }
     }
-    public IEnumerator FadeInSound()
+    public IEnumerator FadeInSound(SceneInfo sceneInfo)
     {
-        audioSources[0].mute = false;
-        fadeTimer = 0;
+        yield return new WaitUntil(() => !isFadeOut);
 
-        while (fadeTimer <= 1)
-        {   // 음악이 서서히 커집니다
-            yield return null;
-            fadeTimer += Time.deltaTime / fadeDuration; ;
-            audioSources[0].volume = Mathf.Lerp(0, _bgmVolume, fadeTimer);
-        }
+        yield return new WaitUntil(() => SetBGMClip(sceneInfo));
+        BGMSource.Play();
+
+        //while (fadeTimer <= 1)
+        //{   // 음악이 서서히 커집니다
+        //    fadeTimer += Time.deltaTime / fadeDuration; ;
+        //    BGMSource.volume = Mathf.Lerp(0, _bgmVolume, fadeTimer);
+        //    yield return null;
+        //}
     }
 
-    public bool ChangeBGM(AudioClip _clip)
-    {
-        //audioSources[0].loop = true;
-        //audioSources[0].volume = 0;
-        audioSources[0].clip = _clip;
-        audioSources[0].Play();
-
-        return true;
-    }
-
-    public void SetEffectSound(string _clipName)
+    public void SetEffectSound(SoundType _type, string _clipName)
     {
         int index = 0;
-        switch (_clipName)
+        switch (_type)
         {
-            case "Click":
-                index = 0;
+            case SoundType.Player:
+                switch (_clipName)
+                {
+                    case "Breath":
+                        index = 1;
+                        break;
+                    default:
+                        Debug.LogWarning("OutOfRange in SoundClips");
+                        return;
+                }
+                PlayEffectSound(effectPlayer[index]);
                 break;
-            case "Jump":
-                index = 1;
+            case SoundType.Monster:
+                switch (_clipName)
+                {
+                    case "Damage":
+                        index = 0;
+                        break;
+                    default:
+                        Debug.LogWarning("OutOfRange in SoundClips");
+                        return;
+                }
+                PlayEffectSound(effectMonster[index]);
                 break;
-            case "Hit":
-                index = 2;
-                break;
-            case "ShootWire":
-                index = 3;
-                break;
-            case "WireJump":
-                index = 4;
-                break;
-            case "Lose":
-                index = 5;
-                break;
-            default:
-                Debug.LogWarning("OutOfRange in SoundClips");
-                return;
+            case SoundType.UI:
+                switch (_clipName)
+                {
+                    default:
+                        Debug.LogWarning("OutOfRange in SoundClips");
+                        return;
+                }
+                //PlayEffectSound(effectUI[index]);
+                //break;
         }
-        PlayEffectSound(effectClips[index]);
     }
 
     public void PlayEffectSound(AudioClip _clip)
     {
-        audioSources[1].clip = _clip;
-        audioSources[1].loop = false;
-        audioSources[1].volume = _effectVolume;
-        audioSources[1].Play();
+        for (int audioIdx = 0; audioIdx < channels; audioIdx++)
+        {
+            int loopIdx = (audioIdx + channelIndex) % channels;
+            if (effectSources[loopIdx].isPlaying) continue;
+
+            channelIndex = loopIdx;
+            effectSources[loopIdx].clip = _clip;
+            effectSources[loopIdx].Play();
+            break;
+        }
+    }
+
+    public void PlayWalkEffect()
+    {
+        for (int audioIdx = 0; audioIdx < channels; audioIdx++)
+        {
+            int loopIdx = (audioIdx + walkChannelIndex) % channels;
+            if (walkSources[loopIdx].isPlaying) break;
+
+            walkChannelIndex = loopIdx;
+            walkSources[loopIdx].Play();
+            break;
+        }
     }
 }

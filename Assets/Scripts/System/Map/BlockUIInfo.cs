@@ -46,7 +46,7 @@ public class BlockUIInfo : MonoBehaviour, IComparable
         if(childNum == BlockChild.Interaction)
             childrens[interactionNum].gameObject.SetActive(state);
         else
-        childrens[(int)childNum].gameObject.SetActive(state);
+            childrens[(int)childNum].gameObject.SetActive(state);
     }
 
     public int CompareTo(object obj)
