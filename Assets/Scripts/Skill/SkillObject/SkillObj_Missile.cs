@@ -8,24 +8,28 @@ public class SkillObj_Missile : SkillObject
 {
     [SerializeField] private float speed;
     [SerializeField] private float range;
+    [SerializeField] private float angle;
     private Transform target;
 
     private Rigidbody2D rigid;
     private Transform tf;
+    private Player player;
     private int monsterLayerMask;
     public SkillObj_Missile() : base()
     {
 
     }
 
-    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _speed, float _range)
+    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _speed, float _range, float _angle)
     {
+        player = FindObjectOfType<Player>();
         rigid = GetComponent<Rigidbody2D>();
         tf = GetComponent<Transform>();
         base.Initialize(_damage, _dir, _statusEffect);
 
         speed = _speed;
         range = _range;
+        angle = _angle;
 
         monsterLayerMask = LayerMask.GetMask("Monster");
     }
@@ -33,9 +37,6 @@ public class SkillObj_Missile : SkillObject
     // Update is called once per frame
     void FixedUpdate()
     {
-        //Setting Closet Monster
-        // 1.실시간 유도
-        // 2.발사시 지정된 몬스터 추적?
         SetTarget();
         ChaseTarget();
     }
@@ -57,17 +58,29 @@ public class SkillObj_Missile : SkillObject
 
     private void ChaseTarget()
     {
-        if(target != null)
+        if(target == null)
         {
-            dir = target.position - tf.position;
-            dir.Normalize();
+            angle += 4;
+            Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector2(1, 0);
+            Vector3 pos = player.transform.position + (Vector3)(direction * 1);
+            tf.position = pos;
 
-            float theta = Vector2.Angle(Vector2.right, dir);
-            if (dir.y < 0)
+            float theta = Vector2.Angle(Vector2.right, direction);
+            if (direction.y < 0)
                 theta *= -1;
             tf.rotation = Quaternion.Euler(0, 0, theta);
         }
-        rigid.velocity = speed * dir;
+        else
+        {
+            dir = target.position - tf.position;
+            dir.Normalize();
+            float theta = Vector2.Angle(Vector2.right, dir);
+            if (dir.y < 0)
+                theta *= -1;
+
+            tf.rotation = Quaternion.Euler(0, 0, theta);
+            rigid.velocity = speed * dir;
+        }
 
     }
 

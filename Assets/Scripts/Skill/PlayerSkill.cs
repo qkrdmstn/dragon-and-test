@@ -292,9 +292,6 @@ public class PlayerSkill : MonoBehaviour
     #region GuidedMissile 
     private void GuidedMissile(SeotdaHwatuName name, int damage, float speed, float duration, float range)
     {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
-        dir.Normalize();
-
         int numProjectile = 0;
         if (name == SeotdaHwatuName.OctDeer)
             numProjectile = 10;
@@ -302,14 +299,20 @@ public class PlayerSkill : MonoBehaviour
             numProjectile = 7;
 
         GameObject prefab = skillObjDictionary[name];
-        //List<GameObject> projectiles =
         for(int i=0; i< numProjectile; i++)
         {
-            float angle = 90.0f / numProjectile * (i - numProjectile/2);
-            Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * dir;
-            GameObject projectile = Instantiate(prefab, transform.position, Quaternion.identity);
+            float angle = 360.0f / numProjectile * (i - numProjectile/2);
+            Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector2(1,0);
+            float theta = Vector2.Angle(Vector2.right, direction);
+            if (direction.y < 0)
+                theta *= -1;
+
+            direction.Normalize();
+            Vector3 pos = transform.position + (Vector3)(direction);
+            GameObject projectile = Instantiate(prefab, pos, Quaternion.Euler(0,0, theta));
+
             SkillObj_Missile missile = projectile.GetComponent<SkillObj_Missile>();
-            missile.Initialize(damage, direction, StatusEffect.None, speed, range);
+            missile.Initialize(damage, direction, StatusEffect.None, speed, range, theta);
         }
     }
 
