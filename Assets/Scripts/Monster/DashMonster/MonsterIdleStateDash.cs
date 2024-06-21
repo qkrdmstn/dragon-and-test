@@ -25,7 +25,7 @@ public class MonsterIdleStateDash : MonsterState
     {
         base.Update();
 
-        if (monster.distanceToPlayer < monster.chaseRange && monster.tempcool <= 0.0f) stateMachine.ChangeState(monster.chaseState);
+        if (/*monster.distanceToPlayer < monster.chaseRange &&*/ monster.tempcool <= 0.0f) stateMachine.ChangeState(monster.chaseState);
         
     }
 }
