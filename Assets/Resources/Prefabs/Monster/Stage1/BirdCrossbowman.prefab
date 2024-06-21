@@ -181,11 +181,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c90673266805b4da3bad555e337f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10
+  HP: 8
   damage: 1
   moveSpeed: 3
-  knockbackForce: 5
-  knockbackDuration: 0.1
+  knockbackForce: 1
+  knockbackDuration: 0.05
   isKnockedBack: 0
   knockbackTimer: 0
   knockbackVel: {x: 0, y: 0}
@@ -193,17 +193,15 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  profile: {fileID: 0}
-  impulseSource: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
   fireInterval: 0.2
-  monsterReloadDelay: 3
+  monsterReloadDelay: 2
   isReloading: 0
   isAttacking: 0
   loadedBullet: 1
   magazineSize: 1
-  bulletAngle: 15
+  bulletAngle: 10
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
   chaseRange: 15
   attackRange: 10
