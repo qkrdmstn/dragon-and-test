@@ -126,6 +126,9 @@ public class Spawner : MonoBehaviour
 
     private void newWave()
     {
+        if (blocks[curBlockNum].blockClear)
+            return;
+
         //Setting Wave Data
         numMonster = 0; //wave monster count
         int idx = 0;
@@ -198,8 +201,8 @@ public class Spawner : MonoBehaviour
 
     private void BlockClear()
     {
-        curWave = 0;
         blocks[curBlockNum].blockClear = true;
+        curWave = 0;
         mapIndicator.BlockClear(curBlockNum);
     }
 }
