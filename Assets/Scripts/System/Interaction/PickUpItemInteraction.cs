@@ -19,7 +19,8 @@ public class PickUpItemInteraction : Interaction
         switch (itemData.itemType)
         {
             case ItemType.Material:
-                (itemData as EffectItemData).ItemEffect();
+                if ((itemData as EffectItemData) != null)
+                    (itemData as EffectItemData).ItemEffect();
                 break;
             case ItemType.Gun:
                 InventoryData.instance.AddGunItem(itemData);

@@ -48,15 +48,15 @@ public class ShopInteraction : Interaction
             switch (itemData.itemType)
             {
                 case ItemType.Material:
-                    //InventoryData.instance.AddItem(itemData);
-                    if (GameManager.instance.player.curHP == GameManager.instance.player.maxHP) break;
-
-                    GameManager.instance.player.curHP += 1;
+                    if((itemData as EffectItemData) != null)
+                        (itemData as EffectItemData).ItemEffect();
                     break;
                 case ItemType.Gun:
                     InventoryData.instance.AddGunItem(itemData);
                     break;
                 case ItemType.Armor:
+                    (itemData as EffectItemData).ItemEffect();
+                    InventoryData.instance.AddAmorItem(itemData);
                     break;
             }
             GameManager.instance.player.money -= itemData.price;
