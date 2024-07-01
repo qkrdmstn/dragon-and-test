@@ -38,6 +38,7 @@ public class MonsterBase : MonoBehaviour
 
     public temp temp;
     public bool inEffect = false;
+    public bool isDead = false;
 
 
     public virtual void Awake()
@@ -133,9 +134,13 @@ public class MonsterBase : MonoBehaviour
     //죽음
     public virtual void Dead()
     {
-        Destroy(gameObject);
-        spawn.DeathCount();
-        temp.killScore += 1;
-        //temp.instance.killScore += 1;
+        if(!isDead)
+        {
+            isDead = true;
+            Destroy(gameObject);
+            spawn.DeathCount();
+            temp.killScore += 1;
+            //temp.instance.killScore += 1;
+        }
     }
 }

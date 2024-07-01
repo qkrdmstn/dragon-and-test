@@ -8,6 +8,7 @@ public class InteractionData : MonoBehaviour
     {
         NPC,
         Item,
+        Shop,
         Blanket,
         Tutorial
     };

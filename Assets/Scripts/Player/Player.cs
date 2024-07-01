@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public int curHP = 10;
     public int maxHP = 10;
     public int money = 0;
+    public int shield = 5;
     [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]
@@ -128,7 +129,11 @@ public class Player : MonoBehaviour
             // monster에게 맞았을때 쉐이킹 
             cameraManager.CameraShakeFromProfile(profile, impulseSource);
 
-            curHP -= damage;
+            if (shield > 0)
+                shield -= damage;
+            else
+                curHP -= damage;
+
             // Debug.Log("HP: " + HP);
             if (curHP <= 0)
             {

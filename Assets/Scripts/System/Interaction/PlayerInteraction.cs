@@ -10,7 +10,7 @@ public class PlayerInteraction : MonoBehaviour
     bool isBounded;
     int curIdxInteraction;
 
-    public Interaction dialogueInteraction, shopInteraction, blanketInteraction;
+    public Interaction dialogueInteraction, shopInteraction, blanketInteraction, pickupItemInteraction;
 
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
@@ -27,15 +27,16 @@ public class PlayerInteraction : MonoBehaviour
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
         shopInteraction = gameObject.AddComponent<ShopInteraction>();
         blanketInteraction = gameObject.AddComponent<BlanketInteraction>();
+        pickupItemInteraction = gameObject.AddComponent<PickUpItemInteraction>();
     }
 
     void Update()
     {
         if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
-        if (dialogueInteraction.isDone || blanketInteraction.isDone)
+        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone)
         {
             ChangePlayerInteractionState(false);
-            dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
@@ -61,6 +62,9 @@ public class PlayerInteraction : MonoBehaviour
                     dialogueInteraction.LoadEvent(interaction);
                     break;
                 case InteractionData.InteractionType.Item:
+                    pickupItemInteraction.LoadEvent(interaction);
+                    break;
+                case InteractionData.InteractionType.Shop:
                     // ToDo ITEM INTERACTION
                     dialogueInteraction.LoadEvent(interaction);
                     shopInteraction.LoadEvent(interaction);

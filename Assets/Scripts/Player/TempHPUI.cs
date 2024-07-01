@@ -14,6 +14,6 @@ public class TempHPUI : MonoBehaviour
     }
     private void Update()
     {
-        txt.text = "HP: " + GameManager.instance.player.curHP + " / " + GameManager.instance.player.maxHP;
+        txt.text = "HP: " + GameManager.instance.player.curHP + "\n Shield: " + GameManager.instance.player.shield;
     }
 }

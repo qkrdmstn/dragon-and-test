@@ -50,11 +50,6 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
             if (item.data.itemType == ItemType.DragonHwatu)
                 return;
 
-            if(item.data.itemType == ItemType.Material && Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                InventoryData.instance.ShowUseUI(item.data as MaterialItemData);
-            }
-
             info.UpdateItemInfo(item.data);
         }
     }
