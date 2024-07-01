@@ -94,7 +94,7 @@ public class MonsterTutorial : MonsterBase
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position;
 
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, Random.Range(0.5f, 1.5f));
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, Random.Range(3f, 7f));
             }
 
         }

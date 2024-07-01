@@ -48,10 +48,10 @@ public class BlanketInteraction : Interaction
     {
         isDone = false;
         blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
-        selectBtns = blanketUI.GetComponentsInChildren<BlanketHwatuSelectBtn>();
+        selectBtns = blanketUI.GetComponentsInChildren<BlanketHwatuSelectBtn>(true);
 
         cancleUI = blanketUI.transform.GetChild(2).gameObject;
-        cancleBtns = cancleUI.GetComponentsInChildren<Button>();
+        cancleBtns = cancleUI.GetComponentsInChildren<Button>(true);
 
         synergyUI = blanketUI.transform.GetChild(3).GetComponent<SynergyUI>();
 

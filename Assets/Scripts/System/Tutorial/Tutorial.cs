@@ -212,7 +212,7 @@ public class Tutorial : MonoBehaviour
                 else if (curIdx == 4)
                 {
                     generateBullet = true;
-                    curBoundCollider.isTrigger = true;
+                    //curBoundCollider.isTrigger = true;
                     isInteraction = false;
                 }
                 break;
@@ -318,6 +318,7 @@ public class Tutorial : MonoBehaviour
     {
         UIManager.instance.curUIGroup.childUI[0].SetActive(false);  // 말풍선 종료
         checkSequenceDone[curSequence] = true;
+        dialogTxt.text = "";
 
         // -------------- 다음을 위한 초기화
         curSequence = -1;   

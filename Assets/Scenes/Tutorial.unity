@@ -2823,11 +2823,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f34f0b0da3dcc4d80d1b5434cee3de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3
+  HP: 4
   damage: 1
   moveSpeed: 3
-  knockbackForce: 5
-  knockbackDuration: 0.1
+  knockbackForce: 1
+  knockbackDuration: 0.05
   isKnockedBack: 0
   knockbackTimer: 0
   knockbackVel: {x: 0, y: 0}
@@ -2846,7 +2846,7 @@ MonoBehaviour:
   loadedBullet: 0
   monsterShootTimer: 0
   monsterReloadDelay: 2
-  monsterShootDelay: 0.5
+  monsterShootDelay: 0.3
   magazineSize: 4
   isReloading: 0
 --- !u!95 &625872744
@@ -9721,11 +9721,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f34f0b0da3dcc4d80d1b5434cee3de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 4
   damage: 1
-  moveSpeed: 3
-  knockbackForce: 5
-  knockbackDuration: 0.1
+  moveSpeed: 5
+  knockbackForce: 1
+  knockbackDuration: 0.05
   isKnockedBack: 0
   knockbackTimer: 0
   knockbackVel: {x: 0, y: 0}
@@ -9736,7 +9736,7 @@ MonoBehaviour:
   temp: {fileID: 0}
   inEffect: 0
   myType: 1
-  attackRange: 8
+  attackRange: 1.5
   distanceToPlayer: 0
   agent: {fileID: 0}
   isChase: 1
