@@ -19,6 +19,9 @@ public class MonsterBase : MonoBehaviour
     public Vector2 knockbackVel;
     #endregion
 
+    #region Drop Items
+    public GameObject[] dropItems;
+    #endregion
     #region Componets
     public Animator anim { get; protected set; }
     public Rigidbody2D rigidBody { get; protected set; }
@@ -48,6 +51,8 @@ public class MonsterBase : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
+
+        dropItems = Resources.LoadAll<GameObject>("Prefabs/Item");
     }
 
     public virtual void Start()
@@ -140,7 +145,15 @@ public class MonsterBase : MonoBehaviour
             Destroy(gameObject);
             spawn.DeathCount();
             temp.killScore += 1;
+            ItemDrop();
             //temp.instance.killScore += 1;
         }
+    }
+
+    public void ItemDrop()
+    {
+        Debug.Log("asd");
+        int index = Random.Range(0, dropItems.Length);
+        Instantiate(dropItems[index], this.transform.position, Quaternion.identity);
     }
 }
