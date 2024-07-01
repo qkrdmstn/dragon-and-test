@@ -2,7 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Networking;
+
+public enum SpawnType { A, B, C }
+public enum ExcelStructure
+{
+    blockNumber, wave, monsterType, gridPosX, gridPosY
+}
 
 //public enum MonsterType1
 //{
@@ -16,9 +22,18 @@ using UnityEngine.UIElements;
 public class Spawner : MonoBehaviour
 {
     [Header("Spawn Table")]
-    [SerializeField] private string fileName;
+    //[SerializeField] private string fileName;
+    //List<Dictionary<string, object>> spawnTable;
     [SerializeField] private int stage;
-    List<Dictionary<string, object>> spawnTable;
+    public SpawnType myType;
+
+    string[] sheetURL;
+    const string lastColIdx = "G2";
+    const string rangeIdx = "A1:E";
+    string output;
+
+    private delegate void ControlSpawnData();
+    ControlSpawnData controlSpawnData;
 
     [Header("DB")]
     [SerializeField] private GameObject[] monsterPrefabs;
@@ -43,12 +58,15 @@ public class Spawner : MonoBehaviour
     {
         InitializeMonsterDictionary();
         InitializeBlockInfo();
-        InitializeSpawnDB();
+        InitializeSpawnTableURL();
+
+        controlSpawnData = SplitContext;
+        controlSpawnData += StartWave;
     }
 
     public void Start()
     {
-        UpdateCurBlockNumber(ComputeInitialBlockNumber());
+        StartCoroutine(LoadSpawnTable(myType)); // load -> data slpit -> wave start 
     }
 
     #region Initialize Func
@@ -63,24 +81,88 @@ public class Spawner : MonoBehaviour
             blocks[i].InitializeBlockInfo(i);
     }
 
-    private void InitializeSpawnDB()
+    void InitializeSpawnTableURL()
     {
-        //CSV parsing
-        spawnTable = CSVReader.Read("SpawnDB/" + fileName);
-        spawnDB = new List<SpawnDB>();
-        for (int i = 0; i < spawnTable.Count; i++)
+        sheetURL = new string[3];
+
+        const string exportTxt = "export?format=csv&range=";
+        sheetURL[(int)SpawnType.A] = "https://docs.google.com/spreadsheets/d/1Oe1ybwebAoIVemBKFcvIttoWiu1WG074pUAP6cq7zP4/" + exportTxt;
+        sheetURL[(int)SpawnType.B] = "https://docs.google.com/spreadsheets/d/1AOnWAlm7_jlhOiab0skFzMZNcZ-3fI8BYLGTRpNRKLg/" + exportTxt;
+        sheetURL[(int)SpawnType.C] = "https://docs.google.com/spreadsheets/d/1c7pkmFXMkFvNohBndjOKmasbsUv9gr96qw4WCVwh630/" + exportTxt;
+    }
+
+    public IEnumerator LoadSpawnTable(SpawnType _type)
+    {
+        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + lastColIdx));
+
+        if (output == "1") yield break;
+
+        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + rangeIdx + output));  // Current Output is column idx where have last data.
+
+        controlSpawnData();
+    }
+
+    IEnumerator RequestAPI(string uri)
+    {
+        var webRequest = UnityWebRequest.Get(uri);
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result == UnityWebRequest.Result.ProtocolError
+            || webRequest.result == UnityWebRequest.Result.ConnectionError)
         {
-            int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
-            int wave = int.Parse(spawnTable[i]["wave"].ToString());
-            string monsterType = spawnTable[i]["monsterType"].ToString();
-            int posX = int.Parse(spawnTable[i]["gridPosX"].ToString());
-            int posY = int.Parse(spawnTable[i]["gridPosY"].ToString());
+            Debug.Log(webRequest.error);
+            yield break;
+        }
+
+        output = webRequest.downloadHandler.text;
+    }
+
+    void SplitContext()
+    {
+        if (output == null) return;
+
+        string[] splitResponses = output.Split("\r\n"); // Current Output is google sheet data that loaded.
+
+        spawnDB = new List<SpawnDB>();
+        for (int i = 1; i < splitResponses.Length; i++)
+        {
+            string[] commaSplit = splitResponses[i].Split(',');
+
+            int blockNum = int.Parse(commaSplit[(int)ExcelStructure.blockNumber]);
+            int wave = int.Parse(commaSplit[(int)ExcelStructure.wave]);
+            string monsterType = commaSplit[(int)ExcelStructure.monsterType];
+            int posX = int.Parse(commaSplit[(int)ExcelStructure.gridPosX]);
+            int posY = int.Parse(commaSplit[(int)ExcelStructure.gridPosY]);
             Vector2Int spawnPosition = new Vector2Int(posX, posY);
 
             SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
             spawnDB.Add(data);
         }
     }
+
+    void StartWave()
+    {
+        UpdateCurBlockNumber(ComputeInitialBlockNumber());
+    }
+
+    //private void InitializeSpawnDB()
+    //{
+    //    //CSV parsing
+    //    spawnTable = CSVReader.Read("SpawnDB/" + fileName);
+    //    spawnDB = new List<SpawnDB>();
+    //    for (int i = 0; i < spawnTable.Count; i++)
+    //    {
+    //        int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
+    //        int wave = int.Parse(spawnTable[i]["wave"].ToString());
+    //        string monsterType = spawnTable[i]["monsterType"].ToString();
+    //        int posX = int.Parse(spawnTable[i]["gridPosX"].ToString());
+    //        int posY = int.Parse(spawnTable[i]["gridPosY"].ToString());
+    //        Vector2Int spawnPosition = new Vector2Int(posX, posY);
+
+    //        SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
+    //        spawnDB.Add(data);
+    //    }
+    //}
 
     private void InitializeMonsterDictionary()
     {
