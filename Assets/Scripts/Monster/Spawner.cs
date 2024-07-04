@@ -22,8 +22,6 @@ public enum ExcelStructure
 public class Spawner : MonoBehaviour
 {
     [Header("Spawn Table")]
-    //[SerializeField] private string fileName;
-    //List<Dictionary<string, object>> spawnTable;
     [SerializeField] private int stage;
     public SpawnType myType;
 
@@ -86,6 +84,7 @@ public class Spawner : MonoBehaviour
         sheetURL = new string[3];
 
         const string exportTxt = "export?format=csv&range=";
+
         sheetURL[(int)SpawnType.A] = "https://docs.google.com/spreadsheets/d/1Oe1ybwebAoIVemBKFcvIttoWiu1WG074pUAP6cq7zP4/" + exportTxt;
         sheetURL[(int)SpawnType.B] = "https://docs.google.com/spreadsheets/d/1AOnWAlm7_jlhOiab0skFzMZNcZ-3fI8BYLGTRpNRKLg/" + exportTxt;
         sheetURL[(int)SpawnType.C] = "https://docs.google.com/spreadsheets/d/1c7pkmFXMkFvNohBndjOKmasbsUv9gr96qw4WCVwh630/" + exportTxt;
@@ -97,7 +96,7 @@ public class Spawner : MonoBehaviour
 
         if (output == "1") yield break;
 
-        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + rangeIdx + output));  // Current Output is column idx where have last data.
+        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + rangeIdx + output));  // Current Output is row idx where have last data.
 
         controlSpawnData();
     }
