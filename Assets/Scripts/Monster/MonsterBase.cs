@@ -152,7 +152,6 @@ public class MonsterBase : MonoBehaviour
 
     public void ItemDrop()
     {
-        Debug.Log("asd");
         int index = Random.Range(0, dropItems.Length);
         Instantiate(dropItems[index], this.transform.position, Quaternion.identity);
     }
