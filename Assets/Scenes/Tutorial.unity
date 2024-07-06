@@ -645,7 +645,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -705,7 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 5
   npcImg: {fileID: 0}
@@ -2709,7 +2709,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2769,7 +2769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 4
   npcImg: {fileID: 0}
@@ -2837,6 +2837,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   myType: 0
   attackRange: 8
   distanceToPlayer: 0
@@ -3466,7 +3467,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3526,7 +3527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 1
   npcImg: {fileID: 0}
@@ -4178,7 +4179,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4238,7 +4239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 3
   npcImg: {fileID: 0}
@@ -4876,7 +4877,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4936,7 +4937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 2
   npcImg: {fileID: 0}
@@ -5109,11 +5110,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1078952116 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 674342638}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1089700429
 GameObject:
   m_ObjectHideFlags: 0
@@ -5343,11 +5339,6 @@ Transform:
   m_Father: {fileID: 1505554067}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &1116454104 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377852044418582, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 674342638}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1139049923
 GameObject:
   m_ObjectHideFlags: 0
@@ -5813,6 +5804,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   myType: 0
   attackRange: 8
   distanceToPlayer: 0
@@ -7399,6 +7391,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   myType: 0
   attackRange: 8
   distanceToPlayer: 0
@@ -7680,6 +7673,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   myType: 0
   attackRange: 8
   distanceToPlayer: 0
@@ -8639,15 +8633,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
     stackSize: 0
-  inventorySlotParent: {fileID: 1116454104}
   gunSlotParent: {fileID: 1548952395}
   amorSlotParent: {fileID: 632500570}
-  itemUseUI: {fileID: 1078952116}
 --- !u!4 &1873352398
 Transform:
   m_ObjectHideFlags: 0
@@ -8722,7 +8713,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8782,7 +8773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   eventName: 
   sequence: 0
   npcImg: {fileID: 0}
@@ -9735,6 +9726,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   myType: 1
   attackRange: 1.5
   distanceToPlayer: 0

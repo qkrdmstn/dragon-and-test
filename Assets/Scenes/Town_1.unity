@@ -172,15 +172,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
     stackSize: 0
-  inventorySlotParent: {fileID: 1069813334}
   gunSlotParent: {fileID: 1069813335}
   amorSlotParent: {fileID: 1069813336}
-  itemUseUI: {fileID: 1069813333}
 --- !u!4 &3660026
 Transform:
   m_ObjectHideFlags: 0
@@ -623,7 +620,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -853,7 +850,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1261,16 +1258,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
---- !u!1 &1069813333 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 1069813332}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &1069813334 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377852044418582, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 1069813332}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1069813335 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3263377851369766893, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
@@ -1393,7 +1380,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2405,7 +2392,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: fc8c68512cbbd4e3b91043b86f6ae559, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2427,7 +2414,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_Sprite: {fileID: -1823100931, guid: 9654f990427f52f4f83f3557dbb49a5b, type: 3}
-  m_Color: {r: 1, g: 0.34757435, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
