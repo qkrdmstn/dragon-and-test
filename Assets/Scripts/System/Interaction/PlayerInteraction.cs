@@ -16,7 +16,6 @@ public class PlayerInteraction : MonoBehaviour
     Collider2D[] inRangeInteraction;
 
     [SerializeField] LayerMask layer;
-    //DialogueInteraction dialogueInteraction;
 
     void Awake()
     {
@@ -94,8 +93,6 @@ public class PlayerInteraction : MonoBehaviour
 
             for (int i = 1; i < inRangeInteraction.Length; i++)
             {
-                //Debug.Log(inRangeInteraction[i].gameObject.name);
-
                 float tmp = minDistance;
                 minDistance = Mathf.Min(minDistance, Vector2.Distance(player.transform.position, inRangeInteraction[i].transform.position));
                 if (tmp != minDistance)
@@ -103,19 +100,15 @@ public class PlayerInteraction : MonoBehaviour
                     curIdxInteraction = i;
                 }
             }
-
             interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
-            Debug.Log(inRangeInteraction[curIdxInteraction].gameObject.name);
-
-            inRangeInteraction[curIdxInteraction].gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
 
             for (int i = 0; i < inRangeInteraction.Length; i++)
             {   // 제일 가까운 색외에는 다 Hover effect X
                 if (i == curIdxInteraction)
                 {
-                    inRangeInteraction[curIdxInteraction].gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
+                    OnOutline(inRangeInteraction[curIdxInteraction].gameObject, 1);
                 }
-                else inRangeInteraction[i].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                else OnOutline(inRangeInteraction[curIdxInteraction].gameObject, 0);
             }
         }
     }
@@ -127,12 +120,16 @@ public class PlayerInteraction : MonoBehaviour
             isBounded = false;
             interaction = null;
 
-            //inRangeInteraction = Physics2D.OverlapCircleAll(transform.position, col.radius, layer);
             for (int i=0; i<inRangeInteraction.Length; i++)
             {
-                inRangeInteraction[i].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                OnOutline(inRangeInteraction[i].gameObject, 0); // true = 1, false = 0
             }
         }
+    }
+
+    private void OnOutline(GameObject obj, float isOn)
+    {
+        obj.GetComponent<Renderer>().material.SetFloat("_isInteraction", isOn);
     }
 
     private void BlanketDoInteraction()
