@@ -1,8 +1,6 @@
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 //GoogleAPIs
 using Google.Apis.Auth.OAuth2;
@@ -12,18 +10,20 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System.Threading; // for CancellationToken Struct
 
+[System.Serializable]
 public enum SheetType
 {
     Dialog,
     Tutorial,
-    SpawnDB
+    SpawnDB,
 }
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager instance;
 
-    readonly string[] sheetIDs = new string[3];
+    [Header("스크립트에서 enum을 등록후, 시트ID를 추가합니다.")]
+    public SerializableDictionary<SheetType, string> sheetIDs =  new SerializableDictionary<SheetType, string>();
 
     private void Awake()
     {
@@ -37,16 +37,8 @@ public class DataManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
-
-        InitializeSheetIDs();
     }
 
-    void InitializeSheetIDs()
-    {
-        sheetIDs[(int)SheetType.Dialog] = "1b8wy_DKFryctYBgQamqkBSA4YDpdsJLCaGfl2z8Ryck";
-        sheetIDs[(int)SheetType.Tutorial] = "1b8wy_DKFryctYBgQamqkBSA4YDpdsJLCaGfl2z8Ryck";
-        sheetIDs[(int)SheetType.SpawnDB] = "1Oe1ybwebAoIVemBKFcvIttoWiu1WG074pUAP6cq7zP4";
-    }
 
     #region Access Google Sheets
     private SheetsService _service = null;
@@ -92,7 +84,7 @@ public class DataManager : MonoBehaviour
         if (!_is_credential)
             DoCredential();
 
-        var select = _service.Spreadsheets.Values.Get(sheetIDs[(int)sheetType], range);
+        var select = _service.Spreadsheets.Values.Get(sheetIDs[sheetType], range);
         var response = select.Execute();
         
         return response.Values[0][0].ToString();
@@ -103,7 +95,7 @@ public class DataManager : MonoBehaviour
         if (!_is_credential)
             DoCredential();
 
-        var select = _service.Spreadsheets.Values.Get(sheetIDs[(int)sheetType], range);
+        var select = _service.Spreadsheets.Values.Get(sheetIDs[sheetType], range);
         var response = select.Execute();
         return response.Values;
     }
@@ -119,7 +111,7 @@ public class DataManager : MonoBehaviour
             Values = list_data // 추가할 데이터
         };
 
-        var update = _service.Spreadsheets.Values.Update(valueRange, sheetIDs[(int)sheetType], range);
+        var update = _service.Spreadsheets.Values.Update(valueRange, sheetIDs[sheetType], range);
         update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
         update.Execute();
     }
@@ -130,7 +122,7 @@ public class DataManager : MonoBehaviour
             DoCredential();
 
         ClearValuesRequest what = new ClearValuesRequest();
-        var deleteAll = _service.Spreadsheets.Values.Clear(what, sheetIDs[(int)sheetType], range);
+        var deleteAll = _service.Spreadsheets.Values.Clear(what, sheetIDs[sheetType], range);
         deleteAll.Execute();
     }
     #endregion
