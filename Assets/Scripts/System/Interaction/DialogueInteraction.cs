@@ -19,10 +19,15 @@ public class DialogueInteraction : Interaction
     bool keyInput, isNegative;
     public int result; // 선택된 답변의 배열 Idx
 
-    DialogueDB dialogues;
-    List<DialogData> dialogDatas = new List<DialogData>(); // 현재 eventName과 동일한 대화DB를 저장할 구조체
+    List<DialogueDBEntity> dialogues = new List<DialogueDBEntity>();    // 전체 대화목록
+    List<DialogData> dialogDatas = new List<DialogData>();              // 현재 eventName과 동일한 대화목록
     List<bool> selections = new List<bool>();
     InteractionData data;
+
+    private void Start()
+    {
+        LoadDialogueDBEntity();
+    }
 
     int SetItemPrice()
     {
@@ -39,31 +44,42 @@ public class DialogueInteraction : Interaction
         Init();
         
         if(data.eventName == "상점") isShop = true;
+        LoadDialogData();
 
-        for(int i=0; i<dialogues.DialogueEntity.Count; i++)
+        if (isFirst) SetUPUI();
+        StartCoroutine(ManageEvent());
+    }
+
+    void LoadDialogueDBEntity()
+    {
+        IList<IList<object>> data = DataManager.instance.SelectDatas(SheetType.Dialog, "Sheet");
+        for(int i=1; i<data.Count; i++)
         {
-            if(dialogues.DialogueEntity[i].eventName == data.eventName)
-            {   // 현재 이벤트에 맞는 대화DB를 저장합니다.
+            DialogueDBEntity tmp = DataManager.instance.SplitContextDialog(data[i]);
+            dialogues.Add(tmp);
+        }
+    }
+
+    void LoadDialogData()
+    {
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            if (dialogues[i].eventName == data.eventName)
+            {   // 현재 이벤트에 맞는 대화DB를 저장
                 dialogDatas.Add(new DialogData
                     (
-                        dialogues.DialogueEntity[i].eventOrder,
-                        dialogues.DialogueEntity[i].eventName,
-                        dialogues.DialogueEntity[i].npcName,
-                        dialogues.DialogueEntity[i].dialogue,
-                        dialogues.DialogueEntity[i].isSelect,
-                        dialogues.DialogueEntity[i].selectType,
+                        dialogues[i].eventOrder,
+                        dialogues[i].eventName,
+                        dialogues[i].npcName,
+                        dialogues[i].dialogue,
+                        dialogues[i].isSelect,
+                        dialogues[i].selectType,
                         SetItemPrice()
                     )
                 );
                 selections.Add(false);
             }
         }
-
-        if (isFirst)
-        {
-            SetUPUI();
-        }
-        StartCoroutine(ManageEvent());
     }
 
     IEnumerator ManageEvent()
@@ -267,13 +283,15 @@ public class DialogueInteraction : Interaction
         }
 
         result = -1;
+        curIdx = 0;
+
+        isFirst = true;
+
         isDone = false;
         isNegative = false;
-        isFirst = true;
         isShop = false;
         keyInput = false;
-        curIdx = 0;
-        dialogues = UIManager.instance.dialogueDB;
+
         dialogDatas.Clear();
     }
 }

@@ -6,7 +6,6 @@ public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
     public Fade fade;
-    public DialogueDB dialogueDB;
 
     //public GameObject[] SceneUI;
     public SerializableDictionary<string, GameObject> SceneUI;

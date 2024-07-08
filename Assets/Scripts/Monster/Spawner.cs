@@ -29,6 +29,7 @@ public class Spawner : MonoBehaviour
     const string lastColIdx = "G2";
     const string rangeIdx = "A1:E";
     string output;
+    IList<IList<object>> result;
 
     private delegate void ControlSpawnData();
     ControlSpawnData controlSpawnData;
@@ -56,9 +57,8 @@ public class Spawner : MonoBehaviour
     {
         InitializeMonsterDictionary();
         InitializeBlockInfo();
-        InitializeSpawnTableURL();
 
-        controlSpawnData = SplitContext;
+        controlSpawnData = SplitSpawnData;
         controlSpawnData += StartWave;
     }
 
@@ -79,62 +79,24 @@ public class Spawner : MonoBehaviour
             blocks[i].InitializeBlockInfo(i);
     }
 
-    void InitializeSpawnTableURL()
-    {
-        sheetURL = new string[3];
-
-        const string exportTxt = "export?format=csv&range=";
-
-        sheetURL[(int)SpawnType.A] = "https://docs.google.com/spreadsheets/d/1Oe1ybwebAoIVemBKFcvIttoWiu1WG074pUAP6cq7zP4/" + exportTxt;
-        sheetURL[(int)SpawnType.B] = "https://docs.google.com/spreadsheets/d/1AOnWAlm7_jlhOiab0skFzMZNcZ-3fI8BYLGTRpNRKLg/" + exportTxt;
-        sheetURL[(int)SpawnType.C] = "https://docs.google.com/spreadsheets/d/1c7pkmFXMkFvNohBndjOKmasbsUv9gr96qw4WCVwh630/" + exportTxt;
-    }
-
     public IEnumerator LoadSpawnTable(SpawnType _type)
     {
-        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + lastColIdx));
+        output = DataManager.instance.SelectData(SheetType.SpawnDB, lastColIdx);
 
         if (output == "1") yield break;
 
-        yield return StartCoroutine(RequestAPI(sheetURL[(int)_type] + rangeIdx + output));  // Current Output is row idx where have last data.
-
+        result = DataManager.instance.SelectDatas(SheetType.SpawnDB, "sheetA!" + rangeIdx + output); // Current Output is row idx where have last data.
         controlSpawnData();
     }
 
-    IEnumerator RequestAPI(string uri)
+    void SplitSpawnData()
     {
-        var webRequest = UnityWebRequest.Get(uri);
-        yield return webRequest.SendWebRequest();
-
-        if (webRequest.result == UnityWebRequest.Result.ProtocolError
-            || webRequest.result == UnityWebRequest.Result.ConnectionError)
-        {
-            Debug.Log(webRequest.error);
-            yield break;
-        }
-
-        output = webRequest.downloadHandler.text;
-    }
-
-    void SplitContext()
-    {
-        if (output == null) return;
-
-        string[] splitResponses = output.Split("\r\n"); // Current Output is google sheet data that loaded.
+        if (result == null) return;
 
         spawnDB = new List<SpawnDB>();
-        for (int i = 1; i < splitResponses.Length; i++)
+        for (int i = 1; i < result.Count; i++)
         {
-            string[] commaSplit = splitResponses[i].Split(',');
-
-            int blockNum = int.Parse(commaSplit[(int)ExcelStructure.blockNumber]);
-            int wave = int.Parse(commaSplit[(int)ExcelStructure.wave]);
-            string monsterType = commaSplit[(int)ExcelStructure.monsterType];
-            int posX = int.Parse(commaSplit[(int)ExcelStructure.gridPosX]);
-            int posY = int.Parse(commaSplit[(int)ExcelStructure.gridPosY]);
-            Vector2Int spawnPosition = new Vector2Int(posX, posY);
-
-            SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
+            SpawnDB data = DataManager.instance.SplitContext(result[i]);
             spawnDB.Add(data);
         }
     }
@@ -143,25 +105,6 @@ public class Spawner : MonoBehaviour
     {
         UpdateCurBlockNumber(ComputeInitialBlockNumber());
     }
-
-    //private void InitializeSpawnDB()
-    //{
-    //    //CSV parsing
-    //    spawnTable = CSVReader.Read("SpawnDB/" + fileName);
-    //    spawnDB = new List<SpawnDB>();
-    //    for (int i = 0; i < spawnTable.Count; i++)
-    //    {
-    //        int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
-    //        int wave = int.Parse(spawnTable[i]["wave"].ToString());
-    //        string monsterType = spawnTable[i]["monsterType"].ToString();
-    //        int posX = int.Parse(spawnTable[i]["gridPosX"].ToString());
-    //        int posY = int.Parse(spawnTable[i]["gridPosY"].ToString());
-    //        Vector2Int spawnPosition = new Vector2Int(posX, posY);
-
-    //        SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
-    //        spawnDB.Add(data);
-    //    }
-    //}
 
     private void InitializeMonsterDictionary()
     {
@@ -229,7 +172,7 @@ public class Spawner : MonoBehaviour
         {
             GameObject monster = monsterDictionary[spawnDB[idx].monsterType];
             //GridPos -> WorldPos
-            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].spawnGridPos);
+            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].spawnPosition);
             monsters.Add(monster);
             positions.Add(worldPos);
             idx++;

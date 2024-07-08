@@ -9,19 +9,19 @@ public class SpawnDB : IComparable
     public int blockNum;
     public int wave;
     public string monsterType;
-    public Vector2Int spawnGridPos;
+    public Vector2Int spawnPosition;
 
     public SpawnDB(int blockNum, int wave, string monsterType, Vector2Int spawnPosition)
     {
         this.blockNum = blockNum;
         this.wave = wave;
         this.monsterType = monsterType;
-        this.spawnGridPos = spawnPosition;
+        this.spawnPosition = spawnPosition;
     }
 
     public string StringSpawnDB()
     {
-        string result = "blockNum: " + this.blockNum + " wave: " + this.wave + " monsterType: " + this.monsterType + " spawPos: " + this.spawnGridPos;
+        string result = "blockNum: " + this.blockNum + " wave: " + this.wave + " monsterType: " + this.monsterType + " spawPos: " + this.spawnPosition;
         return result;
     }
 

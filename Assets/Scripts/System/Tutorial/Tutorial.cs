@@ -1,3 +1,4 @@
+using Google.Apis.Sheets.v4.Data;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -27,10 +28,11 @@ public class Tutorial : MonoBehaviour
 {
     [SerializeField] List<GameObject> scareScrows;
     [SerializeField] List<BoxCollider2D> boundColliders;
-    [SerializeField] TutorialDB tutoDB;
     [SerializeField] GameObject monsters;
     [SerializeField] GameObject jokbo;
     [SerializeField] GameObject blanket;
+
+    List<TutorialDBEntity> tutoDB = new List<TutorialDBEntity>();
 
     public Vector3 padding;
     GameObject curScarescrow = null;
@@ -85,10 +87,12 @@ public class Tutorial : MonoBehaviour
 
     public bool[] checkSequenceDone;
 
-    private void Awake()
+    private void Start()
     {
+        LoadTutorialDBEntity();
         LoadDialog();
         checkSequenceDone = new bool[tutorialDatas.Count];
+
         Invoke("StartFirstDialog", 1.5f);
     }
 
@@ -109,9 +113,6 @@ public class Tutorial : MonoBehaviour
         if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
         {   // 일반 대화 출력
             if (isActiveDone) { isActiveDone = false; canSpeak = true; }
-            //GameManager.instance.player
-            //.GetComponentInChildren<PlayerInteraction>()
-            //.ChangePlayerInteractionState(true);
 
             SetNextDialog();
             if (curIdx >= tutorialDatas[curSequence].dialogues.Count)
@@ -130,22 +131,29 @@ public class Tutorial : MonoBehaviour
         }
     }
 
-    public GameObject GetCurScarescrow()
+    public GameObject GetCurScarescrow() => curScarescrow;
+
+    void LoadTutorialDBEntity()
     {
-        return curScarescrow;
+        IList<IList<object>> data = DataManager.instance.SelectDatas(SheetType.Tutorial, "Tutorial");
+        for (int i = 1; i < data.Count; i++)
+        {
+            TutorialDBEntity tmp = DataManager.instance.SplitContextTutorial(data[i]);
+            tutoDB.Add(tmp);
+        }
     }
 
     void LoadDialog()
     {   // 튜토리얼 대화를 시퀀스별로 불러와 저장합니다.
         int curSequence = -1;
-        for (int i = 0; i < tutoDB.TutorialEntity.Count; i++)
+        for (int i = 0; i < tutoDB.Count; i++)
         {
             curSequence++;
             List<DialogAction> tmpDialogs = new List<DialogAction>();
-            while (curSequence == tutoDB.TutorialEntity[i].sequence)
+            while (curSequence == tutoDB[i].sequence)
             {
-                tmpDialogs.Add(new DialogAction(tutoDB.TutorialEntity[i].dialogue, tutoDB.TutorialEntity[i].isInteraction));
-                if (tutoDB.TutorialEntity.Count == i+1 || curSequence != tutoDB.TutorialEntity[i + 1].sequence)
+                tmpDialogs.Add(new DialogAction(tutoDB[i].dialogue, tutoDB[i].isInteraction));
+                if (tutoDB.Count == i+1 || curSequence != tutoDB[i + 1].sequence)
                 {
                     tutorialDatas.Add(new TutorialData(curSequence, tmpDialogs));
                     break;
