@@ -72,7 +72,7 @@ public class PlayerInteraction : MonoBehaviour
                     BlanketDoInteraction();
                     break;
                 case InteractionData.InteractionType.Tutorial:
-                    TutorialInteaction();
+                    TutorialInteraction();
                     break;
 
             }
@@ -148,7 +148,7 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     Tutorial tuto;
-    private void TutorialInteaction()
+    private void TutorialInteraction()
     {
         if(tuto == null)
             tuto = GameObject.Find("System").GetComponent<Tutorial>();
