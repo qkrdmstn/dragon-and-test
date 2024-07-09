@@ -120,7 +120,7 @@ public class MonsterTutorial : MonsterBase
 
     public override void OnDamaged(int damage)
     {
-        SoundManager.instance.SetEffectSound(SoundType.Monster, "Damage");
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
 
         switch (myType)
         {

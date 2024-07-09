@@ -26,6 +26,7 @@ public class PlayerDashState : PlayerState
         dashDir.Normalize();
 
         stateTimer = player.dashDuration;
+        SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Dash);
     }
 
     public override void Exit()

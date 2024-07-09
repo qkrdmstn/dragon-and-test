@@ -1,13 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
+using System;
 
 public enum SoundType
 {
     Player,
     Monster,
     UI
+}
+public enum PlayerSfx
+{
+    Walk,
+    Breath,
+    Dash
+}
+public enum MonsterSfx
+{
+    Damage
+}
+public enum UISfx
+{
+
 }
 
 public class SoundManager : MonoBehaviour
@@ -17,9 +31,15 @@ public class SoundManager : MonoBehaviour
     #region SoundClipDatas
     [Header("----- AudioClipData")]
     public AudioClip[] BGMClips;
-    public AudioClip[] effectPlayer;
-    public AudioClip[] effectMonster;
-    public AudioClip[] effectUI;
+
+    [System.Serializable]
+    public class ClipType
+    {
+        public SoundType myType;
+        public AudioClip[] effectClips;
+    }
+
+    public List<ClipType> effects;
     #endregion
 
     [Header("----- AudioState")]
@@ -77,7 +97,7 @@ public class SoundManager : MonoBehaviour
             walkSources[i] = transform.GetChild(2).gameObject.AddComponent<AudioSource>();
             walkSources[i].playOnAwake = false;
             walkSources[i].volume = _effectVolume;
-            walkSources[i].clip = effectPlayer[0];
+            walkSources[i].clip = effects[(int)SoundType.Player].effectClips[(int)PlayerSfx.Walk];
         }
     }
     // sceneNum과 BGMClips 배열의 순서동일
@@ -132,45 +152,11 @@ public class SoundManager : MonoBehaviour
         //}
     }
 
-    public void SetEffectSound(SoundType _type, string _clipName)
+    public void SetEffectSound<T>(SoundType _type, T clip) where T : Enum
     {
-        int index = 0;
-        switch (_type)
-        {
-            case SoundType.Player:
-                switch (_clipName)
-                {
-                    case "Breath":
-                        index = 1;
-                        break;
-                    default:
-                        Debug.LogWarning("OutOfRange in SoundClips");
-                        return;
-                }
-                PlayEffectSound(effectPlayer[index]);
-                break;
-            case SoundType.Monster:
-                switch (_clipName)
-                {
-                    case "Damage":
-                        index = 0;
-                        break;
-                    default:
-                        Debug.LogWarning("OutOfRange in SoundClips");
-                        return;
-                }
-                PlayEffectSound(effectMonster[index]);
-                break;
-            case SoundType.UI:
-                switch (_clipName)
-                {
-                    default:
-                        Debug.LogWarning("OutOfRange in SoundClips");
-                        return;
-                }
-                //PlayEffectSound(effectUI[index]);
-                //break;
-        }
+        int clipIdx = (int)Enum.Parse(clip.GetType(), clip.ToString());
+
+        PlayEffectSound(effects[(int)_type].effectClips[clipIdx]);
     }
 
     public void PlayEffectSound(AudioClip _clip)

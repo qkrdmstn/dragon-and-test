@@ -113,13 +113,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2d913f494eef84a1691479d8cfc83a20, type: 3}
   - {fileID: 8300000, guid: 02fce55367b9145b4a9df3f48e22ea09, type: 3}
   - {fileID: 8300000, guid: f516fe269023a5140a912daba33a15a0, type: 3}
-  effectPlayer:
-  - {fileID: 8300000, guid: d8ead4fd5c6c94752b3987dbc4cc5581, type: 3}
-  - {fileID: 8300000, guid: 33cbeea4dfd764c3a80123052cf9f5d2, type: 3}
-  - {fileID: 8300000, guid: 0d5b783fbf0175845a46880a1b539572, type: 3}
-  effectMonster:
-  - {fileID: 8300000, guid: 88a73b661fd7c43c4b9137fd4f210637, type: 3}
-  effectUI: []
+  effects:
+  - myType: 0
+    effectClips:
+    - {fileID: 8300000, guid: d8ead4fd5c6c94752b3987dbc4cc5581, type: 3}
+    - {fileID: 8300000, guid: 33cbeea4dfd764c3a80123052cf9f5d2, type: 3}
+    - {fileID: 8300000, guid: 0d5b783fbf0175845a46880a1b539572, type: 3}
+  - myType: 1
+    effectClips:
+    - {fileID: 8300000, guid: 88a73b661fd7c43c4b9137fd4f210637, type: 3}
+  - myType: 2
+    effectClips: []
   _bgmVolume: 0.3
   _effectVolume: 0.3
   fadeDuration: 1.5
