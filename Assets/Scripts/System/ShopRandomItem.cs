@@ -17,7 +17,7 @@ public class ShopRandomItem : MonoBehaviour
         itemObjs = GetComponentsInChildren<ItemObject>();
         gunItemDatas = Resources.LoadAll<ItemData>("Gun/ItemData");
         armorItemDatas = Resources.LoadAll<ItemData>("Armor");
-        fruitItemData = Resources.Load<ItemData>("Material/dragonFruit");
+        fruitItemData = Resources.Load<ItemData>("Material/DragonFruit");
 
     }
     private void Start()

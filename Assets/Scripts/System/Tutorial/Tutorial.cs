@@ -485,9 +485,9 @@ public class Tutorial : MonoBehaviour
         {
             if (SkillManager.instance.hwatuData[i].hwatu.type == SeotdaHwatuName.JunButterfly)
             {
-                HwatuData blankBullet = SkillManager.instance.hwatuData[i];
-                SkillManager.instance.AddSkill(blankBullet);
-                break;
+                //HwatuData blankBullet = SkillManager.instance.hwatuData[i];
+                //SkillManager.instance.AddSkill(blankBullet);
+                //break;
             }
         }
     }
