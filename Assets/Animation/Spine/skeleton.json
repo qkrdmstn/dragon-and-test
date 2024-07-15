@@ -1,0 +1,74 @@
+{
+"skeleton": {
+	"hash": "GP/PNixo8Gg",
+	"spine": "4.2.33",
+	"x": -118.63,
+	"y": -8.29,
+	"width": 238,
+	"height": 234,
+	"images": "./PNG/IDLE/BODY/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "x": 0.37, "y": 108.71 },
+	{ "name": "face", "parent": "bone", "x": -0.45, "y": -37.54 },
+	{ "name": "horn", "parent": "face", "x": 0.34, "y": 106.84 }
+],
+"slots": [
+	{ "name": "horn_basic", "bone": "horn", "attachment": "horn_flower" },
+	{ "name": "body", "bone": "bone", "attachment": "body_" },
+	{ "name": "Face_basic", "bone": "face", "attachment": "Face_basic" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"body": {
+				"body_": {
+					"width": 238,
+					"height": 234,
+					"sequence": { "count": 5, "start": 0, "digits": 4 }
+				},
+				"body_0001": { "width": 238, "height": 234 },
+				"body_0002": { "width": 238, "height": 234 },
+				"body_0003": { "width": 238, "height": 234 },
+				"body_0004": { "width": 238, "height": 234 }
+			},
+			"Face_basic": {
+				"Face_basic": { "y": 71.27, "width": 197, "height": 154 },
+				"Face_bress": { "y": 71.27, "width": 197, "height": 154 }
+			},
+			"horn_basic": {
+				"horn_basic": { "y": -23.07, "width": 197, "height": 154 },
+				"horn_flower": { "y": -40.78, "width": 197, "height": 154 }
+			}
+		}
+	}
+],
+"animations": {
+	"animation": {
+		"bones": {
+			"face": {
+				"translate": [
+					{ "curve": "stepped" },
+					{ "time": 0.2667, "y": -2.06, "curve": "stepped" },
+					{ "time": 0.3, "y": -0.63 }
+				]
+			}
+		},
+		"attachments": {
+			"default": {
+				"body": {
+					"body_": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0833 },
+							{ "time": 0.3667, "mode": "loop", "index": 4 }
+						]
+					}
+				}
+			}
+		}
+	}
+}
+}
