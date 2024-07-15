@@ -11,14 +11,15 @@ public class SkillManager : MonoBehaviour
     
     [Header("Hwatu Data")]
     public HwatuData[] hwatuData; //전체 카드 데이터
-    public List<HwatuData> materialHwatuData; //조합 카드 데이터
+    public List<HwatuData> materialHwatuDataList; //조합 카드 데이터
     public int materialCardCnt = 0;
+    public int materialCardMaxNum = 10;
 
     [Header("DB")]
     [SerializeField] SkillBalanceTable skillTable;
 
-    //[Header("Skill Data")]
-    //public int skillCnt;
+    [Header("Skill Data")]
+    public int skillCnt;
     //public HwatuData[] hwatuCardSlotData;
     //public SeotdaHwatuCombination curSynergy;
     //public SkillBalanceEntity[] skillData;
@@ -89,8 +90,21 @@ public class SkillManager : MonoBehaviour
 
     public void AddMaterialCardData(HwatuData _data)
     {
-        materialHwatuData.Add(_data);
-        materialCardCnt = materialHwatuData.Count;
-        materialHwatuData.Sort();
+        if(materialCardCnt >= materialCardMaxNum)
+        {
+            Debug.Log("The card data is full");
+            return;
+        }    
+
+        materialHwatuDataList.Add(_data);
+        materialCardCnt = materialHwatuDataList.Count;
+        materialHwatuDataList.Sort();
+    }
+
+    public void DeleteMaterialCardData(HwatuData _data)
+    {
+        materialHwatuDataList.Remove(_data);
+        materialCardCnt = materialHwatuDataList.Count;
+        materialHwatuDataList.Sort();
     }
 }

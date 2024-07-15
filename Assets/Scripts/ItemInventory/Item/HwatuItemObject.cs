@@ -39,7 +39,7 @@ public class HwatuItemObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (curBlock.blockClear)
+        //if (curBlock.blockClear)
         {
             //player와의 거리 계산 및 위치 이동
             float distance = Vector3.Distance(transform.position, player.transform.position);
