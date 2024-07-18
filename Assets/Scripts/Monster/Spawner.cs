@@ -121,7 +121,7 @@ public class Spawner : MonoBehaviour
     private int ComputeInitialBlockNumber()
     {
         //플레이어와 가장 가까운 block이 시작 block
-        Vector3 playerPos = GameManager.instance.player.transform.position; //GameManager.instance.player 초기화는 Awake 이후
+        Vector3 playerPos = Player.instance.transform.position; //GameManager.instance.player 초기화는 Awake 이후
         int idx = 0;
         float minDist = Vector3.Magnitude(blocks[0].transform.position - playerPos);
         for (int i = 1; i < blocks.Length; i++)

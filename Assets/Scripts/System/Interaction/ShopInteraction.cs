@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-//using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public enum StateOfBuy
@@ -30,7 +28,7 @@ public class ShopInteraction : Interaction
     {
         if(result == 1) state = StateOfBuy.NoBuy;
 
-        else if(GameManager.instance.player.money < itemData.price)
+        else if(Player.instance.money < itemData.price)
         {   // checkMoney
             state = StateOfBuy.CantBuy;
             return 2;
@@ -59,7 +57,7 @@ public class ShopInteraction : Interaction
                     InventoryData.instance.AddAmorItem(itemData);
                     break;
             }
-            GameManager.instance.player.money -= itemData.price;
+            Player.instance.money -= itemData.price;
             Debug.Log(itemData.itemName + "Get Item!!");
             Destroy(interaction);
         }

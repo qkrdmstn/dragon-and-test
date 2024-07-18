@@ -1,38 +1,60 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class PlayerData
 {
-    public int totalPlayTime;   // mins->parse필요
+    public float totalPlayTime;   // mins->parse필요
     public Date date;
     public string chapterName;
 
-    int playerHP;
-    int playerMP;
-    int[] skills;
-    int[] hwatus;
-    int money;
+    public int playerHP;
+    public int playerMP;
+    public int[] skills;
+    public List<HwatuData> hwatus;
+    public int money;
+    public GunData curGun;
+    public int curShieldCnt;
 
-    int curGun;
-    int curBullets;
-    int curShields;
-
-    public PlayerData()
+    public PlayerData(float originPlayTime)
     {
+        date = new Date(
+            DateTime.Now.ToString("yyyy"),
+            DateTime.Now.ToString("MM"),
+            DateTime.Now.ToString("dd"),
+            DateTime.Now.ToString("HH"),
+            DateTime.Now.ToString("mm")
+        );
+
+        totalPlayTime = originPlayTime + Time.realtimeSinceStartup;   // sec이므로 시분으로 바꿔야함
+        chapterName = "Chapter 01. 이무기 마을";
+
+        playerHP = Player.instance.curHP;
+        playerMP = 0; // 아직 미개발
         skills = new int[2];
-        hwatus = new int[10];
+        hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
+        money = Player.instance.money;
+
+        curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;
+        curShieldCnt = Player.instance.shield;
     }
 }
 
+[Serializable]
 public struct Date
 {
-    int year;
-    int month;
-    int day;
-    int hour;
-    int min;
+    public string year;
+    public string month;
+    public string day;
+    public string hour;
+    public string min;
 
-    public Date(int _year, int _month, int _day, int _hour, int _min)
+    public Date(string _year,
+                string _month,
+                string _day,
+                string _hour,
+                string _min)
     {
         year = _year;
         month = _month;

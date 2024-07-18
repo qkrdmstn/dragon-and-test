@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 public class Gun : MonoBehaviour
 {
     #region Components
-    private Player player;
     private SpriteRenderer renderer;
     #endregion
 
@@ -43,16 +42,13 @@ public class Gun : MonoBehaviour
 
     private void Awake()
     {
-       
-       // player = GameObject.FindWithTag("Player").GetComponent<Player>();
         renderer = gameObject.GetComponent<SpriteRenderer>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Start()
     {
-        player = GameManager.instance.player;
-        if (player.isCombatZone)
+        if (Player.instance.isCombatZone)
             cameraManager = FindObjectOfType<CameraManager>();
     }
 
@@ -60,7 +56,7 @@ public class Gun : MonoBehaviour
     {
         shootTimer -= Time.deltaTime;
 
-        if (player.isAttackable && !isReloading)
+        if (Player.instance.isAttackable && !isReloading)
         {
             if (Input.GetKeyUp(KeyCode.Mouse0) && loadedBullet == 0)
                 clickReloadFlag = true;
@@ -73,7 +69,7 @@ public class Gun : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.R))
                 Reload();
         }
-        else if (!player.isAttackable && player.stateMachine.currentState == player.dashState)
+        else if (!Player.instance.isAttackable && Player.instance.stateMachine.currentState == Player.instance.dashState)
         {
             if (!isReloading)
             {
@@ -85,7 +81,7 @@ public class Gun : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Mouse0))
             continuousShootCnt = 0;
 
-        player.anim.SetBool("isAttacking", isAttacking);
+        Player.instance.anim.SetBool("isAttacking", isAttacking);
     }
 
     private void OnDisable()

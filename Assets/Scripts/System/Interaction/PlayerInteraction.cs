@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     public InteractionData interaction;
-    public Player player;
 
     bool isBounded;
     int curIdxInteraction;
@@ -21,7 +20,6 @@ public class PlayerInteraction : MonoBehaviour
     {
         isBounded = false;
 
-        player = GetComponentInParent<Player>();
         col = GetComponent<CircleCollider2D>();
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
         shopInteraction = gameObject.AddComponent<ShopInteraction>();
@@ -41,16 +39,16 @@ public class PlayerInteraction : MonoBehaviour
 
     public void ChangePlayerInteractionState(bool state)
     {
-        player.isInteraction = state;   // player의 상호작용 여부 관찰
-        if (state) player.SetIdleStatePlayer();
+        Player.instance.isInteraction = state;   // player의 상호작용 여부 관찰
+        if (state) Player.instance.SetIdleStatePlayer();
 
-        player.isStateChangeable = !state;
-        player.isAttackable = !state;
+        Player.instance.isStateChangeable = !state;
+        Player.instance.isAttackable = !state;
     }
 
     void DoInteraction()
     {
-        if (!player.isInteraction)
+        if (!Player.instance.isInteraction)
         {
             ChangePlayerInteractionState(true);
 
@@ -89,12 +87,12 @@ public class PlayerInteraction : MonoBehaviour
             inRangeInteraction = Physics2D.OverlapCircleAll(transform.position, col.radius, layer);
 
             curIdxInteraction = 0;
-            float minDistance = Vector2.Distance(player.transform.position, inRangeInteraction[0].transform.position);
+            float minDistance = Vector2.Distance(Player.instance.transform.position, inRangeInteraction[0].transform.position);
 
             for (int i = 1; i < inRangeInteraction.Length; i++)
             {
                 float tmp = minDistance;
-                minDistance = Mathf.Min(minDistance, Vector2.Distance(player.transform.position, inRangeInteraction[i].transform.position));
+                minDistance = Mathf.Min(minDistance, Vector2.Distance(Player.instance.transform.position, inRangeInteraction[i].transform.position));
                 if (tmp != minDistance)
                 {
                     curIdxInteraction = i;

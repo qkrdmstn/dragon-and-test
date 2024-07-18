@@ -168,7 +168,7 @@ public class Tutorial : MonoBehaviour
         curSequence = 0;
         SetScarescrow(ScareScrowType.Start);
 
-        playerInteraction = GameManager.instance.player.GetComponentInChildren<PlayerInteraction>();
+        playerInteraction = Player.instance.GetComponentInChildren<PlayerInteraction>();
         StartCoroutine(ManageDialog());
     }
 
@@ -247,7 +247,7 @@ public class Tutorial : MonoBehaviour
                 if (curIdx == 4)
                 {
                     jokbo = Instantiate(jokbo,
-                        GameManager.instance.player.transform.position + Vector3.right,
+                        Player.instance.transform.position + Vector3.right,
                         Quaternion.identity, transform);
                     onTutorials = CheckGetJokbo;
                 }
@@ -261,7 +261,7 @@ public class Tutorial : MonoBehaviour
                 if (curIdx == 1)
                 {   // skill - JunButterfly
                     blanket = Instantiate(blanket,
-                        GameManager.instance.player.transform.position + Vector3.right,
+                        Player.instance.transform.position + Vector3.right,
                         Quaternion.identity, transform);
                     onTutorials = CheckGiveSkill;
                 }
@@ -338,7 +338,7 @@ public class Tutorial : MonoBehaviour
         curScarescrow = null;
         curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
 
-        GameManager.instance.player
+        Player.instance
             .GetComponentInChildren<PlayerInteraction>()
             .ChangePlayerInteractionState(false);    // 상호작용 종료
     }
@@ -358,7 +358,7 @@ public class Tutorial : MonoBehaviour
 
     bool CheckDash()
     {
-        if (GameManager.instance.player.IsDash())
+        if (Player.instance.IsDash())
         {
             UIManager.instance.curUIGroup.SwitchAnim("isDash", false);
             isInteraction = false;

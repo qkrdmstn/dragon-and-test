@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class MapOutOfRange : MonoBehaviour
 {
-    [SerializeField] int _sceneInfo;
+    [SerializeField] SceneInfo myScene;
+    [SerializeField] int _goToScene;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -13,9 +14,15 @@ public class MapOutOfRange : MonoBehaviour
             if (gameObject.name.Contains("Battle"))
             {
                 //_sceneInfo = Random.Range(4, 6);
-                _sceneInfo = 4;
+                _goToScene = 4;
             }
-            UIManager.instance.fade.ManageFade(_sceneInfo);
+
+            UIManager.instance.StartFade(_goToScene);
+
+            if (myScene == SceneInfo.Tutorial && _goToScene == (int)SceneInfo.Town_1)
+            {
+                GameManager.instance.isTutorial = true;
+            }
         }
     }
 }

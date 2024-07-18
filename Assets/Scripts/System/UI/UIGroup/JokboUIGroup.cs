@@ -7,14 +7,12 @@ using UnityEngine.UI;
 public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
-    //public GameObject[] hwatus;
     [SerializeField] SynergyInfo synergyTable;
 
     bool isFirst = true;
 
     private void Awake()
     {
-        //hwatus = new GameObject[3];
         SetSynergyName();
     }
 
@@ -59,7 +57,7 @@ public class JokboUIGroup : UIGroup {
     {
         int idx = 0;
         foreach(GameObject obj in hwatuInfoPages)
-        {   // ?? ??? ??? ?? ??
+        {   
             TextMeshProUGUI[] childobjs = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
             
             if (childobjs.Length == 0) continue;
@@ -70,7 +68,6 @@ public class JokboUIGroup : UIGroup {
                 idx++;
             }
 
-            // ?? ?? ??? ??
             Image[] imgs = obj.GetComponentsInChildren<Image>(true);
             Debug.Log(imgs.Length);
             for (int i = 0; i < imgs.Length; i += 3)
@@ -134,9 +131,9 @@ public class JokboUIGroup : UIGroup {
 
     public void JokboState(bool state)
     {   // true : open / false : close
-        GameManager.instance.player.isStateChangeable = !state;
-        GameManager.instance.player.isAttackable = !state;
-        GameManager.instance.player.isInteraction = state;
+        Player.instance.isStateChangeable = !state;
+        Player.instance.isAttackable = !state;
+        Player.instance.isInteraction = state;
         
         Time.timeScale = state ? 0.0f : 1.0f;
         childUI[0].SetActive(state);

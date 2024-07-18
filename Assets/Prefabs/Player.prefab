@@ -142,6 +142,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interaction: {fileID: 0}
   player: {fileID: 0}
+  dialogueInteraction: {fileID: 0}
+  shopInteraction: {fileID: 0}
+  blanketInteraction: {fileID: 0}
+  pickupItemInteraction: {fileID: 0}
   layer:
     serializedVersion: 2
     m_Bits: 4096
@@ -428,6 +432,7 @@ MonoBehaviour:
   curHP: 10
   maxHP: 10
   money: 0
+  shield: 5
   hitDuration: 0.6
   moveSpeed: 5.65
   dashSpeed: 13
@@ -441,7 +446,7 @@ MonoBehaviour:
   gun: {fileID: 9164923188876154999}
   gunParent: {fileID: 3176419107218324586}
   isAttackable: 1
-  isCombatZone: 1
+  isCombatZone: 0
   isStateChangeable: 1
   isInteraction: 0
   isDamaged: 0
@@ -475,7 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec5631d42bb88249a1f4fb50502f7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefabs: []
+  skillPrefabs: []
 --- !u!114 &6026035233142154471
 MonoBehaviour:
   m_ObjectHideFlags: 0

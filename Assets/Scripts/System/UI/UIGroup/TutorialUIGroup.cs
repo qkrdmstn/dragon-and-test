@@ -17,23 +17,20 @@ public class TutorialUIGroup : UIGroup
         anim = GetComponent<Animator>();
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        if(ScenesManager.instance.GetSceneEnum() == SceneInfo.Tutorial)
+        if(tutorial == null)
         {
             tutorial = GameObject.FindFirstObjectByType<Tutorial>();
         }
-    }
 
-    private void Update()
-    {
         GameObject curScarescrow = tutorial.GetCurScarescrow();
         if (curScarescrow && attachUIIdx > -1)
         {   // 플레이어와 허수아비 위치에 따라 키 UI의 위치 조정
-            if (curScarescrow.transform.position.y + adjustUIPosition < GameManager.instance.player.transform.position.y) // 허수아비보다 플레이어가 위에 있다면,
-                childUI[attachUIIdx].transform.position = Camera.main.WorldToScreenPoint(GameManager.instance.player.transform.position) + padding;
+            if (curScarescrow.transform.position.y + adjustUIPosition < Player.instance.transform.position.y) // 허수아비보다 플레이어가 위에 있다면,
+                childUI[attachUIIdx].transform.position = Camera.main.WorldToScreenPoint(Player.instance.transform.position) + padding;
             else
-                childUI[attachUIIdx].transform.position = Camera.main.WorldToScreenPoint(GameManager.instance.player.transform.position) + -padding;
+                childUI[attachUIIdx].transform.position = Camera.main.WorldToScreenPoint(Player.instance.transform.position) + -padding;
         }
   
     }

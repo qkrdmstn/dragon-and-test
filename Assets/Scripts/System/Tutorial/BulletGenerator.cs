@@ -21,7 +21,7 @@ public class BulletGenerator : MonoBehaviour
     {
         if (isStart)
         {
-            if(GameManager.instance.player.transform.position.x > collX)
+            if(Player.instance.transform.position.x > collX)
             {
                 GetComponent<BoxCollider2D>().isTrigger = false;
             }
