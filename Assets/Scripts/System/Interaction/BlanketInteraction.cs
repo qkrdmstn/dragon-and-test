@@ -30,10 +30,12 @@ public class BlanketInteraction : Interaction
     [SerializeField] private MaterialHwatuSlotUI[] selectedHwatuUI = new MaterialHwatuSlotUI[2];
     [SerializeField] private int selectedCnt = 0;
 
+    [Header("State")]
+    public bool isBlanketInteraction;
+
     private void Awake()
     {
         player = GetComponentInParent<Player>();
-
     }
 
     private void Start()
@@ -42,21 +44,15 @@ public class BlanketInteraction : Interaction
         materialHwatuUIObject = Resources.LoadAll<GameObject>("Prefabs/MaterialHwatuUI");
 
         //UI Info Init
-        GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
-        blanketUI = blanketUIObject.GetComponent<BlanketUI>();
-        GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
+        GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4];
         hwatuUI = hwatuUIObject.GetComponent<HwatuUI>();
+        GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
+        blanketUI = blanketUIObject.GetComponent<BlanketUI>();
 
         //Transform Info Init
         materialHwatuParent = blanketUI.materialHwatuParent.GetComponent<RectTransform>();
-        materialHwatuParent = blanketUI.materialHwatuParent.GetComponent<RectTransform>();
         minPos = materialHwatuParent.anchoredPosition - materialHwatuParent.sizeDelta / 2; //material 화투 최대/최소 위치
         maxPos = materialHwatuParent.anchoredPosition + materialHwatuParent.sizeDelta / 2;
-    }
-
-    private void Update()
-    {
-
     }
 
     public override void LoadEvent()
@@ -66,6 +62,7 @@ public class BlanketInteraction : Interaction
 
     private void Init()
     {
+        isBlanketInteraction = true;
         isDone = false;
 
         //기존 material hwatu 삭제
@@ -142,6 +139,8 @@ public class BlanketInteraction : Interaction
     public void EndInteraction()
     {
         isDone = true;
+        isBlanketInteraction = false;
+
         blanketUI.gameObject.SetActive(false);
         hwatuUI.gameObject.SetActive(true);
     }
@@ -150,7 +149,10 @@ public class BlanketInteraction : Interaction
     {
         HwatuData hwatuData = ui.hwatuData;
 
-        if (selectedCnt >= 2) //빈 곳이 없을 경우, 실패
+        if (SkillManager.instance.skillCnt >= 2) //스킬이 이미 가득 찼을 경우, 실패
+            return false;
+
+        if (selectedCnt >= 2) //화투 select에 빈 곳이 없을 경우, 실패
             return false;
         else if(selectedCnt >= 1)
         {
@@ -177,7 +179,7 @@ public class BlanketInteraction : Interaction
         }
 
         ui.isSelected = true;
-        selectedCnt += 1;
+        selectedCnt++;
 
         UpdateMaterialHwatuUIInitPos(0.5f);
 
@@ -218,7 +220,8 @@ public class BlanketInteraction : Interaction
     public void CombinationSeletedHwatu()
     {
         //스킬 생성
-        Debug.Log(Hwatu.GetHwatuCombination(selectedHwatuUI[0].hwatuData.hwatu, selectedHwatuUI[1].hwatuData.hwatu));
+        SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(selectedHwatuUI[0].hwatuData.hwatu, selectedHwatuUI[1].hwatuData.hwatu);
+        SkillManager.instance.AddSkill(result);
 
         //사용된 material hwatu 삭제
         for (int i = 0; i < 2; i++)
@@ -229,7 +232,7 @@ public class BlanketInteraction : Interaction
             selectedHwatuUI[i] = null;
         }
         selectedCnt = 0;
+
+        blanketUI.SetSkillInfoUIActive(SkillManager.instance.skillDBDictionary[result], SkillManager.instance.skillSpriteDictionary[result]);
     }
-
-
 }

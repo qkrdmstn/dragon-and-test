@@ -13,7 +13,7 @@ public class PlayerSkill : MonoBehaviour
     float _impactRadius;
 
     public GameObject[] skillPrefabs;
-    Dictionary<SeotdaHwatuName, GameObject> skillObjDictionary = new Dictionary<SeotdaHwatuName, GameObject>();
+    Dictionary<SeotdaHwatuCombination, GameObject> skillObjDictionary = new Dictionary<SeotdaHwatuCombination, GameObject>();
 
     #region Components
     private Player player;
@@ -26,12 +26,12 @@ public class PlayerSkill : MonoBehaviour
         for(int i=0; i<skillPrefabs.Length; i++)
         {
             string objectName = skillPrefabs[i].name;
-            for (int j=0; j<20; j++)
+            for (int j=0; j<33; j++)
             {
-                string cardName = ((SeotdaHwatuName)j).ToString();
+                string cardName = ((SeotdaHwatuCombination)j).ToString();
                 if (objectName.Contains(cardName))
                 {
-                    skillObjDictionary.Add((SeotdaHwatuName)j, skillPrefabs[i]);
+                    skillObjDictionary.Add((SeotdaHwatuCombination)j, skillPrefabs[i]);
                     break;
                 }
             }
@@ -48,84 +48,105 @@ public class PlayerSkill : MonoBehaviour
             //SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
             //FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
             //Flooring(SeotdaHwatuName.JanCrane, 1, 10, 15f, 1.5f);
-            GuidedMissile(SeotdaHwatuName.OctDeer, 1, 10, 10, 2.5f);
+            //GuidedMissile(SeotdaHwatuName.OctDeer, 1, 10, 10, 2.5f);
 
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
             //Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
             //FlameThrower(SeotdaHwatuName.MarCherryLight, 1, 5, 0.3f);
-            GuidedMissile(SeotdaHwatuName.JulBoar, 1, 10, 10, 2.5f);
+            //GuidedMissile(SeotdaHwatuName.JulBoar, 1, 10, 10, 2.5f);
         }
         //if(Input.GetKeyDown(KeyCode.J))
         //{
         //    BlankBullet(2, 6, 30);
         //}
     }
-    public void UseSkill(SeotdaHwatuName name, int damage, float range, float force, float duration, float speed, float period)
+    public void UseSkill(SkillDB data)
     {
-        Debug.Log(name + " damage:" + damage + " range:" + range + " force:" + force + " speed:" + speed);
-        switch(name)
+        SeotdaHwatuCombination code = data.synergyCode;
+        //Debug.Log(code + " damage:" + data.damage + " range:" + data.range + " force:" + data.force + " speed:" + data.speed);
+        switch (code)
         {
-            //Main Card
-            case SeotdaHwatuName.JanCrane:
-                Flooring(name, damage, duration, speed, period);
+            case SeotdaHwatuCombination.GTT38:
                 break;
-            case SeotdaHwatuName.FebBird:
-                FlameThrower(name, damage, duration, period);
+            case SeotdaHwatuCombination.GTT18:
                 break;
-            case SeotdaHwatuName.MarCherryLight:
-                FlameThrower(name, damage, duration, period);
+            case SeotdaHwatuCombination.GTT13:
                 break;
-            case SeotdaHwatuName.AprCuckoo:
-                SokbakSkill(name, damage, range, speed);
+            case SeotdaHwatuCombination.JTT:
                 break;
-            case SeotdaHwatuName.MayBridge:
-                Flooring(name, damage, duration, speed, period);
+            case SeotdaHwatuCombination.TT9:
                 break;
-            case SeotdaHwatuName.JunButterfly:
-                BlankBullet(damage, range, force);
+            case SeotdaHwatuCombination.TT8:
+                SokbakSkill(data.synergyCode, data.damage, data.range, data.speed);
                 break;
-            case SeotdaHwatuName.JulBoar:
+            case SeotdaHwatuCombination.TT7:
+                BlankBullet(data.damage, data.range, data.force);
                 break;
-            case SeotdaHwatuName.AugMoon:
-                SokbakSkill(name, damage, range, speed);
+            case SeotdaHwatuCombination.TT6:
                 break;
-            case SeotdaHwatuName.SepSakajuki:
-                BlankBullet(damage, range, force);
+            case SeotdaHwatuCombination.TT5:
+                BlankBullet(data.damage, data.range, data.force);
                 break;
-            case SeotdaHwatuName.OctDeer:
+            case SeotdaHwatuCombination.TT4:
+                SokbakSkill(data.synergyCode, data.damage, data.range, data.speed);
                 break;
-            //Sub Card
-            case SeotdaHwatuName.JanPine:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.TT3:
+                FlameThrower(data.synergyCode, data.damage, data.duration, data.period);
                 break;
-            case SeotdaHwatuName.FebPrunus:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.TT2:
+                FlameThrower(data.synergyCode, data.damage, data.duration, data.period);
                 break;
-            case SeotdaHwatuName.MarCherry:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.TT1:
                 break;
-            case SeotdaHwatuName.AprWisteria:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.AL12:
                 break;
-            case SeotdaHwatuName.MayIris:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.DS14:
                 break;
-            case SeotdaHwatuName.JunPeony:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.GPP19:
                 break;
-            case SeotdaHwatuName.JulLespedeza:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.JPP110:
                 break;
-            case SeotdaHwatuName.AugGoose:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.JS410:
                 break;
-            case SeotdaHwatuName.SepChrysanthemum:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.SR46:
                 break;
-            case SeotdaHwatuName.OctFoliage:
-                DashSkill(range, speed);
+            case SeotdaHwatuCombination.AHES74:
+                break;
+            case SeotdaHwatuCombination.TTCatch73:
+                break;
+            case SeotdaHwatuCombination.MTGR94:
+                break;
+            case SeotdaHwatuCombination.KK9:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK8:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK7:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK6:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK5:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK4:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK3:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK2:
+                DashSkill(data.range, data.speed);
+                break;
+            case SeotdaHwatuCombination.KK1:
+                break;
+            case SeotdaHwatuCombination.KK0:
+                break;
+            case SeotdaHwatuCombination.blank:
                 break;
         }
 
@@ -202,7 +223,7 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region Sokbak
-    private void SokbakSkill(SeotdaHwatuName name, int damage, float dist, float projectileSpeed)
+    private void SokbakSkill(SeotdaHwatuCombination code, int damage, float dist, float projectileSpeed)
     {
         //방위
         int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
@@ -210,9 +231,9 @@ public class PlayerSkill : MonoBehaviour
         float[] degree = { 90.0f, 0.0f, -90.0f, 180.0f, 135.0f, 45.0f, -45.0f, -135.0f};
 
         int numProjectile = 0;
-        if (name == SeotdaHwatuName.AprCuckoo)
+        if (code == SeotdaHwatuCombination.TT4)
             numProjectile = 4;
-        else if (name == SeotdaHwatuName.AugMoon)
+        else if (code == SeotdaHwatuCombination.TT8)
             numProjectile = 8;
         
         for(int i=0; i< numProjectile; i++)
@@ -220,7 +241,7 @@ public class PlayerSkill : MonoBehaviour
             Vector2 dir = new Vector2(dx[i], dy[i]);
             dir.Normalize();
 
-            GameObject prefabs = skillObjDictionary[name];
+            GameObject prefabs = skillObjDictionary[code];
             GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
             SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
             Debug.Log(projectile);
@@ -229,52 +250,52 @@ public class PlayerSkill : MonoBehaviour
     }
     #endregion
 
-    #region Flooring
-    private void Flooring(SeotdaHwatuName name, int damage, float duration, float speed, float period)
-    {
-        StartCoroutine(FlooringCoroutine(name, damage, duration, speed, period));
-    }
+    //#region Flooring
+    //private void Flooring(SeotdaHwatuName name, int damage, float duration, float speed, float period)
+    //{
+    //    StartCoroutine(FlooringCoroutine(name, damage, duration, speed, period));
+    //}
 
-    IEnumerator FlooringCoroutine(SeotdaHwatuName name, int damage, float duration, float speed, float period)
-    {
-        //Initial Direction Setting
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 dir = mousePos - this.transform.position;
-        dir.Normalize();
-        float theta = Vector2.Angle(Vector2.right, dir);
-        if (dir.y < 0)
-            theta *= -1;
+    //IEnumerator FlooringCoroutine(SeotdaHwatuName name, int damage, float duration, float speed, float period)
+    //{
+    //    //Initial Direction Setting
+    //    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    Vector2 dir = mousePos - this.transform.position;
+    //    dir.Normalize();
+    //    float theta = Vector2.Angle(Vector2.right, dir);
+    //    if (dir.y < 0)
+    //        theta *= -1;
 
-        //Create Object
-        GameObject prefabs = skillObjDictionary[name];
-        GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.Euler(0,0, theta));
-        SkillObj_Flooring flame = Obj.GetComponent<SkillObj_Flooring>();
-        flame.Initialize(damage, dir, mousePos, speed, StatusEffect.Slow, period);
+    //    //Create Object
+    //    GameObject prefabs = skillObjDictionary[name];
+    //    GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.Euler(0,0, theta));
+    //    SkillObj_Flooring flame = Obj.GetComponent<SkillObj_Flooring>();
+    //    flame.Initialize(damage, dir, mousePos, speed, StatusEffect.Slow, period);
 
-        float timer = duration;
-        while (timer >= 0.0f)
-        {
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        Destroy(Obj);
-    }
-    #endregion
+    //    float timer = duration;
+    //    while (timer >= 0.0f)
+    //    {
+    //        timer -= Time.deltaTime;
+    //        yield return null;
+    //    }
+    //    Destroy(Obj);
+    //}
+    //#endregion
 
     #region Flame
-    private void FlameThrower(SeotdaHwatuName name, int damage, float duration, float period)
+    private void FlameThrower(SeotdaHwatuCombination code, int damage, float duration, float period)
     {
-        StartCoroutine(FlameThrowerCoroutine(name, damage, duration, period));
+        StartCoroutine(FlameThrowerCoroutine(code, damage, duration, period));
     }
 
-    IEnumerator FlameThrowerCoroutine(SeotdaHwatuName name, int damage, float duration, float period)
+    IEnumerator FlameThrowerCoroutine(SeotdaHwatuCombination code, int damage, float duration, float period)
     {
         player.isAttackable = false;
 
         float timer = duration;
 
 
-        GameObject prefabs = skillObjDictionary[name];
+        GameObject prefabs = skillObjDictionary[code];
         GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.identity);
         SkillObj_Flame flame = Obj.GetComponent<SkillObj_Flame>();
         flame.Initialize(damage, new Vector2(0,0), StatusEffect.None, period);
@@ -290,15 +311,15 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region GuidedMissile 
-    private void GuidedMissile(SeotdaHwatuName name, int damage, float speed, float duration, float range)
+    private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float duration, float range)
     {
         int numProjectile = 0;
-        if (name == SeotdaHwatuName.OctDeer)
-            numProjectile = 10;
-        else if (name == SeotdaHwatuName.JulBoar)
-            numProjectile = 7;
+        if (code == SeotdaHwatuCombination.KK9)
+            numProjectile = 9;
+        else if (code == SeotdaHwatuCombination.KK6)
+            numProjectile = 6;
 
-        GameObject prefab = skillObjDictionary[name];
+        GameObject prefab = skillObjDictionary[code];
         for(int i=0; i< numProjectile; i++)
         {
             float angle = 360.0f / numProjectile * (i - numProjectile/2);

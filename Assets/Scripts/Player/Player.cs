@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public int curHP = 10;
     public int maxHP = 10;
     public int money = 0;
-    public int shield = 5;
+    public int shield = 0;
     [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]

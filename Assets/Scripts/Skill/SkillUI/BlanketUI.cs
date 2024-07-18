@@ -2,20 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using static UnityEditor.PlayerSettings;
 
 public class BlanketUI : MonoBehaviour
 {
-    [Header("Child UI")]
+    [Header("Blanket UI")]
     public GameObject materialHwatuParent;
     public RectTransform blanket;
-    public RectTransform trashCan;
-    public Button exitButton;
+    public Button blanketExitButton;
 
-    //public void Initialize()
-    //{
-    //    materialHwatuParent = transform.GetChild(0).gameObject;
-    //}
+    [Header("TrashCan UI")]
+    public RectTransform trashCan;
+
+    [Header("Skill Info UI")]
+    public GameObject skillInfoUI;
+    public Image skillImage;
+    public TextMeshProUGUI skillNameTxt;
+    public TextMeshProUGUI skillInfoTxt;
+    public Button skillInfoExitButton;
+    public bool isSkillInfoUI;
 
     public bool IsInBlanket(RectTransform rectTransform)
     {
@@ -44,6 +50,21 @@ public class BlanketUI : MonoBehaviour
             return true;
         else
             return false;
+    }
+
+    public void SetSkillInfoUIActive(SkillDB skillData, Sprite skillSprite) //스킬 조합 시, 호출되는 스킬 정보 UI 설정
+    {
+        skillImage.sprite = skillSprite;
+        skillNameTxt.text = skillData.synergyName;
+        skillInfoTxt.text = skillData.info;
+        isSkillInfoUI = true;
+        skillInfoUI.SetActive(true);
+    }
+
+    public void SetSkillInfoUIInActive()
+    {
+        isSkillInfoUI = false;
+        skillInfoUI.SetActive(false);
     }
 
     public void ExitBlanketInteraction()

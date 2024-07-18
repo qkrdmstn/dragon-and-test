@@ -8,7 +8,8 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using System.Threading; // for CancellationToken Struct
+using System.Threading;
+using System; // for CancellationToken Struct
 
 [System.Serializable]
 public enum SheetType
@@ -16,6 +17,7 @@ public enum SheetType
     Dialog,
     Tutorial,
     SpawnDB,
+    SkillDB,
 }
 
 public class DataManager : MonoBehaviour
@@ -137,6 +139,22 @@ public class DataManager : MonoBehaviour
         Vector2Int spawnPosition = new Vector2Int(posX, posY);
 
         return new SpawnDB(blockNum, wave, monsterType, spawnPosition);
+    }
+
+    public SkillDB SplitContextSkill(IList<object> data)
+    {
+        SeotdaHwatuCombination synergyCode = (SeotdaHwatuCombination)Enum.Parse(typeof(SeotdaHwatuCombination),data[0].ToString()); 
+        string synergyName = data[1].ToString(); 
+        string info = data[2].ToString(); 
+        int damage = int.Parse(data[3].ToString());
+        float coolTime = float.Parse(data[4].ToString());
+        float range = float.Parse(data[5].ToString());
+        float force = float.Parse(data[6].ToString());
+        float duration = float.Parse(data[7].ToString());
+        float speed = float.Parse(data[8].ToString()); 
+        float period = float.Parse(data[9].ToString());
+
+        return new SkillDB(synergyCode, synergyName, info, damage, coolTime, range, force, duration, speed, period);
     }
 
     public DialogueDBEntity SplitContextDialog(IList<object> data)
