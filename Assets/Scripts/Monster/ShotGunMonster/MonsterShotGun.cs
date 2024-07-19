@@ -59,7 +59,7 @@ public class MonsterShotGun : MonsterFar
                 bulletComponent[i].BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, 0f);
             }
 
-            Invoke("Go", 1.0f);
+            Invoke("Go", 0f);
             inAttack = true;
         } 
         else if (loadedBullet <= 0)

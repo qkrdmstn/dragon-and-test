@@ -162,7 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 5
   damage: 1
-  moveSpeed: 6
+  moveSpeed: 5
   knockbackForce: 5
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -172,18 +172,18 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  profile: {fileID: 0}
-  impulseSource: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   inAttack: 0
   cooldown: 1.5
   tempcool: 0
   playerMask:
     serializedVersion: 2
     m_Bits: 0
-  attackDuration: 0.3
-  attackRange: 1.5
+  attackDuration: 0.6
+  swordAura: {fileID: 1692984963978023852, guid: b2acc51242dca944ab618b9a4aacc0fc, type: 3}
+  attackRange: 3
   agent: {fileID: 0}
   distanceToPlayer: 0
   sword: {fileID: 2032848084585912460}

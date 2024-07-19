@@ -29,7 +29,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7409012056944984177}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.506, y: 4.7689996, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
@@ -55,7 +55,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 33
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
@@ -194,10 +194,9 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  profile: {fileID: 0}
-  impulseSource: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   inAttack: 0
   cooldown: 3
   tempcool: 0
@@ -205,11 +204,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   attackDuration: 0.3
+  swordAura: {fileID: 0}
   attackRange: 4
   agent: {fileID: 0}
   distanceToPlayer: 0
   sword: {fileID: 7409012057348157830}
-  fireInterval: 0.2
+  fireInterval: 1
+  bulletCount: 24
 --- !u!1 &7409012057348157830
 GameObject:
   m_ObjectHideFlags: 0

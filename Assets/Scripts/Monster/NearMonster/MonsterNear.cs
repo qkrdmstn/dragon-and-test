@@ -96,7 +96,7 @@ public class MonsterNear : MonsterBase
         }
         
         shootNumber = 0;
-        InvokeRepeating("Shoot", 0f, 0.3f);
+        InvokeRepeating("Shoot", 0f, 0.6f);
     }
 
     IEnumerator RotateOverTime(float angle, float duration)

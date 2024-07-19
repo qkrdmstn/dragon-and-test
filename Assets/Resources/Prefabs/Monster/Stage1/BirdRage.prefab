@@ -159,11 +159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c7a04acce2556e458b5bf2042027532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 0
-  damage: 0
-  moveSpeed: 0
-  knockbackForce: 0
-  knockbackDuration: 0
+  HP: 10
+  damage: 2
+  moveSpeed: 2
+  knockbackForce: 3
+  knockbackDuration: 0.5
   isKnockedBack: 0
   knockbackTimer: 0
   knockbackVel: {x: 0, y: 0}
@@ -171,12 +171,11 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  profile: {fileID: 0}
-  impulseSource: {fileID: 0}
   temp: {fileID: 0}
   inEffect: 0
+  isDead: 0
   inAttack: 0
-  cooldown: 3
+  cooldown: 2
   tempcool: 0
   collider2Ds: []
   boxSize: {x: 0, y: 0}
@@ -184,8 +183,9 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 0
-  attackRange: 1
+  attackRange: 2
   rageRange: 5
+  rageAble: 0
   agent: {fileID: 0}
   distanceToPlayer: 0
   direction: {x: 0, y: 0, z: 0}
@@ -199,7 +199,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 7
+  m_Speed: 2
   m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 120
