@@ -5,6 +5,7 @@ using UnityEngine;
 public class MonsterTank : MonsterNear
 {
     public float fireInterval = 0.2f;
+    public int bulletCount = 16;
     private Vector3 dir;
     public override void Awake()
     {
@@ -37,13 +38,13 @@ public class MonsterTank : MonsterNear
     {
         for (int i=0; i < 3; i++)
             {
-                for (int j=0; j < 12; j++)
+                for (int j=0; j < bulletCount; j++)
                 {
                     var bulletGo = MonsterPool.instance.pool.Get();
                     var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                     bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
 
-                    bulletComponent.BulletInitialize(Quaternion.AngleAxis(30*(j-5.5f), Vector3.forward) * dir);
+                    bulletComponent.BulletInitialize(Quaternion.AngleAxis((360/bulletCount)*j + (180/bulletCount)*(i%2), Vector3.forward) * dir);
                 }
                 yield return new WaitForSeconds(fireInterval);
             }

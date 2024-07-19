@@ -28,9 +28,9 @@ public class MonsterChaseStateRage : MonsterState
         base.Update();
 
         //navigate
-        monster.agent.SetDestination(player.transform.position);
+        //monster.agent.SetDestination(player.transform.position);
         
-        if (monster.distanceToPlayer < monster.attackRange && monster.tempcool<=0.0)
-            stateMachine.ChangeState(monster.attackState);
+        if (monster.distanceToPlayer < monster.rageRange && monster.rageAble)
+            stateMachine.ChangeState(monster.rageState);
     }
 }

@@ -13,6 +13,7 @@ public class MonsterEliteBird : MonsterBase
     public int magazineSize=3;
     public float bulletAngle = 20;
     public GameObject monsterBullet;
+    public int bulletNum;
     #endregion
 
     #region States
@@ -81,15 +82,19 @@ public class MonsterEliteBird : MonsterBase
 
     IEnumerator SpawnBullets()
     {
-        for (int i=0; i < 6; i++)
+        for (int j=0; j < bulletNum; j++)
+        {
+            for (int i=0; i < 6; i++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
                 
                 bulletComponent.BulletInitialize(Quaternion.AngleAxis(bulletAngle*(i-2.5f), Vector3.forward) * dir);
-                yield return new WaitForSeconds(fireInterval);
             }
+            yield return new WaitForSeconds(fireInterval);
+        }
+        
     }
 
     public void Reload()
