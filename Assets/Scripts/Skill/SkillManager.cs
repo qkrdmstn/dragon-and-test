@@ -66,12 +66,12 @@ public class SkillManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && !GameManager.instance.player.isInteraction) //Skill Slot Swap
+        if (Input.GetKeyDown(KeyCode.Tab) && !Player.instance.isInteraction) //Skill Slot Swap
         {
             SkillSwap();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.Q) && !Player.instance.isInteraction)
         {
             if (timer[0] > 0.0f)
                 Debug.Log("Q Skill is cooldown time");
@@ -79,7 +79,7 @@ public class SkillManager : MonoBehaviour
                 Skill(0);
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.E) && !Player.instance.isInteraction)
         {
             if (timer[1] > 0.0f)
                 Debug.Log("E Skill is cooldown time");
@@ -205,7 +205,7 @@ public class SkillManager : MonoBehaviour
     //Use Skill
     private void Skill(int i)
     {
-        PlayerSkill skill = GameManager.instance.player.GetComponent<PlayerSkill>();
+        PlayerSkill skill = Player.instance.GetComponent<PlayerSkill>();
         if (skillData[i] == SeotdaHwatuCombination.blank)
             return;
 

@@ -482,8 +482,11 @@ MonoBehaviour:
   materialHwatuDataList: []
   materialCardCnt: 0
   materialCardMaxNum: 10
-  skillTable: {fileID: 11400000, guid: 165b2fbad289caa428040116086308a2, type: 2}
   skillCnt: 0
+  skillData: 
+  timer: []
+  skillSlotParent: {fileID: 0}
+  coolTimeImg: []
 --- !u!4 &34122863
 Transform:
   m_ObjectHideFlags: 0
@@ -20328,6 +20331,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4870279855699911327, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5541536147047344057, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -28036,7 +28043,7 @@ SpriteRenderer:
   m_Size: {x: 17.58, y: 6.02}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1181918176225242028
