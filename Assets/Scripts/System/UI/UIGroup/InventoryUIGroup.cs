@@ -5,16 +5,10 @@ using UnityEngine;
 public class InventoryUIGroup : UIGroup
 {
     public GameObject[] inventoryPages; 
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I) && !childUI[0].activeSelf && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.I) && !childUI[0].activeSelf && !Player.instance.isInteraction)
         {
             OpenInventory();
         }
@@ -32,8 +26,8 @@ public class InventoryUIGroup : UIGroup
     private void OpenInventory()
     {
         Time.timeScale = 0.0f;
-        GameManager.instance.player.isStateChangeable = false;
-        GameManager.instance.player.isAttackable = false;
+        Player.instance.isStateChangeable = false;
+        Player.instance.isAttackable = false;
         childUI[0].SetActive(true);
 
     }
@@ -41,8 +35,8 @@ public class InventoryUIGroup : UIGroup
     public void CloseInventory()
     {
         Time.timeScale = 1.0f;
-        GameManager.instance.player.isStateChangeable = true;
-        GameManager.instance.player.isAttackable = true;
+        Player.instance.isStateChangeable = true;
+        Player.instance.isAttackable = true;
         childUI[0].SetActive(false);
 
         ChangePage(0);

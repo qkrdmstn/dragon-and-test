@@ -5,7 +5,10 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
+    public GameObject fadeObj;
     public Fade fade;
+    public bool isEndFade = false;
+    public bool isFading = false;
 
     //public GameObject[] SceneUI;
     public SerializableDictionary<string, GameObject> SceneUI;
@@ -23,8 +26,40 @@ public class UIManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+    }
 
-        fade = GetComponentInChildren<Fade>();
+    private void Update()
+    {
+        if (isFading && isEndFade)
+        {
+            SetFadeObjState(false);
+        }
+
+        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneUI["GameExit"].SetActive(true);
+        }
+    }
+
+    public void SetFadeObjState(bool state)
+    {
+        if (state)
+        {
+            isFading = true;
+            isEndFade = false;
+        }
+        else
+        {
+            isEndFade = false;
+            isFading = false;
+        }
+        fadeObj.SetActive(state);
+    }
+
+    public void StartFade(int sceneNum)
+    {
+        SetFadeObjState(true);
+        fade.ManageFade(sceneNum);
     }
 
     public Texture2D TextureFromSprite(Sprite sprite)

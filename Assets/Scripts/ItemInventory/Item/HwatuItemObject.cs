@@ -9,7 +9,6 @@ public class HwatuItemObject : MonoBehaviour
     public BlockInfo curBlock;
     private float speed = 10;
 
-    Player player;
     SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
@@ -20,8 +19,6 @@ public class HwatuItemObject : MonoBehaviour
 
     private void Start()
     {
-        player = GameManager.instance.player;
-
         //어떤 block 내부에 있는지 확인
         BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
         for (int i = 0; i < blocks.Length; i++)
@@ -42,8 +39,8 @@ public class HwatuItemObject : MonoBehaviour
         //if (curBlock.blockClear)
         {
             //player와의 거리 계산 및 위치 이동
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+            float distance = Vector3.Distance(transform.position, Player.instance.transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position, speed * Time.deltaTime);
 
             if (distance < 0.1f)
             { //물체가 캐릭터로 이동하면서 거리가 일정 미만되면 습득

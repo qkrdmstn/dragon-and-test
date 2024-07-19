@@ -17,6 +17,8 @@ public class HwatuUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (SkillManager.instance == null) return;
+
         txt.text = SkillManager.instance.materialCardCnt + " / " + SkillManager.instance.materialCardMaxNum;
     }
 }

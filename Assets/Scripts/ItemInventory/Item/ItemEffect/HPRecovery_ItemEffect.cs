@@ -11,7 +11,7 @@ public class HPRecovery_ItemEffect : ItemEffect
     {
         base.ExcuteEffect();
         //if (GameManager.instance.player.curHP == GameManager.instance.player.maxHP) return;
-        GameManager.instance.player.curHP += increaseHP;
+        Player.instance.curHP += increaseHP;
 
         Debug.Log("Health Recovery Effect");
     }

@@ -12,8 +12,6 @@ public class Fade : MonoBehaviour
 
     void Start()
     {
-        fadePanel = GetComponent<Image>();
-
         start = 1f;
         end = 0f;
         fadeTime = 2f;
@@ -21,7 +19,6 @@ public class Fade : MonoBehaviour
 
     public void ManageFade(int _sceneNum)
     {
-       // SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
         if (_sceneNum == 1)
         {
             TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
@@ -69,7 +66,7 @@ public class Fade : MonoBehaviour
             yield return null;
         }
         Time.timeScale = 1f;
-
+        UIManager.instance.isEndFade = true;
         yield return null;
     }
 
@@ -89,10 +86,11 @@ public class Fade : MonoBehaviour
         }
 
         {   
-            GameManager.instance.player.transform.position = mapControl.gotoPos.position;
-            GameManager.instance.player.cameraManager.UpdateConfineArea(mapControl.confineColl);
+            Player.instance.transform.position = mapControl.gotoPos.position;
+            Player.instance.cameraManager.UpdateConfineArea(mapControl.confineColl);
             yield return new WaitForSeconds(.5f);
-            GameManager.instance.player.isStateChangeable = true;
+
+            Player.instance.isStateChangeable = true;
             spawner.UpdateCurBlockNumber(curMapNum);
             mapControl.flag = false;
         }
@@ -107,7 +105,7 @@ public class Fade : MonoBehaviour
             yield return null;
         }
         Time.timeScale = 1f;
-
+        UIManager.instance.isEndFade = true;
         yield return null;
     }
 

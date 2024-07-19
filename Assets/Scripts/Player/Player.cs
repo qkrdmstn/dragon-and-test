@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance = null;
+
     [Header("Life info")]
     public int curHP = 10;
     public int maxHP = 10;
@@ -38,7 +40,7 @@ public class Player : MonoBehaviour
     public bool isAttackable = true;
 
     [Header("State Check")]
-    public bool isCombatZone = true;
+    public bool isCombatZone = false;
     public bool isStateChangeable = true;
     public bool isInteraction = false;
     public bool isDamaged = false;
@@ -74,23 +76,28 @@ public class Player : MonoBehaviour
         dashState = new PlayerDashState(this, stateMachine, "Dash");
         knockbackState = new PlayerKnockbackState(this, stateMachine, "Knockback");
 
-        if (SceneManager.GetActiveScene().name.Contains("Battle")
-            || SceneManager.GetActiveScene().name == "Puzzle_1"
-            || SceneManager.GetActiveScene().name == "Tutorial" || SceneManager.GetActiveScene().name == "Skill")
-            isCombatZone = true;
-        else
-            isCombatZone = false;
-    }
+        if (instance == null)
+        { //생성 전이면
+            instance = this; //생성
+        }
+        else if (instance != this)
+        { //이미 생성되어 있으면
+            Destroy(this.gameObject); //새로만든거 삭제
+        }
 
-    private void Start()
-    {
+        DontDestroyOnLoad(this.gameObject);
+
         anim = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
-        playerHit = GetComponentInChildren<PlayerHit>();
 
         stateMachine.Initialize(idleState);
+    }
+
+    private void Start()
+    {
+        playerHit = GetComponentInChildren<PlayerHit>();
 
         cameraManager = FindObjectOfType<CameraManager>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -98,7 +105,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log(stateMachine.currentState);
+        if(cameraManager == null) cameraManager = FindObjectOfType<CameraManager>();
+
         stateMachine.currentState.Update();
 
         //Check CombatZone
@@ -126,8 +134,16 @@ public class Player : MonoBehaviour
         if(!isDamaged)
         {
             isDamaged = true;
-            // monster에게 맞았을때 쉐이킹 
-            cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            // monster에게 맞았을때 쉐이킹
+            try
+            {
+                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            }
+            catch (System.NullReferenceException ex)
+            {
+                cameraManager = FindObjectOfType<CameraManager>();
+                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            }
 
             if (shield > 0)
                 shield -= damage;

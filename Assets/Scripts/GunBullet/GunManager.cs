@@ -47,14 +47,15 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-        //if (SceneManager.GetActiveScene().name != "Start")
-        //    Initialize(); ----> ScenesManager와 동시 호출 불필요로 인한 주석처리
+        
     }
 
     private void Update()
     {
         if(SceneManager.GetActiveScene().name != "Start")
         {
+            if(player == null) player = Player.instance;
+
             if (player.isCombatZone && !player.isInteraction)
             {
                 swapTimer -= Time.deltaTime;
@@ -72,8 +73,7 @@ public class GunManager : MonoBehaviour
 
     public void Initialize()
     {
-        player = GameObject.FindObjectOfType<Player>();
-        gunParent = player.gunParent.transform;
+        gunParent = Player.instance.transform.GetChild(1);
         
         LoadGun();
         InitActiveGun();
@@ -110,7 +110,16 @@ public class GunManager : MonoBehaviour
     public void LoadGunData(GameObject _gun, GunData _oldData)
     {
         _gun.GetComponent<Gun>().InitGunData(_oldData);
-        gunDictionary.Add(_oldData, _gun);
+
+        try
+        {
+            gunDictionary.Add(_oldData, _gun);
+            Debug.Log("Data Add Success!");
+        }
+        catch (ArgumentException ex)
+        {
+            Debug.Log(ex+" : 이미 처리된 데이터입니다.");
+        }
     }
 
     private void InitActiveGun() //Initialize Default Gun

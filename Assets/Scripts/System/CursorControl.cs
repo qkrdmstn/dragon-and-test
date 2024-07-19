@@ -28,6 +28,7 @@ public class CursorControl : MonoBehaviour
     private void Update()
     {
         if (ScenesManager.instance.GetSceneNum() < 1) return;
+        player = Player.instance.transform;
 
         worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         targetPos = (player.position + worldPos) / 2f;

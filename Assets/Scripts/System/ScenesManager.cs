@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 public enum SceneInfo
 {
     Start,
-    Tutorial,
     Town_1,
+    Tutorial,
     Battle_1_A,
     Battle_1_B,
     Battle_1_C,
@@ -18,6 +18,7 @@ public enum SceneInfo
 public class ScenesManager : MonoBehaviour
 {
     public static ScenesManager instance = null;
+    
     private void Awake()
     {
         if (instance == null)
@@ -78,36 +79,37 @@ public class ScenesManager : MonoBehaviour
             _sceneInfo = SceneInfo.Town_1;
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
-
+        
         switch (_sceneInfo)
         {
-            case SceneInfo.Start:       // 0
-                
-                break;
+            case SceneInfo.Start:
+                Player.instance.SetIdleStatePlayer();
+                Player.instance.isStateChangeable = false;
+                return;
 
-            case SceneInfo.Tutorial:    // 1
+            case SceneInfo.Town_1:      // 1
+                Player.instance.isStateChangeable = true;
+
                 UIManager.instance.SceneUI["Start"].SetActive(false);
-                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-                UIManager.instance.SceneUI["Tutorial"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
-
-                GameManager.instance.InitReference();
-                GunManager.instance.Initialize();
-
-                //UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>().LoadTutorialEvent();
-
-                break;
-
-            case SceneInfo.Town_1:      // 2
                 UIManager.instance.SceneUI["Tutorial"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(false);
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
 
-                GameManager.instance.InitReference();
+                GameManager.instance.ControlPlayerPos(_sceneInfo);
                 GunManager.instance.Initialize();
+                break;
+
+            case SceneInfo.Tutorial:    // 2
+                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
+                UIManager.instance.SceneUI["Tutorial"].SetActive(true);
+                UIManager.instance.SceneUI["Inventory"].SetActive(true);
+                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
+                Player.instance.isCombatZone = true;
+
+                GunManager.instance.Initialize();
+                GameManager.instance.ControlPlayerPos(_sceneInfo);
                 break;
 
             case SceneInfo.Puzzle_1:    // 3
@@ -116,7 +118,7 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
 
-                GameManager.instance.InitReference();
+                Player.instance.isCombatZone = true;
                 GunManager.instance.Initialize();
                 break;
 
@@ -127,9 +129,9 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-
-                GameManager.instance.InitReference();
+                Player.instance.isCombatZone = true;
                 GunManager.instance.Initialize();
+                GameManager.instance.ControlPlayerPos(_sceneInfo);
                 break;
             
             case SceneInfo.Boss_1:
@@ -138,7 +140,7 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
 
-                GameManager.instance.InitReference();
+                Player.instance.isCombatZone = true;
                 GunManager.instance.Initialize();
                 break;
         }

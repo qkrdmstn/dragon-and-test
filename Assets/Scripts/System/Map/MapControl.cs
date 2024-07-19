@@ -40,11 +40,12 @@ public class MapControl : MonoBehaviour
                 flag = true;
                 curMapNum = gotoMapType.GetComponent<BlockInfo>().blockNumber;
 
+                UIManager.instance.SetFadeObjState(true);
                 UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
                 mapIndicator.MoveBlockPlayer(curMapNum);
 
-                GameManager.instance.player.SetIdleStatePlayer();
-                GameManager.instance.player.isStateChangeable = false;
+                Player.instance.SetIdleStatePlayer();
+                Player.instance.isStateChangeable = false;
             }
         }
     }

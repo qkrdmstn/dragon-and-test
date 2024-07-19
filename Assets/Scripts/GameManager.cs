@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
-    public Player player;
+    public bool isTutorial = false;
 
     private void Awake()
     {
@@ -21,24 +21,16 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.C) && ScenesManager.instance.GetSceneNum() != (int)SceneInfo.Battle_1_A)
-        //{
-        //    ScenesManager.instance.ChangeScene((SceneInfo)(ScenesManager.instance.GetSceneNum() + 1));
-        //}
-    }
-
     public void GoToScene(int _sceneInfo)
     {
-        UIManager.instance.fade.ManageFade(_sceneInfo);
+        UIManager.instance.StartFade(_sceneInfo);
 
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(false);
         UIManager.instance.SceneUI["Battle_1"].SetActive(false);
 
         // player 관련 변수 Init() 필..요 ---- 아래는 임시로 해둔겁니당
         Time.timeScale = 1f;
-        GameManager.instance.player.curHP = GameManager.instance.player.maxHP;
+        Player.instance.curHP = Player.instance.maxHP;
         
         switch (_sceneInfo)
         {
@@ -51,13 +43,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ControlPlayerPos(SceneInfo scene)
+    {
+        Vector3 pos = new Vector3();
+        switch (scene)
+        {
+            case SceneInfo.Start:
+                return;
+            case SceneInfo.Tutorial:
+                pos = new Vector3(0.125f, 2f, 0);
+                break;
+            case SceneInfo.Town_1:
+                if (isTutorial)
+                {
+                    isTutorial = false;
+                    pos = new Vector3(-2.5f, 22.5f, 0);
+                }
+                else pos = new Vector3(-31.1f, 10f, 0);
+                break;
+            case SceneInfo.Battle_1_A:
+            case SceneInfo.Battle_1_B:
+            case SceneInfo.Battle_1_C:
+                pos = new Vector3(-7.5f, 10.75f, 0);
+                break;
+        }
+
+        Player.instance.transform.position = pos;
+    }
+
     public void Quit()
     {
         Application.Quit();
-    }
-
-    public void InitReference()
-    {
-        player = FindObjectOfType<Player>();
     }
 }

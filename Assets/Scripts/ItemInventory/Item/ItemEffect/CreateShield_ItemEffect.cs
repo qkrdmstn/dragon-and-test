@@ -10,7 +10,7 @@ public class CreateShield_ItemEffect : ItemEffect
     public override void ExcuteEffect()
     {
         base.ExcuteEffect();
-        GameManager.instance.player.shield = createShield;
+        Player.instance.shield = createShield;
 
         Debug.Log("Create Shield Effect");
     }
