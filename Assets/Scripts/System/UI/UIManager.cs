@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour
             SetFadeObjState(false);
         }
 
-        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape))
+        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction)
         {
             SceneUI["GameExit"].SetActive(true);
         }

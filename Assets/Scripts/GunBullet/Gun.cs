@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.UI;
 using Unity.VisualScripting;
 
 public class Gun : MonoBehaviour
@@ -40,6 +41,9 @@ public class Gun : MonoBehaviour
     public CameraManager cameraManager;
     private CinemachineImpulseSource impulseSource;
 
+    [Header("UI")]
+    public Image reloadUIImg;
+
     private void Awake()
     {
         renderer = gameObject.GetComponent<SpriteRenderer>();
@@ -50,6 +54,9 @@ public class Gun : MonoBehaviour
     {
         if (Player.instance.isCombatZone)
             cameraManager = FindObjectOfType<CameraManager>();
+
+        GameObject reloadUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[6];
+        reloadUIImg = reloadUI.GetComponent<Image>();
     }
 
     private void Update()
@@ -179,20 +186,32 @@ public class Gun : MonoBehaviour
             isAttacking = false;
             isReloading = true;
 
-            //Reload Visulaize
-            renderer.color = new Color(1, 0, 0);
+            //장전 UI 활성화 및 위치 설정
+            reloadUIImg.gameObject.SetActive(true);
+            Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
+            reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
+
             StartCoroutine(ReloadProcess());
         }
     }
 
     IEnumerator ReloadProcess()
     {
-        yield return new WaitForSeconds(reloadTime);
+        float timer = 0.0f;
+        while (timer <= reloadTime)
+        {
+            timer += Time.deltaTime;
+            reloadUIImg.fillAmount = timer / reloadTime;
+
+            //장전 UI 위치 설정
+            Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
+            reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
+            yield return new WaitForFixedUpdate();
+        }
         loadedBullet = magazineSize;
         isReloading = false;
-                    
-        renderer.color = new Color(1, 1, 1);
 
+        reloadUIImg.gameObject.SetActive(false);
         //Gun Inventory Update
         GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
     }

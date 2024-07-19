@@ -55,6 +55,19 @@ public class BlanketInteraction : Interaction
         maxPos = materialHwatuParent.anchoredPosition + materialHwatuParent.sizeDelta / 2;
     }
 
+    private void Update()
+    {
+        if (!blanketUI.isSkillInfoUI && isBlanketInteraction && Input.GetKeyDown(KeyCode.Escape))
+        {
+            EndInteraction();
+        }
+        else if(blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
+        {
+            blanketUI.SetSkillInfoUIInActive();
+        }
+
+    }
+
     public override void LoadEvent()
     {
         Init();
@@ -143,6 +156,8 @@ public class BlanketInteraction : Interaction
 
         blanketUI.gameObject.SetActive(false);
         hwatuUI.gameObject.SetActive(true);
+
+        Debug.Log("EndInteraction");
     }
 
     public bool AddSelectedHwatu(MaterialHwatuSlotUI ui) //실패 시, -1 반환 / 성공 시, 저장된 칸 반환

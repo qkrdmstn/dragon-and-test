@@ -63,8 +63,10 @@ public class BlanketUI : MonoBehaviour
 
     public void SetSkillInfoUIInActive()
     {
-        isSkillInfoUI = false;
         skillInfoUI.SetActive(false);
+        isSkillInfoUI = false;
+
+        Debug.Log("SkillInfo InActive");
     }
 
     public void ExitBlanketInteraction()
