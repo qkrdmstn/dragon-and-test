@@ -131,6 +131,12 @@ public class Player : MonoBehaviour
 
     public void OnDamamged(int damage)
     {
+        if(IsDash())
+        {
+            SkillManager.instance.RollingAdvantage();
+            return;
+        }    
+
         if(!isDamaged)
         {
             isDamaged = true;

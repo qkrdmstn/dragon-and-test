@@ -193,8 +193,8 @@ public class Spawner : MonoBehaviour
 
         //Spawn Delay
         float spawnTimer = spawnDelay;
-        if (curWave == 0)
-            spawnTimer = 0.0f;
+        //if (curWave == 0)
+        //    spawnTimer = 0.0f;
         while (spawnTimer >= 0.0)
         {
             spawnTimer -= Time.deltaTime;

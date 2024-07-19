@@ -18,9 +18,6 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
-        // 대시 중 무적
-        player.ChangePlayerLayer(7);
-
         //Dash Direction Setting
         dashDir = new Vector2(xInput, yInput);
         dashDir.Normalize();
@@ -38,8 +35,6 @@ public class PlayerDashState : PlayerState
         Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
         curGun.shootTimer -= player.dashDuration;
 
-        // 무적 해제
-        player.ChangePlayerLayer(6);
         player.SetVelocity(0, 0);
     }
 

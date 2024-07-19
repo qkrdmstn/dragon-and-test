@@ -240,4 +240,12 @@ public class SkillManager : MonoBehaviour
         }
         coolTimeImg[i].gameObject.SetActive(false);
     }
+
+    public void RollingAdvantage()
+    {
+        for(int i=0; i<2; i++)
+        {
+            timer[i] -= 0.5f;
+        }
+    }
 }

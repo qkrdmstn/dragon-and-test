@@ -13,6 +13,7 @@ public class MonsterFar : MonsterBase
     public int loadedBullet;
     public int magazineSize=3;
     public GameObject monsterBullet;
+    public float bulletSpeed = 7.5f;
     #endregion
 
     #region States
@@ -73,7 +74,7 @@ public class MonsterFar : MonsterBase
             var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
             bulletGo.transform.position = transform.position;
                 
-            bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir);
+            bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, bulletSpeed);
         } 
         else if (loadedBullet <= 0)
         {
