@@ -13,6 +13,8 @@ public class MonsterNear : MonsterBase
     private Collider2D swordCollider;
     public float attackDuration = 0.3f;
     private float[] directions = { 0, 45, 90, 180, 270, 315, 360};
+    private int shootNumber = 0;
+    public GameObject swordAura;
     #endregion
 
     #region States
@@ -68,11 +70,9 @@ public class MonsterNear : MonsterBase
         direction.Normalize();
 
         float angle = Quaternion.FromToRotation(Vector3.up, direction).eulerAngles.z;
-        Debug.Log(angle);
 
         float closestDirection = directions[0];
         float minDifference = Mathf.Abs(angle - directions[0]);
-        Debug.Log(minDifference);
         for (int i = 1; i < directions.Length; i++)
         {
             float difference = Mathf.Abs(angle - directions[i]);
@@ -82,18 +82,21 @@ public class MonsterNear : MonsterBase
                 closestDirection = directions[i];
             }
         }
-        Debug.Log(closestDirection);
+        
+
         if (closestDirection <= 180)
         {
-            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
+            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-135));
             StartCoroutine(RotateOverTime(90, attackDuration));
         }
         else
         {
-            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection+45));
+            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
             StartCoroutine(RotateOverTime(-90, attackDuration));
         }
         
+        shootNumber = 0;
+        InvokeRepeating("Shoot", 0f, 0.3f);
     }
 
     IEnumerator RotateOverTime(float angle, float duration)
@@ -114,13 +117,25 @@ public class MonsterNear : MonsterBase
                 {
                     isDamagedOnce = true;
                     playerScript.OnDamamged(1);
-                    Debug.Log("player damaged");
                 }
             }
             yield return null;
         }
 
         sword.transform.rotation = endRotation;
+    }
+
+    public void Shoot()
+    {
+        Vector3 dir = player.transform.position-transform.position;
+
+        GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
+        MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
+        
+        auraScript.BulletInitialize(dir);
+        shootNumber += 1;
+        if (shootNumber==3) CancelInvoke("Shoot");
+                
     }
 
     public void OutAttack()

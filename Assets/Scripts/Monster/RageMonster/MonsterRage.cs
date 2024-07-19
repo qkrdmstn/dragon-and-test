@@ -7,7 +7,7 @@ public class MonsterRage : MonsterBase
     
     #region MonsterAttack
     public bool inAttack = false;
-    public float cooldown = 3.0f;
+    public float cooldown = 2.0f;
     public float tempcool;
     public Collider2D[] collider2Ds;
     public Vector2 boxSize;
@@ -18,23 +18,23 @@ public class MonsterRage : MonsterBase
 
     #region States
     public MonsterChaseStateRage chaseState { get; private set; }
-    public MonsterAttackStateRage attackState { get; private set; }
     public MonsterRageState rageState { get; private set; }
     public float attackRange = 1.0f;
+    public float rageRange = 5.0f;
+    public bool rageAble = false;
     #endregion
 
     #region Navigate
     public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
-    public float distanceToPlayer;
+    public float distanceToPlayer = 100f;
     public Vector3 direction;
 
     public override void Awake()
     {
         base.Awake();
         chaseState = new MonsterChaseStateRage(stateMachine, player, this);
-        attackState = new MonsterAttackStateRage(stateMachine, player, this);
         rageState = new MonsterRageState(stateMachine, player, this);
     }
 
@@ -46,7 +46,9 @@ public class MonsterRage : MonsterBase
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
+        SpeedToZero();
         stateMachine.Initialize(chaseState);
+        Invoke("RageAble", 0.5f);
     }
 
     public override void Update()
@@ -54,6 +56,16 @@ public class MonsterRage : MonsterBase
         base.Update();
         stateMachine.currentState.Update();
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        agent.SetDestination(player.transform.position);
+    }
+
+    public override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            stateMachine.ChangeState(rageState);
+        }
     }
 
     public override void Attack()
@@ -103,5 +115,15 @@ public class MonsterRage : MonsterBase
     public void SpeedReturn()
     {
         agent.speed = moveSpeed;
+    }
+
+    public void SpeedBoost()
+    {
+        agent.speed = moveSpeed * 3;
+    }
+
+    private void RageAble()
+    {
+        rageAble = true;
     }
 }

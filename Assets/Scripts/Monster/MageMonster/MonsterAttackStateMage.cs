@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterAttackStateRage : MonsterState
+public class MonsterAttackStateMage : MonsterState
 {
-    private MonsterRage monster;
-    public MonsterAttackStateRage(MonsterStateMachine _stateMachine, GameObject _player, MonsterRage _monster) : base(_stateMachine, _player)
+    private MonsterMage monster;
+    public MonsterAttackStateMage(MonsterStateMachine _stateMachine, GameObject _player, MonsterMage _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }
@@ -13,13 +13,11 @@ public class MonsterAttackStateRage : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SpeedToZero();
     }
 
     public override void Exit()
     {
         base.Exit();
-        monster.SpeedReturn();
     }
 
     public override void Update()
@@ -27,7 +25,6 @@ public class MonsterAttackStateRage : MonsterState
         base.Update();
 
         //Attack
-        monster.tempcool -= Time.deltaTime;
         if (monster.tempcool<=0.0) 
         {
             if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
@@ -35,6 +32,7 @@ public class MonsterAttackStateRage : MonsterState
             {
                 monster.tempcool = monster.cooldown;
                 monster.Attack();
+                stateMachine.ChangeState(monster.idleState);
             }
         }
         

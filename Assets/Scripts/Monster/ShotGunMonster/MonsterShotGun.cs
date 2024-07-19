@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MonsterShotGun : MonsterFar
 {
+    private GameObject bulletGo;
+    private MonsterBullet[] bulletComponent = new MonsterBullet[6];
+    private Vector3 dir;
+    private Vector3 newDir;
+    private bool inAttack = false;
     public override void Awake()
     {
         base.Awake();
@@ -18,6 +23,19 @@ public class MonsterShotGun : MonsterFar
     {
         base.Update();
     }
+
+    public void LateUpdate()
+    {
+        if (inAttack)
+        {
+            if (inAttack) newDir = player.transform.position-transform.position;
+            if(newDir != dir) 
+            {
+                dir = newDir;
+                for (int i=0; i < 6; i++) bulletComponent[i].BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, 0f);
+            }
+        }
+    }
     
     public override void Attack()
     {
@@ -30,23 +48,30 @@ public class MonsterShotGun : MonsterFar
         {
             monsterShootTimer = monsterShootDelay;
             loadedBullet--;
-            Vector3 dir = player.transform.position-transform.position;
+            dir = player.transform.position-transform.position;
 
             //Create Bullet
-            for (int i=0; i < 3; i++)
+            for (int i=0; i < 6; i++)
             {
-                var bulletGo = MonsterPool.instance.pool.Get();
-                var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
+                bulletGo = MonsterPool.instance.pool.Get();
+                bulletComponent[i] = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position;
-                
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, Random.Range(0.5f, 1.5f));
+                bulletComponent[i].BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, 0f);
             }
 
+            Invoke("Go", 1.0f);
+            inAttack = true;
         } 
         else if (loadedBullet <= 0)
         {
             Reload();
         }
+    }
+
+    private void Go()
+    {
+        inAttack = false;
+        for (int i=0; i < 6; i++) bulletComponent[i].BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir, Random.Range(3.0f, 7.0f));
     }
 
 }

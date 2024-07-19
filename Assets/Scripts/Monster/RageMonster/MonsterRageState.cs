@@ -13,7 +13,7 @@ public class MonsterRageState : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SpeedToZero();
+        monster.SpeedBoost();
     }
 
     public override void Exit()
@@ -25,13 +25,12 @@ public class MonsterRageState : MonsterState
     public override void Update()
     {
         base.Update();
-
-        //Attack
+        
+        //monster.agent.SetDestination(player.transform.position);
         monster.tempcool -= Time.deltaTime;
         if (monster.tempcool<=0.0) 
         {
-            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
-            else if(!monster.isKnockedBack)
+            if(!monster.isKnockedBack)
             {
                 monster.tempcool = monster.cooldown;
                 monster.Attack();

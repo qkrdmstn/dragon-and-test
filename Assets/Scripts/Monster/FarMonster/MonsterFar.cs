@@ -73,8 +73,7 @@ public class MonsterFar : MonsterBase
             var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
             bulletGo.transform.position = transform.position;
                 
-            bulletComponent.BulletInitialize(dir);
-
+            bulletComponent.BulletInitialize(Quaternion.AngleAxis(Random.Range(-15, 15), Vector3.forward) * dir);
         } 
         else if (loadedBullet <= 0)
         {
