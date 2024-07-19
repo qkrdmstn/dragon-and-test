@@ -12,6 +12,7 @@ public class SkillManager : MonoBehaviour
     
     [Header("Hwatu Data")]
     public HwatuData[] hwatuData; //전체 카드 데이터
+    public GameObject hwatuItemObj;
     public List<HwatuData> materialHwatuDataList; //조합 카드 데이터
     public int materialCardCnt = 0;
     public int materialCardMaxNum = 10;
@@ -46,13 +47,13 @@ public class SkillManager : MonoBehaviour
             Destroy(this.gameObject); //새로만든거 삭제
         }
 
-        //배틀 씬에서만 유지
-        if (ScenesManager.instance == null || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
-            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
-            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
-        {
+        ////배틀 씬에서만 유지
+        //if (ScenesManager.instance == null || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
+        //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
+        //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
+        //{
             DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
-        }
+        //}
     }
 
     // Start is called before the first frame update
@@ -116,6 +117,7 @@ public class SkillManager : MonoBehaviour
             skillDBDictionary.Add(tmp.synergyCode, tmp);
         }
 
+        materialHwatuDataList = new List<HwatuData>();
         skillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
         skillCnt = 0;
         timer = new float[2];

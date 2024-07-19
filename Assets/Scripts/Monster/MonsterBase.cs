@@ -19,9 +19,10 @@ public class MonsterBase : MonoBehaviour
     public Vector2 knockbackVel;
     #endregion
 
-    #region Drop Items
-    public GameObject[] dropItems;
+    #region dropItems
+    GameObject [] dropItems;
     #endregion
+
     #region Componets
     public Animator anim { get; protected set; }
     public Rigidbody2D rigidBody { get; protected set; }
@@ -52,7 +53,7 @@ public class MonsterBase : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
 
-        dropItems = Resources.LoadAll<GameObject>("Prefabs/Item");
+        dropItems = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
     }
 
     public virtual void Start()
@@ -152,7 +153,31 @@ public class MonsterBase : MonoBehaviour
 
     public void ItemDrop()
     {
-        int index = Random.Range(0, dropItems.Length);
-        Instantiate(dropItems[index], this.transform.position, Quaternion.identity);
+        HwatuObjectDrop();
+        DropItems();
+    }
+
+    private void DropItems()
+    {
+        for (int i = 0; i < dropItems.Length; i++)
+        {
+            ItemObject item = dropItems[i].GetComponent<ItemObject>();
+            float randomVal = Random.Range(0.0f, 1.0f);
+            if (randomVal <= item.dropProb)
+                Instantiate(dropItems[i], this.transform.position, Quaternion.identity);
+
+        }
+    }
+
+    private void HwatuObjectDrop()
+    {
+        float randomVal = Random.Range(0.0f, 1.0f);
+        if (randomVal <= 0.1f)
+        {
+            GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
+            int index = Random.Range(0, SkillManager.instance.hwatuData.Length);
+            hwatuObj.GetComponent<HwatuItemObject>().hwatuData = SkillManager.instance.hwatuData[index];
+            Debug.Log("Hwatu Drop");
+        }
     }
 }
