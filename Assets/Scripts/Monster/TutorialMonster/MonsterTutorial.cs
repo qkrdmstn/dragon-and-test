@@ -37,7 +37,6 @@ public class MonsterTutorial : MonsterBase
 
     public override void Start()
     {
-        temp = GameObject.FindObjectOfType<temp>(); // score UI를 위한 스크립트
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();

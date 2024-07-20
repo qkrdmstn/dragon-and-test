@@ -141,7 +141,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interaction: {fileID: 0}
-  player: {fileID: 0}
   dialogueInteraction: {fileID: 0}
   shopInteraction: {fileID: 0}
   blanketInteraction: {fileID: 0}
@@ -432,11 +431,11 @@ MonoBehaviour:
   curHP: 10
   maxHP: 10
   money: 0
-  shield: 5
+  shield: 0
   hitDuration: 0.6
-  moveSpeed: 5.65
-  dashSpeed: 13
-  dashDuration: 0.58
+  moveSpeed: 5.3
+  dashSpeed: 15
+  dashDuration: 0.6
   dashExpCoefficient: -3.5
   knockbackDir: {x: 0, y: 0}
   knockbackMagnitude: 0
@@ -541,6 +540,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4179389522080398408}
     m_Modifications:
+    - target: {fileID: 2618088524873001665, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2618088524873001665, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2618088524873001665, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2618088524873001665, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2618088524873001665, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2618088524873001669, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
       propertyPath: m_Name
       value: Gun2
@@ -603,6 +622,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4179389522080398408}
     m_Modifications:
+    - target: {fileID: 2618088524873001665, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2618088524873001665, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2618088524873001669, guid: ec23fcb05a945564cafccf575b7c6b97, type: 3}
       propertyPath: m_Name
       value: Gun

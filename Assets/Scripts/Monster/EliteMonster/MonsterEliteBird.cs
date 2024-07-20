@@ -73,7 +73,7 @@ public class MonsterEliteBird : MonsterBase
         {
             loadedBullet--;
             dir = player.transform.position - transform.position;
-
+            
             StartCoroutine(SpawnBullets());
         }
 
@@ -84,11 +84,13 @@ public class MonsterEliteBird : MonsterBase
     {
         for (int j=0; j < bulletNum; j++)
         {
+
             for (int i=0; i < 6; i++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
-                bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
+                bulletGo.transform.position = transform.position;
+                // - new Vector3(0, 0.6f, 0);
                 
                 bulletComponent.BulletInitialize(Quaternion.AngleAxis(bulletAngle*(i-2.5f), Vector3.forward) * dir);
             }

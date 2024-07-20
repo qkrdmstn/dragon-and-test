@@ -58,7 +58,6 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void Start()
     {
-        temp = GameObject.FindObjectOfType<temp>();
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -103,7 +102,7 @@ public class MonsterBase : MonoBehaviour
     }
 
     //넉백
-    public void Knockback(Vector2 dir, float vel)
+    public virtual void Knockback(Vector2 dir, float vel)
     {
         if (!isKnockedBack)
         {
@@ -145,9 +144,7 @@ public class MonsterBase : MonoBehaviour
             isDead = true;
             Destroy(gameObject);
             spawn.DeathCount();
-            temp.killScore += 1;
             ItemDrop();
-            //temp.instance.killScore += 1;
         }
     }
 
