@@ -28,7 +28,7 @@ public class SkillManager : MonoBehaviour
 
     [Header("Skill UI info")]
     [SerializeField] private Transform skillSlotParent;
-    private SkillSlotUI[] skillSlot;
+    public SkillSlotUI[] skillSlot;
     [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
 
     //[Header("Skill State info")]
@@ -220,7 +220,7 @@ public class SkillManager : MonoBehaviour
         StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
     }
 
-    private void UpdateSkillSlot()
+    public void UpdateSkillSlot()
     {
         for (int i = 0; i < 2; i++)
             skillSlot[i].ClearSlot();

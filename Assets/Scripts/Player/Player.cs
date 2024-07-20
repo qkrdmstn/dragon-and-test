@@ -50,7 +50,6 @@ public class Player : MonoBehaviour
     public AnimController animController { get; private set; }
 
     public Rigidbody2D rb { get; private set; }
-    public SpriteRenderer spriteRenderer { get; private set; }
     public Collider2D col { get; private set; }
     public PlayerHit playerHit { get; private set; }
     #endregion
@@ -91,7 +90,7 @@ public class Player : MonoBehaviour
 
         //anim = GetComponentInChildren<Animator>();
         animController = GetComponentInChildren<AnimController>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
 
@@ -185,10 +184,11 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < 2; i++) 
         {
-            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+            animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
+            //spriteRenderer.color = new Color(1, 1, 1, 0.4f);
             yield return new WaitForSeconds(hitDuration / 4.0f);
-
-            spriteRenderer.color = new Color(1, 1, 1, 1);
+            animController.SetMaterialColor(new Color(1, 1, 1, 1f));
+            //spriteRenderer.color = new Color(1, 1, 1, 1);
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
         ChangePlayerLayer(6);

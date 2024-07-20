@@ -251,6 +251,11 @@ public class AnimController : MonoBehaviour
 		}
     }
 
+	public void SetMaterialColor(Color color)
+    {
+		skeletonAnimation.skeleton.SetColor(color);
+	}
+
 	void Apply(SkeletonRenderer skeletonRenderer)
 	{
 		if (!this.enabled) return;

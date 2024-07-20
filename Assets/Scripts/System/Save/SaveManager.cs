@@ -73,15 +73,24 @@ public class SaveManager : MonoBehaviour
 
     public void StartLoadData(int index)
     {
-        if (data[index] == null) return;
+        if (data[index] == null)
+        {
+            SetSelectSlotIdx(index);
+        }
+        else
+        {
+            Player.instance.curHP = data[index].playerHP;
+            Player.instance.money = data[index].money;
+            Player.instance.shield = data[index].curShieldCnt;
 
-        Player.instance.curHP = data[index].playerHP;
-        Player.instance.money = data[index].money;
-        Player.instance.shield = data[index].curShieldCnt;
-        SkillManager.instance.materialHwatuDataList = data[index].hwatus;
-        //data[index].curGun;
+            SkillManager.instance.materialHwatuDataList = data[index].hwatus;
+            SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
 
-        UIManager.instance.StartFade(1);
+            SkillManager.instance.skillData = data[index].skills;
+            SkillManager.instance.UpdateSkillSlot();
+            //data[index].curGun;
+        }
+        UIManager.instance.StartFade((int)SceneInfo.Town_1);
     }
 
     public void ClearData(int index)
