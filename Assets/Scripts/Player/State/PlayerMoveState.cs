@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerState
 {
-    public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
+    public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
@@ -20,6 +20,19 @@ public class PlayerMoveState : PlayerState
 
     public override void Update()
     {
+        //Change State
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            stateMachine.ChangeState(player.dashState);
+            return;
+        }
+
+        if (xInput == 0 && yInput == 0)
+        {
+            stateMachine.ChangeState(player.idleState);
+            return;
+        }
+
         base.Update();
 
         //Move
@@ -28,15 +41,8 @@ public class PlayerMoveState : PlayerState
 
         Vector2 move = dir * player.moveSpeed;
         player.SetVelocity(move.x, move.y);
+        player.animController.SetAnim(AnimState.Run, xInput, yInput);
+
         SoundManager.instance.PlayWalkEffect();
-
-        //Change State
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-            stateMachine.ChangeState(player.dashState);
-
-        if (xInput == 0 && yInput == 0)
-            stateMachine.ChangeState(player.idleState);
     }
-
-
 }

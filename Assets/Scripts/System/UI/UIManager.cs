@@ -10,7 +10,6 @@ public class UIManager : MonoBehaviour
     public bool isEndFade = false;
     public bool isFading = false;
 
-    //public GameObject[] SceneUI;
     public SerializableDictionary<string, GameObject> SceneUI;
     public UIGroup curUIGroup;
 
@@ -37,8 +36,22 @@ public class UIManager : MonoBehaviour
 
         if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneUI["GameExit"].SetActive(true);
+            if (SceneUI["GameExit"].activeSelf)
+            {
+                SceneUI["GameExit"].SetActive(false);
+                SetTimeScale(1f);
+            }
+            else
+            {
+                SceneUI["GameExit"].SetActive(true);
+                SetTimeScale(0f);
+            }
         }
+    }
+
+    public void SetTimeScale(float value)
+    {
+        Time.timeScale = value;
     }
 
     public void SetFadeObjState(bool state)

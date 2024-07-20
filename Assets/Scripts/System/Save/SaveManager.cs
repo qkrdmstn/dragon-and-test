@@ -124,6 +124,7 @@ public class SaveManager : MonoBehaviour
     {
         for(int i=0; i<3;i++)
         {
+            LoadData(i);
             TextMeshProUGUI[] txt = saveDatas[i].GetComponentsInChildren<TextMeshProUGUI>(true);
             
             if (data[i] == null)
