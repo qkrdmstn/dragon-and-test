@@ -8,29 +8,31 @@ public class PlayerState
     protected PlayerStateMachine stateMachine;
     protected Player player;
     protected Rigidbody2D rb;
-    private string animBoolName;
+    private AnimState animStateName;
+
     #endregion
 
     #region Inputs
     protected static float xInput;
     protected static float yInput;
+    public Vector2 mouseDir;
     #endregion
 
     protected float stateTimer;
 
-    public PlayerState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
+    public PlayerState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName)
     {
         this.player = _player;
         this.stateMachine = _stateMachine;
-        this.animBoolName = _animBoolName;
+        this.animStateName = _animStateName;
     }
 
     public virtual void Enter()
     {
-        player.anim.SetBool(animBoolName, true);
         rb = player.rb;
     }
 
+    Vector3 centerPos = new Vector3(0.5f, 0.5f);
     public virtual void Update()
     {
         stateTimer -= Time.deltaTime;
@@ -38,18 +40,11 @@ public class PlayerState
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
 
-        player.anim.SetFloat("xVelocity", rb.velocity.x);
-        player.anim.SetFloat("yVelocity", rb.velocity.y);
-
-        Vector2 mouseDir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position;
-        mouseDir.Normalize();
-        //Debug.Log(mouseDir);
-        player.anim.SetFloat("xDirection", mouseDir.x);
-        player.anim.SetFloat("yDirection", mouseDir.y);
+        mouseDir = Camera.main.WorldToViewportPoint(Input.mousePosition) - Camera.main.WorldToViewportPoint(centerPos);
     }
 
     public virtual void Exit()
     {
-        player.anim.SetBool(animBoolName, false);
+        //player.anim.SetBool(animBoolName, false);
     }
 }

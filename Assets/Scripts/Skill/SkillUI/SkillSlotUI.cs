@@ -1,4 +1,5 @@
 using DG.Tweening;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class SkillSlotUI : MonoBehaviour
 {
     [Header("Skill Info")]
     [SerializeField] private Image skillImage;
+    public Sprite defalutImage;
     public SeotdaHwatuCombination data;
 
     [Header("Transform Info")]
@@ -53,7 +55,7 @@ public class SkillSlotUI : MonoBehaviour
 
     public void ClearSlot()
     {
-        skillImage.sprite = null;
+        skillImage.sprite = defalutImage;
         skillImage.color = Color.white;
     }
 

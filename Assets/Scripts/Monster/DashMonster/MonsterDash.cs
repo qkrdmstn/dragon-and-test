@@ -79,6 +79,20 @@ public class MonsterDash : MonsterBase
         }
     }
 
+    public override void Knockback(Vector2 dir, float vel)
+    {
+        if (!isKnockedBack && !inAttack)
+        {
+            isKnockedBack = true;
+            knockbackTimer = 0.0f;
+            dir.Normalize();
+            knockbackVel = vel * dir;
+            rigidBody.velocity = knockbackVel;
+            //rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
+            //rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
+        }
+    }
+
     public override void OnTriggerEnter2D(Collider2D collision)
     {
         base.OnTriggerEnter2D(collision);

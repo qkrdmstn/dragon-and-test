@@ -88,7 +88,7 @@ public class Gun : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Mouse0))
             continuousShootCnt = 0;
 
-        Player.instance.anim.SetBool("isAttacking", isAttacking);
+        //Player.instance.anim.SetBool("isAttacking", isAttacking);
     }
 
     private void OnDisable()
@@ -122,7 +122,8 @@ public class Gun : MonoBehaviour
     {
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
-            if(cameraManager != null)
+            Player.instance.animController.SetBreath(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y);
+            if (cameraManager != null)
             {   // player 카메라 총 반동
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
@@ -174,6 +175,7 @@ public class Gun : MonoBehaviour
         if (!Input.GetKey(KeyCode.Mouse0))
         {
             isAttacking = false;
+            Player.instance.animController.isBreath = false;
         }
     }
 

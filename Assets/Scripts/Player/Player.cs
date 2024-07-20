@@ -46,7 +46,9 @@ public class Player : MonoBehaviour
     public bool isDamaged = false;
 
     #region Componets
-    public Animator anim { get; private set; }
+    //public Animator anim { get; private set; }
+    public AnimController animController { get; private set; }
+
     public Rigidbody2D rb { get; private set; }
     public SpriteRenderer spriteRenderer { get; private set; }
     public Collider2D col { get; private set; }
@@ -71,10 +73,10 @@ public class Player : MonoBehaviour
     {
         stateMachine = new PlayerStateMachine(this);
 
-        idleState = new PlayerIdleState(this, stateMachine, "Idle");
-        moveState = new PlayerMoveState(this, stateMachine, "Move");
-        dashState = new PlayerDashState(this, stateMachine, "Dash");
-        knockbackState = new PlayerKnockbackState(this, stateMachine, "Knockback");
+        idleState = new PlayerIdleState(this, stateMachine, AnimState.Idle);
+        moveState = new PlayerMoveState(this, stateMachine, AnimState.Run);
+        dashState = new PlayerDashState(this, stateMachine, AnimState.Wave);
+        knockbackState = new PlayerKnockbackState(this, stateMachine, AnimState.knockBack);
 
         if (instance == null)
         { //생성 전이면
@@ -87,7 +89,8 @@ public class Player : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
 
-        anim = GetComponentInChildren<Animator>();
+        //anim = GetComponentInChildren<Animator>();
+        animController = GetComponentInChildren<AnimController>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
@@ -131,6 +134,12 @@ public class Player : MonoBehaviour
 
     public void OnDamamged(int damage)
     {
+        if(IsDash())
+        {
+            SkillManager.instance.RollingAdvantage();
+            return;
+        }    
+
         if(!isDamaged)
         {
             isDamaged = true;

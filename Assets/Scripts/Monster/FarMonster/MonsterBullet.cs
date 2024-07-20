@@ -86,7 +86,12 @@ public class MonsterBullet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Ground"))
         {
-            if(!isRelease)
+            if (other.CompareTag("Player") && Player.instance.IsDash())
+            {
+                return;
+            }
+
+            if (!isRelease)
             {
                 if(isPooled)
                 {
