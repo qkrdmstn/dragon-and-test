@@ -115,7 +115,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
                 Quaternion rot = Quaternion.identity;
                 Vector3 scale = new Vector3(1.5f, 1.5f, 1);
                 MoveTransform(pos, rot, scale, 0.1f, true);
-
+                SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Snap);
                 transform.SetAsLastSibling();
             }
             else

@@ -21,7 +21,7 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-
+    Snap
 }
 
 public class SoundManager : MonoBehaviour
