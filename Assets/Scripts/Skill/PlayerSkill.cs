@@ -48,13 +48,13 @@ public class PlayerSkill : MonoBehaviour
             //SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
             //FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
             //Flooring(SeotdaHwatuName.JanCrane, 1, 10, 15f, 1.5f);
-            //GuidedMissile(SeotdaHwatuName.OctDeer, 1, 10, 10, 2.5f);
+            //GuidedMissile(SeotdaHwatuCombination.TT9, 1, 10, 10, 2.5f);
 
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
             //Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
-            //FlameThrower(SeotdaHwatuName.MarCherryLight, 1, 5, 0.3f);
+            //FlameThrower(SeotdaHwatuCombination.TT3, 1, 5, 0.3f);
             //GuidedMissile(SeotdaHwatuName.JulBoar, 1, 10, 10, 2.5f);
         }
         //if(Input.GetKeyDown(KeyCode.J))
@@ -77,6 +77,7 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuCombination.JTT:
                 break;
             case SeotdaHwatuCombination.TT9:
+                GuidedMissile(data.synergyCode,data.damage, data.speed, data.duration, data.range);
                 break;
             case SeotdaHwatuCombination.TT8:
                 SokbakSkill(data.synergyCode, data.damage, data.range, data.speed);
@@ -85,6 +86,7 @@ public class PlayerSkill : MonoBehaviour
                 BlankBullet(data.damage, data.range, data.force);
                 break;
             case SeotdaHwatuCombination.TT6:
+                GuidedMissile(data.synergyCode,data.damage, data.speed, data.duration, data.range);
                 break;
             case SeotdaHwatuCombination.TT5:
                 BlankBullet(data.damage, data.range, data.force);
@@ -314,9 +316,9 @@ public class PlayerSkill : MonoBehaviour
     private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float duration, float range)
     {
         int numProjectile = 0;
-        if (code == SeotdaHwatuCombination.KK9)
+        if (code == SeotdaHwatuCombination.TT9)
             numProjectile = 9;
-        else if (code == SeotdaHwatuCombination.KK6)
+        else if (code == SeotdaHwatuCombination.TT6)
             numProjectile = 6;
 
         GameObject prefab = skillObjDictionary[code];
