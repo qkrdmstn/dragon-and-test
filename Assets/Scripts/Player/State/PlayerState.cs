@@ -40,7 +40,7 @@ public class PlayerState
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
 
-        mouseDir = Camera.main.WorldToViewportPoint(Input.mousePosition) - Camera.main.WorldToViewportPoint(centerPos);
+        mouseDir = Camera.main.ScreenToViewportPoint(Input.mousePosition) - Camera.main.WorldToViewportPoint(Player.instance.transform.position);
     }
 
     public virtual void Exit()

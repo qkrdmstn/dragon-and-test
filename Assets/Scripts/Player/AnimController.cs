@@ -29,9 +29,11 @@ public class AnimController : MonoBehaviour
 	[SpineAnimation] public string idleAnim;
 	[SpineAnimation] public string runAnim;
 	[SpineAnimation] public string waveAnim;
+	string curAnim;
 
 	public bool isBreath = false;
 	int curDirectionIdx = -1;
+	int curBaseSkinIdx = -1;
 
 	[System.Serializable]
 	public class SlotRegionPair
@@ -45,7 +47,11 @@ public class AnimController : MonoBehaviour
 	[SerializeField] protected List<SlotRegionPair> attachments = new List<SlotRegionPair>();
 
 	Atlas atlas;
-	SkeletonRenderer skeletonRenderer;
+	SkeletonRenderer skeletonRenderer;	// 피격 시 깜빡임
+	float mouseDirMinX = -0.2f;
+	float mouseDirMaxX = 0.2f;
+	float mouseDirMinY = -0.2f;
+	float mouseDirMaxY = 0.2f;
 
 	void Awake()
 	{
@@ -62,155 +68,61 @@ public class AnimController : MonoBehaviour
 
 	public void SetAnim(AnimState animState, float x = 0f, float y = 0f)
 	{
+		if (animState == AnimState.Idle)
+        {
+			if (x >= mouseDirMaxX && y >= mouseDirMaxY) curBaseSkinIdx = (int)Direction.Back_R;
+			else if (x >= mouseDirMinX && x < mouseDirMaxX && y >= mouseDirMaxY) curBaseSkinIdx = (int)Direction.Back;
+			else if (x >= mouseDirMaxX && y < mouseDirMaxY && y >= mouseDirMinY) curBaseSkinIdx = (int)Direction.Front_R;
+			else if (x >= mouseDirMaxX && y < mouseDirMinY) curBaseSkinIdx = (int)Direction.Front_R;
+			else if (x >= mouseDirMinX && x < mouseDirMaxX && y < mouseDirMaxY) curBaseSkinIdx = (int)Direction.Front;
+			else if (x < mouseDirMinX && y < mouseDirMaxY && y >= mouseDirMinY) curBaseSkinIdx = (int)Direction.Front_L;
+			else if (x < mouseDirMinX && y < mouseDirMinY) curBaseSkinIdx = (int)Direction.Front_L;
+			else if (x < mouseDirMinX && y >= mouseDirMaxY) curBaseSkinIdx = (int)Direction.Back_L;
+		}
+		else if (animState == AnimState.Run || animState == AnimState.Wave)
+        {
+			if (x == 1 && y == 1) curBaseSkinIdx = (int)Direction.Back_R;
+			else if (x == 0 && y == 1) curBaseSkinIdx = (int)Direction.Back;
+			else if (x == 1 && y == 0) curBaseSkinIdx = (int)Direction.Front_R;
+			else if (x == 1 && y == -1) curBaseSkinIdx = (int)Direction.Front_R;
+			else if (x == 0 && y == 0) curBaseSkinIdx = (int)Direction.Front;
+			else if (x == 0 && y == -1) curBaseSkinIdx = (int)Direction.Front;
+			else if (x == -1 && y == -1) curBaseSkinIdx = (int)Direction.Front_L;
+			else if (x == -1 && y == 0) curBaseSkinIdx = (int)Direction.Front_L;
+			else if (x == -1 && y == 1) curBaseSkinIdx = (int)Direction.Back_L;
+		}
+
 		switch (animState)
 		{
-			
 			case AnimState.Idle:
-
-
-				if (isBreath)
-				{
-					skeletonAnimation.AnimationName = idleAnim;
-					skeletonAnimation.ApplyAnimation();
-					break;
-				}
-
-				if (x >= 60 && y >= 60)
-                {
-					baseSkinName = idleSkin[(int)Direction.Back_R];
-					curDirectionIdx = (int)Direction.Back_R;
-				}
-                else if(x >= 45 && x < 60 && y >= 60)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Back];
-					curDirectionIdx = (int)Direction.Back;
-
-				}
-				else if(x >= 60 && y < 60 && y >= 45)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Front_R];
-					curDirectionIdx = (int)Direction.Front_R;
-
-				}
-				else if(x >= 60 && y < 45)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Front_R];
-					curDirectionIdx = (int)Direction.Front_R;
-
-				}
-				else if(x >= 45 && x < 60 && y < 60)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Front];
-					curDirectionIdx = (int)Direction.Front;
-
-				}
-				else if(x < 45 && y < 60 && y >= 45)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Front_L];
-					curDirectionIdx = (int)Direction.Front_L;
-
-				}
-				else if(x < 45 && y < 45)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Front_L];
-					curDirectionIdx = (int)Direction.Front_L;
-
-				}
-				else if(x < 45 && y >= 60)
-                {
-                    baseSkinName = idleSkin[(int)Direction.Back_L];
-					curDirectionIdx = (int)Direction.Back_L;
-
-				}
-
-				skeletonAnimation.initialSkinName = baseSkinName;
-				skeletonAnimation.Skeleton.SetSkin(baseSkinName);
-				skeletonAnimation.Skeleton.SetSlotsToSetupPose();
-
-				skeletonAnimation.AnimationName = idleAnim;
-				skeletonAnimation.ApplyAnimation();
+				baseSkinName = idleSkin[curBaseSkinIdx];
+				curAnim = idleAnim;
 				break;
 
 			case AnimState.Run:
-				if (isBreath)
-				{
-					skeletonAnimation.AnimationName = runAnim;
-					skeletonAnimation.ApplyAnimation();
-					break;
-				}
-
-				if (x == 1 && y == 1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Back_R];
-					curDirectionIdx = (int)Direction.Back_R;
-				}
-                else if(x == 0 && y == 1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Back];
-					curDirectionIdx = (int)Direction.Back;
-				}
-                else if(x == 1 && y == 0)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front_R];
-					curDirectionIdx = (int)Direction.Front_R;
-				}
-                else if(x == 1 && y == -1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front_R];
-					curDirectionIdx = (int)Direction.Front_R;
-				}
-                else if(x == 0 && y == 0)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front];
-					curDirectionIdx = (int)Direction.Front;
-				}
-                else if (x == 0 && y == -1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front];
-					curDirectionIdx = (int)Direction.Front;
-				}
-                else if(x == -1 && y == -1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front_L];
-					curDirectionIdx = (int)Direction.Front_L;
-				}
-                else if (x == -1 && y == 0)
-                {
-                    baseSkinName = runSkin[(int)Direction.Front_L];
-					curDirectionIdx = (int)Direction.Front_L;
-				}
-                else if(x == -1 && y == 1)
-                {
-                    baseSkinName = runSkin[(int)Direction.Back_L];
-					curDirectionIdx = (int)Direction.Back_L;
-				}
-
-                skeletonAnimation.initialSkinName = baseSkinName;
-				skeletonAnimation.Skeleton.SetSkin(baseSkinName);
-				skeletonAnimation.Skeleton.SetSlotsToSetupPose();
-
-				skeletonAnimation.AnimationName = runAnim;
-				skeletonAnimation.ApplyAnimation();
-
+				baseSkinName = runSkin[curBaseSkinIdx];
+				curAnim = runAnim;
 				break;
-			case AnimState.Wave:
-				if (x == 1 && y == 1)		baseSkinName = waveSkin[(int)Direction.Back_R];
-				else if (x == 0 && y == 1)	baseSkinName = waveSkin[(int)Direction.Back];
-				else if (x == 1 && y == 0)	baseSkinName = waveSkin[(int)Direction.Front_R];
-				else if (x == 1 && y == -1) baseSkinName = waveSkin[(int)Direction.Front_R];
-				else if (x == 0 && y == 0)	baseSkinName = waveSkin[(int)Direction.Front];
-				else if (x == 0 && y == -1) baseSkinName = waveSkin[(int)Direction.Front];
-				else if (x == -1 && y == -1)baseSkinName = waveSkin[(int)Direction.Front_L];
-				else if (x == -1 && y == 0) baseSkinName = waveSkin[(int)Direction.Front_L];
-				else if (x == -1 && y == 1) baseSkinName = waveSkin[(int)Direction.Back_L];
 
-				skeletonAnimation.Skeleton.SetSkin(baseSkinName);
-				skeletonAnimation.initialSkinName = baseSkinName;
-				skeletonAnimation.Skeleton.SetSlotsToSetupPose();
-				skeletonAnimation.AnimationName = waveAnim;
-				skeletonAnimation.ApplyAnimation();
+			case AnimState.Wave:
+				baseSkinName = waveSkin[curBaseSkinIdx];
+				curAnim = waveAnim;
 				break;
 		}
+
+		if (isBreath)
+		{
+			skeletonAnimation.AnimationName = curAnim;
+			skeletonAnimation.ApplyAnimation();
+			return;
+		}
+
+		skeletonAnimation.initialSkinName = baseSkinName;
+		skeletonAnimation.Skeleton.SetSkin(baseSkinName);
+		skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+
+		skeletonAnimation.AnimationName = curAnim;
+		skeletonAnimation.ApplyAnimation();
 	}
 
 	[SpineAtlasRegion] public string[] idleFace;
@@ -218,35 +130,33 @@ public class AnimController : MonoBehaviour
 
 	public void SetBreath(float x, float y)
     {
-		if(Player.instance.stateMachine.currentState == Player.instance.idleState)
+		if (x >= mouseDirMaxX && y >= mouseDirMaxY)
+			curDirectionIdx = (int)Direction.Back_R;
+		else if (x >= mouseDirMinX && x < mouseDirMaxX && y >= mouseDirMaxY)
+			curDirectionIdx = (int)Direction.Back;
+		else if (x >= mouseDirMaxX && y < mouseDirMaxY && y >= mouseDirMinY)
+			curDirectionIdx = (int)Direction.Front_R;
+		else if (x >= mouseDirMaxX && y < mouseDirMinY)
+			curDirectionIdx = (int)Direction.Front_R;
+		else if (x >= mouseDirMinX && x < 60 && y < mouseDirMaxY)
+			curDirectionIdx = (int)Direction.Front;
+		else if (x < mouseDirMinX && y < mouseDirMaxY && y >= mouseDirMinY)
+			curDirectionIdx = (int)Direction.Front_L;
+		else if (x < mouseDirMinX && y < mouseDirMinY)
+			curDirectionIdx = (int)Direction.Front_L;
+		else if (x < mouseDirMinX && y >= mouseDirMaxY)
+			curDirectionIdx = (int)Direction.Back_L;
+
+		if (Player.instance.stateMachine.currentState == Player.instance.idleState)
         {
 			isBreath = true;
 			attachments[0].slot = "IDLE_basicface";
-			if (x == 1 && y == 1)		curDirectionIdx = (int)Direction.Back_R;
-			else if (x == 0 && y == 1)	curDirectionIdx = (int)Direction.Back;
-			else if (x == 1 && y == 0)	curDirectionIdx = (int)Direction.Front_R;
-			else if (x == 1 && y == -1) curDirectionIdx = (int)Direction.Front_R;
-			else if (x == 0 && y == 0)	curDirectionIdx = (int)Direction.Front;
-			else if (x == 0 && y == -1) curDirectionIdx = (int)Direction.Front;
-			else if (x == -1 && y == -1)curDirectionIdx = (int)Direction.Front_L;
-			else if (x == -1 && y == 0) curDirectionIdx = (int)Direction.Front_L;
-			else if (x == -1 && y == 1) curDirectionIdx = (int)Direction.Back_L;
 			attachments[0].region = idleFace[curDirectionIdx];
 		}
 		else if(Player.instance.stateMachine.currentState == Player.instance.moveState)
         {
 			isBreath = true;
 			attachments[0].slot = "RUN_basicface";
-
-			if (x == 1 && y == 1) curDirectionIdx = (int)Direction.Back_R;
-			else if (x == 0 && y == 1) curDirectionIdx = (int)Direction.Back;
-			else if (x == 1 && y == 0) curDirectionIdx = (int)Direction.Front_R;
-			else if (x == 1 && y == -1) curDirectionIdx = (int)Direction.Front_R;
-			else if (x == 0 && y == 0) curDirectionIdx = (int)Direction.Front;
-			else if (x == 0 && y == -1) curDirectionIdx = (int)Direction.Front;
-			else if (x == -1 && y == -1) curDirectionIdx = (int)Direction.Front_L;
-			else if (x == -1 && y == 0) curDirectionIdx = (int)Direction.Front_L;
-			else if (x == -1 && y == 1) curDirectionIdx = (int)Direction.Back_L;
 			attachments[0].region = runFace[curDirectionIdx];
 		}
     }

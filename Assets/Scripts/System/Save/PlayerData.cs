@@ -12,6 +12,7 @@ public class PlayerData
     public int playerHP;
     public int playerMP;
     public SeotdaHwatuCombination[] skills;
+    public int curSkillCnt = 0;
     public List<HwatuData> hwatus;
     public int money;
     public GunData curGun;
@@ -33,6 +34,7 @@ public class PlayerData
         playerHP = Player.instance.curHP;
         playerMP = 0; // 아직 미개발
         skills = SkillManager.instance.skillData;
+        curSkillCnt = SkillManager.instance.skillCnt;
         hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
         money = Player.instance.money;
 

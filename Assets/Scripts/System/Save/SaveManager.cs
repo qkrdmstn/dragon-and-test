@@ -85,7 +85,7 @@ public class SaveManager : MonoBehaviour
 
             SkillManager.instance.materialHwatuDataList = data[index].hwatus;
             SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
-
+            SkillManager.instance.skillCnt = data[index].curSkillCnt;
             SkillManager.instance.skillData = data[index].skills;
             SkillManager.instance.UpdateSkillSlot();
             //data[index].curGun;
