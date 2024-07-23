@@ -31,8 +31,6 @@ public class Player : MonoBehaviour
     [Header("Knockback Tempinfo")]
     public Vector2 knockbackDi2;
     public float knockbackMagnitude2;
-    //Temp variable
-    //public GameObject DeadUI;
 
     [Header("Gun info")]
     public Gun gun;
@@ -88,7 +86,6 @@ public class Player : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
 
-        //anim = GetComponentInChildren<Animator>();
         animController = GetComponentInChildren<AnimController>();
 
         rb = GetComponent<Rigidbody2D>();
@@ -158,12 +155,11 @@ public class Player : MonoBehaviour
             else
                 curHP -= damage;
 
-            // Debug.Log("HP: " + HP);
             if (curHP <= 0)
             {
                 Debug.Log("Player Dead");
                 PlayerDead();
-                Time.timeScale = 0.0f;
+                UIManager.instance.SetTimeScale(0f);
             }
             else
             {
@@ -177,7 +173,16 @@ public class Player : MonoBehaviour
     private void PlayerDead()
     {
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
-        //DeadUI.SetActive(true);
+    }
+
+    public void ReloadPlayer()
+    {   
+        isAttackable = false;
+        isCombatZone = false;
+        isDamaged = false;
+        curHP = maxHP;
+
+        animController.isBreath = false;
     }
 
     IEnumerator DamagedProcess()
@@ -185,10 +190,9 @@ public class Player : MonoBehaviour
         for (int i = 0; i < 2; i++) 
         {
             animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
-            //spriteRenderer.color = new Color(1, 1, 1, 0.4f);
             yield return new WaitForSeconds(hitDuration / 4.0f);
+
             animController.SetMaterialColor(new Color(1, 1, 1, 1f));
-            //spriteRenderer.color = new Color(1, 1, 1, 1);
             yield return new WaitForSeconds(hitDuration / 4.0f);
         }
         ChangePlayerLayer(6);
@@ -206,7 +210,6 @@ public class Player : MonoBehaviour
         if (stateMachine.currentState == dashState)
             return true;
         return false;
-
     }
 
     public void PlayerKnockBack(Vector2 dir, float mag)
@@ -224,5 +227,4 @@ public class Player : MonoBehaviour
         gameObject.layer = layer;
         playerHit.gameObject.layer = layer;
     }
-
 }

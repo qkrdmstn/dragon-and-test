@@ -28,10 +28,6 @@ public class GameManager : MonoBehaviour
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(false);
         UIManager.instance.SceneUI["Battle_1"].SetActive(false);
 
-        // player 관련 변수 Init() 필..요 ---- 아래는 임시로 해둔겁니당
-        Time.timeScale = 1f;
-        Player.instance.curHP = Player.instance.maxHP;
-        
         switch (_sceneInfo)
         {
             case (int)SceneInfo.Start:
@@ -41,6 +37,7 @@ public class GameManager : MonoBehaviour
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 break;
         }
+        Player.instance.ReloadPlayer();
     }
 
     public void ControlPlayerPos(SceneInfo scene)
