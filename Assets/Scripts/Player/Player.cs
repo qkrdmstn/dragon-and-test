@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Cinemachine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 public class Player : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class Player : MonoBehaviour
     public bool isStateChangeable = true;
     public bool isInteraction = false;
     public bool isDamaged = false;
+    public bool isFall = false;
 
     #region Componets
     //public Animator anim { get; private set; }
@@ -58,6 +60,7 @@ public class Player : MonoBehaviour
     public PlayerMoveState moveState { get; private set; }
     public PlayerDashState dashState { get; private set; }
     public PlayerKnockbackState knockbackState { get; private set; }
+    public PlayerFallState fallState { get; private set; }
 
     #endregion
 
@@ -74,6 +77,7 @@ public class Player : MonoBehaviour
         moveState = new PlayerMoveState(this, stateMachine, AnimState.Run);
         dashState = new PlayerDashState(this, stateMachine, AnimState.Wave);
         knockbackState = new PlayerKnockbackState(this, stateMachine, AnimState.knockBack);
+        fallState = new PlayerFallState(this, stateMachine, AnimState.Fall);
 
         if (instance == null)
         { //생성 전이면
@@ -116,6 +120,8 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
             PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
+
+        //Debug.Log(stateMachine.currentState);
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
@@ -126,6 +132,11 @@ public class Player : MonoBehaviour
     public void SetVelocity(Vector2 vel)
     {
         rb.velocity = vel;
+    }
+
+    public Vector2 GetVelocity()
+    {
+        return rb.velocity;
     }
 
     public void OnDamamged(int damage)
@@ -161,11 +172,29 @@ public class Player : MonoBehaviour
                 PlayerDead();
                 UIManager.instance.SetTimeScale(0f);
             }
+            else if (SkillManager.instance.haveSkill(SeotdaHwatuCombination.AL12))
+            { //피격 시 12%로 2초간 무적
+                float prob = 0.12f;
+                float randomVal = Random.Range(0.0f, 1.0f);
+                if (randomVal <= prob)
+                {
+                    //Change Layer & Change Color
+                    ChangePlayerLayer(7);
+                    StartCoroutine(DamagedProcess(2.0f));
+                }
+                else
+                {
+                    //Change Layer & Change Color
+                    ChangePlayerLayer(7);
+                    StartCoroutine(DamagedProcess(hitDuration));
+                }
+
+            }
             else
             {
                 //Change Layer & Change Color
                 ChangePlayerLayer(7);
-                StartCoroutine(DamagedProcess());
+                StartCoroutine(DamagedProcess(hitDuration));
             }
         }
     }
@@ -185,15 +214,15 @@ public class Player : MonoBehaviour
         animController.isBreath = false;
     }
 
-    IEnumerator DamagedProcess()
+    IEnumerator DamagedProcess(float duration)
     {
         for (int i = 0; i < 2; i++) 
         {
             animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
-            yield return new WaitForSeconds(hitDuration / 4.0f);
+            yield return new WaitForSeconds(duration / 4.0f);
 
             animController.SetMaterialColor(new Color(1, 1, 1, 1f));
-            yield return new WaitForSeconds(hitDuration / 4.0f);
+            yield return new WaitForSeconds(duration / 4.0f);
         }
         ChangePlayerLayer(6);
         isDamaged = false;
@@ -226,5 +255,11 @@ public class Player : MonoBehaviour
     {
         gameObject.layer = layer;
         playerHit.gameObject.layer = layer;
+    }
+
+    public void ChangeFallState()
+    {
+        isFall = true;
+        stateMachine.ChangeState(fallState);
     }
 }

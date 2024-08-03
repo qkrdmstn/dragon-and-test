@@ -122,9 +122,41 @@ public class MonsterBase : MonoBehaviour
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
 
         HP -= damage;
+        //피격 시, 패시브 스킬
+        //독사
+        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.DS14))
+        {
+            //지속 데미지 -> duration과 interval이 없음
+            StartCoroutine(DOTDamage(5.0f, 1.0f, 1));
+        }
+        //구삥
+        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.GPP19))
+        {
+            //9% 확률로 몬스터 기절 duration
+        }
+
         if (HP <= 0)
         {
             Dead();
+        }
+
+        
+    }
+
+    IEnumerator DOTDamage(float duration, float interval, int perDamage)
+    {
+        float timer = interval;
+        while(duration < 0.0f)
+        {
+            yield return null;
+            timer -= Time.deltaTime;
+
+            if(timer < 0.0f)
+            {
+                duration -= interval;
+                timer = interval;
+                HP -= perDamage;
+            }
         }
     }
 
@@ -148,6 +180,8 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
+
+    //아이템 드랍
     public void ItemDrop()
     {
         HwatuObjectDrop();

@@ -7,7 +7,7 @@ using Spine.Unity.AttachmentTools;
 
 public enum AnimState
 {
-	Idle, Run, Wave, Breath, knockBack
+	Idle, Run, Wave, Breath, knockBack, Fall
 }
 
 public enum Direction

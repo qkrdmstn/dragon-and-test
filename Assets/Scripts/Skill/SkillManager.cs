@@ -248,4 +248,12 @@ public class SkillManager : MonoBehaviour
             timer[i] -= 0.5f;
         }
     }
+
+    public bool haveSkill(SeotdaHwatuCombination skillName)
+    {
+        if (SkillManager.instance.skillData[0] == skillName || SkillManager.instance.skillData[1] == skillName)
+            return true;
+        else
+            return false;
+    }
 }

@@ -30,12 +30,17 @@ public class PlayerDashState : PlayerState
     {
         base.Exit();
 
-        //Attack Able Setting
-        player.isAttackable = true;
-        Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
-        curGun.shootTimer -= player.dashDuration;
+        if (!player.isFall)
+        {
+            //Attack Able Setting
+            player.isAttackable = true;
+            Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
+            curGun.shootTimer -= player.dashDuration;
 
-        player.SetVelocity(0, 0);
+            player.SetVelocity(0, 0);
+        }
+
+        Debug.Log(player.GetVelocity());
     }
 
     public override void Update()

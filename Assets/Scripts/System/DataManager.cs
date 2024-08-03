@@ -96,7 +96,7 @@ public class DataManager : MonoBehaviour
     {   // 원하는 범위의 데이터 반환
         if (!_is_credential)
             DoCredential();
-
+        Debug.Log("type: " + sheetType + " range: " + range);
         var select = _service.Spreadsheets.Values.Get(sheetIDs[sheetType], range);
         var response = select.Execute();
         return response.Values;

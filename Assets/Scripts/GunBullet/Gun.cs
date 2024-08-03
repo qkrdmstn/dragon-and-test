@@ -135,6 +135,16 @@ public class Gun : MonoBehaviour
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
+            int bulletDamage = damage;
+            //장삥
+            if (SkillManager.instance.haveSkill(SeotdaHwatuCombination.JPP110))
+            { //10%로 데미지 1 증가
+                float prob = 0.1f;
+                float randomVal = Random.Range(0.0f, 1.0f);
+                if (randomVal <= prob)
+                    bulletDamage++;
+            }
+
             //Create Bullet
             Vector2 dir = GetShootingDirection();
             float theta = Vector2.Angle(Vector2.right, dir);
@@ -143,7 +153,7 @@ public class Gun : MonoBehaviour
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
             Bullet bullet = bulletObj.GetComponent<Bullet>();
 
-            bullet.BulletInitialize(damage, dir);
+            bullet.BulletInitialize(bulletDamage, dir);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update
@@ -170,7 +180,12 @@ public class Gun : MonoBehaviour
     IEnumerator InactiveIsAttacking()
     {
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
-        yield return new WaitForSeconds(shootDelay);
+
+        //1끗 차이
+        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.KK1))
+            yield return new WaitForSeconds(shootDelay * 0.9f);
+        else
+            yield return new WaitForSeconds(shootDelay);
         
         if (!Input.GetKey(KeyCode.Mouse0))
         {

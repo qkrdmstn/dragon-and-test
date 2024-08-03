@@ -17,5 +17,10 @@ public class PlayerHit : MonoBehaviour
         {
             player.OnDamamged(1);
         }
+
+        if(collision.CompareTag("Cliff"))
+        {
+            player.ChangeFallState();
+        }
     }
 }
