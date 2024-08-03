@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,8 @@ using UnityEngine;
 [System.Serializable]
 public class SkillDB 
 {
-    public SeotdaHwatuCombination synergyCode;
+    //public SeotdaHwatuCombination synergyCode;
+    public string synergyCode;
     public string synergyName;
     public string info;
     public int damage;
@@ -16,7 +18,7 @@ public class SkillDB
     public float speed;
     public float period;
 
-    public SkillDB(SeotdaHwatuCombination synergyCode, string synergyName, string info, int damage, float coolTime, float range, float force, float duration, float speed, float period)
+    public SkillDB(string synergyCode, string synergyName, string info, int damage, float coolTime, float range, float force, float duration, float speed, float period)
     {
         this.synergyCode = synergyCode;
         this.synergyName = synergyName;
@@ -28,5 +30,10 @@ public class SkillDB
         this.duration = duration;
         this.speed = speed;
         this.period = period;
+    }
+
+    public SeotdaHwatuCombination TransStringToEnum()
+    {
+        return (SeotdaHwatuCombination)Enum.Parse(typeof(SeotdaHwatuCombination), synergyCode);
     }
 }

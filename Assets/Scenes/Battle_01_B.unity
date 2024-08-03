@@ -2882,8 +2882,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6271ded68e17bf4187bc054d0a5fbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: SpawnTable_01_B
   stage: 1
+  myType: 3
   monsterPrefabs: []
   circle: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
   spawnDB: []
@@ -10242,18 +10242,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hwatuData: []
-  skillTable: {fileID: 11400000, guid: ae0ea3bdc80633944a40d2be7ba1cb26, type: 2}
-  synergyTable: {fileID: 0}
+  hwatuItemObj: {fileID: 0}
+  materialHwatuDataList: []
+  materialCardCnt: 0
+  materialCardMaxNum: 10
   skillCnt: 0
-  hwatuCardSlotData: []
-  curSynergy: 0
-  skillData: []
+  skillData: 
   timer: []
-  overwritingUI: {fileID: 0}
   skillSlotParent: {fileID: 0}
+  skillSlot: []
   coolTimeImg: []
-  isSaving: 0
-  saveSuccess: 0
 --- !u!4 &924542621
 Transform:
   m_ObjectHideFlags: 0
@@ -18047,15 +18045,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
     stackSize: 0
-  inventorySlotParent: {fileID: 2012886966}
   gunSlotParent: {fileID: 2012886969}
   amorSlotParent: {fileID: 2012886968}
-  itemUseUI: {fileID: 2012886965}
 --- !u!4 &1620610401
 Transform:
   m_ObjectHideFlags: 0
@@ -18273,7 +18268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneInfo: 3
+  myScene: 0
+  _goToScene: 0
 --- !u!1 &1633590055
 GameObject:
   m_ObjectHideFlags: 0
@@ -22949,16 +22945,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
---- !u!1 &2012886965 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 2012886964}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &2012886966 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377852044418582, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 2012886964}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2012886967 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5541536147047344057, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
@@ -29180,7 +29166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneInfo: 2
+  myScene: 0
+  _goToScene: 0
 --- !u!60 &6911087230415581068
 PolygonCollider2D:
   m_ObjectHideFlags: 0

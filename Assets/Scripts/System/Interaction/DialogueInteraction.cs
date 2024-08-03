@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
 
 public class DialogueInteraction : Interaction
 {
@@ -19,14 +20,14 @@ public class DialogueInteraction : Interaction
     bool keyInput, isNegative;
     public int result; // 선택된 답변의 배열 Idx
 
-    List<DialogueDBEntity> dialogues = new List<DialogueDBEntity>();    // 전체 대화목록
+    DialogueDBEntity[] dialogues;                           // 전체 대화목록
     List<DialogData> dialogDatas = new List<DialogData>();              // 현재 eventName과 동일한 대화목록
     List<bool> selections = new List<bool>();
     InteractionData data;
 
-    private void Start()
+    private async void Start()
     {
-        LoadDialogueDBEntity();
+        await LoadDialogueDBEntity();
     }
 
     int SetItemPrice()
@@ -50,19 +51,14 @@ public class DialogueInteraction : Interaction
         StartCoroutine(ManageEvent());
     }
 
-    void LoadDialogueDBEntity()
+    async Task LoadDialogueDBEntity()
     {
-        IList<IList<object>> data = DataManager.instance.SelectDatas(SheetType.Dialog, "Sheet");
-        for(int i=1; i<data.Count; i++)
-        {
-            DialogueDBEntity tmp = DataManager.instance.SplitContextDialog(data[i]);
-            dialogues.Add(tmp);
-        }
+        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:F");
     }
 
     void LoadDialogData()
     {
-        for (int i = 0; i < dialogues.Count; i++)
+        for (int i = 0; i < dialogues.Length; i++)
         {
             if (dialogues[i].eventName == data.eventName)
             {   // 현재 이벤트에 맞는 대화DB를 저장

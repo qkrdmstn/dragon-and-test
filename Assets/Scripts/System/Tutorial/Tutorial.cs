@@ -1,6 +1,7 @@
 using Google.Apis.Sheets.v4.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] GameObject jokbo;
     [SerializeField] GameObject blanket;
 
-    List<TutorialDBEntity> tutoDB = new List<TutorialDBEntity>();
+    TutorialDBEntity[] tutoDB;
 
     public Vector3 padding;
     GameObject curScarescrow = null;
@@ -87,9 +88,9 @@ public class Tutorial : MonoBehaviour
 
     public bool[] checkSequenceDone;
 
-    private void Start()
+    private async void Start()
     {
-        LoadTutorialDBEntity();
+        await LoadTutorialDBEntity();
         LoadDialog();
         checkSequenceDone = new bool[tutorialDatas.Count];
 
@@ -133,27 +134,22 @@ public class Tutorial : MonoBehaviour
 
     public GameObject GetCurScarescrow() => curScarescrow;
 
-    void LoadTutorialDBEntity()
+    async Task LoadTutorialDBEntity()
     {
-        IList<IList<object>> data = DataManager.instance.SelectDatas(SheetType.Tutorial, "Tutorial");
-        for (int i = 1; i < data.Count; i++)
-        {
-            TutorialDBEntity tmp = DataManager.instance.SplitContextTutorial(data[i]);
-            tutoDB.Add(tmp);
-        }
+        tutoDB = await DataManager.instance.GetValues<TutorialDBEntity>(SheetType.Tutorial, "A1:D");
     }
 
     void LoadDialog()
     {   // 튜토리얼 대화를 시퀀스별로 불러와 저장합니다.
         int curSequence = -1;
-        for (int i = 0; i < tutoDB.Count; i++)
+        for (int i = 0; i < tutoDB.Length; i++)
         {
             curSequence++;
             List<DialogAction> tmpDialogs = new List<DialogAction>();
             while (curSequence == tutoDB[i].sequence)
             {
                 tmpDialogs.Add(new DialogAction(tutoDB[i].dialogue, tutoDB[i].isInteraction));
-                if (tutoDB.Count == i+1 || curSequence != tutoDB[i + 1].sequence)
+                if (tutoDB.Length == i+1 || curSequence != tutoDB[i + 1].sequence)
                 {
                     tutorialDatas.Add(new TutorialData(curSequence, tmpDialogs));
                     break;

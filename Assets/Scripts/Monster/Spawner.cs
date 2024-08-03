@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-
-public enum SpawnType { A, B, C }
+using System.Threading.Tasks;
 public enum ExcelStructure
 {
     blockNumber, wave, monsterType, gridPosX, gridPosY
@@ -23,13 +22,7 @@ public class Spawner : MonoBehaviour
 {
     [Header("Spawn Table")]
     [SerializeField] private int stage;
-    public SpawnType myType;
-
-    string[] sheetURL;
-    const string lastColIdx = "G2";
-    const string rangeIdx = "A1:E";
-    string output;
-    IList<IList<object>> result;
+    public SheetType myType;
 
     private delegate void ControlSpawnData();
     ControlSpawnData controlSpawnData;
@@ -38,7 +31,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] monsterPrefabs;
     [SerializeField] private GameObject circle; //몬스터 생성 위치
     [SerializeField] private Dictionary<string, GameObject> monsterDictionary;
-    [SerializeField] private List<SpawnDB> spawnDB;
+    [SerializeField] private SpawnDB[] spawnDB;
 
     [Header("Block info")]
     public BlockInfo[] blocks;
@@ -58,13 +51,12 @@ public class Spawner : MonoBehaviour
         InitializeMonsterDictionary();
         InitializeBlockInfo();
 
-        controlSpawnData = SplitSpawnData;
-        controlSpawnData += StartWave;
+        controlSpawnData = StartWave;
     }
 
-    public void Start()
+    public async void Start()
     {
-        StartCoroutine(LoadSpawnTable(myType)); // load -> data slpit -> wave start 
+        await LoadSpawnTable(myType); // load -> data slpit -> wave start 
     }
 
     #region Initialize Func
@@ -79,26 +71,10 @@ public class Spawner : MonoBehaviour
             blocks[i].InitializeBlockInfo(i);
     }
 
-    public IEnumerator LoadSpawnTable(SpawnType _type)
+    public async Task LoadSpawnTable(SheetType _type)
     {
-        output = DataManager.instance.SelectData(SheetType.SpawnDB, lastColIdx);
-
-        if (output == "1") yield break;
-
-        result = DataManager.instance.SelectDatas(SheetType.SpawnDB, "sheetA!" + rangeIdx + output); // Current Output is row idx where have last data.
-        controlSpawnData();
-    }
-
-    void SplitSpawnData()
-    {
-        if (result == null) return;
-
-        spawnDB = new List<SpawnDB>();
-        for (int i = 1; i < result.Count; i++)
-        {
-            SpawnDB data = DataManager.instance.SplitContext(result[i]);
-            spawnDB.Add(data);
-        }
+       spawnDB = await DataManager.instance.GetValues<SpawnDB>(_type,"A1:E");
+       controlSpawnData();
     }
 
     void StartWave()
@@ -159,7 +135,7 @@ public class Spawner : MonoBehaviour
         while (spawnDB[idx].blockNum != curBlockNum || spawnDB[idx].wave != curWave)
         {
             idx++;
-            if(idx >= spawnDB.Count) //끝까지 일치하는 정보를 못 찾은 경우
+            if(idx >= spawnDB.Length) //끝까지 일치하는 정보를 못 찾은 경우
             {
                 BlockClear();
                 return;
@@ -172,13 +148,13 @@ public class Spawner : MonoBehaviour
         {
             GameObject monster = monsterDictionary[spawnDB[idx].monsterType];
             //GridPos -> WorldPos
-            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].spawnPosition);
+            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].TransIntToVector());
             monsters.Add(monster);
             positions.Add(worldPos);
             idx++;
             numMonster++;
 
-            if (idx >= spawnDB.Count) //끝까지 찾음
+            if (idx >= spawnDB.Length) //끝까지 찾음
                 break;
         }
         StartCoroutine(SpawnMonster(monsters, positions));

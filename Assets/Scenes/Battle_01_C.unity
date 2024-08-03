@@ -153,18 +153,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hwatuData: []
-  skillTable: {fileID: 11400000, guid: ae0ea3bdc80633944a40d2be7ba1cb26, type: 2}
-  synergyTable: {fileID: 0}
+  hwatuItemObj: {fileID: 0}
+  materialHwatuDataList: []
+  materialCardCnt: 0
+  materialCardMaxNum: 10
   skillCnt: 0
-  hwatuCardSlotData: []
-  curSynergy: 0
-  skillData: []
+  skillData: 
   timer: []
-  overwritingUI: {fileID: 0}
   skillSlotParent: {fileID: 0}
+  skillSlot: []
   coolTimeImg: []
-  isSaving: 0
-  saveSuccess: 0
 --- !u!4 &1461912
 Transform:
   m_ObjectHideFlags: 0
@@ -1380,7 +1378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneInfo: 4
+  myScene: 0
+  _goToScene: 0
 --- !u!1 &109858345
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,8 +2250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6271ded68e17bf4187bc054d0a5fbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: SpawnTable_01_C
   stage: 1
+  myType: 4
   monsterPrefabs: []
   circle: {fileID: 0}
   spawnDB: []
@@ -14325,16 +14324,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &852083815 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8601379014742494624, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 852083812}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &852083816 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3263377852044418582, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
-  m_PrefabInstance: {fileID: 852083812}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &852083817 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3263377852909646532, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
@@ -14995,7 +14984,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneInfo: 2
+  myScene: 0
+  _goToScene: 0
 --- !u!70 &864164772
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -18066,15 +18056,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce9add2fe224844e964b855bbea1825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  materialItems: []
   gunItems: []
   amorItem:
     data: {fileID: 0}
     stackSize: 0
-  inventorySlotParent: {fileID: 852083816}
   gunSlotParent: {fileID: 852083818}
   amorSlotParent: {fileID: 852083817}
-  itemUseUI: {fileID: 852083815}
 --- !u!4 &1072777787
 Transform:
   m_ObjectHideFlags: 0

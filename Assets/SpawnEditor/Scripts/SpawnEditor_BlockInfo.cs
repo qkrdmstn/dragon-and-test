@@ -55,11 +55,11 @@ public class SpawnEditor_BlockInfo : MonoBehaviour, IComparable
     //Data Manage
     public void AddSpawnData(int wave, string monsterType, Vector2Int gridPos)
     {
-        SpawnDB spawnDB = new SpawnDB(this.blockNumber, wave, monsterType, gridPos);
+        SpawnDB spawnDB = new SpawnDB(this.blockNumber, wave, monsterType, gridPos.x, gridPos.y);
 
         for (int i = 0; i < blockSpawnData.Count; i++) //같은 wave에 같은 셀 중복 방지
         {
-            if(blockSpawnData[i].wave == wave && blockSpawnData[i].spawnPosition == gridPos)
+            if(blockSpawnData[i].wave == wave && blockSpawnData[i].TransIntToVector() == gridPos)
             {
                 Debug.LogWarning("A monster already exists in that space.");
                 return;
@@ -77,7 +77,7 @@ public class SpawnEditor_BlockInfo : MonoBehaviour, IComparable
         {
             for (int i = 0; i < blockSpawnData.Count; i++)
             {
-                if (blockSpawnData[i].wave == wave && blockSpawnData[i].spawnPosition == gridPos)
+                if (blockSpawnData[i].wave == wave && blockSpawnData[i].TransIntToVector() == gridPos)
                 {
                     blockSpawnData.Remove(blockSpawnData[i]);
                 }
@@ -133,7 +133,7 @@ public class SpawnEditor_BlockInfo : MonoBehaviour, IComparable
         {
             for (int j = 0; j < blockSpawnData.Count; j++)
             {
-                if (blockSpawnData[j].wave == deleteWave && blockSpawnData[j].spawnPosition == deleteGridPos)
+                if (blockSpawnData[j].wave == deleteWave && blockSpawnData[j].TransIntToVector() == deleteGridPos)
                     continue;
                 if (blockSpawnData[j].wave == wave)
                 {
@@ -164,7 +164,7 @@ public class SpawnEditor_BlockInfo : MonoBehaviour, IComparable
                     if (blockSpawnData[i].monsterType == monsterObj[j].name)
                     {
                         //GridPos -> WorldPos
-                        Vector3 worldPos = GridToWorldPosition(blockSpawnData[i].spawnPosition);
+                        Vector3 worldPos = GridToWorldPosition(blockSpawnData[i].TransIntToVector());
                         monsterVisualizeList.Add(Instantiate(monsterObj[j], worldPos, Quaternion.identity));
                         break;
                     }
