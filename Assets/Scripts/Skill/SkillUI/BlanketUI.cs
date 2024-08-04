@@ -23,6 +23,9 @@ public class BlanketUI : MonoBehaviour
     public Button skillInfoExitButton;
     public bool isSkillInfoUI;
 
+    [Header("Passive Skill Slot UI")]
+    public Transform passiveSkillSlotParent;
+
     public bool IsInBlanket(RectTransform rectTransform)
     {
         Vector2 blanketMinPos = new Vector2(blanket.position.x, blanket.position.y)  - blanket.sizeDelta / 2;

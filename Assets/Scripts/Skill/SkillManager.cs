@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -24,18 +25,21 @@ public class SkillManager : MonoBehaviour
     public Dictionary<SeotdaHwatuCombination, Sprite> skillSpriteDictionary = new Dictionary<SeotdaHwatuCombination, Sprite>();
 
     [Header("Skill Data")]
-    public int skillCnt;
-    public SeotdaHwatuCombination[] skillData;
+    //Active Skill
+    public int activeSkillCnt;
+    public SeotdaHwatuCombination[] activeSkillData;
     public float[] timer;
 
-    [Header("Skill UI info")]
-    [SerializeField] private Transform skillSlotParent;
-    public SkillSlotUI[] skillSlot;
-    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
+    //Passive Skill
+    public Dictionary<SeotdaHwatuCombination, int> passiveSkillCnt = new Dictionary<SeotdaHwatuCombination, int>();
+    public List<SeotdaHwatuCombination> passiveSkillData;
 
-    //[Header("Skill State info")]
-    //public bool isSaving;
-    //public bool saveSuccess;
+    [Header("Skill UI info")]
+    [SerializeField] private Transform activeSkillSlotParent;
+    public ActiveSkillSlotUI[] activeSkillSlot;
+    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
+    [SerializeField] private Transform passiveSkillSlotParent;
+    public PassiveSkillSlotUI[] passiveSkillSlot;
 
     private void Awake()
     {
@@ -109,8 +113,9 @@ public class SkillManager : MonoBehaviour
         }
 
         materialHwatuDataList = new List<HwatuData>();
-        skillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
-        skillCnt = 0;
+        passiveSkillData = new List<SeotdaHwatuCombination>();
+        activeSkillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
+        activeSkillCnt = 0;
         timer = new float[2];
     }
 
@@ -126,13 +131,17 @@ public class SkillManager : MonoBehaviour
 
     private void InitializeUI()
     {
-        skillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
-        skillSlot = skillSlotParent.GetComponentsInChildren<SkillSlotUI>();
-        Transform cooltimeUIParent = skillSlotParent.GetChild(1);
+        activeSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
+        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>();
+
+        passiveSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5].GetComponent<BlanketUI>().passiveSkillSlotParent;
+        passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>();
+
+        Transform cooltimeUIParent = activeSkillSlotParent.GetChild(1);
         coolTimeImg = new SkillCoolTimeImg[2];
         for (int i = 0; i < 2; i++)
         {
-            skillSlot[i].ClearSlot();
+            activeSkillSlot[i].ClearSlot();
             coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
             coolTimeImg[i].gameObject.SetActive(false);
         }
@@ -161,36 +170,53 @@ public class SkillManager : MonoBehaviour
 
     public void AddSkill(SeotdaHwatuCombination skill)
     {
-        if(skillData[0] == SeotdaHwatuCombination.blank)
-            skillData[0] = skill;
-        else if (skillData[1] == SeotdaHwatuCombination.blank)
-            skillData[1] = skill;
-        skillCnt++;
+        int skillNum = (int)skill;
+        //Add Passive Skill
+        if (skillNum >= 13 && skillNum <= 18)
+        {
+            //스킬 보유 X
+            if (passiveSkillData.FindIndex(x => x == skill) == -1)
+            {
+                passiveSkillData.Add(skill);
+                passiveSkillCnt.Add(skill, 0);
+            }
+            passiveSkillCnt[skill]++;
 
-        UpdateSkillSlot();
+            UpdatePassiveSkillSlot();
+        }
+        else //Add Active Skill
+        {
+            if (activeSkillData[0] == SeotdaHwatuCombination.blank)
+                activeSkillData[0] = skill;
+            else if (activeSkillData[1] == SeotdaHwatuCombination.blank)
+                activeSkillData[1] = skill;
+            activeSkillCnt++;
+
+            UpdateActiveSkillSlot();
+        }
     }
 
     public void DeleteSkill(SeotdaHwatuCombination skill)
     {
         for(int i=0; i<2; i++)
         {
-            if (skillData[i] == skill)
+            if (activeSkillData[i] == skill)
             {
-                skillData[i] = SeotdaHwatuCombination.blank;
-                skillCnt--;
+                activeSkillData[i] = SeotdaHwatuCombination.blank;
+                activeSkillCnt--;
                 break;
             }
         }
-        UpdateSkillSlot();
+        UpdateActiveSkillSlot();
     }
 
     private void SkillSwap()
     {
         //Data Swap
-        SeotdaHwatuCombination temp = skillData[0];
-        skillData[0] = skillData[1];
-        skillData[1] = temp;
-        UpdateSkillSlot();
+        SeotdaHwatuCombination temp = activeSkillData[0];
+        activeSkillData[0] = activeSkillData[1];
+        activeSkillData[1] = temp;
+        UpdateActiveSkillSlot();
 
         //CoolTime UI Swap
         float tempTimer = timer[0];
@@ -198,10 +224,10 @@ public class SkillManager : MonoBehaviour
         timer[1] = tempTimer;
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
-            if (skillData[i] == SeotdaHwatuCombination.blank)
+            if (activeSkillData[i] == SeotdaHwatuCombination.blank)
                 continue;
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
-            StartCoroutine(CoolTimeFunc(skillDBDictionary[skillData[i]].coolTime, i, false));
+            StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
         }
     }
 
@@ -209,10 +235,10 @@ public class SkillManager : MonoBehaviour
     private void Skill(int i)
     {
         PlayerSkill skill = Player.instance.GetComponent<PlayerSkill>();
-        if (skillData[i] == SeotdaHwatuCombination.blank)
+        if (activeSkillData[i] == SeotdaHwatuCombination.blank)
             return;
 
-        SkillDB data = skillDBDictionary[skillData[i]];
+        SkillDB data = skillDBDictionary[activeSkillData[i]];
         skill.UseSkill(data);
 
         //CoolTime UI setting
@@ -221,12 +247,20 @@ public class SkillManager : MonoBehaviour
         StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
     }
 
-    public void UpdateSkillSlot()
+    public void UpdateActiveSkillSlot()
     {
         for (int i = 0; i < 2; i++)
-            skillSlot[i].ClearSlot();
+            activeSkillSlot[i].ClearSlot();
         for (int i = 0; i < 2; i++)
-            skillSlot[i].UpdateSlot(skillData[i]);
+            activeSkillSlot[i].UpdateSlot(activeSkillData[i]);
+    }
+
+    public void UpdatePassiveSkillSlot()
+    {
+        for(int i=0; i<passiveSkillSlot.Length; i++)
+            passiveSkillSlot[i].ClearSlot();
+        for (int i = 0; i < passiveSkillData.Count; i++)
+            passiveSkillSlot[i].UpdateSlot(passiveSkillData[i]);
     }
 
     IEnumerator CoolTimeFunc(float coolTime, int i, bool flag)
@@ -253,7 +287,7 @@ public class SkillManager : MonoBehaviour
 
     public bool haveSkill(SeotdaHwatuCombination skillName)
     {
-        if (SkillManager.instance.skillData[0] == skillName || SkillManager.instance.skillData[1] == skillName)
+        if (SkillManager.instance.activeSkillData[0] == skillName || SkillManager.instance.activeSkillData[1] == skillName)
             return true;
         else
             return false;

@@ -33,8 +33,8 @@ public class PlayerData
 
         playerHP = Player.instance.curHP;
         playerMP = 0; // 아직 미개발
-        skills = SkillManager.instance.skillData;
-        curSkillCnt = SkillManager.instance.skillCnt;
+        skills = SkillManager.instance.activeSkillData;
+        curSkillCnt = SkillManager.instance.activeSkillCnt;
         hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
         money = Player.instance.money;
 

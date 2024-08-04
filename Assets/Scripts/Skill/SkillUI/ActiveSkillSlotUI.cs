@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 //using static UnityEditor.Progress;
 
-public class SkillSlotUI : MonoBehaviour
+public class ActiveSkillSlotUI : MonoBehaviour
     , IBeginDragHandler
     , IEndDragHandler
     , IDragHandler
@@ -94,7 +94,6 @@ public class SkillSlotUI : MonoBehaviour
         Vector3 scale = new Vector3(1.5f, 1.5f, 1);
         MoveTransform(pos, rot, scale);
     }
-
 
     public void MoveTransform(Vector3 pos, Quaternion rot, Vector3 scale, float dotweenTime = 0, bool tweenSetting = true)
     {

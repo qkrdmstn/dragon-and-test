@@ -164,7 +164,7 @@ public class BlanketInteraction : Interaction
     {
         HwatuData hwatuData = ui.hwatuData;
 
-        if (SkillManager.instance.skillCnt >= 2) //스킬이 이미 가득 찼을 경우, 실패
+        if (SkillManager.instance.activeSkillCnt >= 2) //스킬이 이미 가득 찼을 경우, 실패
             return false;
 
         if (selectedCnt >= 2) //화투 select에 빈 곳이 없을 경우, 실패
