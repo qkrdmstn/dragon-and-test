@@ -43,10 +43,6 @@ public static class JsonHelper
 public class DataManager : MonoBehaviour
 {
     public static DataManager instance;
-
-    [Header("스크립트에서 enum을 등록후, 시트ID를 추가합니다.")]
-    public SerializableDictionary<SheetType, string> sheetIDs = new SerializableDictionary<SheetType, string>();
-
     private void Awake()
     {
         if (instance == null)
@@ -60,9 +56,6 @@ public class DataManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
     }
-
-    #region Access Google Sheets
-
     const string url = "https://script.google.com/macros/s/AKfycbzMvWN6RUvMGi2cADNoCDwTJdlA364gncc1IUHyYW0m94MIkKrLcBkwMATagkKkA61-8Q/exec";
 
     public async Task SetValues<T>(SheetType sheetType, T[] datas)
@@ -138,6 +131,5 @@ public class DataManager : MonoBehaviour
         www.Dispose();
         return output;
     }
-    #endregion
 }
 
