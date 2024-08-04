@@ -21,6 +21,7 @@ public class MonsterBase : MonoBehaviour
 
     #region dropItems
     GameObject [] dropItems;
+    GameObject money;
     #endregion
 
     #region Componets
@@ -54,6 +55,7 @@ public class MonsterBase : MonoBehaviour
         eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
 
         dropItems = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
+        money = Resources.Load<GameObject>("Prefabs/Item/Money");
     }
 
     public virtual void Start()
@@ -186,6 +188,7 @@ public class MonsterBase : MonoBehaviour
     {
         HwatuObjectDrop();
         DropItems();
+        MoneyDrop();
     }
 
     private void DropItems()
@@ -196,7 +199,6 @@ public class MonsterBase : MonoBehaviour
             float randomVal = Random.Range(0.0f, 1.0f);
             if (randomVal <= item.dropProb)
                 Instantiate(dropItems[i], this.transform.position, Quaternion.identity);
-
         }
     }
 
@@ -209,6 +211,16 @@ public class MonsterBase : MonoBehaviour
             int index = Random.Range(0, SkillManager.instance.hwatuData.Length);
             hwatuObj.GetComponent<HwatuItemObject>().hwatuData = SkillManager.instance.hwatuData[index];
             Debug.Log("Hwatu Drop");
+        }
+    }
+
+    private void MoneyDrop()
+    {
+        ItemObject item = money.GetComponent<ItemObject>();
+        float randomVal = Random.Range(0.0f, 1.0f);
+        if (randomVal <= item.dropProb)
+        {
+            Instantiate(money, this.transform.position, Quaternion.identity);
         }
     }
 }

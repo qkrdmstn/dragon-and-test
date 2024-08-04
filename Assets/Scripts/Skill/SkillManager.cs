@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 //using static UnityEditor.Rendering.CameraUI;
@@ -18,6 +19,7 @@ public class SkillManager : MonoBehaviour
     public int materialCardMaxNum = 10;
 
     [Header("DB")]
+    SkillDB[] datas;
     public Dictionary<SeotdaHwatuCombination, SkillDB> skillDBDictionary = new Dictionary<SeotdaHwatuCombination, SkillDB>();
     public Dictionary<SeotdaHwatuCombination, Sprite> skillSpriteDictionary = new Dictionary<SeotdaHwatuCombination, Sprite>();
 
@@ -52,19 +54,16 @@ public class SkillManager : MonoBehaviour
         //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
         //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
         //{
-            DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
-        //}
+        DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Initialize
+    async void Start()
+    {   //Initialize
         InitializeSkillData();
-        InitializeUI();
+        await LoadSkillDB();
+        InitializeUI(); 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab) && !Player.instance.isInteraction) //Skill Slot Swap
@@ -109,18 +108,20 @@ public class SkillManager : MonoBehaviour
             }
         }
 
-        //스킬 DataBase 로드
-        IList<IList<object>> data = DataManager.instance.SelectDatas(SheetType.SkillDB, "sheet1!A1:J33");
-        for (int i = 1; i < data.Count; i++)
-        {
-            SkillDB tmp = DataManager.instance.SplitContextSkill(data[i]);
-            skillDBDictionary.Add(tmp.synergyCode, tmp);
-        }
-
         materialHwatuDataList = new List<HwatuData>();
         skillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
         skillCnt = 0;
         timer = new float[2];
+    }
+
+    private async Task LoadSkillDB()
+    {
+        //스킬 DataBase 로드
+        datas = await DataManager.instance.GetValues<SkillDB>(SheetType.SkillDB, "A1:J33");
+        for (int i = 0; i < datas.Length; i++)
+        {
+            skillDBDictionary.Add(datas[i].TransStringToEnum(), datas[i]);
+        }
     }
 
     private void InitializeUI()

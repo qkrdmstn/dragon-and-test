@@ -64,7 +64,7 @@ public class PlayerSkill : MonoBehaviour
     }
     public void UseSkill(SkillDB data)
     {
-        SeotdaHwatuCombination code = data.synergyCode;
+        SeotdaHwatuCombination code = data.TransStringToEnum();
         //Debug.Log(code + " damage:" + data.damage + " range:" + data.range + " force:" + data.force + " speed:" + data.speed);
         switch (code)
         {
@@ -77,28 +77,28 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuCombination.JTT:
                 break;
             case SeotdaHwatuCombination.TT9:
-                GuidedMissile(data.synergyCode,data.damage, data.speed, data.duration, data.range);
+                GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.duration, data.range);
                 break;
             case SeotdaHwatuCombination.TT8:
-                SokbakSkill(data.synergyCode, data.damage, data.range, data.speed);
+                SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed);
                 break;
             case SeotdaHwatuCombination.TT7:
                 BlankBullet(data.damage, data.range, data.force);
                 break;
             case SeotdaHwatuCombination.TT6:
-                GuidedMissile(data.synergyCode,data.damage, data.speed, data.duration, data.range);
+                GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.duration, data.range);
                 break;
             case SeotdaHwatuCombination.TT5:
                 BlankBullet(data.damage, data.range, data.force);
                 break;
             case SeotdaHwatuCombination.TT4:
-                SokbakSkill(data.synergyCode, data.damage, data.range, data.speed);
+                SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed);
                 break;
             case SeotdaHwatuCombination.TT3:
-                FlameThrower(data.synergyCode, data.damage, data.duration, data.period);
+                FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period);
                 break;
             case SeotdaHwatuCombination.TT2:
-                FlameThrower(data.synergyCode, data.damage, data.duration, data.period);
+                FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period);
                 break;
             case SeotdaHwatuCombination.TT1:
                 break;

@@ -44,7 +44,6 @@ public class SpawnEditorManager : MonoBehaviour
     public SpawnEditor_BlockSettingUI blockSettingUI;
     public SpawnEditor_WaveSettingUI waveSettingUI;
 
-    // Start is called before the first frame update
     void Awake()
     {
         instance = this;
@@ -96,7 +95,6 @@ public class SpawnEditorManager : MonoBehaviour
     }
     #endregion
 
-    // Update is called once per frame
     void Update()
     {
         if (curState == SpawnEditor_State.BlockSetting)
@@ -208,36 +206,20 @@ public class SpawnEditorManager : MonoBehaviour
     #endregion
 
     #region Save & Load & Reset
-    public void SaveSpawnData()
-    {
-        DataManager.instance.ClearData(SheetType.SpawnDB, "sheetA!A:E");
-
-        List<IList<object>> paramLists = new List<IList<object>>();
-        paramLists.Add( new List<object>()
-        {
-            "blockNumber", "wave", "monsterType", "gridPosX", "gridPosY"
-        });
-
+    public async void SaveSpawnData()
+    {   // clear는 구글 시트 스크립트에서 처리
+        List<SpawnDB> paramLists = new List<SpawnDB>();
         for (int i = 0; i < blocks.Length; i++) //각 blockinfo에 포함된 spawn data 취합
         {
             for (int j = 0; j < blocks[i].blockSpawnData.Count; j++)
             {
-                List<object> tempData = new List<object>()
-                {
-                    blocks[i].blockSpawnData[j].blockNum.ToString()
-                    ,blocks[i].blockSpawnData[j].wave.ToString()
-                    ,blocks[i].blockSpawnData[j].monsterType.ToString()
-                    ,blocks[i].blockSpawnData[j].spawnPosition.x.ToString()
-                    ,blocks[i].blockSpawnData[j].spawnPosition.y.ToString()
-                };
-                paramLists.Add(tempData);
+                paramLists.Add(blocks[i].blockSpawnData[j]);
             }
         }
-
-        DataManager.instance.InsertData(SheetType.SpawnDB, "SheetA", ref paramLists);
+        await DataManager.instance.SetValues<SpawnDB>(SheetType.SpawnA, paramLists.ToArray());
     }
 
-    public void LoadSpawnData()
+    public async void LoadSpawnData()
     {
         //Spawn Data Clear in Unity
         for (int i = 0; i < blocks.Length; i++) //각 blockinfo에 포함된 spawn data 취합
@@ -246,9 +228,11 @@ public class SpawnEditorManager : MonoBehaviour
         }
 
         //Google Sheet Load
-        string lastIdx = DataManager.instance.SelectData(SheetType.SpawnDB, "G2");
-        IList<IList<object>> result = DataManager.instance.SelectDatas(SheetType.SpawnDB, "sheetA!A1:E" + lastIdx);
-        SaveBlockSpawnData(result);
+        SpawnDB[] result = await DataManager.instance.GetValues<SpawnDB>(SheetType.SpawnA, "A1:E");
+        foreach (SpawnDB data in result)
+        {
+            blocks[data.blockNum].AddSpawnData(data.wave, data.monsterType, data.TransIntToVector());
+        }
     }
 
     public void ResetSpawnData()
@@ -262,15 +246,6 @@ public class SpawnEditorManager : MonoBehaviour
     }
     #endregion
 
-    private void SaveBlockSpawnData(IList<IList<object>> result)
-    {
-        for(int i = 1; i < result.Count; i++)
-        {
-            SpawnDB tmp = DataManager.instance.SplitContext(result[i]);
-
-            blocks[tmp.blockNum].AddSpawnData(tmp.wave, tmp.monsterType, tmp.spawnPosition);
-        }
-    }
 }
 
 
