@@ -237,6 +237,7 @@ public class SkillManager : MonoBehaviour
         {
             timer[i] -= Time.deltaTime;
             coolTimeImg[i].img.fillAmount = timer[i] / coolTime;
+            coolTimeImg[i].text.text = Math.Round(timer[i], 1).ToString();
             yield return new WaitForFixedUpdate();
         }
         coolTimeImg[i].gameObject.SetActive(false);
