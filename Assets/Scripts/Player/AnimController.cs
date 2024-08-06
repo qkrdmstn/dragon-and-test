@@ -39,7 +39,6 @@ public class AnimController : MonoBehaviour
 	}
 
 	[SerializeField] SpineAtlasAsset atlasAsset;
-	[SerializeField] bool inheritProperties = true;
 	[SerializeField] List<SlotRegionPair> attachments = new List<SlotRegionPair>();
 
 	Atlas atlas;

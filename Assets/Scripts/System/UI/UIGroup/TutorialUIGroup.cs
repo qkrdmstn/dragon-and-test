@@ -19,6 +19,8 @@ public class TutorialUIGroup : UIGroup
 
     private void Update()
     {
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Tutorial || ScenesManager.instance.isLoading) return;
+
         if(tutorial == null)
         {
             tutorial = GameObject.FindFirstObjectByType<Tutorial>();

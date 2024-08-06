@@ -1,11 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Cinemachine;
-using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 public class Player : MonoBehaviour
 {
@@ -44,9 +39,9 @@ public class Player : MonoBehaviour
     public bool isInteraction = false;
     public bool isDamaged = false;
     public bool isFall = false;
+    public bool isBounded = false;
 
     #region Componets
-    //public Animator anim { get; private set; }
     public AnimController animController { get; private set; }
 
     public Rigidbody2D rb { get; private set; }
@@ -120,8 +115,6 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
             PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
-
-        //Debug.Log(stateMachine.currentState);
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
@@ -261,5 +254,49 @@ public class Player : MonoBehaviour
     {
         isFall = true;
         stateMachine.ChangeState(fallState);
+    }
+
+    public bool isTutorial = false;
+    public void InitbySceneLoaded(SceneInfo curScene)
+    {
+        isBounded = false;
+
+        switch (curScene)
+        {
+            case SceneInfo.Start:
+                SetIdleStatePlayer();
+                isStateChangeable = false;
+                break;
+            case SceneInfo.Town_1:      // 1
+                isStateChangeable = true;
+                if (isTutorial)
+                {
+                    isTutorial = false;
+                    ControlPlayerPos(new Vector3(-2.5f, 22.5f, 0));
+                }
+                else ControlPlayerPos(new Vector3(-31.1f, 10f, 0));
+                break;
+            case SceneInfo.Tutorial:    // 2
+                isTutorial = true;
+                ControlPlayerPos(new Vector3(0.125f, 2f, 0));
+                break;
+            case SceneInfo.Puzzle_1:    // 3
+                isCombatZone = true;
+                break;
+            case SceneInfo.Battle_1_A:
+            case SceneInfo.Battle_1_B:
+            case SceneInfo.Battle_1_C:
+                isCombatZone = true;
+                ControlPlayerPos(new Vector3(-7.5f, 10.75f, 0));
+                break;
+            case SceneInfo.Boss_1:
+                isCombatZone = true;
+                break;
+        }
+    }
+
+    public void ControlPlayerPos(Vector3 pos)
+    {
+        transform.position = pos;
     }
 }
