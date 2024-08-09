@@ -22,11 +22,11 @@ public class BlockInfo : MonoBehaviour, IComparable
         blockNumber = num;
         blockClear = false;
 
-        PolygonCollider2D collider = this.GetComponentInChildren<PolygonCollider2D>();
+        PolygonCollider2D collider = GetComponentInChildren<PolygonCollider2D>();
+        min = collider.bounds.center - new Vector3(blockSize.x, blockSize.y, 0) / 2;
+        max = collider.bounds.center + new Vector3(blockSize.x, blockSize.y, 0) / 2;
         blockSize = collider.bounds.size;
-        min =  collider.bounds.center - collider.bounds.size / 2;
-        max =  collider.bounds.center + collider.bounds.size / 2;
-        blockPos = min;
+        blockPos = collider.bounds.center;
 
         gridSize = new Vector2(1.0f, 1.0f);
     }
