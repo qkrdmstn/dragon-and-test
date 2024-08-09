@@ -18,7 +18,8 @@ public enum SceneInfo
 public class ScenesManager : MonoBehaviour
 {
     public static ScenesManager instance = null;
-    
+    public bool isLoading = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -79,26 +80,21 @@ public class ScenesManager : MonoBehaviour
             _sceneInfo = SceneInfo.Town_1;
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
+        Player.instance.InitbySceneLoaded(_sceneInfo);
         
         switch (_sceneInfo)
         {
             case SceneInfo.Start:
-                Player.instance.SetIdleStatePlayer();
-                Player.instance.isStateChangeable = false;
                 return;
 
             case SceneInfo.Town_1:      // 1
-                Player.instance.isStateChangeable = true;
-
                 UIManager.instance.SceneUI["Start"].SetActive(false);
                 UIManager.instance.SceneUI["Tutorial"].SetActive(false);
                 UIManager.instance.SceneUI["Battle_1"].SetActive(false);
+
                 UIManager.instance.SceneUI["Town_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
-
-                GameManager.instance.ControlPlayerPos(_sceneInfo);
-                GunManager.instance.Initialize();
                 break;
 
             case SceneInfo.Tutorial:    // 2
@@ -106,10 +102,6 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Tutorial"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
-                Player.instance.isCombatZone = true;
-
-                GunManager.instance.Initialize();
-                GameManager.instance.ControlPlayerPos(_sceneInfo);
                 break;
 
             case SceneInfo.Puzzle_1:    // 3
@@ -117,9 +109,6 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-
-                Player.instance.isCombatZone = true;
-                GunManager.instance.Initialize();
                 break;
 
             case SceneInfo.Battle_1_A:
@@ -129,9 +118,6 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-                Player.instance.isCombatZone = true;
-                GunManager.instance.Initialize();
-                GameManager.instance.ControlPlayerPos(_sceneInfo);
                 break;
             
             case SceneInfo.Boss_1:
@@ -139,10 +125,9 @@ public class ScenesManager : MonoBehaviour
                 UIManager.instance.SceneUI["Battle_1"].SetActive(true);
                 UIManager.instance.SceneUI["Inventory"].SetActive(true);
                 UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-
-                Player.instance.isCombatZone = true;
-                GunManager.instance.Initialize();
                 break;
         }
+        GunManager.instance.Initialize();
+        isLoading = false;
     }
 }

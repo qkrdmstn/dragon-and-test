@@ -122,7 +122,7 @@ public class Gun : MonoBehaviour
     {
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
-            Player.instance.animController.SetBreath(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y);
+            Player.instance.animController.isBreath = true;
             if (cameraManager != null)
             {   // player 카메라 총 반동
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);

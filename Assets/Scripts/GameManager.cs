@@ -5,7 +5,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
-    public bool isTutorial = false;
 
     private void Awake()
     {
@@ -38,34 +37,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
         Player.instance.ReloadPlayer();
-    }
-
-    public void ControlPlayerPos(SceneInfo scene)
-    {
-        Vector3 pos = new Vector3();
-        switch (scene)
-        {
-            case SceneInfo.Start:
-                return;
-            case SceneInfo.Tutorial:
-                pos = new Vector3(0.125f, 2f, 0);
-                break;
-            case SceneInfo.Town_1:
-                if (isTutorial)
-                {
-                    isTutorial = false;
-                    pos = new Vector3(-2.5f, 22.5f, 0);
-                }
-                else pos = new Vector3(-31.1f, 10f, 0);
-                break;
-            case SceneInfo.Battle_1_A:
-            case SceneInfo.Battle_1_B:
-            case SceneInfo.Battle_1_C:
-                pos = new Vector3(-7.5f, 10.75f, 0);
-                break;
-        }
-
-        Player.instance.transform.position = pos;
     }
 
     public void Quit()

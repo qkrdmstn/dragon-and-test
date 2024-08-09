@@ -6,7 +6,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     public InteractionData interaction;
 
-    bool isBounded;
+    //public bool isBounded;
     int curIdxInteraction;
 
     public Interaction dialogueInteraction, shopInteraction, blanketInteraction, pickupItemInteraction;
@@ -18,8 +18,6 @@ public class PlayerInteraction : MonoBehaviour
 
     void Awake()
     {
-        isBounded = false;
-
         col = GetComponent<CircleCollider2D>();
         dialogueInteraction = gameObject.AddComponent<DialogueInteraction>();
         shopInteraction = gameObject.AddComponent<ShopInteraction>();
@@ -29,7 +27,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
+        if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone)
         {
             ChangePlayerInteractionState(false);
@@ -81,7 +79,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (collision.CompareTag("Interaction"))
         {
-            isBounded = true;
+            Player.instance.isBounded = true;
             // 근처 상호작용물 검사
 
             inRangeInteraction = Physics2D.OverlapCircleAll(transform.position, col.radius, layer);
@@ -115,7 +113,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (collision.CompareTag("Interaction"))
         {
-            isBounded = false;
+            Player.instance.isBounded = false;
             interaction = null;
 
             for (int i=0; i<inRangeInteraction.Length; i++)
