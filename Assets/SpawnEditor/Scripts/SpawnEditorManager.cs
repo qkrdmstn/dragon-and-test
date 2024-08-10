@@ -9,6 +9,13 @@ public enum SpawnEditor_State
     WaveSetting
 }
 
+public enum SpawnType
+{
+    BattleA,
+    BattleB,
+    BattleC
+}
+
 public class SpawnEditorManager : MonoBehaviour
 {
     public static SpawnEditorManager instance;  
@@ -23,7 +30,6 @@ public class SpawnEditorManager : MonoBehaviour
 
     [Header("State info")]
     public SpawnEditor_State curState;
- 
 
     [Header("WaveSetting info")]
     public SpawnEditor_BlockInfo selectedBlock;
@@ -33,6 +39,9 @@ public class SpawnEditorManager : MonoBehaviour
     [Header("UI info")]
     public SpawnEditor_BlockSettingUI blockSettingUI;
     public SpawnEditor_WaveSettingUI waveSettingUI;
+
+    [Header("Battle Scene Type")]
+    public SpawnType type;
 
     void Awake()
     {
@@ -206,7 +215,15 @@ public class SpawnEditorManager : MonoBehaviour
                 paramLists.Add(blocks[i].blockSpawnData[j]);
             }
         }
-        await DataManager.instance.SetValues<SpawnDB>(SheetType.SpawnA, paramLists.ToArray());
+
+        SheetType sheetType;
+        if (type == SpawnType.BattleA)
+            sheetType = SheetType.SpawnA;
+        else if (type == SpawnType.BattleB)
+            sheetType = SheetType.SpawnB;
+        else
+            sheetType = SheetType.SpawnC;
+        await DataManager.instance.SetValues<SpawnDB>(sheetType, paramLists.ToArray());
     }
 
     public async void LoadSpawnData()
@@ -218,7 +235,15 @@ public class SpawnEditorManager : MonoBehaviour
         }
 
         //Google Sheet Load
-        SpawnDB[] result = await DataManager.instance.GetValues<SpawnDB>(SheetType.SpawnA, "A1:E");
+        SheetType sheetType;
+        if (type == SpawnType.BattleA)
+            sheetType = SheetType.SpawnA;
+        else if (type == SpawnType.BattleB)
+            sheetType = SheetType.SpawnB;
+        else
+            sheetType = SheetType.SpawnC;
+
+        SpawnDB[] result = await DataManager.instance.GetValues<SpawnDB>(sheetType, "A1:E");
         foreach (SpawnDB data in result)
         {
             blocks[data.blockNum].AddSpawnData(data.wave, data.monsterType, data.TransIntToVector());
