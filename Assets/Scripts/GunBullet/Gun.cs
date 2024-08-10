@@ -137,7 +137,7 @@ public class Gun : MonoBehaviour
 
             int bulletDamage = damage;
             //장삥
-            if (SkillManager.instance.haveSkill(SeotdaHwatuCombination.JPP110))
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110))
             { //10%로 데미지 1 증가
                 float prob = 0.1f;
                 float randomVal = Random.Range(0.0f, 1.0f);
@@ -182,7 +182,7 @@ public class Gun : MonoBehaviour
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
 
         //1끗 차이
-        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.KK1))
+        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.KK1))
             yield return new WaitForSeconds(shootDelay * 0.9f);
         else
             yield return new WaitForSeconds(shootDelay);

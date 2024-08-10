@@ -159,13 +159,23 @@ public class Player : MonoBehaviour
             else
                 curHP -= damage;
 
-            if (curHP <= 0)
+            if (curHP <= 0) //Dead
             {
-                Debug.Log("Player Dead");
-                PlayerDead();
-                UIManager.instance.SetTimeScale(0f);
+                if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410))
+                { //4% 확률로 죽음 회피 & 체력 회복
+                    float prob = 0.04f;
+                    float randomVal = Random.Range(0.0f, 1.0f);
+                    if (randomVal <= prob)
+                        curHP = maxHP;
+                }
+                else
+                {
+                    Debug.Log("Player Dead");
+                    PlayerDead();
+                    UIManager.instance.SetTimeScale(0f);
+                }
             }
-            else if (SkillManager.instance.haveSkill(SeotdaHwatuCombination.AL12))
+            else if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12))
             { //피격 시 12%로 2초간 무적
                 float prob = 0.12f;
                 float randomVal = Random.Range(0.0f, 1.0f);

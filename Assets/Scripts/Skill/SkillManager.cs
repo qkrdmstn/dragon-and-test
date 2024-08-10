@@ -285,11 +285,13 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public bool haveSkill(SeotdaHwatuCombination skillName)
+    public bool PassiveCheck(SeotdaHwatuCombination skillName)
     {
-        if (SkillManager.instance.activeSkillData[0] == skillName || SkillManager.instance.activeSkillData[1] == skillName)
-            return true;
-        else
-            return false;
+        for(int i=0; i< passiveSkillData.Count; i++)
+        {
+            if (passiveSkillData[i] == skillName)
+                return true;
+        }
+        return false;
     }
 }

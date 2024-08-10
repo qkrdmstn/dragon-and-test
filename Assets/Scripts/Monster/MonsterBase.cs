@@ -126,13 +126,13 @@ public class MonsterBase : MonoBehaviour
         HP -= damage;
         //피격 시, 패시브 스킬
         //독사
-        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.DS14))
+        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14))
         {
             //지속 데미지 -> duration과 interval이 없음
             StartCoroutine(DOTDamage(5.0f, 1.0f, 1));
         }
         //구삥
-        if(SkillManager.instance.haveSkill(SeotdaHwatuCombination.GPP19))
+        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19))
         {
             //9% 확률로 몬스터 기절 duration
         }
