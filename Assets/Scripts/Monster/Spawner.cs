@@ -203,6 +203,6 @@ public class Spawner : MonoBehaviour
     {
         blocks[curBlockNum].blockClear = true;
         curWave = 0;
-        mapIndicator.BlockClear(curBlockNum);
+        //mapIndicator.BlockClear(curBlockNum);
     }
 }

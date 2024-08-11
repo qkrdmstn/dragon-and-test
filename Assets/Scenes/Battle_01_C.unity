@@ -157,12 +157,15 @@ MonoBehaviour:
   materialHwatuDataList: []
   materialCardCnt: 0
   materialCardMaxNum: 10
-  skillCnt: 0
-  skillData: 
+  activeSkillCnt: 0
+  activeSkillData: 
   timer: []
-  skillSlotParent: {fileID: 0}
-  skillSlot: []
+  passiveSkillData: 
+  activeSkillSlotParent: {fileID: 0}
+  activeSkillSlot: []
   coolTimeImg: []
+  passiveSkillSlotParent: {fileID: 0}
+  passiveSkillSlot: []
 --- !u!4 &1461912
 Transform:
   m_ObjectHideFlags: 0
@@ -1378,7 +1381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myScene: 0
   _goToScene: 0
 --- !u!1 &109858345
 GameObject:
@@ -14984,7 +14986,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40e2bb9aba1642ec923909abc83a0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myScene: 0
   _goToScene: 0
 --- !u!70 &864164772
 CapsuleCollider2D:
@@ -24966,6 +24967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ef398694d76f43c8ab5c6b4a0a7c884, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLoading: 0
 --- !u!4 &1535654477
 Transform:
   m_ObjectHideFlags: 0
