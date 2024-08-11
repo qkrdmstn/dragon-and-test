@@ -44,7 +44,7 @@ public class MonsterBase : MonoBehaviour
     public temp temp;
     public bool inEffect = false;
     public bool isDead = false;
-
+    public bool isChase = true;
 
     public virtual void Awake()
     {
@@ -52,10 +52,12 @@ public class MonsterBase : MonoBehaviour
         effectState = new MonsterEffectState(stateMachine, player, this);
 
         player = GameObject.FindWithTag("Player");
-        eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
 
         dropItems = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
         money = Resources.Load<GameObject>("Prefabs/Item/Money");
+
+        if (Player.instance.isTutorial) return;
+        eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
 
     public virtual void Start()
@@ -65,6 +67,8 @@ public class MonsterBase : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         playerScript = player.GetComponent<Player>();
+
+        if (Player.instance.isTutorial) return;
         spawn = eventManager.GetComponent<Spawner>();
     }
 
@@ -141,8 +145,6 @@ public class MonsterBase : MonoBehaviour
         {
             Dead();
         }
-
-        
     }
 
     IEnumerator DOTDamage(float duration, float interval, int perDamage)
@@ -202,7 +204,7 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
-    private void HwatuObjectDrop()
+    public virtual void HwatuObjectDrop()
     {
         float randomVal = Random.Range(0.0f, 1.0f);
         if (randomVal <= 0.1f)

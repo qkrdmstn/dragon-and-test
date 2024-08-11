@@ -93,7 +93,7 @@ public class Tutorial : MonoBehaviour
         LoadDialog();
         checkSequenceDone = new bool[tutorialDatas.Count];
 
-        Invoke("StartFirstDialog", 1.5f);
+        StartFirstDialog();
     }
 
     private void Update()
@@ -253,27 +253,32 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 5:
-                if (curIdx == 1)
-                {   // skill - JunButterfly
-                    blanket = Instantiate(blanket,
-                        Player.instance.transform.position + Vector3.right,
-                        Quaternion.identity, transform);
-                    onTutorials = CheckGiveSkill;
-                }
-                else if (curIdx == 2) {
-                    TutorialUIforAnim("isHwatuSkill", true, TutorialUIListOrder.HwatuSkill);
-                    onTutorials = CheckSkill;
-                } 
-                else if (curIdx == 3)
+                if(curIdx == 2)
                 {
-                    TutorialUIforAnim("isTab", true, TutorialUIListOrder.HwatuSkill);
-                    onTutorials = CheckTab;
+                    monsters.transform.GetChild(0).gameObject.SetActive(true);
+                    monsters.transform.GetChild(1).gameObject.SetActive(true);
                 }
-                else if (curIdx == 4)
-                {
-                    onTutorials = CheckKnockBack;
-                    monsters.transform.GetChild(0).gameObject.SetActive(true);  // 넉백 당할 참새 소환
-                }
+                //if (curIdx == 1)
+                //{   // skill - JunButterfly
+                //    blanket = Instantiate(blanket,
+                //        Player.instance.transform.position + Vector3.right,
+                //        Quaternion.identity, transform);
+                //    onTutorials = CheckGiveSkill;
+                //}
+                //else if (curIdx == 2) {
+                //    TutorialUIforAnim("isHwatuSkill", true, TutorialUIListOrder.HwatuSkill);
+                //    onTutorials = CheckSkill;
+                //} 
+                //else if (curIdx == 3)
+                //{
+                //    TutorialUIforAnim("isTab", true, TutorialUIListOrder.HwatuSkill);
+                //    onTutorials = CheckTab;
+                //}
+                //else if (curIdx == 4)
+                //{
+                //    onTutorials = CheckKnockBack;
+                //    monsters.transform.GetChild(0).gameObject.SetActive(true);  // 넉백 당할 참새 소환
+                //}
                 break;
         }
     }

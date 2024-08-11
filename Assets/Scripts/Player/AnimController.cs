@@ -103,8 +103,8 @@ public class AnimController : MonoBehaviour
 		skeletonAnimation.skeleton.SetSkin(baseSkinName);
 		skeletonAnimation.Skeleton.SetSlotsToSetupPose();
 
-		if (isBreath || animState == AnimState.Run)
-        {	// 총을 쏘거나 마우스 이동의 얼굴 방향 및 표정 스킨 갱신
+		if (animState != AnimState.Wave && ( isBreath || animState == AnimState.Run))
+        {	// 총을 쏘거나 마우스 이동의 얼굴 방향 및 표정 스킨 갱신 (단 대시중에는 변경 금지)
 			ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
 		}
 

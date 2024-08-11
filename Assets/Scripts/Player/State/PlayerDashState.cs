@@ -39,8 +39,6 @@ public class PlayerDashState : PlayerState
 
             player.SetVelocity(0, 0);
         }
-
-        Debug.Log(player.GetVelocity());
     }
 
     public override void Update()
