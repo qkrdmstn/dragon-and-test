@@ -8,10 +8,11 @@ public enum SceneInfo
     Start,
     Town_1,
     Tutorial,
+    Puzzle_1,
     Battle_1_A,
     Battle_1_B,
     Battle_1_C,
-    Puzzle_1,
+    
     Boss_1
 };
 

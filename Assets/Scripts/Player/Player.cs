@@ -270,39 +270,55 @@ public class Player : MonoBehaviour
     public void InitbySceneLoaded(SceneInfo curScene)
     {
         isBounded = false;
+        Vector3 pos = Vector3.zero;
 
         switch (curScene)
         {
             case SceneInfo.Start:
                 SetIdleStatePlayer();
                 isStateChangeable = false;
-                break;
+                return;
+
             case SceneInfo.Town_1:      // 1
                 isStateChangeable = true;
                 if (isTutorial)
                 {
                     isTutorial = false;
-                    ControlPlayerPos(new Vector3(-2.5f, 22.5f, 0));
+                    pos = new Vector3(-2.5f, 22.5f, 0);
                 }
-                else ControlPlayerPos(new Vector3(-31.1f, 10f, 0));
+                else pos = new Vector3(-31.1f, 10f, 0);
                 break;
+
             case SceneInfo.Tutorial:    // 2
                 isTutorial = true;
-                ControlPlayerPos(new Vector3(0.125f, 2f, 0));
+                pos = new Vector3(0.125f, 2f, 0);
                 break;
+
             case SceneInfo.Puzzle_1:    // 3
                 isCombatZone = true;
                 break;
-            case SceneInfo.Battle_1_A:
-            case SceneInfo.Battle_1_B:
+
+            case SceneInfo.Battle_1_A: // 4
+                isCombatZone = true;
+                pos = new Vector3(-60f, -30f, 0);
+                break;
+
+            case SceneInfo.Battle_1_B: // 5
+                isCombatZone = true;
+                pos = new Vector3(-55f, 18f, 0);
+                break;
+
             case SceneInfo.Battle_1_C:
                 isCombatZone = true;
-                ControlPlayerPos(new Vector3(-7.5f, 10.75f, 0));
+                pos = new Vector3(-60f, -30f, 0);
                 break;
+
             case SceneInfo.Boss_1:
                 isCombatZone = true;
                 break;
         }
+
+        ControlPlayerPos(pos);
     }
 
     public void ControlPlayerPos(Vector3 pos)
