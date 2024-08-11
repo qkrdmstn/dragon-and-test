@@ -88,6 +88,7 @@ public class Fade : MonoBehaviour
         {   
             Player.instance.transform.position = mapControl.gotoPos.position;
             Player.instance.cameraManager.UpdateConfineArea(mapControl.confineColl);
+            
             yield return new WaitForSeconds(.5f);
 
             Player.instance.isStateChangeable = true;
