@@ -291,6 +291,8 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Tutorial:    // 2
                 isTutorial = true;
+                isCombatZone = true;
+
                 pos = new Vector3(0.125f, 2f, 0);
                 break;
 

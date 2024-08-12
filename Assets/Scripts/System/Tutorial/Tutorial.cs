@@ -30,7 +30,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] List<BoxCollider2D> boundColliders;
     [SerializeField] GameObject monsters;
     [SerializeField] GameObject jokbo;
-    [SerializeField] GameObject blanket;
+    [SerializeField] BlanketInteractionData blanket;
 
     TutorialDBEntity[] tutoDB;
 
@@ -78,6 +78,7 @@ public class Tutorial : MonoBehaviour
     TextMeshProUGUI dialogTxt;
 
     // CheckVariable
+    public bool isStart = false;
     public bool canSpeak = false;
     public bool isInteraction = false;
     public bool isActiveDone = false;
@@ -90,7 +91,6 @@ public class Tutorial : MonoBehaviour
     private async void Start()
     {
         await LoadTutorialDBEntity();
-        LoadDialog();
         checkSequenceDone = new bool[tutorialDatas.Count];
 
         StartFirstDialog();
@@ -108,6 +108,12 @@ public class Tutorial : MonoBehaviour
         {   // 허수아비의 머리 위에 말풍선을 위치
             UIManager.instance.curUIGroup.childUI[0].transform.position = 
                 Camera.main.WorldToScreenPoint(curScarescrow.transform.position) + padding;
+        }
+
+        if (isStart)
+        {
+            isStart = false;
+            StartCoroutine(StartDialog());
         }
 
         if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
@@ -136,10 +142,7 @@ public class Tutorial : MonoBehaviour
     async Task LoadTutorialDBEntity()
     {
         tutoDB = await DataManager.instance.GetValues<TutorialDBEntity>(SheetType.Tutorial, "A1:D");
-    }
 
-    void LoadDialog()
-    {   // 튜토리얼 대화를 시퀀스별로 불러와 저장합니다.
         int curSequence = -1;
         for (int i = 0; i < tutoDB.Length; i++)
         {
@@ -148,7 +151,7 @@ public class Tutorial : MonoBehaviour
             while (curSequence == tutoDB[i].sequence)
             {
                 tmpDialogs.Add(new DialogAction(tutoDB[i].dialogue, tutoDB[i].isInteraction));
-                if (tutoDB.Length == i+1 || curSequence != tutoDB[i + 1].sequence)
+                if (tutoDB.Length == i + 1 || curSequence != tutoDB[i + 1].sequence)
                 {
                     tutorialDatas.Add(new TutorialData(curSequence, tmpDialogs));
                     break;
@@ -164,7 +167,7 @@ public class Tutorial : MonoBehaviour
         SetScarescrow(ScareScrowType.Start);
 
         playerInteraction = Player.instance.GetComponentInChildren<PlayerInteraction>();
-        StartCoroutine(ManageDialog());
+        isStart = true;
     }
 
     public void LoadEvent(int sequence)
@@ -255,8 +258,11 @@ public class Tutorial : MonoBehaviour
             case 5:
                 if(curIdx == 2)
                 {
-                    monsters.transform.GetChild(0).gameObject.SetActive(true);
-                    monsters.transform.GetChild(1).gameObject.SetActive(true);
+                    onTutorials = CheckGetHwatu;
+                }
+                else if(curIdx == 3)
+                {
+                    onTutorials = CheckBlanket;
                 }
                 //if (curIdx == 1)
                 //{   // skill - JunButterfly
@@ -283,8 +289,8 @@ public class Tutorial : MonoBehaviour
         }
     }
 
-    IEnumerator ManageDialog()
-    {   // 첫번째 이벤트는 씬에 입장하자마자 1.5초 뒤에 자동으로 진행됩니다
+   IEnumerator StartDialog()
+    {   
         yield return null;
 
         if(!isInteraction)
@@ -292,6 +298,7 @@ public class Tutorial : MonoBehaviour
             SetNextDialog();    // curIdx = 0
             curIdx++;
             yield return new WaitForSeconds(.5f);
+
             TutorialUIforAnim("isInteraction", true, TutorialUIListOrder.Interation);
             yield return new WaitForSeconds(1f);
 
@@ -427,16 +434,27 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
-    public static bool isBlankBulletCard = false;
-    bool CheckGiveSkill()
+    bool isHwatuMonster = true;
+    bool CheckGetHwatu()
     {
-        if (isBlankBulletCard)
+        if (isHwatuMonster && Input.GetKeyDown(KeyCode.F))
         {
-            blanket.SetActive(false);
-            isInteraction = false;
-            return true;
+            monsters.transform.GetChild(0).gameObject.SetActive(true);
+            monsters.transform.GetChild(1).gameObject.SetActive(true);
+            isHwatuMonster = false;
         }
-        return false;
+        if (SkillManager.instance.materialCardCnt >= 2) return true;
+        else return false;
+    }
+
+    public static bool isBlanketInteration = false;
+    bool CheckBlanket()
+    {
+        blanket.isClear = true;
+        blanket.sequence = 1;
+
+        if (isBlanketInteration)  return true;
+        else return false;
     }
 
     bool CheckSkill()
@@ -477,19 +495,6 @@ public class Tutorial : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    public static void FindBlankBullet()
-    {   // 튜토리얼 스킬 지급 (공포탄)
-        for (int i = 0; i < SkillManager.instance.hwatuData.Length; i++)
-        {
-            if (SkillManager.instance.hwatuData[i].hwatu.type == SeotdaHwatuName.JunButterfly)
-            {
-                //HwatuData blankBullet = SkillManager.instance.hwatuData[i];
-                //SkillManager.instance.AddSkill(blankBullet);
-                //break;
-            }
-        }
     }
     #endregion
 }

@@ -98,6 +98,15 @@ public class PlayerInteraction : MonoBehaviour
             }
             interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
 
+            if (interaction.type == InteractionData.InteractionType.Blanket)
+            {
+                if(!IsClearBlanket(interaction)) return;
+            }
+            else if(interaction.type == InteractionData.InteractionType.Tutorial && interaction.eventName == "blanket")
+            {
+                if (!IsClearBlanket(interaction)) return;
+            }
+
             for (int i = 0; i < inRangeInteraction.Length; i++)
             {   // 제일 가까운 색외에는 다 Hover effect X
                 if (i == curIdxInteraction)
@@ -107,6 +116,12 @@ public class PlayerInteraction : MonoBehaviour
                 else OnOutline(inRangeInteraction[curIdxInteraction].gameObject, 0);
             }
         }
+    }
+
+    bool IsClearBlanket(InteractionData data)
+    {
+        if (data.GetComponent<BlanketInteractionData>().isClear) return true;
+        else return false;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -155,12 +170,11 @@ public class PlayerInteraction : MonoBehaviour
             ChangePlayerInteractionState(false);
             return;
         }
-        else if (interaction.eventName == "모포")
+
+        else if(interaction.eventName == "blanket" && interaction.sequence > 0)
         {
-            Tutorial.FindBlankBullet();
-            Tutorial.isBlankBulletCard = true;
-            ChangePlayerInteractionState(false);
-            return;
+            Tutorial.isBlanketInteration = true;
+            BlanketDoInteraction();
         }
 
         if (interaction.sequence == 0 && tuto.curIdx >= 2)

@@ -21,7 +21,7 @@ public class MonsterTutorial : MonsterBase
 
     #region Navigate
     public UnityEngine.AI.NavMeshAgent agent;
-    public bool isChase = true;
+    //public bool isChase = true;
     #endregion
 
     public override void Awake()
