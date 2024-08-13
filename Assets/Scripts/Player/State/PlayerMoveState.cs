@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerState
 {
-    public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
+    public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
@@ -41,7 +41,7 @@ public class PlayerMoveState : PlayerState
 
         Vector2 move = dir * player.moveSpeed;
         player.SetVelocity(move.x, move.y);
-        player.animController.SetAnim(AnimState.Run, xInput, yInput);
+        player.animController.SetAnim(PlayerAnimState.Run, xInput, yInput);
 
         SoundManager.instance.PlayWalkEffect();
     }

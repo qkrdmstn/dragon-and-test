@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerIdleState : PlayerState
 {
-    public PlayerIdleState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
+    public PlayerIdleState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
@@ -22,7 +22,7 @@ public class PlayerIdleState : PlayerState
     {
         base.Update();
 
-        player.animController.SetAnim(AnimState.Idle, mouseDir.x, mouseDir.y);
+        player.animController.SetAnim(PlayerAnimState.Idle, mouseDir.x, mouseDir.y);
         
 
         if (xInput != 0 || yInput != 0)

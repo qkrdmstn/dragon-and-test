@@ -8,7 +8,7 @@ public class PlayerState
     protected PlayerStateMachine stateMachine;
     protected Player player;
     protected Rigidbody2D rb;
-    private AnimState animStateName;
+    private PlayerAnimState animStateName;
 
     #endregion
 
@@ -20,7 +20,7 @@ public class PlayerState
 
     protected float stateTimer;
 
-    public PlayerState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName)
+    public PlayerState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName)
     {
         this.player = _player;
         this.stateMachine = _stateMachine;

@@ -7,7 +7,7 @@ public class PlayerDashState : PlayerState
     private Vector2 dashDir;
     private Vector2 dash;
 
-    public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
+    public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
@@ -48,7 +48,7 @@ public class PlayerDashState : PlayerState
         //Exponantial
         dash = dashDir * player.dashSpeed * Mathf.Exp(player.dashExpCoefficient * (player.dashDuration - stateTimer));
         player.SetVelocity(dash.x, dash.y);
-        player.animController.SetAnim(AnimState.Wave, xInput, yInput);
+        player.animController.SetAnim(PlayerAnimState.Wave, xInput, yInput);
         //Dash Duration
         if (stateTimer < 0.0)
             stateMachine.ChangeState(player.idleState);

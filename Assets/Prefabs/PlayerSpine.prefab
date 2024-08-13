@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 7143744298466207675}
   - component: {fileID: 7143744298466207674}
   - component: {fileID: 7143744298466207677}
-  - component: {fileID: 7143744298466207672}
+  - component: {fileID: 4554702947750206530}
   m_Layer: 0
   m_Name: Animator
   m_TagString: Untagged
@@ -307,7 +307,7 @@ MonoBehaviour:
   _animationName: IDLE
   loop: 0
   timeScale: 1
---- !u!114 &7143744298466207672
+--- !u!114 &4554702947750206530
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -316,38 +316,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 7143744298466207683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be2b24ac342f8463491eef405ba8842a, type: 3}
+  m_Script: {fileID: 11500000, guid: da1d5095a8c394c419faf7ea7e4ff006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   baseSkinName: Full_skin/IDLE/IDLE_Front
-  idleSkin:
-  - Full_skin/IDLE/IDLE_BACK
-  - Full_skin/IDLE/IDLE_BACK_L
-  - Full_skin/IDLE/IDLE_BACK_R
-  - Full_skin/IDLE/IDLE_Front
-  - Full_skin/IDLE/IDLE_Front_L
-  - Full_skin/IDLE/IDLE_Front_R
-  runSkin:
-  - Full_skin/RUN/RUN_BACK
-  - Full_skin/RUN/RUN_BACK_L
-  - Full_skin/RUN/RUN_BACK_R
-  - Full_skin/RUN/RUN_FRONT
-  - Full_skin/RUN/RUN_FRONT_L
-  - Full_skin/RUN/RUN_FRONT_R
-  waveSkin:
-  - Full_skin/WAVE/WAVE_BACK
-  - Full_skin/WAVE/WAVE_BACK_L
-  - Full_skin/WAVE/WAVE_BACK_R
-  - Full_skin/WAVE/WAVE_FRONT
-  - Full_skin/WAVE/WAVE_FRONT_L
-  - Full_skin/WAVE/WAVE_FRONT_R
-  idleAnim: IDLE
-  runAnim: RUN
-  waveAnim: WAVE
-  isBreath: 0
+  anims:
+  - IDLE
+  - RUN
+  - WAVE
+  attachments:
+  - slot: IDLE_basicface
+    region: FRONT/Face_Bress
+  - slot: RUN_basicface
+    region: FRONT/Face
+  skins:
+  - skin:
+    - Full_skin/IDLE/IDLE_BACK_L
+    - Full_skin/IDLE/IDLE_BACK
+    - Full_skin/IDLE/IDLE_BACK_R
+    - Full_skin/IDLE/IDLE_Front_L
+    - Full_skin/IDLE/IDLE_Front
+    - Full_skin/IDLE/IDLE_Front_R
+  - skin:
+    - Full_skin/RUN/RUN_BACK_L
+    - Full_skin/RUN/RUN_BACK
+    - Full_skin/RUN/RUN_BACK_R
+    - Full_skin/RUN/RUN_FRONT_L
+    - Full_skin/RUN/RUN_FRONT
+    - Full_skin/RUN/RUN_FRONT_R
+  - skin:
+    - Full_skin/WAVE/WAVE_BACK_L
+    - Full_skin/WAVE/WAVE_BACK
+    - Full_skin/WAVE/WAVE_BACK_R
+    - Full_skin/WAVE/WAVE_FRONT_L
+    - Full_skin/WAVE/WAVE_FRONT
+    - Full_skin/WAVE/WAVE_FRONT_R
   atlasAsset: {fileID: 11400000, guid: a9720cd919bcb4661a0fc6454c66944a, type: 2}
-  inheritProperties: 1
-  attachments: []
+  isBreath: 0
+  mouseDirMinX: -0.2
+  mouseDirMaxX: 0.2
+  mouseDirMinY: -0.2
+  mouseDirMaxY: 0.2
 --- !u!1 &7143744298484960325
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,8 +468,11 @@ MonoBehaviour:
   isStateChangeable: 1
   isInteraction: 0
   isDamaged: 0
+  isFall: 0
+  isBounded: 0
   profile: {fileID: 11400000, guid: 10e4dfeb3157b48799b562bf7cdd96cc, type: 2}
   cameraManager: {fileID: 0}
+  isTutorial: 0
 --- !u!114 &4290355959736416717
 MonoBehaviour:
   m_ObjectHideFlags: 0

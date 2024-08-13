@@ -10,7 +10,7 @@ public class MonsterNear : MonsterBase
     public float cooldown = 3.0f;
     public float tempcool;
     public LayerMask playerMask;  
-    private Collider2D swordCollider;
+    
     public float attackDuration = 0.3f;
     private float[] directions = { 0, 45, 90, 180, 270, 315, 360};
     private int shootNumber = 0;
@@ -28,7 +28,9 @@ public class MonsterNear : MonsterBase
     #endregion
 
     public float distanceToPlayer;
+    MonsterAnimController monsterAnimController;
     public GameObject sword;
+    BoxCollider2D swordCollider;
 
     public override void Awake()
     {
@@ -41,7 +43,8 @@ public class MonsterNear : MonsterBase
     {
         base.Start();
 
-        swordCollider = sword.GetComponent<Collider2D>();
+        monsterAnimController = GetComponent<MonsterAnimController>();
+        swordCollider = sword.GetComponent<BoxCollider2D>();
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -59,20 +62,21 @@ public class MonsterNear : MonsterBase
     public override void Attack()
     {
         inAttack = true;
-        anim.SetTrigger("attacking");
+
+        AttackPoint();
+        
     }
     
     public virtual void AttackPoint()
     {
-        swordCollider.enabled = true;
-
         Vector3 direction = player.transform.position - transform.position;
         direction.Normalize();
 
         float angle = Quaternion.FromToRotation(Vector3.up, direction).eulerAngles.z;
-
         float closestDirection = directions[0];
         float minDifference = Mathf.Abs(angle - directions[0]);
+
+        float dirIdx = 0;
         for (int i = 1; i < directions.Length; i++)
         {
             float difference = Mathf.Abs(angle - directions[i]);
@@ -80,36 +84,54 @@ public class MonsterNear : MonsterBase
             {
                 minDifference = difference;
                 closestDirection = directions[i];
+                dirIdx = i;
             }
         }
-        
 
-        if (closestDirection <= 180)
+        monsterAnimController.SetAnim(MonsterAnimState.Attack, dirIdx);
+
+        switch (closestDirection)
         {
-            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-135));
-            StartCoroutine(RotateOverTime(90, attackDuration));
+            case 0:
+            case 45:
+            case 180:
+                StartCoroutine(RotateOverTime(25, 325, attackDuration));
+                break;
+
+            case 90:
+            case 270:
+            case 315:
+                StartCoroutine(RotateOverTime(325, 25, attackDuration));
+                break;
         }
-        else
-        {
-            sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
-            StartCoroutine(RotateOverTime(-90, attackDuration));
-        }
+
+        //if (closestDirection <= 180)
+        //{
+        //    //sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-135));
+        //    StartCoroutine(RotateOverTime(90, attackDuration));
+        //}
+        //else
+        //{
+        //    //sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
+        //    StartCoroutine(RotateOverTime(-90, attackDuration));
+        //}
         
         shootNumber = 0;
         InvokeRepeating("Shoot", 0f, 0.6f);
     }
 
-    IEnumerator RotateOverTime(float angle, float duration)
+    IEnumerator RotateOverTime(float startAngle, float endAngle, float duration)
     {
-        float startTime = Time.time;
-        Quaternion startRotation = sword.transform.rotation;
-        Quaternion endRotation = Quaternion.Euler(sword.transform.eulerAngles + new Vector3(0, 0, angle));
         bool isDamagedOnce = false;
+        float startTime = Time.time;
+        Quaternion startRotation = Quaternion.Euler(0, 0, startAngle);
+        Quaternion endRotation = Quaternion.Euler(0, 0, endAngle);
 
         while (Time.time < startTime + duration)
         {
             float t = (Time.time - startTime) / duration;
-            sword.transform.rotation = Quaternion.Lerp(startRotation, endRotation, t);
+            sword.transform.localRotation = Quaternion.Lerp(startRotation, endRotation, t);
+
             Collider2D[] colliders = Physics2D.OverlapBoxAll(swordCollider.bounds.center, swordCollider.bounds.size, 0);
             foreach (Collider2D collider in colliders)
             {
@@ -122,7 +144,7 @@ public class MonsterNear : MonsterBase
             yield return null;
         }
 
-        sword.transform.rotation = endRotation;
+        //sword.transform.rotation = endRotation;
     }
 
     public void Shoot()

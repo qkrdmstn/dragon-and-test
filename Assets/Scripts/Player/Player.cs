@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     public bool isBounded = false;
 
     #region Componets
-    public AnimController animController { get; private set; }
+    public PlayerAnimController animController { get; private set; }
 
     public Rigidbody2D rb { get; private set; }
     public Collider2D col { get; private set; }
@@ -68,11 +68,11 @@ public class Player : MonoBehaviour
     {
         stateMachine = new PlayerStateMachine(this);
 
-        idleState = new PlayerIdleState(this, stateMachine, AnimState.Idle);
-        moveState = new PlayerMoveState(this, stateMachine, AnimState.Run);
-        dashState = new PlayerDashState(this, stateMachine, AnimState.Wave);
-        knockbackState = new PlayerKnockbackState(this, stateMachine, AnimState.knockBack);
-        fallState = new PlayerFallState(this, stateMachine, AnimState.Fall);
+        idleState = new PlayerIdleState(this, stateMachine, PlayerAnimState.Idle);
+        moveState = new PlayerMoveState(this, stateMachine, PlayerAnimState.Run);
+        dashState = new PlayerDashState(this, stateMachine, PlayerAnimState.Wave);
+        knockbackState = new PlayerKnockbackState(this, stateMachine, PlayerAnimState.knockBack);
+        fallState = new PlayerFallState(this, stateMachine, PlayerAnimState.Fall);
 
         if (instance == null)
         { //생성 전이면
@@ -85,7 +85,7 @@ public class Player : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
 
-        animController = GetComponentInChildren<AnimController>();
+        animController = GetComponentInChildren<PlayerAnimController>();
 
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();

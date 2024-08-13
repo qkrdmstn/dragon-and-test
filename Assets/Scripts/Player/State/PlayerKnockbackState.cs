@@ -6,7 +6,7 @@ public class PlayerKnockbackState : PlayerState
 {
     private Vector2 knockbackVel;
 
-    public PlayerKnockbackState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
+    public PlayerKnockbackState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 

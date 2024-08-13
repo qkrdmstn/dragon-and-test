@@ -6,7 +6,7 @@ public class PlayerFallState : PlayerState
 {
     private Vector2 currentVel;
 
-    public PlayerFallState(Player _player, PlayerStateMachine _stateMachine, AnimState _animStateName) : base(_player, _stateMachine, _animStateName)
+    public PlayerFallState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
