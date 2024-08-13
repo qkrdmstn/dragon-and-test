@@ -41,7 +41,13 @@ public class AnimController : MonoBehaviour
 	protected SkeletonAnimation skeletonAnimation;
 	protected SkeletonRenderer skeletonRenderer;
 
-	protected void Awake()
+    public float dirMinX = -0.2f;
+    public float dirMaxX = 0.2f;
+
+    public float dirMinY = -0.2f;
+    public float dirMaxY = 0.2f;
+
+    protected virtual void Awake()
 	{
 		skeletonRenderer = GetComponent<SkeletonRenderer>();
 		skeletonAnimation = GetComponent<SkeletonAnimation>();
@@ -49,12 +55,24 @@ public class AnimController : MonoBehaviour
 		atlas = atlasAsset.GetAtlas();
 	}
 
+    public virtual void SetAnim()
+    {
+        skeletonAnimation.skeleton.SetSkin(baseSkinName);
+        skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+
+        skeletonAnimation.AnimationName = curAnim;
+        skeletonAnimation.ApplyAnimation();
+    }
+
 	public virtual void SetAnim<T>(T _animState, float x = 0f, float y = 0f) where T : Enum
 	{
-		
-	}
+    }
 
-	protected virtual void ChangeSkinSlot(Direction _region)
+    public virtual void SetAnim<T>(T _animState, Direction direction) where T : Enum
+    {
+    }
+
+    protected virtual void ChangeSkinSlot(Direction _region)
     {
 		
 	}

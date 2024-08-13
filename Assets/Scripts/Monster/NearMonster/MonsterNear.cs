@@ -1,36 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MonsterNear : MonsterBase
 {
-    
+    [Header("MonsterNear---------------")]
+    public GameObject sword;
+    public GameObject swordAura;
+    public bool isSpawned = false;  // 다른 몬스터 애니메이션 생기면 base로 이동될 변수
+    public float deadSec = 0.6f;    // range : 0.0f ~ 0.7f
+    BoxCollider2D swordCollider;
+
     #region MonsterAttack
+    [Header("MonsterAttack")]
     public bool inAttack = false;
     public float cooldown = 3.0f;
     public float tempcool;
-    public LayerMask playerMask;  
-    
     public float attackDuration = 0.3f;
-    private float[] directions = { 0, 45, 90, 180, 270, 315, 360};
-    private int shootNumber = 0;
-    public GameObject swordAura;
+    public float attackRange = 1.0f;
+    float[] directions = { 0, 45, 90, 180, 270, 315, 360};
+    int shootNumber = 0;
     #endregion
 
     #region States
     public MonsterChaseStateNear chaseState { get; private set; }
     public MonsterAttackStateNear attackState { get; private set; }
-    public float attackRange = 1.0f;
     #endregion
-
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
-    #endregion
-
-    public float distanceToPlayer;
-    MonsterAnimController monsterAnimController;
-    public GameObject sword;
-    BoxCollider2D swordCollider;
 
     public override void Awake()
     {
@@ -42,14 +39,20 @@ public class MonsterNear : MonsterBase
     public override void Start()
     {
         base.Start();
-
-        monsterAnimController = GetComponent<MonsterAnimController>();
         swordCollider = sword.GetComponent<BoxCollider2D>();
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
 
+        StartCoroutine(AnimSpawn());
         stateMachine.Initialize(chaseState);
+    }
+
+    IEnumerator AnimSpawn()
+    {
+        SpeedToZero();
+        monsterAnimController.SetAnim();
+        yield return new WaitForSeconds(1f);
+
+        isSpawned = true;
+        SpeedReturn();
     }
 
     public override void Update()
@@ -62,9 +65,7 @@ public class MonsterNear : MonsterBase
     public override void Attack()
     {
         inAttack = true;
-
         AttackPoint();
-        
     }
     
     public virtual void AttackPoint()
@@ -76,7 +77,6 @@ public class MonsterNear : MonsterBase
         float closestDirection = directions[0];
         float minDifference = Mathf.Abs(angle - directions[0]);
 
-        float dirIdx = 0;
         for (int i = 1; i < directions.Length; i++)
         {
             float difference = Mathf.Abs(angle - directions[i]);
@@ -84,26 +84,24 @@ public class MonsterNear : MonsterBase
             {
                 minDifference = difference;
                 closestDirection = directions[i];
-                dirIdx = i;
             }
         }
 
-        monsterAnimController.SetAnim(MonsterAnimState.Attack, dirIdx);
 
-        switch (closestDirection)
-        {
-            case 0:
-            case 45:
-            case 180:
-                StartCoroutine(RotateOverTime(25, 325, attackDuration));
-                break;
+        //switch (closestDirection)
+        //{
+        //    case 0:
+        //    case 45:
+        //    case 180:
+        //        StartCoroutine(RotateOverTime(25, 325, attackDuration));
+        //        break;
 
-            case 90:
-            case 270:
-            case 315:
-                StartCoroutine(RotateOverTime(325, 25, attackDuration));
-                break;
-        }
+        //    case 90:
+        //    case 270:
+        //    case 315:
+        //        StartCoroutine(RotateOverTime(325, 25, attackDuration));
+        //        break;
+        //}
 
         //if (closestDirection <= 180)
         //{
@@ -116,8 +114,8 @@ public class MonsterNear : MonsterBase
         //    StartCoroutine(RotateOverTime(-90, attackDuration));
         //}
         
-        shootNumber = 0;
-        InvokeRepeating("Shoot", 0f, 0.6f);
+        StartCoroutine(Shoot());
+        //InvokeRepeating("Shoot", 0f, 0.6f);
     }
 
     IEnumerator RotateOverTime(float startAngle, float endAngle, float duration)
@@ -147,23 +145,68 @@ public class MonsterNear : MonsterBase
         //sword.transform.rotation = endRotation;
     }
 
-    public void Shoot()
-    {
-        Vector3 dir = player.transform.position-transform.position;
+    //public void Shoot()
+    //{
+    //    if (shootNumber == 3)
+    //    {
+    //        CancelInvoke("Shoot");
+    //        OutAttack();
+    //        return;
+    //    }
 
-        GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
-        MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
+    //    Vector3 dir = player.transform.position-transform.position;
+
+    //    GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
+    //    MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
         
-        auraScript.BulletInitialize(dir);
-        shootNumber += 1;
-        if (shootNumber==3) CancelInvoke("Shoot");
-                
+    //    auraScript.BulletInitialize(dir);
+    //    ++shootNumber;
+    //}
+
+    IEnumerator Shoot()
+    {
+        shootNumber = 0;
+        while (shootNumber < 3)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+
+            GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
+            MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
+
+            auraScript.BulletInitialize(dir);
+            ++shootNumber;
+            yield return new WaitForSeconds(0.7f);
+        }
+        OutAttack();
     }
 
     public void OutAttack()
     {
         inAttack = false;
     }
+    public override void Dead()
+    {
+        if (!isDead)
+        {
+            isChase = false;    
+            isDead = true;
+            StartCoroutine(AnimDead());
+        }
+    }
+
+    IEnumerator AnimDead()
+    {
+        monsterAnimController.SetAnim(MonsterAnimState.Death, CheckDir());
+        float sec = Mathf.Clamp(deadSec, 0f, 0.7f);
+        yield return new WaitForSeconds(sec);
+
+        ItemDrop();
+        spawn.DeathCount();
+        yield return new WaitForSeconds(0.7f - sec);
+
+        Destroy(gameObject);
+    }
+
 
     public void SpeedToZero()
     {

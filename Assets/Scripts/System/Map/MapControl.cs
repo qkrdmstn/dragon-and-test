@@ -42,7 +42,7 @@ public class MapControl : MonoBehaviour
 
                 UIManager.instance.SetFadeObjState(true);
                 UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
-                mapIndicator.MoveBlockPlayer(curMapNum);
+                //mapIndicator.MoveBlockPlayer(curMapNum);
 
                 Player.instance.SetIdleStatePlayer();
                 Player.instance.isStateChangeable = false;

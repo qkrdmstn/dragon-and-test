@@ -24,11 +24,6 @@ public class MonsterRage : MonsterBase
     public bool rageAble = false;
     #endregion
 
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
-    #endregion
-
-    public float distanceToPlayer = 100f;
     public Vector3 direction;
 
     public override void Awake()
@@ -41,10 +36,6 @@ public class MonsterRage : MonsterBase
     public override void Start()
     {
         base.Start();
-
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
 
         SpeedToZero();
         stateMachine.Initialize(chaseState);
@@ -71,7 +62,7 @@ public class MonsterRage : MonsterBase
     public override void Attack()
     {
         inAttack = true;
-        anim.SetTrigger("attacking");
+        //anim.SetTrigger("attacking");
         direction = player.transform.position - transform.position;
     }
     

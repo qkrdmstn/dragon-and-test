@@ -6,17 +6,19 @@ using Cinemachine;
 public class MonsterBase : MonoBehaviour
 {
     #region Stats
+    [Header("Stats")]
     public int HP;
     public int damage;
+    public float distanceToPlayer;
     #endregion
 
     #region Move
+    [Header("Move & knockBack")]
     public float moveSpeed;
     public float knockbackForce; // 넉백 힘
     public float knockbackDuration; // 넉백 지속 시간
-    public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
     public float knockbackTimer; // 넉백 지속 시간을 계산하는 타이머
-    public Vector2 knockbackVel;
+    protected Vector2 knockbackVel;
     #endregion
 
     #region dropItems
@@ -25,14 +27,14 @@ public class MonsterBase : MonoBehaviour
     #endregion
 
     #region Componets
-    public Animator anim { get; protected set; }
-    public Rigidbody2D rigidBody { get; protected set; }
-    public SpriteRenderer spriteRenderer { get; private set; }
-    public Collider2D col { get; protected set; }
-    public GameObject player;
-    public Player playerScript;
-    public GameObject eventManager;
-    public Spawner spawn;
+    [HideInInspector] public Rigidbody2D rigidBody { get; protected set; }
+    [HideInInspector] public SpriteRenderer spriteRenderer { get; private set; }
+    [HideInInspector] public Collider2D col { get; protected set; }
+    [HideInInspector] public GameObject player;
+    [HideInInspector] public Player playerScript;
+    [HideInInspector] public GameObject eventManager;
+    [HideInInspector] public Spawner spawn;
+    [HideInInspector] public MonsterAnimController monsterAnimController;
     #endregion
 
     #region States
@@ -41,10 +43,15 @@ public class MonsterBase : MonoBehaviour
     public MonsterState tempState { get; protected set; }
     #endregion
 
-    public temp temp;
+    #region Navigate
+    [HideInInspector] public UnityEngine.AI.NavMeshAgent agent;
+    #endregion
+
+    [Header("boolState")]
     public bool inEffect = false;
     public bool isDead = false;
     public bool isChase = true;
+    public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
 
     public virtual void Awake()
     {
@@ -62,11 +69,15 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void Start()
     {
-        anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         playerScript = player.GetComponent<Player>();
+        monsterAnimController = GetComponentInChildren<MonsterAnimController>();
+
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
 
         if (Player.instance.isTutorial) return;
         spawn = eventManager.GetComponent<Spawner>();
@@ -184,7 +195,6 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
-
     //아이템 드랍
     public void ItemDrop()
     {
@@ -206,7 +216,7 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void HwatuObjectDrop()
     {
-        float randomVal = Random.Range(0.0f, 1.0f);
+        float randomVal = 0.1f;// Random.Range(0.0f, 1.0f);
         if (randomVal <= 0.1f)
         {
             GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
@@ -224,5 +234,11 @@ public class MonsterBase : MonoBehaviour
         {
             Instantiate(money, this.transform.position, Quaternion.identity);
         }
+    }
+
+    public Direction CheckDir()
+    {
+        Vector3 dir = player.transform.position - transform.position;
+        return monsterAnimController.FindDirToPlayer(dir);
     }
 }

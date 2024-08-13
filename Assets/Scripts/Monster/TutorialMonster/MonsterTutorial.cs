@@ -16,12 +16,6 @@ public class MonsterTutorial : MonsterBase
     public MonsterChaseStateTutorial chaseState { get; private set; }
     public MonsterAttackStateTutorial attackState { get; private set; }
     public float attackRange = 8.0f;
-    public float distanceToPlayer;
-    #endregion
-
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
-    //public bool isChase = true;
     #endregion
 
     public override void Awake()
@@ -37,14 +31,8 @@ public class MonsterTutorial : MonsterBase
 
     public override void Start()
     {
-        anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
-
-        // 추격 관련 진행중 -> 맵 베이크 알기
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
 
         stateMachine.Initialize(chaseState);
     }

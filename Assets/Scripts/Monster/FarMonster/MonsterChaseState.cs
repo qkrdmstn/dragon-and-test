@@ -30,6 +30,5 @@ public class MonsterChaseState : MonsterState
         monster.agent.SetDestination(player.transform.position);
 
         if(monster.distanceToPlayer < monster.attackRange) stateMachine.ChangeState(monster.attackState);
-        
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MonsterMage : MonsterBase
 {
-    
     #region MonsterAttack
     public bool inAttack = false;
     private bool warning = false;
@@ -24,12 +23,6 @@ public class MonsterMage : MonsterBase
     public MonsterAttackStateMage attackState { get; private set; }
     public float chaseRange = 10.0f;
     public float attackRange = 4.0f;
-    
-    public float distanceToPlayer;
-    #endregion
-
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
@@ -48,9 +41,6 @@ public class MonsterMage : MonsterBase
         spriteRenderer = attackWarning.GetComponent<SpriteRenderer>();
         attackArea = attackWarning.GetComponent<Collider2D>();
 
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
         SpeedToZero();
     }
 

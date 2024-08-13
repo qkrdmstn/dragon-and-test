@@ -11,10 +11,6 @@ public enum PlayerAnimState
 public class PlayerAnimController : AnimController
 {
     public bool isBreath = false;
-	public float mouseDirMinX = -0.2f;
-	public float mouseDirMaxX = 0.2f;
-	public float mouseDirMinY = -0.2f;
-	public float mouseDirMaxY = 0.2f;
 
 	private void Awake()
     {
@@ -28,14 +24,14 @@ public class PlayerAnimController : AnimController
 
 		if (animState == PlayerAnimState.Idle)
 		{
-			if (x >= mouseDirMaxX && y >= mouseDirMaxY) curBaseSkinIdx = Direction.BACK_R;
-			else if (x >= mouseDirMinX && x < mouseDirMaxX && y >= mouseDirMaxY) curBaseSkinIdx = Direction.BACK;
-			else if (x >= mouseDirMaxX && y < mouseDirMaxY && y >= mouseDirMinY) curBaseSkinIdx = Direction.FRONT_R;
-			else if (x >= mouseDirMaxX && y < mouseDirMinY) curBaseSkinIdx = Direction.FRONT_R;
-			else if (x >= mouseDirMinX && x < mouseDirMaxX && y < mouseDirMaxY) curBaseSkinIdx = Direction.FRONT;
-			else if (x < mouseDirMinX && y < mouseDirMaxY && y >= mouseDirMinY) curBaseSkinIdx = Direction.FRONT_L;
-			else if (x < mouseDirMinX && y < mouseDirMinY) curBaseSkinIdx = Direction.FRONT_L;
-			else if (x < mouseDirMinX && y >= mouseDirMaxY) curBaseSkinIdx = Direction.BACK_L;
+			if (x >= dirMaxX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK_R;
+			else if (x >= dirMinX && x < dirMaxX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK;
+			else if (x >= dirMaxX && y < dirMaxY && y >= dirMinY) curBaseSkinIdx = Direction.FRONT_R;
+			else if (x >= dirMaxX && y < dirMinY) curBaseSkinIdx = Direction.FRONT_R;
+			else if (x >= dirMinX && x < dirMaxX && y < dirMaxY) curBaseSkinIdx = Direction.FRONT;
+			else if (x < dirMinX && y < dirMaxY && y >= dirMinY) curBaseSkinIdx = Direction.FRONT_L;
+			else if (x < dirMinX && y < dirMinY) curBaseSkinIdx = Direction.FRONT_L;
+			else if (x < dirMinX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK_L;
 		}
 		else if (animState == PlayerAnimState.Run || animState == PlayerAnimState.Wave)
 		{
@@ -53,16 +49,12 @@ public class PlayerAnimController : AnimController
 		baseSkinName = skins[animIdx].skin[(int)curBaseSkinIdx];
 		curAnim = anims[animIdx];
 
-		skeletonAnimation.skeleton.SetSkin(baseSkinName);
-		skeletonAnimation.Skeleton.SetSlotsToSetupPose();
+        base.SetAnim();
 
-		if (animState != PlayerAnimState.Wave && (isBreath || animState == PlayerAnimState.Run))
+        if (animState != PlayerAnimState.Wave && (isBreath || animState == PlayerAnimState.Run))
 		{   // 총을 쏘거나 마우스 이동의 얼굴 방향 및 표정 스킨 갱신 (단 대시중에는 변경 금지)
 			ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
 		}
-
-		skeletonAnimation.AnimationName = curAnim;
-		skeletonAnimation.ApplyAnimation();
 	}
 
     protected override void ChangeSkinSlot(Direction _region)
@@ -107,24 +99,24 @@ public class PlayerAnimController : AnimController
 
 	Direction SetMouseDirection(float x, float y)
 	{
-		if (x >= mouseDirMaxX && y >= mouseDirMaxY)
+		if (x >= dirMaxX && y >= dirMaxY)
 			curDirectionIdx = Direction.BACK_R;
 
-		else if (x >= mouseDirMinX && x < mouseDirMaxX && y >= mouseDirMaxY)
+		else if (x >= dirMinX && x < dirMaxX && y >= dirMaxY)
 			curDirectionIdx = Direction.BACK;
 
-		else if (x >= mouseDirMaxX && y < mouseDirMaxY)
+		else if (x >= dirMaxX && y < dirMaxY)
 			curDirectionIdx = Direction.FRONT_R;
 
-		else if (x >= mouseDirMinX && x < mouseDirMaxX && y < mouseDirMaxY)
+		else if (x >= dirMinX && x < dirMaxX && y < dirMaxY)
 			curDirectionIdx = Direction.FRONT;
 
-		else if (x < mouseDirMinX && y < mouseDirMaxY && y >= mouseDirMinY)
+		else if (x < dirMinX && y < dirMaxY && y >= dirMinY)
 			curDirectionIdx = Direction.FRONT_L;
-		else if (x < mouseDirMinX && y < mouseDirMinY)
+		else if (x < dirMinX && y < dirMinY)
 			curDirectionIdx = Direction.FRONT_L;
 
-		else if (x < mouseDirMinX && y >= mouseDirMaxY)
+		else if (x < dirMinX && y >= dirMaxY)
 			curDirectionIdx = Direction.BACK_L;
 
 		return curDirectionIdx;

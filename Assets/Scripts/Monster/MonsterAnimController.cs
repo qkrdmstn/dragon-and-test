@@ -1,5 +1,5 @@
 using System;
-
+using UnityEngine;
 using Spine;
 using Spine.Unity;
 using Spine.Unity.AttachmentTools;
@@ -11,20 +11,46 @@ public enum MonsterAnimState
 
 public class MonsterAnimController : AnimController
 {
-    private void Awake()
+    protected override void Awake()
     {
         base.Awake();
     }
 
-    public override void SetAnim<T>(T _animState, float x = 0, float y = 0)
-    {   // x = direction
-        // directions = { 0, 45, 90, 180, 270, 315, 360}
-        MonsterAnimState animState = Enum.Parse<MonsterAnimState>(_animState.ToString());
+    public override void SetAnim()
+    {   // 생성
+        baseSkinName = skins[0].skin[(int)Direction.FRONT];
+        curAnim = anims[(int)MonsterAnimState.Spawn];
 
-        if(animState == MonsterAnimState.Attack)
-        {
-
-        }
+        base.SetAnim();
     }
 
+    public override void SetAnim<T>(T _animState, Direction direction)
+    {  
+        MonsterAnimState animState = Enum.Parse<MonsterAnimState>(_animState.ToString());
+        
+        if(animState == MonsterAnimState.Run) skeletonAnimation.loop = true;
+        else skeletonAnimation.loop = false;
+
+        baseSkinName = skins[0].skin[(int)direction];
+        curAnim = anims[(int)animState];
+
+        base.SetAnim();
+    }
+
+    public Direction FindDirToPlayer(Vector3 direction)
+    {   // 방향이 바뀔 때마다 6방향 애니메이션을 틀어야함
+        if(direction.y > dirMaxY)
+        {   // back
+            if (direction.x > dirMaxX ) curDirectionIdx = Direction.BACK_R;
+            else if (direction.x > dirMinX) curDirectionIdx = Direction.BACK;
+            else    curDirectionIdx = Direction.BACK_L;
+        }
+        else
+        {   // front
+            if (direction.x > dirMaxX) curDirectionIdx = Direction.FRONT_R;
+            else if (direction.x > dirMinX) curDirectionIdx = Direction.FRONT;
+            else  curDirectionIdx = Direction.FRONT_L;
+        }
+        return curDirectionIdx;
+    }
 }

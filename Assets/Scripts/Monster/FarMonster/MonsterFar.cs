@@ -20,11 +20,6 @@ public class MonsterFar : MonsterBase
     public MonsterChaseState chaseState { get; private set; }
     public MonsterAttackState attackState { get; private set; }
     public float attackRange = 8.0f;
-    public float distanceToPlayer;
-    #endregion
-
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
@@ -38,10 +33,6 @@ public class MonsterFar : MonsterBase
     public override void Start()
     {
         base.Start();
-
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false; 
 
         stateMachine.Initialize(chaseState);
     }

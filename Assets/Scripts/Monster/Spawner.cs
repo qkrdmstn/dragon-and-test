@@ -157,33 +157,36 @@ public class Spawner : MonoBehaviour
             if (idx >= spawnDB.Length) //끝까지 찾음
                 break;
         }
-        StartCoroutine(SpawnMonster(monsters, positions));
+        //StartCoroutine(SpawnMonster(monsters, positions));
+        SpawnMonster(monsters, positions);
     }
 
-    IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
+    void SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
     {
-        //위치 미리보기
-        List<GameObject> displayPos = new List<GameObject>();
-        for(int i=0; i< positions.Count; i++)
-            displayPos.Add(Instantiate(circle, positions[i], Quaternion.identity));
-
-        //Spawn Delay
-        float spawnTimer = spawnDelay;
-        //if (curWave == 0)
-        //    spawnTimer = 0.0f;
-        while (spawnTimer >= 0.0)
-        {
-            spawnTimer -= Time.deltaTime;
-            yield return null;
-        }
-
         //몬스터 생성
         for (int i = 0; i < positions.Count; i++)
         {
-            Destroy(displayPos[i]);
             Instantiate(monsters[i], positions[i], Quaternion.identity);
         }
     }
+
+    //IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
+    //{
+    //    //위치 미리보기
+    //    List<GameObject> displayPos = new List<GameObject>();
+    //    for(int i=0; i< positions.Count; i++)
+    //        displayPos.Add(Instantiate(circle, positions[i], Quaternion.identity));
+
+    //    //Spawn Delay
+    //    yield return new WaitForSeconds(spawnDelay);
+
+    //    //몬스터 생성
+    //    for (int i = 0; i < positions.Count; i++)
+    //    {
+    //        Destroy(displayPos[i]);
+    //       Instantiate(monsters[i], positions[i], Quaternion.identity);
+    //    }
+    //}
 
     public void DeathCount()
     {

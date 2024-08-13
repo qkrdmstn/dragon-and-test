@@ -35,6 +35,5 @@ public class MonsterAttackStateDash : MonsterState
                 stateMachine.ChangeState(monster.idleState);
             }
         }
-        
     }
 }

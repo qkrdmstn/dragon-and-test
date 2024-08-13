@@ -23,12 +23,7 @@ public class MonsterEliteBird : MonsterBase
     public float chaseRange = 20.0f;
     public float attackRange = 8.0f;
     public float escapeRange = 4.0f;
-    public float distanceToPlayer;
     private Vector3 dir;
-    #endregion
-
-    #region Navigate
-    public UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
@@ -42,10 +37,6 @@ public class MonsterEliteBird : MonsterBase
     public override void Start()
     {
         base.Start();
-
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
 
         stateMachine.Initialize(chaseState);
     }

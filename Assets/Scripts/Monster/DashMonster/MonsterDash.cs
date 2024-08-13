@@ -23,12 +23,6 @@ public class MonsterDash : MonsterBase
     public MonsterAttackStateDash attackState { get; private set; }
     public float chaseRange = 10.0f;
     public float attackRange = 4.0f;
-    
-    public float distanceToPlayer;
-    #endregion
-
-    #region Navigate
-    private UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     public override void Awake()
@@ -46,9 +40,6 @@ public class MonsterDash : MonsterBase
 
         spriteRenderer = attackWarning.GetComponent<SpriteRenderer>();
 
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
         SpeedToZero();
     }
 
@@ -107,7 +98,10 @@ public class MonsterDash : MonsterBase
         inAttack = true;
         warning = true;
         attackWarning.SetActive(true);
-        anim.SetTrigger("attacking");
+
+        Invoke("AttackPoint", 0.9f);
+        Invoke("OutAttack", 1.5f);
+        //anim.SetTrigger("attacking");
     }
     
     public void AttackPoint()
