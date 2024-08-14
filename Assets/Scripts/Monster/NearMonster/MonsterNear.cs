@@ -10,6 +10,7 @@ public class MonsterNear : MonsterBase
     public GameObject sword;
     public GameObject swordAura;
     public bool isSpawned = false;  // 다른 몬스터 애니메이션 생기면 base로 이동될 변수
+    public bool isFirst = true;
     public float deadSec = 0.6f;    // range : 0.0f ~ 0.7f
     BoxCollider2D swordCollider;
 
