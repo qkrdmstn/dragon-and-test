@@ -34,7 +34,7 @@ public class BlockInfo : MonoBehaviour, IComparable
     public Vector3 GridToWorldPosition(Vector2 gridPos)
     {
         Vector2 offset = gridPos * this.gridSize + (this.gridSize / 2);
-        Vector3 pos = this.blockPos + offset;
+        Vector3 pos = this.min + offset;
         if (IsInBlock(pos))
             return pos;
         else
