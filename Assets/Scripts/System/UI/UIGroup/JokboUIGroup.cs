@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
-    [SerializeField] SynergyInfo synergyTable;
+    //[SerializeField] SynergyInfo synergyTable;
+    SynergyEntity[] skillDB;
 
     bool isFirst = true;
 
@@ -16,9 +17,14 @@ public class JokboUIGroup : UIGroup {
         SetSynergyName();
     }
 
+    private async void Start()
+    {
+        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:E");
+    }
+
     private void Update()
     {
-        if (ScenesManager.instance.GetSceneNum() == 0 || !Tutorial.getJokbo) return;
+        if (ScenesManager.instance.GetSceneNum() == 0) return;
         // start이거나 튜토리얼에서 족보를 아직 획득하지 않았다면 열리지 않습니다.
 
         if (Input.GetKeyDown(KeyCode.K))
@@ -63,13 +69,12 @@ public class JokboUIGroup : UIGroup {
             if (childobjs.Length == 0) continue;
             for(int i=0; i<childobjs.Length;i+=2)
             {
-                childobjs[i].text = synergyTable.SynergyEntity[idx].synergyName;    // name
-                childobjs[i + 1].text = synergyTable.SynergyEntity[idx].info;       // synergtDesc
+                childobjs[i].text = skillDB[idx].synergyName;
+                childobjs[i + 1].text = skillDB[idx].info;
                 idx++;
             }
 
             Image[] imgs = obj.GetComponentsInChildren<Image>(true);
-            Debug.Log(imgs.Length);
             for (int i = 0; i < imgs.Length; i += 3)
             {
                 if (imgs[i].transform.name == "Viewport") i++;
