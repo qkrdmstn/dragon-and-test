@@ -201,8 +201,11 @@ public class MonsterNear : MonsterBase
         float sec = Mathf.Clamp(deadSec, 0f, 0.7f);
         yield return new WaitForSeconds(sec);
 
-        ItemDrop();
-        spawn.DeathCount();
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+        {
+            spawn.DeathCount();
+            ItemDrop();
+        }
         yield return new WaitForSeconds(0.7f - sec);
 
         Destroy(gameObject);

@@ -55,6 +55,11 @@ public class BlockInfo : MonoBehaviour, IComparable
             return true;
     }
 
+    public Vector2Int GetMaxGridPos()
+    {
+        return new Vector2Int((int)(blockSize.x / gridSize.x), (int)(blockSize.y / gridSize.y));
+    }
+
     public int CompareTo(object obj)
     {
         Vector2 thisPos = this.transform.position;
