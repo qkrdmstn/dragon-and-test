@@ -11,6 +11,8 @@ public class BossPattern3State_Jan : BossState_Jan
     public override void Enter()
     {
         base.Enter();
+
+        stateMachine.ChangeState(boss.BossPattern2State);
     }
 
     public override void Exit()

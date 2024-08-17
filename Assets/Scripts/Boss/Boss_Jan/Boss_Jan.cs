@@ -37,12 +37,40 @@ public class Boss_Jan : Boss
     public int loadedBullet;
     public float maxRecoilDegree;
     public float bulletSpeed;
+    public int reloadCnt = 0;
+
+    [Header("Pattern1 Info")]
+    public float pattern1Prob = 0.5f;
+    public float sphereShootNum;
+    public float sphereInterval;
+    public float sphereRandomInterval;
+
+    public float randomShootNum;
+    public float randomInterval;
+
+    public float pattern1BulletSpeed;
+    public float waveNum;
+
+    [Header("Pattern2 Info")]
+    public float pattern2Prob = 0.3f;
+    public GameObject displayPrefab;
+    public float pattern2Delay;
+    public int pattern2ShootNum;
+    public float pattern2ShootDelay;
+    public float pattern2RangeDisplayTime;
+    public int pattern2ShootOffset;
+    public float pattern2AttackRange;
+    public bool isPattern2;
+
+    [Header("Pattern2 Info")]
+    public float pattern3Prob = 0.2f;
+
 
     [Header("Spawn Monster State Info")]
     public GameObject[] spawnMosnterPrefabs;
     public BlockInfo bossField;
     public float spawnPeriod;
-    public float waveCnt = 0;
+    public float spawnWaveCnt = 0;
     public float spawnDelay = 1.0f;
     public float spawnTimer;
 
@@ -74,7 +102,7 @@ public class Boss_Jan : Boss
         bossChaseState = new BossChaseState_Jan(this, stateMachine, player);
         bossBasicAttackState = new BossBasicAttackState_Jan(this, stateMachine, player);
         BossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
-        BossPattern2State = new BossPattern2State_Jan(this, stateMachine, player);
+        BossPattern2State = new BossPattern2State_Jan(this, stateMachine, player, bossField);
         BossPattern3State = new BossPattern3State_Jan(this, stateMachine, player);
         bossMonsterSpawnState = new BossMonsterSpawnState_Jan(this, stateMachine, player, bossField);
 
@@ -224,5 +252,7 @@ public class Boss_Jan : Boss
         Gizmos.DrawWireSphere(this.transform.position, chaseRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(this.transform.position, attackRange);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(this.transform.position, pattern2AttackRange);
     }
 }

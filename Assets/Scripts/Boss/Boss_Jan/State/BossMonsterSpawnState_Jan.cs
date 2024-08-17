@@ -20,7 +20,7 @@ public class BossMonsterSpawnState_Jan : BossState_Jan
         SpawnMonster();
         stateTimer = boss.spawnDelay;
         boss.spawnTimer = boss.spawnPeriod;
-        boss.waveCnt++;
+        boss.spawnWaveCnt++;
 
         boss.SetVelocity(Vector2.zero);
     }
@@ -42,9 +42,9 @@ public class BossMonsterSpawnState_Jan : BossState_Jan
     private void SpawnMonster()
     {
         int spawnNum = 7;
-        if (boss.waveCnt == 0)
+        if (boss.spawnWaveCnt == 0)
             spawnNum = 4;
-        else if (boss.waveCnt == 1)
+        else if (boss.spawnWaveCnt == 1)
             spawnNum = 6;
 
         Vector2Int[] spawnGridPos = GetSpawnGridPos(spawnNum);

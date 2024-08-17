@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -14,6 +15,7 @@ public class BossBasicAttackState_Jan : BossState_Jan
     {
         base.Enter();
 
+        boss.reloadCnt++;
         boss.StartCoroutine(AttackCoroutine());
     }
 
@@ -78,6 +80,16 @@ public class BossBasicAttackState_Jan : BossState_Jan
             }
         }
 
+        if(boss.reloadCnt % 3 == 0)
+        {
+            float randomVal = Random.Range(0.0f, 1.0f);
+            if (randomVal <= boss.pattern1Prob)
+                stateMachine.ChangeState(boss.BossPattern1State);
+            else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob)
+                stateMachine.ChangeState(boss.BossPattern2State);            
+            else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob + boss.pattern3Prob)
+                stateMachine.ChangeState(boss.BossPattern3State);
+        }
         stateMachine.ChangeState(boss.bossIdleState);
     }
 }

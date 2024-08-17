@@ -44,6 +44,15 @@ public class BlockInfo : MonoBehaviour, IComparable
         }
     }
 
+    public Vector2Int WorldToGridPosition(Vector3 worldPos)
+    {
+        Vector2 worldPos2d = new Vector2(worldPos.x, worldPos.y);
+        Vector2 localPos = worldPos2d - min;
+        Vector2Int gridPos = new Vector2Int((int)localPos.x / (int)gridSize.x, (int)localPos.y / (int)gridSize.y);
+
+        return gridPos;
+    }
+
     //매개변수 position이 현재 블록 내에 존재하는지 판단
     public bool IsInBlock(Vector3 pos)
     {

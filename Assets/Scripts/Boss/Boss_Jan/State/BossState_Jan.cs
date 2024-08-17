@@ -28,7 +28,7 @@ public class BossState_Jan : BossState
         if(boss.isDead)
             stateMachine.ChangeState(boss.bossIdleState);
 
-        if (boss.spawnTimer < 0.0f)
+        if (!boss.isDead && boss.spawnTimer < 0.0f)
             stateMachine.ChangeState(boss.bossMonsterSpawnState);
     }
 

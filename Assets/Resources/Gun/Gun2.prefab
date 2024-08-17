@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 6
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &2960511163376235610
@@ -107,13 +107,16 @@ MonoBehaviour:
   magazineSize: 0
   loadedBullet: 0
   maxRecoilDegree: 0
+  recoilIncrease: 0
   gunPrefab: {fileID: 0}
   bulletPrefab: {fileID: 0}
   isReloading: 0
   clickReloadFlag: 0
   isAttacking: 0
+  continuousShootCnt: 0
   profile: {fileID: 11400000, guid: 9ba0c8b5bcc7e435d8936bd30374b50f, type: 2}
   cameraManager: {fileID: 0}
+  reloadUIImg: {fileID: 0}
 --- !u!114 &7032463676864471577
 MonoBehaviour:
   m_ObjectHideFlags: 0
