@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
 public class MonsterBase : MonoBehaviour
 {
@@ -64,7 +66,9 @@ public class MonsterBase : MonoBehaviour
         money = Resources.Load<GameObject>("Prefabs/Item/Money");
 
         if (Player.instance.isTutorial) return;
-        eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
+
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+            eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
 
     public virtual void Start()
@@ -80,7 +84,9 @@ public class MonsterBase : MonoBehaviour
         agent.updateUpAxis = false;
 
         if (Player.instance.isTutorial) return;
-        spawn = eventManager.GetComponent<Spawner>();
+
+        if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+            spawn = eventManager.GetComponent<Spawner>();
     }
 
     public virtual void Update()
@@ -190,8 +196,12 @@ public class MonsterBase : MonoBehaviour
         {
             isDead = true;
             Destroy(gameObject);
-            spawn.DeathCount();
-            ItemDrop();
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+            {
+                spawn.DeathCount();
+                ItemDrop();
+            }
+
         }
     }
 

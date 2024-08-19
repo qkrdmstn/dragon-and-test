@@ -95,6 +95,9 @@ public class ScenesManager : MonoBehaviour
         if (scene.buildIndex == 9)
             _sceneInfo = SceneInfo.Town_1;
 
+        if (scene.buildIndex == 6)
+            _sceneInfo = SceneInfo.Boss_1;
+
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
         Player.instance.InitbySceneLoaded(_sceneInfo);
 

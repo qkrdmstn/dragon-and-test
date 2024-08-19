@@ -317,6 +317,7 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Boss_1:
                 isCombatZone = true;
+                pos = new Vector3(-13f, -13f, 0);
                 break;
         }
 
