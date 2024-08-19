@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class TutorialNear : MonsterNear
 {
+    [Header("Tutorial----------")]
+    public Tutorial.TutorialMonsters myNum;
+    public Tutorial.MonsterState myState;
+    Tutorial tutorial;
+
     public int myHwatuNum;
     public override void Awake()
     {
         base.Awake();
+        tutorial = FindObjectOfType<Tutorial>();
     }
     public override void Start()
     {
         base.Start();
+        myState = tutorial.monsters[(int)myNum];
     }
 
     public override void Update()

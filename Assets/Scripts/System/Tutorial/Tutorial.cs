@@ -24,14 +24,27 @@ public enum TutorialUIListOrder
     Move
 }
 
+
 public class Tutorial : MonoBehaviour
 {
     [SerializeField] List<GameObject> scareScrows;
     [SerializeField] List<BoxCollider2D> boundColliders;
-    [SerializeField] GameObject monsters;
+
+    public enum TutorialMonsters
+    {
+        attack, battle1, battle2, battle3, hwatu12, hwatu13, skill
+    }
+    [System.Serializable]
+    public class MonsterState
+    {
+        public GameObject monster;
+        public bool isKilled;
+    }
+    public List<MonsterState> monsters;
+
     [SerializeField] GameObject jokbo;
     [SerializeField] BlanketInteractionData blanket;
-
+    BlanketInteraction blanketInteraction;
     TutorialDBEntity[] tutoDB;
 
     public Vector3 padding;
@@ -77,16 +90,14 @@ public class Tutorial : MonoBehaviour
     // DialogUI
     TextMeshProUGUI dialogTxt;
 
-    // CheckVariable
-    public bool isStart = false;
+    [Header("Dialog State")]
     public bool canSpeak = false;
     public bool isInteraction = false;
     public bool isActiveDone = false;
     public int curSequence;
     public int curIdx = 0;
-    public static bool generateBullet = false;
-
     public bool[] checkSequenceDone;
+    public static bool generateBullet = false;
 
     private async void Start()
     {
@@ -108,12 +119,6 @@ public class Tutorial : MonoBehaviour
         {   // 허수아비의 머리 위에 말풍선을 위치
             UIManager.instance.curUIGroup.childUI[0].transform.position = 
                 Camera.main.WorldToScreenPoint(curScarescrow.transform.position) + padding;
-        }
-
-        if (isStart)
-        {
-            isStart = false;
-            StartCoroutine(StartDialog());
         }
 
         if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
@@ -159,15 +164,17 @@ public class Tutorial : MonoBehaviour
                 else i++;
             }
         }
+        ScenesManager.instance.isLoadedDB++;
     }
 
     void StartFirstDialog()
     {
         curSequence = 0;
         SetScarescrow(ScareScrowType.Start);
-
+        
         playerInteraction = Player.instance.GetComponentInChildren<PlayerInteraction>();
-        isStart = true;
+
+        StartCoroutine(StartDialog());
     }
 
     public void LoadEvent(int sequence)
@@ -180,8 +187,6 @@ public class Tutorial : MonoBehaviour
 
     void SetScarescrow(ScareScrowType type)
     {
-        UIManager.instance.curUIGroup.childUI[0].SetActive(true);
-
         curScarescrow = scareScrows[(int)type];
         curBoundCollider = boundColliders[(int)type];
     }
@@ -197,10 +202,10 @@ public class Tutorial : MonoBehaviour
         switch (curSequence)
         {
             case 1:
-                MonsterTutorial monster = monsters.transform.GetChild(0).GetComponent<MonsterTutorial>();
+                TutorialFar tutoFar = monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>();
                 if (curIdx == 1)
                 {
-                    monster.gameObject.SetActive(true);
+                    monsters[0].monster.SetActive(true);
                     TutorialUIforAnim("isAttack", true, TutorialUIListOrder.BasicSkill);
                     onTutorials = CheckAttack;
                 }
@@ -211,14 +216,12 @@ public class Tutorial : MonoBehaviour
                 }
                 else if (curIdx == 3)
                 {
-                    killState = 2;
-                    monster.ChangeChaseState(true);
+                    tutoFar.ChangeChaseState(true);
                     onTutorials = CheckKill;
                 }
                 else if (curIdx == 4)
                 {
                     generateBullet = true;
-                    //curBoundCollider.isTrigger = true;
                     isInteraction = false;
                 }
                 break;
@@ -232,9 +235,9 @@ public class Tutorial : MonoBehaviour
             case 3:
                 if (curIdx == 1)
                 {
-                    monsters.transform.GetChild(0).gameObject.SetActive(true);
-                    monsters.transform.GetChild(1).gameObject.SetActive(true);
-                    monsters.transform.GetChild(2).gameObject.SetActive(true);
+                    monsters[(int)TutorialMonsters.battle1].monster.SetActive(true);
+                    monsters[(int)TutorialMonsters.battle2].monster.SetActive(true);
+                    monsters[(int)TutorialMonsters.battle3].monster.SetActive(true);
                     boundColliders[6].isTrigger = true;
 
                     onTutorials = CheckBattle;
@@ -255,49 +258,38 @@ public class Tutorial : MonoBehaviour
                 }
                 break;
 
-            case 5:
-                if(curIdx == 2)
+            case 5: // skill
+                if(curIdx == 5)
                 {
                     onTutorials = CheckGetHwatu;
                 }
-                else if(curIdx == 3)
+                else if(curIdx == 6)
                 {
                     onTutorials = CheckBlanket;
                 }
-                //if (curIdx == 1)
-                //{   // skill - JunButterfly
-                //    blanket = Instantiate(blanket,
-                //        Player.instance.transform.position + Vector3.right,
-                //        Quaternion.identity, transform);
-                //    onTutorials = CheckGiveSkill;
-                //}
-                //else if (curIdx == 2) {
-                //    TutorialUIforAnim("isHwatuSkill", true, TutorialUIListOrder.HwatuSkill);
-                //    onTutorials = CheckSkill;
-                //} 
-                //else if (curIdx == 3)
-                //{
-                //    TutorialUIforAnim("isTab", true, TutorialUIListOrder.HwatuSkill);
-                //    onTutorials = CheckTab;
-                //}
-                //else if (curIdx == 4)
-                //{
-                //    onTutorials = CheckKnockBack;
-                //    monsters.transform.GetChild(0).gameObject.SetActive(true);  // 넉백 당할 참새 소환
-                //}
+                else if(curIdx == 7)
+                {   // 아래에 있는 화투패를 드래그 해서 모포 2장 올려놓으면 스킬을 만들 수 있어!
+                    blanketInteraction = playerInteraction.blanketInteraction as BlanketInteraction;
+                    onTutorials = CheckSkillInBlanket;
+                }
+                else if(curIdx == 11)
+                {
+                    monsters[(int)TutorialMonsters.skill].monster.SetActive(true);
+                    onTutorials = CheckUseSkill;
+                }
                 break;
         }
     }
 
    IEnumerator StartDialog()
-    {   
-        yield return null;
+    {
+        yield return new WaitUntil(()=> UIManager.instance.isEndFade);
 
-        if(!isInteraction)
+        if (!isInteraction)
         {
             SetNextDialog();    // curIdx = 0
             curIdx++;
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1f);
 
             TutorialUIforAnim("isInteraction", true, TutorialUIListOrder.Interation);
             yield return new WaitForSeconds(1f);
@@ -315,7 +307,10 @@ public class Tutorial : MonoBehaviour
 
     void SetNextDialog()
     {
-        if(tutorialDatas[curSequence].dialogues.Count > curIdx)
+        if (!UIManager.instance.curUIGroup.childUI[0].activeSelf)
+            UIManager.instance.curUIGroup.childUI[0].SetActive(true);
+
+        if (tutorialDatas[curSequence].dialogues.Count > curIdx)
         {
             dialogTxt.text = tutorialDatas[curSequence].dialogues[curIdx].dialog;
             if (tutorialDatas[curSequence].dialogues[curIdx].isAction)
@@ -351,10 +346,10 @@ public class Tutorial : MonoBehaviour
     }
 
     #region CheckTutorialSituation
-    public static int killState = 0;
+    public bool isAttacked = false;
     bool CheckAttack()
     {
-        if (killState == 1)
+        if (isAttacked)
         {
             UIManager.instance.curUIGroup.SwitchAnim("isAttack", false);
             isInteraction = false;
@@ -376,9 +371,8 @@ public class Tutorial : MonoBehaviour
 
     bool CheckKill()
     {
-        if (killState == 3)
+        if (monsters[(int)TutorialMonsters.attack].isKilled)
         {
-            killState = 4;
             isInteraction = false;
             return true;
         }
@@ -396,10 +390,11 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
-    public static int deadCnt = 0;
     bool CheckBattle()
     {
-        if (deadCnt >= 3)
+        if (monsters[(int)TutorialMonsters.battle1].isKilled &
+            monsters[(int)TutorialMonsters.battle2].isKilled &
+            monsters[(int)TutorialMonsters.battle3].isKilled)
         {
             isInteraction = false;
             return true;
@@ -439,8 +434,8 @@ public class Tutorial : MonoBehaviour
     {
         if (isHwatuMonster && Input.GetKeyDown(KeyCode.F))
         {
-            monsters.transform.GetChild(0).gameObject.SetActive(true);
-            monsters.transform.GetChild(1).gameObject.SetActive(true);
+            monsters[(int)TutorialMonsters.hwatu12].monster.SetActive(true);
+            monsters[(int)TutorialMonsters.hwatu13].monster.SetActive(true);
             isHwatuMonster = false;
         }
         if (SkillManager.instance.materialCardCnt >= 2) return true;
@@ -457,39 +452,23 @@ public class Tutorial : MonoBehaviour
         else return false;
     }
 
-    bool CheckSkill()
+    bool CheckSkillInBlanket()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            UIManager.instance.curUIGroup.SwitchAnim("isHwatuSkill", false);
-            isInteraction = false;
+        if (blanketInteraction.selectedCnt == 2)
+        {   // 화투패 2장 획득 완료
             return true;
         }
-        return false;
+        else return false;
     }
 
-    public static bool isTab = false;
-    bool CheckTab()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            UIManager.instance.curUIGroup.SwitchAnim("isTab", false);
-            isTab = true;
-            isInteraction = false;
-            return true;
-        }
-        return false;
-    }
-
-    public static bool useSkill = false;
-    public static bool isWarriorDied = false;
-    bool CheckKnockBack()
-    {
-        if ((Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E)) && monsters.transform.GetChild(0).GetComponent<MonsterTutorial>().isKnockedBack)
+    public bool useSkill = false;
+    bool CheckUseSkill()
+    {   // 3땡 : 일정 시간동안 브레스영역이 활성화 되고 여기 닿으면 데미지
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
         {
             useSkill = true;
         }
-        if(useSkill && isWarriorDied)
+        if(useSkill && monsters[6].isKilled)
         {
             isInteraction = false;
             return true;

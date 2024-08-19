@@ -53,19 +53,14 @@ public class SkillManager : MonoBehaviour
             Destroy(this.gameObject); //새로만든거 삭제
         }
 
-        ////배틀 씬에서만 유지
-        //if (ScenesManager.instance == null || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
-        //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
-        //    || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
-        //{
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
     async void Start()
     {   //Initialize
         InitializeSkillData();
-        await LoadSkillDB();
         InitializeUI(); 
+        await LoadSkillDB();
     }
 
     void Update()
@@ -127,6 +122,7 @@ public class SkillManager : MonoBehaviour
         {
             skillDBDictionary.Add(datas[i].TransStringToEnum(), datas[i]);
         }
+        ScenesManager.instance.isLoadedDB++;
     }
 
     private void InitializeUI()

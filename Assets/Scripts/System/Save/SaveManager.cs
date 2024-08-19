@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
+using System.Collections;
 
 public class SaveManager : MonoBehaviour
 {
@@ -88,8 +88,15 @@ public class SaveManager : MonoBehaviour
             SkillManager.instance.activeSkillCnt = data[index].curSkillCnt;
             SkillManager.instance.activeSkillData = data[index].skills;
             SkillManager.instance.UpdateActiveSkillSlot();
-            //data[index].curGun;
         }
+        StartCoroutine(IsLoadedStartData());
+    }
+
+    IEnumerator IsLoadedStartData()
+    {
+        Debug.Log("data Loading...");
+        yield return new WaitUntil(()=>ScenesManager.instance.IsCompletedLoadData(0));
+
         UIManager.instance.StartFade((int)SceneInfo.Town_1);
     }
 

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System.Threading.Tasks;
+using TMPro;
 
 public class DialogueInteraction : Interaction
 {
@@ -54,6 +54,7 @@ public class DialogueInteraction : Interaction
     async Task LoadDialogueDBEntity()
     {
         dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:F");
+        ScenesManager.instance.isLoadedDB++;
     }
 
     void LoadDialogData()

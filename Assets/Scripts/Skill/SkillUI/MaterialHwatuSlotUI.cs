@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
-using Unity.VisualScripting;
 
 public class MaterialHwatuSlotUI : MonoBehaviour
     , IPointerEnterHandler
@@ -28,7 +27,6 @@ public class MaterialHwatuSlotUI : MonoBehaviour
 
     private Image image;
 
-    // Start is called before the first frame update
     void Awake()
     {
         image = GetComponent<Image>();
@@ -101,6 +99,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
         isDrag = false;
         RectTransform rectTransform = this.GetComponent<RectTransform>();
         BlanketUI blanketUI = transform.GetComponentInParent<BlanketUI>();
+
         bool isInBlanket = blanketUI.IsInBlanket(rectTransform);
         bool isInTrashCan = blanketUI.IsInTrashCan(rectTransform);
 
@@ -109,7 +108,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
             BlanketInteraction blanketInteraction = FindObjectOfType<BlanketInteraction>();
             bool isCombinationPossible = blanketInteraction.AddSelectedHwatu(this); //조합 체크
 
-            if (isCombinationPossible) //가능한 조합
+            if (isCombinationPossible) // 가능한 조합
             {
                 Vector3 pos = Input.mousePosition + dragOffset;
                 Quaternion rot = Quaternion.identity;

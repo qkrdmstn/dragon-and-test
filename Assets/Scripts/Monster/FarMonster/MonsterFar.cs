@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MonsterFar : MonsterBase
 {
+    [Header("MonsterFar---------------")]
     #region MonsterShoot
     public float monsterShootTimer;
     public float monsterShootDelay = 0.7f;

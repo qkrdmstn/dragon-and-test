@@ -73,8 +73,11 @@ public class Spawner : MonoBehaviour
 
     public async Task LoadSpawnTable(SheetType _type)
     {
-       spawnDB = await DataManager.instance.GetValues<SpawnDB>(_type,"A1:E");
-       controlSpawnData();
+        spawnDB = await DataManager.instance.GetValues<SpawnDB>(_type,"A1:E");
+        controlSpawnData();
+
+        ScenesManager.instance.isLoadedDB++;
+
     }
 
     void StartWave()

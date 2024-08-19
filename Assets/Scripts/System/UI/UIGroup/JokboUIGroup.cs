@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
 using UnityEngine.UI;
 
 public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
-    //[SerializeField] SynergyInfo synergyTable;
     SynergyEntity[] skillDB;
 
     bool isFirst = true;
@@ -19,9 +17,14 @@ public class JokboUIGroup : UIGroup {
 
     private async void Start()
     {
-        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:E");
+        await LoadJokboDBEntity();
     }
 
+    async Task LoadJokboDBEntity()
+    {
+        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:C");
+        ScenesManager.instance.isLoadedDB++;
+    }
     private void Update()
     {
         if (ScenesManager.instance.GetSceneNum() == 0) return;
@@ -42,13 +45,13 @@ public class JokboUIGroup : UIGroup {
     void SetUI()
     {
         if (isFirst)
-        {   
+        {
             InitDesc();
             isFirst = false;
         }
 
         if (!childUI[0].activeSelf)
-        {   
+        {
             foreach (GameObject gameObject in hwatuInfoPages)
             {
                 gameObject.SetActive(false);
@@ -62,12 +65,12 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach(GameObject obj in hwatuInfoPages)
-        {   
+        foreach (GameObject obj in hwatuInfoPages)
+        {
             TextMeshProUGUI[] childobjs = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
-            
+
             if (childobjs.Length == 0) continue;
-            for(int i=0; i<childobjs.Length;i+=2)
+            for (int i = 0; i < childobjs.Length; i += 2)
             {
                 childobjs[i].text = skillDB[idx].synergyName;
                 childobjs[i + 1].text = skillDB[idx].info;
@@ -98,7 +101,8 @@ public class JokboUIGroup : UIGroup {
     }
 
     string[] synergeName;
-    void SetSynergyName() {
+    void SetSynergyName()
+    {
         synergeName = new string[22];
         synergeName[0] = SeotdaHwatuCombination.GTT38.ToString();
         synergeName[1] = SeotdaHwatuCombination.GTT18.ToString();
@@ -126,7 +130,7 @@ public class JokboUIGroup : UIGroup {
 
     int GetSynergeName(string curSynergy)
     {
-        for(int i=0; i<synergeName.Length;i++)
+        for (int i = 0; i < synergeName.Length; i++)
         {
             if (curSynergy == synergeName[i]) return i;
         }
@@ -139,7 +143,7 @@ public class JokboUIGroup : UIGroup {
         Player.instance.isStateChangeable = !state;
         Player.instance.isAttackable = !state;
         Player.instance.isInteraction = state;
-        
+
         Time.timeScale = state ? 0.0f : 1.0f;
         childUI[0].SetActive(state);
 

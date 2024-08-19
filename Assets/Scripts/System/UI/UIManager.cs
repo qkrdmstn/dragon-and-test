@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum UI
+{
+    Start, Tutorial, Town_1, Battle_1, Dialogue, Inventory, GameExit
+}
+
 public class UIManager : MonoBehaviour
 { 
     public static UIManager instance = null;
@@ -63,7 +68,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            isEndFade = false;
+            isEndFade = true;
             isFading = false;
         }
         fadeObj.SetActive(state);
@@ -72,6 +77,7 @@ public class UIManager : MonoBehaviour
     public void StartFade(int sceneNum)
     {
         SetFadeObjState(true);
+        ScenesManager.instance.isLoadedDB = 0;
         fade.ManageFade(sceneNum);
     }
 

@@ -12,15 +12,30 @@ public enum SceneInfo
     Battle_1_A,
     Battle_1_B,
     Battle_1_C,
-    
     Boss_1
 };
+
+[System.Serializable]
+public struct UIState
+{
+    public UI myUI;
+    public bool state;
+}
+
+[System.Serializable]
+public struct SceneInfos
+{
+    public SceneInfo myScene;
+    public UIState[] curSceneUIState;
+    public int loadDBcnt;   // 각 씬마다 로드될 DB가 다 불러와지면 ++되고 지정한 숫자가 되면 fadeOut됩니다
+}
 
 public class ScenesManager : MonoBehaviour
 {
     public static ScenesManager instance = null;
     public bool isLoading = false;
-
+    public int isLoadedDB = 0;
+    public List<SceneInfos> sceneInfos = new List<SceneInfos>();
     private void Awake()
     {
         if (instance == null)
@@ -60,7 +75,7 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeScene(int _sceneInfo)
     {
-        if(_sceneInfo != (int)SceneInfo.Tutorial)
+        if (_sceneInfo != (int)SceneInfo.Tutorial)
             GunManager.instance.SaveGunData();
 
         SceneManager.LoadScene(_sceneInfo);
@@ -82,53 +97,29 @@ public class ScenesManager : MonoBehaviour
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
         Player.instance.InitbySceneLoaded(_sceneInfo);
-        
-        switch (_sceneInfo)
+
+        foreach(UIState ui in sceneInfos[scene.buildIndex].curSceneUIState)
         {
-            case SceneInfo.Start:
-                return;
-
-            case SceneInfo.Town_1:      // 1
-                UIManager.instance.SceneUI["Start"].SetActive(false);
-                UIManager.instance.SceneUI["Tutorial"].SetActive(false);
-                UIManager.instance.SceneUI["Battle_1"].SetActive(false);
-
-                UIManager.instance.SceneUI["Town_1"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Town_1"].GetComponent<UIGroup>();
-                break;
-
-            case SceneInfo.Tutorial:    // 2
-                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-                UIManager.instance.SceneUI["Tutorial"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Tutorial"].GetComponent<UIGroup>();
-                break;
-
-            case SceneInfo.Puzzle_1:    // 3
-                UIManager.instance.SceneUI["Town_1"].SetActive(false);
-                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-                break;
-
-            case SceneInfo.Battle_1_A:
-            case SceneInfo.Battle_1_B:
-            case SceneInfo.Battle_1_C:
-                UIManager.instance.SceneUI["Town_1"].SetActive(false);
-                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-                break;
-            
-            case SceneInfo.Boss_1:
-                UIManager.instance.SceneUI["Town_1"].SetActive(false);
-                UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-                UIManager.instance.SceneUI["Inventory"].SetActive(true);
-                UIManager.instance.curUIGroup = UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>();
-                break;
+            ManageActiveUI(ui.myUI.ToString(), ui.state);
         }
+        UIManager.instance.curUIGroup = UIManager.instance.SceneUI[sceneInfos[scene.buildIndex].myScene.ToString()].GetComponent<UIGroup>();
+
         GunManager.instance.Initialize();
         isLoading = false;
+    }
+
+    void ManageActiveUI(string name, bool state)
+    {
+        UIManager.instance.SceneUI[name].SetActive(state);
+    }
+
+    public bool IsCompletedLoadData(int curScene)
+    {
+        if (isLoadedDB == sceneInfos[curScene].loadDBcnt)
+        {
+            isLoadedDB = 0;
+            return true;
+        }
+        else return false;
     }
 }

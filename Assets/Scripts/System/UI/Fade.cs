@@ -52,8 +52,12 @@ public class Fade : MonoBehaviour
 
         {
             ScenesManager.instance.ChangeScene(_sceneInfo);
+
+            if (ScenesManager.instance.sceneInfos[_sceneInfo].loadDBcnt > 0)
+                yield return new WaitUntil(() => ScenesManager.instance.IsCompletedLoadData(_sceneInfo));
+
+            yield return new WaitForSeconds(.5f);
         }
-        yield return new WaitForSeconds(.5f);
 
         time = 0f;
         while (fadeColor.a > 0f)

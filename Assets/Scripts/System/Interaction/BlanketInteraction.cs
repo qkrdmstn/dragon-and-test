@@ -1,18 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-//using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using Unity.VisualScripting;
-//using Unity.VisualScripting;
-//using UnityEditor.Hardware;
-//using UnityEditor.Experimental.GraphView;
 
 public class BlanketInteraction : Interaction
 {
-    private Player player;
-
     [Header("Prefabs")]
     [SerializeField] private GameObject[] materialHwatuUIObject; //로드되는 Prefab
 
@@ -28,15 +19,10 @@ public class BlanketInteraction : Interaction
 
     [Header("Data")]
     [SerializeField] private MaterialHwatuSlotUI[] selectedHwatuUI = new MaterialHwatuSlotUI[2];
-    [SerializeField] private int selectedCnt = 0;
+    public int selectedCnt = 0;
 
     [Header("State")]
     public bool isBlanketInteraction;
-
-    private void Awake()
-    {
-        player = GetComponentInParent<Player>();
-    }
 
     private void Start()
     {
@@ -65,7 +51,6 @@ public class BlanketInteraction : Interaction
         {
             blanketUI.SetSkillInfoUIInActive();
         }
-
     }
 
     public override void LoadEvent()

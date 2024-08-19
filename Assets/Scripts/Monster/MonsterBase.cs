@@ -50,7 +50,7 @@ public class MonsterBase : MonoBehaviour
     [Header("boolState")]
     public bool inEffect = false;
     public bool isDead = false;
-    public bool isChase = true;
+    public bool isChase;
     public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
 
     public virtual void Awake()
