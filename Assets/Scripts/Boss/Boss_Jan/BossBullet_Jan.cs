@@ -43,6 +43,18 @@ public class BossBullet_Jan : MonoBehaviour
         this.transform.rotation = Quaternion.Euler(0, 0, theta);
     }
 
+    public void BulletInitialize(Vector2 _dir, float _speed, float _lifeTime)
+    {
+        dir = _dir;
+        lifeTimer = _lifeTime;
+        bulletSpeed = _speed;
+
+        float theta = Vector2.Angle(Vector2.right, _dir);
+        if (_dir.y < 0)
+            theta *= -1;
+        this.transform.rotation = Quaternion.Euler(0, 0, theta);
+    }
+
     public void BulletInitialize(Vector2 _dir)
     {
         dir = _dir;

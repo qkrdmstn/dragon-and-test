@@ -41,16 +41,16 @@ public class BossMonsterSpawnState_Jan : BossState_Jan
 
     private void SpawnMonster()
     {
-        int spawnNum = 7;
+        int spawnNum = 5;
         if (boss.spawnWaveCnt == 0)
             spawnNum = 4;
         else if (boss.spawnWaveCnt == 1)
-            spawnNum = 6;
+            spawnNum = 5;
 
         Vector2Int[] spawnGridPos = GetSpawnGridPos(spawnNum);
 
         //몬스터 스폰
-        for (int i=0; i < spawnNum; i++)
+        for (int i = 0; i < spawnNum; i++)
         {
             int idx = Random.Range(0, boss.spawnMosnterPrefabs.Length);
             GameObject.Instantiate(boss.spawnMosnterPrefabs[idx], bossField.GridToWorldPosition(spawnGridPos[i]), Quaternion.identity);

@@ -84,12 +84,13 @@ public class BossBasicAttackState_Jan : BossState_Jan
         {
             float randomVal = Random.Range(0.0f, 1.0f);
             if (randomVal <= boss.pattern1Prob)
-                stateMachine.ChangeState(boss.BossPattern1State);
+                stateMachine.ChangeState(boss.bossPattern1State);
             else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob)
-                stateMachine.ChangeState(boss.BossPattern2State);            
+                stateMachine.ChangeState(boss.bossPattern2State);            
             else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob + boss.pattern3Prob)
-                stateMachine.ChangeState(boss.BossPattern3State);
+                stateMachine.ChangeState(boss.bossPattern3State);
         }
-        stateMachine.ChangeState(boss.bossIdleState);
+        else
+            stateMachine.ChangeState(boss.bossIdleState);
     }
 }

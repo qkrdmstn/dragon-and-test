@@ -43,10 +43,10 @@ public class Boss_Jan : Boss
     public float pattern1Prob = 0.5f;
     public float sphereShootNum;
     public float sphereInterval;
-    public float sphereRandomInterval;
+    public float spherePathInterval;
 
-    public float randomShootNum;
-    public float randomInterval;
+    public float pathInterval;
+    public float pathBulletLifeTime;
 
     public float pattern1BulletSpeed;
     public float waveNum;
@@ -62,8 +62,12 @@ public class Boss_Jan : Boss
     public float pattern2AttackRange;
     public bool isPattern2;
 
-    [Header("Pattern2 Info")]
+    [Header("Pattern3 Info")]
     public float pattern3Prob = 0.2f;
+    public Pattern3Object pattern3Object;
+    public float pattern3Delay = 1.0f;
+    public float pattern3RotationTime = 1.0f;
+    public float pattern3DisplayTime = 1.0f;
 
 
     [Header("Spawn Monster State Info")]
@@ -83,9 +87,9 @@ public class Boss_Jan : Boss
     public BossIdleState_Jan bossIdleState;
     public BossChaseState_Jan bossChaseState;
     public BossBasicAttackState_Jan bossBasicAttackState;
-    public BossPattern1State_Jan BossPattern1State;
-    public BossPattern2State_Jan BossPattern2State;
-    public BossPattern3State_Jan BossPattern3State;
+    public BossPattern1State_Jan bossPattern1State;
+    public BossPattern2State_Jan bossPattern2State;
+    public BossPattern3State_Jan bossPattern3State;
     public BossMonsterSpawnState_Jan bossMonsterSpawnState;
     #endregion
 
@@ -95,15 +99,16 @@ public class Boss_Jan : Boss
         spawnTimer = spawnPeriod;
         bossField = FindObjectOfType<BlockInfo>();
         bossField.InitializeBlockInfo(0);
+        pattern3Object = FindObjectOfType<Pattern3Object>();
 
         stateMachine = new BossStateMachine();
 
         bossIdleState = new BossIdleState_Jan(this, stateMachine, player);
         bossChaseState = new BossChaseState_Jan(this, stateMachine, player);
         bossBasicAttackState = new BossBasicAttackState_Jan(this, stateMachine, player);
-        BossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
-        BossPattern2State = new BossPattern2State_Jan(this, stateMachine, player, bossField);
-        BossPattern3State = new BossPattern3State_Jan(this, stateMachine, player);
+        bossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
+        bossPattern2State = new BossPattern2State_Jan(this, stateMachine, player, bossField);
+        bossPattern3State = new BossPattern3State_Jan(this, stateMachine, player, pattern3Object);
         bossMonsterSpawnState = new BossMonsterSpawnState_Jan(this, stateMachine, player, bossField);
 
         switch (initState)
@@ -118,13 +123,13 @@ public class Boss_Jan : Boss
                 stateMachine.Initialize(bossBasicAttackState);
                 break;
             case BossStates_Jan.pattern1:
-                stateMachine.Initialize(BossPattern1State);
+                stateMachine.Initialize(bossPattern1State);
                 break;
             case BossStates_Jan.pattern2:
-                stateMachine.Initialize(BossPattern2State);
+                stateMachine.Initialize(bossPattern2State);
                 break;
             case BossStates_Jan.pattern3:
-                stateMachine.Initialize(BossPattern3State);
+                stateMachine.Initialize(bossPattern3State);
                 break;
             case BossStates_Jan.spawnMonster:
                 stateMachine.Initialize(bossMonsterSpawnState);
@@ -152,11 +157,11 @@ public class Boss_Jan : Boss
             curState = BossStates_Jan.chase;
         else if (stateMachine.currentState == bossBasicAttackState)
             curState = BossStates_Jan.basicAttack;
-        else if (stateMachine.currentState == BossPattern1State)
+        else if (stateMachine.currentState == bossPattern1State)
             curState = BossStates_Jan.pattern1;
-        else if (stateMachine.currentState == BossPattern2State)
+        else if (stateMachine.currentState == bossPattern2State)
             curState = BossStates_Jan.pattern2;        
-        else if (stateMachine.currentState == BossPattern3State)
+        else if (stateMachine.currentState == bossPattern3State)
             curState = BossStates_Jan.pattern3;
         else if (stateMachine.currentState == bossMonsterSpawnState)
             curState = BossStates_Jan.spawnMonster;
