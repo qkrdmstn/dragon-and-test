@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Video;
 
 public class Fade : MonoBehaviour
 {
     [SerializeField] float fadeTime;
     float start, end, time;
     public Image fadePanel;
-
+    [SerializeField] VideoPlayer loadingVideo;
     void Start()
     {
         start = 1f;
@@ -37,6 +38,7 @@ public class Fade : MonoBehaviour
 
     IEnumerator FadeCoroutine(int _sceneInfo)
     {   // Image
+        
         Color fadeColor = fadePanel.color;
 
         time = 0f;
@@ -51,12 +53,16 @@ public class Fade : MonoBehaviour
         }
 
         {
+            loadingVideo.gameObject.SetActive(true);
+            loadingVideo.Play();
             ScenesManager.instance.ChangeScene(_sceneInfo);
 
             if (ScenesManager.instance.sceneInfos[_sceneInfo].loadDBcnt > 0)
                 yield return new WaitUntil(() => ScenesManager.instance.IsCompletedLoadData(_sceneInfo));
 
             yield return new WaitForSeconds(.5f);
+            loadingVideo.gameObject.SetActive(false);
+            loadingVideo.Pause();
         }
 
         time = 0f;
