@@ -24,7 +24,6 @@ public class TutorialFar : MonsterFar
 
     public override void OnDamaged(int damage)
     {
-        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
         if (!isChase && myNum == Tutorial.TutorialMonsters.attack)
         {
             tutorial.isAttacked = true;

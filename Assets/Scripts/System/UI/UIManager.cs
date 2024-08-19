@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum UI
@@ -17,6 +18,7 @@ public class UIManager : MonoBehaviour
 
     public SerializableDictionary<string, GameObject> SceneUI;
     public UIGroup curUIGroup;
+    TextMeshProUGUI exitDesc;
 
     private void Awake()
     {
@@ -31,6 +33,10 @@ public class UIManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
+    private void Start()
+    {
+        exitDesc = SceneUI["GameExit"].GetComponentsInChildren<TextMeshProUGUI>()[1];
+    }
 
     private void Update()
     {
@@ -39,8 +45,13 @@ public class UIManager : MonoBehaviour
             SetFadeObjState(false);
         }
 
-        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction)
+        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction && !Player.instance.isTutorial)
         {
+            if (ScenesManager.instance.GetSceneNum() != 1)
+                exitDesc.text = "저장은 \"마을\" 에서만 가능합니다.\n이외의 장소에서 종료시, 데이터는 저장되지 않습니다.";
+            else
+                exitDesc.text = "데이터를 저장합니다.";
+
             if (SceneUI["GameExit"].activeSelf)
             {
                 SceneUI["GameExit"].SetActive(false);

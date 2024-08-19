@@ -25,11 +25,20 @@ public class TutorialNear : MonsterNear
     {
         base.Update();
     }
+    public override void OnDamaged(int damage)
+    {
+        if (myNum == Tutorial.TutorialMonsters.skill && !tutorial.useSkill) return;
+
+        base.OnDamaged(damage);
+    }
 
     public override void Dead()
     {
-        HwatuObjectDrop();
-        Destroy(gameObject);
+        if(myHwatuNum > 0)
+            HwatuObjectDrop();
+
+        tutorial.monsters[(int)myNum].isKilled = true;
+        gameObject.SetActive(false);
     }
 
     bool isInstantiated = false;

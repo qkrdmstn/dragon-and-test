@@ -62,6 +62,8 @@ public class SaveManager : MonoBehaviour
 
     public void SaveData()
     {
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Town_1) return;
+
         data[curSelectedIndex] = data[curSelectedIndex] == null ?
                                         new PlayerData(0) :
                                         new PlayerData(data[curSelectedIndex].totalPlayTime);

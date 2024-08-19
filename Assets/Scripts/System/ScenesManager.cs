@@ -23,7 +23,7 @@ public struct UIState
 }
 
 [System.Serializable]
-public struct SceneInfos
+public class SceneInfos
 {
     public SceneInfo myScene;
     public UIState[] curSceneUIState;

@@ -24,7 +24,6 @@ public enum TutorialUIListOrder
     Move
 }
 
-
 public class Tutorial : MonoBehaviour
 {
     [SerializeField] List<GameObject> scareScrows;
@@ -136,10 +135,17 @@ public class Tutorial : MonoBehaviour
         {   // 현재 대화에 대한 이벤트 호출
             if (OccurTutorial(onTutorials))
             {
+                isInteraction = false;
                 isActiveDone = true;
                 UIManager.instance.curUIGroup.AttachUIforPlayer(-1);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        SkillManager.instance.DeleteSkill(SeotdaHwatuCombination.TT3);
+        Player.instance.curHP = Player.instance.maxHP;
     }
 
     public GameObject GetCurScarescrow() => curScarescrow;
@@ -259,21 +265,23 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 5: // skill
-                if(curIdx == 5)
+                if (curIdx == 5)
                 {
                     onTutorials = CheckGetHwatu;
                 }
-                else if(curIdx == 6)
+                else if (curIdx == 6)
                 {
                     onTutorials = CheckBlanket;
                 }
-                else if(curIdx == 7)
+                else if (curIdx == 7)
                 {   // 아래에 있는 화투패를 드래그 해서 모포 2장 올려놓으면 스킬을 만들 수 있어!
                     blanketInteraction = playerInteraction.blanketInteraction as BlanketInteraction;
-                    onTutorials = CheckSkillInBlanket;
+                    Player.instance.isCombatZone = false;
+                    onTutorials = CheckSkillinBlanket;
                 }
-                else if(curIdx == 11)
+                else if (curIdx == 11)
                 {
+                    Player.instance.isCombatZone = true;
                     monsters[(int)TutorialMonsters.skill].monster.SetActive(true);
                     onTutorials = CheckUseSkill;
                 }
@@ -289,7 +297,7 @@ public class Tutorial : MonoBehaviour
         {
             SetNextDialog();    // curIdx = 0
             curIdx++;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(.5f);
 
             TutorialUIforAnim("isInteraction", true, TutorialUIListOrder.Interation);
             yield return new WaitForSeconds(1f);
@@ -352,7 +360,6 @@ public class Tutorial : MonoBehaviour
         if (isAttacked)
         {
             UIManager.instance.curUIGroup.SwitchAnim("isAttack", false);
-            isInteraction = false;
             return true;
         }
         else return false;
@@ -363,7 +370,6 @@ public class Tutorial : MonoBehaviour
         if (Player.instance.IsDash())
         {
             UIManager.instance.curUIGroup.SwitchAnim("isDash", false);
-            isInteraction = false;
             return true;
         }
         else return false;
@@ -372,10 +378,7 @@ public class Tutorial : MonoBehaviour
     bool CheckKill()
     {
         if (monsters[(int)TutorialMonsters.attack].isKilled)
-        {
-            isInteraction = false;
             return true;
-        }
         else return false;
     }
 
@@ -384,7 +387,6 @@ public class Tutorial : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             UIManager.instance.curUIGroup.SwitchAnim("isReload", false);
-            isInteraction = false;
             return true;
         }
         return false;
@@ -396,7 +398,6 @@ public class Tutorial : MonoBehaviour
             monsters[(int)TutorialMonsters.battle2].isKilled &
             monsters[(int)TutorialMonsters.battle3].isKilled)
         {
-            isInteraction = false;
             return true;
         }
         return false;
@@ -408,7 +409,6 @@ public class Tutorial : MonoBehaviour
         if (getJokbo)
         {
             jokbo.SetActive(false);
-            isInteraction = false;
             return true;
         }
         return false;
@@ -421,11 +421,9 @@ public class Tutorial : MonoBehaviour
         {
             UIManager.instance.curUIGroup.SwitchAnim("isOpenJokbo", false);
         }
+
         if (closeJokbo)
-        {
-            isInteraction = false;
             return true;
-        }
         return false;
     }
 
@@ -452,10 +450,12 @@ public class Tutorial : MonoBehaviour
         else return false;
     }
 
-    bool CheckSkillInBlanket()
+    public static bool isBlanket = false;
+    bool CheckSkillinBlanket()
     {
         if (blanketInteraction.selectedCnt == 2)
-        {   // 화투패 2장 획득 완료
+        { // 화투패 2장 획득 완료
+            isBlanket = true;
             return true;
         }
         else return false;
@@ -465,14 +465,10 @@ public class Tutorial : MonoBehaviour
     bool CheckUseSkill()
     {   // 3땡 : 일정 시간동안 브레스영역이 활성화 되고 여기 닿으면 데미지
         if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
-        {
             useSkill = true;
-        }
+
         if(useSkill && monsters[6].isKilled)
-        {
-            isInteraction = false;
             return true;
-        }
         return false;
     }
     #endregion

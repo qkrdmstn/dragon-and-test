@@ -45,6 +45,7 @@ public class BlanketInteraction : Interaction
     {
         if (!blanketUI.isSkillInfoUI && isBlanketInteraction && Input.GetKeyDown(KeyCode.Escape))
         {
+            if (!Tutorial.isBlanket) return;
             EndInteraction();
         }
         else if(blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
