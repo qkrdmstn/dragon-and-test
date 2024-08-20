@@ -44,11 +44,13 @@ public class Boss_Jan : Boss
     public float sphereShootNum;
     public float sphereInterval;
     public float spherePathInterval;
+    public float sphereBulletSpeed = 7.0f;
 
     public float pathInterval;
     public float pathBulletLifeTime;
+    public float pathBulletSpeed = 3.5f;
 
-    public float pattern1BulletSpeed;
+    public float waveInterval = 2.0f;
     public float waveNum;
 
     [Header("Pattern2 Info")]
