@@ -6334,11 +6334,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d5065c784b11543ae6578e121bfd7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curHP: 60
-  maxHP: 60
+  curHP: 180
+  maxHP: 180
   isDead: 0
   moveSpeed: 3.65
-  initState: 0
+  initState: 3
   curState: 0
   chaseRange: 14.7
   attackRange: 6.9
@@ -6354,10 +6354,12 @@ MonoBehaviour:
   sphereShootNum: 144
   sphereInterval: 1
   spherePathInterval: 1
+  sphereBulletSpeed: 7
   pathInterval: 0.1
   pathBulletLifeTime: 4
-  pattern1BulletSpeed: 7
-  waveNum: 3
+  pathBulletSpeed: 5
+  waveInterval: 5
+  waveNum: 5
   pattern2Prob: 0.3
   displayPrefab: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
   pattern2Delay: 0.5
@@ -6371,7 +6373,7 @@ MonoBehaviour:
   pattern3Object: {fileID: 0}
   pattern3Delay: 1
   pattern3RotationTime: 1
-  pattern3DisplayTime: 1
+  pattern3DisplayTime: 8
   spawnMosnterPrefabs:
   - {fileID: 2032848082544233927, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
   - {fileID: 393577084582284936, guid: 852dd4ca6d4a03c4e8c98782fb25db1c, type: 3}
@@ -6587,7 +6589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dangerZone: {fileID: 899704517}
   safeZone: {fileID: 167553966}
-  safeZoneCollider: {fileID: 0}
+  safeZoneCollider: {fileID: 1504020208}
   inRangeSafeZone: []
 --- !u!1001 &1886376953
 PrefabInstance:

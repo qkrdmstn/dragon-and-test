@@ -1,17 +1,22 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public enum PathType
 {
     straight,
-    VLine
+    yPath,
+    invYPath,
+    leftTPath,
+    rightTPath
 };
 
 public class BossPattern1State_Jan : BossState_Jan
 {
+    private int cnt = 0;
     public BossPattern1State_Jan(Boss_Jan _boss, BossStateMachine _stateMachine, Player _player) : base(_boss, _stateMachine, _player)
     {
     }
@@ -36,24 +41,29 @@ public class BossPattern1State_Jan : BossState_Jan
 
     IEnumerator Pattern1Shoot()
     {
-        for (int j = 0; j < boss.sphereShootNum; j++)
+        for(int i=0; i<boss.waveNum; i++)
         {
-            //Shoot
-            GameObject bulletObject = GameObject.Instantiate(boss.bulletPrefab, boss.transform.position, Quaternion.identity);
-            BossBullet_Jan bullet = bulletObject.GetComponent<BossBullet_Jan>();
+            for (int j = 0; j < boss.sphereShootNum; j++)
+            {
+                //Shoot
+                GameObject bulletObject = GameObject.Instantiate(boss.bulletPrefab, boss.transform.position, Quaternion.identity);
+                BossBullet_Jan bullet = bulletObject.GetComponent<BossBullet_Jan>();
 
-            Vector2 shootDir = Quaternion.AngleAxis((360 / boss.sphereShootNum) * j /*+ (180 / boss.sphereShootNum)*/, Vector3.forward) * Vector3.right;
-            shootDir.Normalize();
+                Vector2 shootDir = Quaternion.AngleAxis((360 / boss.sphereShootNum) * j /*+ (180 / boss.sphereShootNum)*/, Vector3.forward) * Vector3.right;
+                shootDir.Normalize();
 
-            bullet.BulletInitialize(shootDir, boss.pattern1BulletSpeed);
+                bullet.BulletInitialize(shootDir, boss.sphereBulletSpeed);
+            }
+            yield return new WaitForSeconds(boss.spherePathInterval);
+
+            //4등분 Path Shoot 
+            int[] randomPath = new int[] { Random.Range(0, 5), Random.Range(0, 5), Random.Range(0, 5), Random.Range(0, 5) };
+            boss.StartCoroutine(Pattern1PathShoot(Vector3.right, (PathType)randomPath[0]));
+            boss.StartCoroutine(Pattern1PathShoot(Vector3.up, (PathType)randomPath[1]));
+            boss.StartCoroutine(Pattern1PathShoot(Vector3.left, (PathType)randomPath[2]));
+            boss.StartCoroutine(Pattern1PathShoot(Vector3.down, (PathType)randomPath[3]));
+            yield return new WaitForSeconds(boss.waveInterval);
         }
-        yield return new WaitForSeconds(boss.spherePathInterval);
-
-        //4등분 Path Shoot 
-        boss.StartCoroutine(Pattern1PathShoot(Vector3.right, PathType.VLine));
-        boss.StartCoroutine(Pattern1PathShoot(Vector3.up, PathType.straight));
-        boss.StartCoroutine(Pattern1PathShoot(Vector3.left, PathType.VLine));
-        boss.StartCoroutine(Pattern1PathShoot(Vector3.down, PathType.straight));
     }
 
     IEnumerator Pattern1PathShoot(Vector3 pivotDir, PathType pathType)
@@ -75,10 +85,12 @@ public class BossPattern1State_Jan : BossState_Jan
                 Vector2 shootDir = Quaternion.AngleAxis((90 / bulletColNum) * j, Vector3.forward) * pivotDir;
                 shootDir.Normalize();
 
-                bullet.BulletInitialize(shootDir, boss.pattern1BulletSpeed, boss.pathBulletLifeTime);
+                bullet.BulletInitialize(shootDir, boss.pathBulletSpeed, boss.pathBulletLifeTime);
             }
             yield return new WaitForSeconds(boss.pathInterval);
         }
+
+
     }
 
     private int[,] GetPathTypeMat(PathType pathType)
@@ -105,15 +117,36 @@ public class BossPattern1State_Jan : BossState_Jan
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1}
             };
         }
-        else if (pathType == PathType.VLine)
+        else if (pathType == PathType.yPath)
         {
             bullets = new int[15, 30]
             {
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1},
+                {1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1},
+                {1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1}
+            };
+        }
+        else if (pathType == PathType.invYPath)
+        {
+            bullets = new int[15, 30]
+            {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
@@ -126,7 +159,48 @@ public class BossPattern1State_Jan : BossState_Jan
                 {1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1}
             };
         }
-
+        else if (pathType == PathType.leftTPath)
+        {
+            bullets = new int[15, 30]
+            {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1}
+            };
+        }
+        else if (pathType == PathType.rightTPath)
+        {
+            bullets = new int[15, 30]
+            {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1}
+            };
+        }
         return bullets;
     }
 }
