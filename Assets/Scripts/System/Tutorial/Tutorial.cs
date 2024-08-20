@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.Rendering;
 using UnityEngine;
-using static Unity.VisualScripting.Metadata;
 
 public enum ScareScrowType
 {

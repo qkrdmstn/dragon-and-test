@@ -24,19 +24,6 @@ public class GameManager : MonoBehaviour
     public void GoToScene(int _sceneInfo)
     {
         UIManager.instance.StartFade(_sceneInfo);
-
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(false);
-        UIManager.instance.SceneUI["Battle_1"].SetActive(false);
-
-        switch (_sceneInfo)
-        {
-            case (int)SceneInfo.Start:
-                UIManager.instance.SceneUI["Start"].SetActive(true);
-                break;
-            case (int)SceneInfo.Town_1:
-                UIManager.instance.SceneUI["Town_1"].SetActive(true);
-                break;
-        }
         Player.instance.ReloadPlayer();
     }
 

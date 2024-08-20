@@ -1,9 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
-using UnityEditor.SearchService;
-using UnityEngine.SceneManagement;
 
 public class MonsterBase : MonoBehaviour
 {
@@ -226,7 +222,7 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void HwatuObjectDrop()
     {
-        float randomVal = 0.1f;// Random.Range(0.0f, 1.0f);
+        float randomVal = Random.Range(0.0f, 1.0f);
         if (randomVal <= 0.1f)
         {
             GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);

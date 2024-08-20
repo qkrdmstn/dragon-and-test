@@ -20,7 +20,7 @@ public class Fade : MonoBehaviour
 
     public void ManageFade(int _sceneNum)
     {
-        if (_sceneNum == 1)
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start && _sceneNum == 1)
         {
             TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
             for (int i = 0; i < texts.Length; i++)

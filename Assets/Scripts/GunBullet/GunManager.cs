@@ -45,11 +45,6 @@ public class GunManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
         if(SceneManager.GetActiveScene().name != "Start")
@@ -144,7 +139,6 @@ public class GunManager : MonoBehaviour
     public void SaveGunData() 
     {
         UpdateGunData();
-        gunDictionary.Clear();
     }
 
     private void UpdateGunData()
@@ -157,6 +151,8 @@ public class GunManager : MonoBehaviour
             Debug.Log(_gun);
             gunDataList[i].gunDataUpdate(_gun);
         }
+
+        gunDictionary.Clear();
     }
 
     void SwapGun(bool up)
