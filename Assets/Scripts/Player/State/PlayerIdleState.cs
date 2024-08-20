@@ -22,6 +22,7 @@ public class PlayerIdleState : PlayerState
     {
         base.Update();
 
+        if (GameManager.instance.isStop) return;
         player.animController.SetAnim(PlayerAnimState.Idle, mouseDir.x, mouseDir.y);
         
 

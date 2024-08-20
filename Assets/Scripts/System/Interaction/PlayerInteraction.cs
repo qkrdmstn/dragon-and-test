@@ -166,7 +166,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (interaction.eventName == "족보")
         {
-            Tutorial.getJokbo = true;
+            tuto.jokboUIGroup.isPossibleJokbo = true;
             ChangePlayerInteractionState(false);
             return;
         }

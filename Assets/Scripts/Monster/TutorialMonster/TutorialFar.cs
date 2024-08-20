@@ -24,10 +24,13 @@ public class TutorialFar : MonsterFar
 
     public override void OnDamaged(int damage)
     {
-        if (!isChase && myNum == Tutorial.TutorialMonsters.attack)
+        if (myNum == Tutorial.TutorialMonsters.attack)
         {
-            tutorial.isAttacked = true;
-            return;
+            if (!tutorial.isAttacked)
+            {
+                tutorial.isAttacked = true;
+                return;
+            }
         }
         else if (myNum == Tutorial.TutorialMonsters.skill && !tutorial.useSkill) return;
 
@@ -40,8 +43,11 @@ public class TutorialFar : MonsterFar
         gameObject.SetActive(false);
     }
 
-    public void ChangeChaseState(bool state)
+    public void ChaseState(bool state)
     {
         isChase = state;
+
+        if (state) SpeedReturn();
+        else SpeedToZero();
     }
 }

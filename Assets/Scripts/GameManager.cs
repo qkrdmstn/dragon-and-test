@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
+    public bool isStop = false;
 
     private void Awake()
     {
@@ -37,6 +38,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
         Player.instance.ReloadPlayer();
+    }
+
+    public void SetTimeScale(float value)
+    {
+        if (value > 0) isStop = false;
+        else isStop = true;
+
+        Time.timeScale = value;
     }
 
     public void Quit()

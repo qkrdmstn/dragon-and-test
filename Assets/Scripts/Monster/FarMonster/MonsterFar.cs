@@ -87,16 +87,15 @@ public class MonsterFar : MonsterBase
         isReloading = false;
     }
 
-    public void SpeedToZero()
+    public virtual void SpeedToZero()
     {
         agent.speed = 0;
         rigidBody.velocity = Vector3.zero;
         rigidBody.angularVelocity = 0;
     }
 
-    public void SpeedReturn()
+    public virtual void SpeedReturn()
     {
         agent.speed = moveSpeed;
     }
-
 }

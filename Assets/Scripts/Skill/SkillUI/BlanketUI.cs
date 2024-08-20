@@ -43,6 +43,13 @@ public class BlanketUI : MonoBehaviour
 
     public bool IsInTrashCan(RectTransform rectTransform)
     {
+        if (isSkillInfoUI) return false;
+        else if (Player.instance.isTutorial)
+        {
+            FindObjectOfType<Tutorial>().OnTrashSkill();
+            return false;
+        }
+
         Vector2 trashCanMinPos = new Vector2(trashCan.position.x, trashCan.position.y) - trashCan.sizeDelta / 2;
         Vector2 trashCanMaxPos = new Vector2(trashCan.position.x, trashCan.position.y) + trashCan.sizeDelta / 2;
 
@@ -62,6 +69,8 @@ public class BlanketUI : MonoBehaviour
         skillInfoTxt.text = skillData.info;
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
+
+        Invoke("SetSkillInfoUIInActive", 3f);
     }
 
     public void SetSkillInfoUIInActive()

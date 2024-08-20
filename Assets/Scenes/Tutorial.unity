@@ -778,6 +778,7 @@ GameObject:
   m_Component:
   - component: {fileID: 112433599}
   - component: {fileID: 112433600}
+  - component: {fileID: 112433601}
   m_Layer: 0
   m_Name: BoundCollider - miniBattle
   m_TagString: Untagged
@@ -826,6 +827,55 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 4}
   m_EdgeRadius: 0
+--- !u!114 &112433601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112433598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e46ac8d61dc065848bd5a1aa7cd8c006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  m_WithTag: Player
+  m_WithoutTag: 
+  m_SkipFirst: 0
+  m_Repeating: 1
+  m_OnObjectEnter:
+    m_Action: 0
+    m_Target: {fileID: 0}
+    m_BoostAmount: 0
+    m_StartTime: 0
+    m_Mode: 0
+    m_Event:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1505554068}
+          m_TargetAssemblyTypeName: Tutorial, Assembly-CSharp
+          m_MethodName: OnBattleMonster
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  m_OnObjectExit:
+    m_Action: 0
+    m_Target: {fileID: 0}
+    m_BoostAmount: 0
+    m_StartTime: 0
+    m_Mode: 0
+    m_Event:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1 &167869290
 GameObject:
   m_ObjectHideFlags: 0
@@ -6332,7 +6382,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446042579}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 53.51, y: -0.09, z: 0}
+  m_LocalPosition: {x: 46.72, y: -0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6793,13 +6843,16 @@ MonoBehaviour:
   jokbo: {fileID: 2361286358888262596, guid: 87ca44b144ef04065abd89598330cbde, type: 3}
   blanket: {fileID: 1853185138}
   padding: {x: 0, y: 225, z: 0}
+  childrens: []
   canSpeak: 0
   isInteraction: 0
   isActiveDone: 0
+  isNPCImg: 0
   curSequence: 0
   curIdx: 0
   checkSequenceDone: 
   isAttacked: 0
+  getJokbo: 0
   useSkill: 0
 --- !u!1 &1548631745
 GameObject:

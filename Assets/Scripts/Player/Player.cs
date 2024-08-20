@@ -172,7 +172,7 @@ public class Player : MonoBehaviour
                 {
                     Debug.Log("Player Dead");
                     PlayerDead();
-                    UIManager.instance.SetTimeScale(0f);
+                    GameManager.instance.SetTimeScale(0f);
                 }
             }
             else if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12))
@@ -291,8 +291,6 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Tutorial:    // 2
                 isTutorial = true;
-                isCombatZone = true;
-
                 pos = new Vector3(0.125f, 2f, 0);
                 break;
 

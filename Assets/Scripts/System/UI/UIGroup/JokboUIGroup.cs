@@ -7,7 +7,7 @@ public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
     SynergyEntity[] skillDB;
-
+    public bool isPossibleJokbo = false;
     bool isFirst = true;
 
     private void Awake()
@@ -27,18 +27,16 @@ public class JokboUIGroup : UIGroup {
     }
     private void Update()
     {
-        if (ScenesManager.instance.GetSceneNum() == 0) return;
-        // start이거나 튜토리얼에서 족보를 아직 획득하지 않았다면 열리지 않습니다.
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start || Player.instance.isInteraction) return;
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SetUI();
-            JokboState(!childUI[0].activeSelf); // 현재 족보 상태에 따라 열고 닫습니다.
-        }   // activeSelf = true : close / false : open
-        if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {
-            SetUI();
-            JokboState(!childUI[0].activeSelf);
+        if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
+        {   // open
+            if(!isPossibleJokbo) { return; }
+            JokboState(true);
+        }
+        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {   // close
+            JokboState(false);
         }
     }
 
@@ -140,13 +138,12 @@ public class JokboUIGroup : UIGroup {
 
     public void JokboState(bool state)
     {   // true : open / false : close
+        SetUI();
+
         Player.instance.isStateChangeable = !state;
         Player.instance.isAttackable = !state;
         Player.instance.isInteraction = state;
 
-        Time.timeScale = state ? 0.0f : 1.0f;
         childUI[0].SetActive(state);
-
-        if (!Tutorial.closeJokbo && !state) Tutorial.closeJokbo = true;
     }
 }

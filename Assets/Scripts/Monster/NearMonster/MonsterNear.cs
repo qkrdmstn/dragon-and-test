@@ -173,7 +173,7 @@ public class MonsterNear : MonsterBase
 
             GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
             MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
-
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.birdAttack);
             auraScript.BulletInitialize(dir);
             ++shootNumber;
             yield return new WaitForSeconds(0.7f);

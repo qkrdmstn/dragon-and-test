@@ -13,7 +13,8 @@ public class MonsterChaseState : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SpeedReturn();
+        if(!monster.isChase) monster.SpeedToZero();
+        else monster.SpeedReturn();
     }
 
     public override void Exit()

@@ -55,20 +55,17 @@ public class UIManager : MonoBehaviour
             if (SceneUI["GameExit"].activeSelf)
             {
                 SceneUI["GameExit"].SetActive(false);
-                SetTimeScale(1f);
+                GameManager.instance.SetTimeScale(1f);
             }
             else
             {
                 SceneUI["GameExit"].SetActive(true);
-                SetTimeScale(0f);
+                GameManager.instance.SetTimeScale(0f);
             }
         }
     }
 
-    public void SetTimeScale(float value)
-    {
-        Time.timeScale = value;
-    }
+
 
     public void SetFadeObjState(bool state)
     {

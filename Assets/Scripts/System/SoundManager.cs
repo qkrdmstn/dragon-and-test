@@ -17,7 +17,8 @@ public enum PlayerSfx
 }
 public enum MonsterSfx
 {
-    Damage
+    Damage,
+    birdAttack
 }
 public enum UISfx
 {

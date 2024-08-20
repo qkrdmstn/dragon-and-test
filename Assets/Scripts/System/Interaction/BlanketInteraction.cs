@@ -142,7 +142,6 @@ public class BlanketInteraction : Interaction
 
         blanketUI.gameObject.SetActive(false);
         hwatuUI.gameObject.SetActive(true);
-
         Debug.Log("EndInteraction");
     }
 
