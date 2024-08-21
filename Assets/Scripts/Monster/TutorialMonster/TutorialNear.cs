@@ -5,15 +5,15 @@ using UnityEngine;
 public class TutorialNear : MonsterNear
 {
     [Header("Tutorial----------")]
-    public Tutorial.TutorialMonsters myNum;
-    public Tutorial.MonsterState myState;
-    Tutorial tutorial;
+    public TutorialInteraction.TutorialMonsters myNum;
+    public TutorialInteraction.MonsterState myState;
+    TutorialInteraction tutorial;
 
     public int myHwatuNum;
     public override void Awake()
     {
         base.Awake();
-        tutorial = FindObjectOfType<Tutorial>();
+        tutorial = FindObjectOfType<TutorialInteraction>();
     }
     public override void Start()
     {
@@ -27,7 +27,7 @@ public class TutorialNear : MonsterNear
     }
     public override void OnDamaged(int damage)
     {
-        if (myNum == Tutorial.TutorialMonsters.skill && !tutorial.useSkill) return;
+        if (myNum == TutorialInteraction.TutorialMonsters.skill && !tutorial.useSkill) return;
 
         base.OnDamaged(damage);
     }

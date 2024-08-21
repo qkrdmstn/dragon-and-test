@@ -3,7 +3,7 @@ using UnityEngine;
 public class TutorialUIGroup : UIGroup
 {
     Animator anim;
-    Tutorial tutorial;
+    TutorialInteraction tutorial;
     [SerializeField] Vector3 padding;
     [SerializeField] float adjustUIPosition;
 
@@ -18,7 +18,7 @@ public class TutorialUIGroup : UIGroup
 
         if(tutorial == null)
         {
-            tutorial = GameObject.FindFirstObjectByType<Tutorial>();
+            tutorial = GameObject.FindFirstObjectByType<TutorialInteraction>();
         }
 
         GameObject curScarescrow = tutorial.GetCurScarescrow();

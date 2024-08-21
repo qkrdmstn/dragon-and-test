@@ -46,7 +46,7 @@ public class BlanketUI : MonoBehaviour
         if (isSkillInfoUI) return false;
         else if (Player.instance.isTutorial)
         {
-            FindObjectOfType<Tutorial>().OnTrashSkill();
+            FindObjectOfType<TutorialInteraction>().OnTrashSkill();
             return false;
         }
 

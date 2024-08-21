@@ -4,13 +4,13 @@ using UnityEngine;
 public class TutorialFar : MonsterFar
 {
     [Header("Tutorial----------")]
-    public Tutorial.TutorialMonsters myNum;
-    public Tutorial tutorial;
+    public TutorialInteraction.TutorialMonsters myNum;
+    public TutorialInteraction tutorial;
 
     public override void Awake()
     {
         base.Awake();
-        tutorial = FindObjectOfType<Tutorial>();
+        tutorial = FindObjectOfType<TutorialInteraction>();
     }
     public override void Start()
     {
@@ -24,7 +24,7 @@ public class TutorialFar : MonsterFar
 
     public override void OnDamaged(int damage)
     {
-        if (myNum == Tutorial.TutorialMonsters.attack)
+        if (myNum == TutorialInteraction.TutorialMonsters.attack)
         {
             if (!tutorial.isAttacked)
             {
@@ -32,7 +32,7 @@ public class TutorialFar : MonsterFar
                 return;
             }
         }
-        else if (myNum == Tutorial.TutorialMonsters.skill && !tutorial.useSkill) return;
+        else if (myNum == TutorialInteraction.TutorialMonsters.skill && !tutorial.useSkill) return;
 
         base.OnDamaged(damage);
     }

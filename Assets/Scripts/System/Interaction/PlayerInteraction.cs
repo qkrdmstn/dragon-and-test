@@ -158,11 +158,11 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    Tutorial tuto;
+    TutorialInteraction tuto;
     private void TutorialInteraction()
     {
         if(tuto == null)
-            tuto = GameObject.Find("System").GetComponent<Tutorial>();
+            tuto = GameObject.Find("System").GetComponent<TutorialInteraction>();
 
         if (interaction.eventName == "족보")
         {
@@ -173,7 +173,7 @@ public class PlayerInteraction : MonoBehaviour
 
         else if(interaction.eventName == "blanket" && interaction.sequence > 0)
         {
-            Tutorial.isBlanketInteration = true;
+            global::TutorialInteraction.isBlanketInteration = true;
             BlanketDoInteraction();
         }
 
