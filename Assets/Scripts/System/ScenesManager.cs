@@ -76,7 +76,7 @@ public class ScenesManager : MonoBehaviour
     public void ChangeScene(int _sceneInfo)
     {
         if (_sceneInfo != (int)SceneInfo.Tutorial)
-            GunManager.instance.SaveGunData();
+            GunManager.instance.SaveGunData(); // why 
 
         SceneManager.LoadScene(_sceneInfo);
     }
@@ -105,7 +105,10 @@ public class ScenesManager : MonoBehaviour
         {
             ManageActiveUI(ui.myUI.ToString(), ui.state);
         }
-        UIManager.instance.curUIGroup = UIManager.instance.SceneUI[sceneInfos[scene.buildIndex].myScene.ToString()].GetComponent<UIGroup>();
+
+        string curSceneName = sceneInfos[scene.buildIndex].myScene.ToString();
+        if (curSceneName.Contains("Battle_1")) curSceneName = "Battle_1";
+        UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
 
         GunManager.instance.Initialize();
         isLoading = false;

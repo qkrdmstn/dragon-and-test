@@ -36,7 +36,7 @@ public class Spawner : MonoBehaviour
     [Header("Block info")]
     public BlockInfo[] blocks;
     public int curBlockNum;
-    MapIndicator mapIndicator;
+    //MapIndicator mapIndicator;
 
     [Header("Wave info")]
     [SerializeField] private int curWave;
@@ -62,7 +62,7 @@ public class Spawner : MonoBehaviour
     #region Initialize Func
     private void InitializeBlockInfo()
     {
-        mapIndicator = FindObjectOfType<MapIndicator>();
+        //mapIndicator = FindObjectOfType<MapIndicator>();
 
         blocks = FindObjectsOfType<BlockInfo>();
         Array.Sort(blocks);

@@ -19,6 +19,7 @@ public class MapControl : MonoBehaviour
 
     private void Start()
     {
+        myMapType = transform.parent.parent.gameObject;
         spawner = FindObjectOfType<Spawner>();
         mapIndicator = FindObjectOfType<MapIndicator>();
         confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
@@ -27,6 +28,7 @@ public class MapControl : MonoBehaviour
         else if (gameObject.name.Equals("GoToLeft")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToRight");
         else if (gameObject.name.Equals("GoToTop")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToBottom");
         else if (gameObject.name.Equals("GoToBottom")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToTop");
+        // leftTop & rightTop & leftBtm & rightBtm 코드 생성해야함
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

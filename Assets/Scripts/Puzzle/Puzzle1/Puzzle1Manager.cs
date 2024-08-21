@@ -5,28 +5,17 @@ using UnityEngine;
 
 public class Puzzle1Manager : MonoBehaviour
 {
-    public StoneTotem[] stoneTotems;
-
     [SerializeField] private GameObject StoneTotemParent;
-    // Start is called before the first frame update
-    void Start()
+    public bool[] checkTotemClear;
+
+    private void Awake()
     {
-        stoneTotems = StoneTotemParent.GetComponentsInChildren<StoneTotem>();
+        checkTotemClear = new bool[4];
     }
 
     public void ClearCheck()
     {
-        bool clear = true;
-        for (int i = 0; i < 4; i++)
-        {
-            if (!stoneTotems[i].isClear)
-            {
-                clear = false;
-                break;
-            }
-        }
-
-        if (clear)
+        if(checkTotemClear[0] & checkTotemClear[1] & checkTotemClear[2] & checkTotemClear[3])
             Puzzle1Clear();
     }
 
