@@ -18,6 +18,8 @@ public class MapOutOfRange : MonoBehaviour
             //    _goToScene = 4;
             //}
             ScenesManager.instance.isLoading = true;
+            Player.instance.SetIdleStatePlayer();
+            Player.instance.isStateChangeable = false;
             UIManager.instance.StartFade(_goToScene);
         }
     }

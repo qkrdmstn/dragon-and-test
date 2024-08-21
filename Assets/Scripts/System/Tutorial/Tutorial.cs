@@ -293,6 +293,7 @@ public class Tutorial : MonoBehaviour
                 else if (curIdx == 11)
                 {
                     isNPCImg = false;
+                    isBlanket = true;
 
                     Player.instance.isCombatZone = true;
                     onTutorials = CheckUseSkill;
@@ -493,7 +494,6 @@ public class Tutorial : MonoBehaviour
     {
         if (blanketInteraction.selectedCnt == 2)
         { // 화투패 2장 획득 완료
-            isBlanket = true;
             return true;
         }
         else return false;

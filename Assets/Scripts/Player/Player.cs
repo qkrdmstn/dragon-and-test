@@ -214,7 +214,9 @@ public class Player : MonoBehaviour
         isDamaged = false;
         curHP = maxHP;
 
+        SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
         animController.isBreath = false;
+        animController.SetAnim(PlayerAnimState.Idle);
     }
 
     IEnumerator DamagedProcess(float duration)
@@ -280,7 +282,6 @@ public class Player : MonoBehaviour
                 return;
 
             case SceneInfo.Town_1:      // 1
-                isStateChangeable = true;
                 if (isTutorial)
                 {
                     isTutorial = false;
@@ -296,6 +297,7 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Puzzle_1:    // 3
                 isCombatZone = true;
+                pos = new Vector3(0.125f, 2f, 0);
                 break;
 
             case SceneInfo.Battle_1_A: // 4

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum UI
 {
@@ -47,6 +48,7 @@ public class UIManager : MonoBehaviour
 
         if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction && !Player.instance.isTutorial)
         {
+            if (isFading) return;
             if (ScenesManager.instance.GetSceneNum() != 1)
                 exitDesc.text = "저장은 \"마을\" 에서만 가능합니다.\n이외의 장소에서 종료시, 데이터는 저장되지 않습니다.";
             else
@@ -64,8 +66,6 @@ public class UIManager : MonoBehaviour
             }
         }
     }
-
-
 
     public void SetFadeObjState(bool state)
     {

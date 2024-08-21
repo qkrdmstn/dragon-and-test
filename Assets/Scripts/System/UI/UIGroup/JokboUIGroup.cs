@@ -27,16 +27,17 @@ public class JokboUIGroup : UIGroup {
     }
     private void Update()
     {
-        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start || Player.instance.isInteraction) return;
-
-        if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
-        {   // open
-            if(!isPossibleJokbo) { return; }
-            JokboState(true);
-        }
+        if (!isPossibleJokbo) { return; }
         else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {   // close
             JokboState(false);
+            return;
+        }
+
+        if (Player.instance.isInteraction) return;
+        else if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
+        {   // open
+            JokboState(true);
         }
     }
 

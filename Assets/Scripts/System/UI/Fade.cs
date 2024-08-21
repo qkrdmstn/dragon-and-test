@@ -61,8 +61,8 @@ public class Fade : MonoBehaviour
                 yield return new WaitUntil(() => ScenesManager.instance.IsCompletedLoadData(_sceneInfo));
 
             yield return new WaitForSeconds(.5f);
-            loadingVideo.gameObject.SetActive(false);
             loadingVideo.Pause();
+            loadingVideo.gameObject.SetActive(false);
         }
 
         time = 0f;
@@ -71,12 +71,13 @@ public class Fade : MonoBehaviour
             time += Time.deltaTime / fadeTime;
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
-            fadePanel.color = fadeColor;
-
+            fadePanel.color = fadeColor; 
             yield return null;
         }
+        Player.instance.isStateChangeable = true;
         Time.timeScale = 1f;
         UIManager.instance.isEndFade = true;
+        
         yield return null;
     }
 

@@ -12,9 +12,17 @@ public class PlayerAnimController : AnimController
 {
     public bool isBreath = false;
 
-	private void Awake()
+	protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Update()
+    {
+        if (isBreath)
+        {
+            ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
+        }
     }
 
     public override void SetAnim<T>(T _animState, float x = 0, float y = 0) 
@@ -24,7 +32,7 @@ public class PlayerAnimController : AnimController
 
 		if (animState == PlayerAnimState.Idle)
 		{
-			if (x >= dirMaxX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK_R;
+            if (x >= dirMaxX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK_R;
 			else if (x >= dirMinX && x < dirMaxX && y >= dirMaxY) curBaseSkinIdx = Direction.BACK;
 			else if (x >= dirMaxX && y < dirMaxY && y >= dirMinY) curBaseSkinIdx = Direction.FRONT_R;
 			else if (x >= dirMaxX && y < dirMinY) curBaseSkinIdx = Direction.FRONT_R;
@@ -35,7 +43,7 @@ public class PlayerAnimController : AnimController
 		}
 		else if (animState == PlayerAnimState.Run || animState == PlayerAnimState.Wave)
 		{
-			if (x == 1 && y == 1) curBaseSkinIdx = Direction.BACK_R;
+            if (x == 1 && y == 1) curBaseSkinIdx = Direction.BACK_R;
 			else if (x == 0 && y == 1) curBaseSkinIdx = Direction.BACK;
 			else if (x == 1 && y == 0) curBaseSkinIdx = Direction.FRONT_R;
 			else if (x == 1 && y == -1) curBaseSkinIdx = Direction.FRONT_R;
@@ -51,8 +59,8 @@ public class PlayerAnimController : AnimController
 
         base.SetAnim();
 
-        if (animState != PlayerAnimState.Wave && (isBreath || animState == PlayerAnimState.Run))
-		{   // 총을 쏘거나 마우스 이동의 얼굴 방향 및 표정 스킨 갱신 (단 대시중에는 변경 금지)
+        if (animState != PlayerAnimState.Wave && animState == PlayerAnimState.Run)
+		{   // 마우스 이동의 얼굴 방향 및 표정 스킨 갱신 (단 대시중에는 변경 금지)
 			ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
 		}
 	}
@@ -94,7 +102,7 @@ public class PlayerAnimController : AnimController
 		}
 
 		Attachment originAttachment = slot.Attachment;
-		slot.Attachment = originAttachment.GetRemappedClone(region, true, true, scale);
+		slot.Attachment = originAttachment?.GetRemappedClone(region, true, true, scale);
 	}
 
 	Direction SetMouseDirection(float x, float y)

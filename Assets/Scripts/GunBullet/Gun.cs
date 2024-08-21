@@ -198,7 +198,8 @@ public class Gun : MonoBehaviour
     {
         if(loadedBullet != magazineSize)
         {
-            //Debug.Log("Reload Start");
+            Player.instance.animController.isBreath = false;
+
             clickReloadFlag = false;
             isAttacking = false;
             isReloading = true;
