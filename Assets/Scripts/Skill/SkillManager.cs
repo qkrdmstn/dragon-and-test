@@ -161,6 +161,12 @@ public class SkillManager : MonoBehaviour
         materialHwatuDataList.Sort();
     }
 
+    public void DeleteAllCardData()
+    {
+        materialHwatuDataList.Clear();
+        materialCardCnt = materialHwatuDataList.Count;
+    }
+
     public void AddSkill(SeotdaHwatuCombination skill)
     {
         int skillNum = (int)skill;
@@ -199,6 +205,16 @@ public class SkillManager : MonoBehaviour
                 activeSkillCnt--;
                 break;
             }
+        }
+        UpdateActiveSkillSlot();
+    }
+
+    public void DeleteAllSkill()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            activeSkillData[i] = SeotdaHwatuCombination.blank;
+            activeSkillCnt--;
         }
         UpdateActiveSkillSlot();
     }
@@ -286,5 +302,14 @@ public class SkillManager : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void ClearSkill()
+    {   // hwatu
+        DeleteAllCardData();
+        // active
+        DeleteAllSkill();
+        // passive
+        // todo
     }
 }
