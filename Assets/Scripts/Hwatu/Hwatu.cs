@@ -46,6 +46,7 @@ public class Hwatu
 {
     public SeotdaHwatuName type;
     public HwatuMonth month;
+    public bool isMain;
 
     public static SeotdaHwatuCombination GetHwatuCombination(Hwatu card1, Hwatu card2)
     {

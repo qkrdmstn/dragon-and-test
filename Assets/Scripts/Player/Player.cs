@@ -297,7 +297,7 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Puzzle_1:    // 3
                 isCombatZone = true;
-                pos = new Vector3(0.125f, 2f, 0);
+                pos = new Vector3(-14f, 14f, 0);
                 break;
 
             case SceneInfo.Battle_1_A: // 4
