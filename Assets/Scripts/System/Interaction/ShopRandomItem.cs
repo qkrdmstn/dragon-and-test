@@ -39,21 +39,21 @@ public class ShopRandomItem : MonoBehaviour
 
     void SetCountGun()
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[Random.Range(0, 7)];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[Random.Range(0, 5)];
         itemObjs[cnt].SetItemData();
         cnt++;
     }
 
     void SetCountArmor(int _cnt)
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 12)];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 2)];
         itemObjs[cnt].SetItemData();
         cnt++;
         if (_cnt == 2)
         {
             do
             {
-                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 12)];
+                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 2)];
             } while (itemObjs[cnt-1].itemData == itemObjs[cnt].itemData);
             itemObjs[cnt].SetItemData();
             cnt++;

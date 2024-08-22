@@ -12,14 +12,14 @@ public class MapOutOfRange : MonoBehaviour
         if (collision.CompareTag("Player") && !isTrigger)
         {
             isTrigger = true;
-            //if (gameObject.name.Contains("Battle"))
-            //{
-            //    //_sceneInfo = Random.Range(4, 6);
-            //    _goToScene = 4;
-            //}
+            if (gameObject.name.Contains("Battle"))
+            {
+                _goToScene = Random.Range(4, 6);
+            }
             ScenesManager.instance.isLoading = true;
             Player.instance.SetIdleStatePlayer();
             Player.instance.isStateChangeable = false;
+
             UIManager.instance.StartFade(_goToScene);
         }
     }

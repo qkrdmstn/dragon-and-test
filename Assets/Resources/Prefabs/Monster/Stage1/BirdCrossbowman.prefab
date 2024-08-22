@@ -183,20 +183,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 10
   damage: 1
+  distanceToPlayer: 0
+  moneyRange: {x: 10, y: 13}
   moveSpeed: 3
   knockbackForce: 5
   knockbackDuration: 0.1
-  isKnockedBack: 0
   knockbackTimer: 0
-  knockbackVel: {x: 0, y: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  profile: {fileID: 0}
-  impulseSource: {fileID: 0}
-  temp: {fileID: 0}
+  monsterAnimController: {fileID: 0}
+  agent: {fileID: 0}
   inEffect: 0
+  isDead: 0
+  isChase: 1
+  isKnockedBack: 0
   fireInterval: 0.2
   monsterReloadDelay: 3
   isReloading: 0
@@ -205,8 +207,7 @@ MonoBehaviour:
   magazineSize: 1
   bulletAngle: 15
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
+  bulletNum: 0
   chaseRange: 15
   attackRange: 10
   escapeRange: 4
-  distanceToPlayer: 0
-  agent: {fileID: 0}

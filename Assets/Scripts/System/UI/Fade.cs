@@ -7,7 +7,8 @@ using UnityEngine.Video;
 
 public class Fade : MonoBehaviour
 {
-    [SerializeField] float fadeTime;
+    [SerializeField] float startFadeTime;
+    [SerializeField] float endFadeTime;
     float start, end, time;
     public Image fadePanel;
     [SerializeField] VideoPlayer loadingVideo;
@@ -15,7 +16,8 @@ public class Fade : MonoBehaviour
     {
         start = 1f;
         end = 0f;
-        fadeTime = 2f;
+        startFadeTime = 2f;
+        endFadeTime = 1f;
     }
 
     public void ManageFade(int _sceneNum)
@@ -44,7 +46,7 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (fadeColor.a < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             fadeColor.a = Mathf.Lerp(end, start, time); // 0 ~ 1
             fadePanel.color = fadeColor;
@@ -68,7 +70,7 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (fadeColor.a > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
             fadePanel.color = fadeColor; 
@@ -88,7 +90,7 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (fadeColor.a < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             fadeColor.a = Mathf.Lerp(end, start, time); // 0 ~ 1
             fadePanel.color = fadeColor;
@@ -109,7 +111,7 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (fadeColor.a > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
             fadePanel.color = fadeColor;
@@ -126,22 +128,19 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (text.alpha > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             text.alpha = Mathf.Lerp(start, end, time); // 1 ~ 0
-            //fadePanel.color = fadeColor;
-
             yield return null;
         }
+
         // - 밝아집니다
         time = 0f;
         while (text.alpha < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             text.alpha = Mathf.Lerp(end, start, time); // 0 ~ 1
-            //fadePanel.color = fadeColor;
-
             yield return null;
         }
     }

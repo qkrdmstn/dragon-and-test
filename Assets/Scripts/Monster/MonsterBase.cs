@@ -8,6 +8,7 @@ public class MonsterBase : MonoBehaviour
     public int HP;
     public int damage;
     public float distanceToPlayer;
+    [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
     #endregion
 
     #region Move
@@ -232,13 +233,14 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
-    private void MoneyDrop()
+    protected void MoneyDrop()
     {
         ItemObject item = money.GetComponent<ItemObject>();
         float randomVal = Random.Range(0.0f, 1.0f);
         if (randomVal <= item.dropProb)
         {
-            Instantiate(money, this.transform.position, Quaternion.identity);
+            GameObject moneyObj = Instantiate(money, this.transform.position, Quaternion.identity);
+            moneyObj.GetComponent<InteractionData>().sequence = Random.Range(moneyRange.x, moneyRange.y);
         }
     }
 

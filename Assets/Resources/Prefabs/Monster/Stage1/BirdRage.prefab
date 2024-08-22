@@ -161,19 +161,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 10
   damage: 2
+  distanceToPlayer: 0
+  moneyRange: {x: 3, y: 5}
   moveSpeed: 2
   knockbackForce: 1
   knockbackDuration: 0.5
-  isKnockedBack: 0
   knockbackTimer: 0
-  knockbackVel: {x: 0, y: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  temp: {fileID: 0}
+  monsterAnimController: {fileID: 0}
+  agent: {fileID: 0}
   inEffect: 0
   isDead: 0
+  isChase: 1
+  isKnockedBack: 0
   inAttack: 0
   cooldown: 2
   tempcool: 0
@@ -186,8 +189,6 @@ MonoBehaviour:
   attackRange: 2
   rageRange: 5
   rageAble: 0
-  agent: {fileID: 0}
-  distanceToPlayer: 0
   direction: {x: 0, y: 0, z: 0}
 --- !u!195 &5268748210239160312
 NavMeshAgent:

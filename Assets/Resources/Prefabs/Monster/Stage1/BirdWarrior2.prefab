@@ -185,19 +185,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 5
   damage: 1
+  distanceToPlayer: 0
+  moneyRange: {x: 1, y: 3}
   moveSpeed: 6
   knockbackForce: 1
   knockbackDuration: 0.05
-  isKnockedBack: 0
   knockbackTimer: 0
-  knockbackVel: {x: 0, y: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  temp: {fileID: 0}
+  monsterAnimController: {fileID: 0}
+  agent: {fileID: 0}
   inEffect: 0
   isDead: 0
+  isChase: 1
+  isKnockedBack: 0
   inAttack: 0
   cooldown: 2
   attackSpeed: 100
@@ -207,7 +210,6 @@ MonoBehaviour:
   attackWarning: {fileID: 393577084600642092}
   chaseRange: 50
   attackRange: 4
-  distanceToPlayer: 0
 --- !u!1 &393577084600642092
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,6 +352,10 @@ PrefabInstance:
     - target: {fileID: 2032848082544233927, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8797404505217909517, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}

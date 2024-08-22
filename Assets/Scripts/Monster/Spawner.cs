@@ -1,22 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using System.Threading.Tasks;
-public enum ExcelStructure
-{
-    blockNumber, wave, monsterType, gridPosX, gridPosY
-}
-
-//public enum MonsterType1
-//{
-//    BirdWarrior,
-//    BirdTanker,
-//    BirdAcher,
-//    BirdCrossbowman,
-//    BirdBerserker
-//}
+using System.Linq;
 
 public class Spawner : MonoBehaviour
 {
@@ -34,8 +20,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private SpawnDB[] spawnDB;
 
     [Header("Block info")]
-    public BlockInfo[] blocks;
+    public List<BlockInfo> blocks;
     public int curBlockNum;
+    public Vector2[] mapHierarchy;
     //MapIndicator mapIndicator;
 
     [Header("Wave info")]
@@ -63,11 +50,20 @@ public class Spawner : MonoBehaviour
     private void InitializeBlockInfo()
     {
         //mapIndicator = FindObjectOfType<MapIndicator>();
+        int layer = 1 << LayerMask.NameToLayer("MapSort");
+        for(int i=0; i<mapHierarchy.Length; i++)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(mapHierarchy[i], Vector2.right, 250f, layer);
+            foreach(RaycastHit2D hit in hits)
+            {
+                blocks.Add(hit.transform.GetComponentInParent<BlockInfo>());
+            }
+        }
+        blocks = blocks.Distinct().ToList();
+        //blocks = FindObjectsOfType<BlockInfo>();
+        //Array.Sort(blocks);
 
-        blocks = FindObjectsOfType<BlockInfo>();
-        Array.Sort(blocks);
-
-        for (int i = 0; i < blocks.Length; i++)
+        for (int i = 0; i < blocks.Count; i++)
             blocks[i].InitializeBlockInfo(i);
     }
 
@@ -103,7 +99,7 @@ public class Spawner : MonoBehaviour
         Vector3 playerPos = Player.instance.transform.position; //GameManager.instance.player 초기화는 Awake 이후
         int idx = 0;
         float minDist = Vector3.Magnitude(blocks[0].transform.position - playerPos);
-        for (int i = 1; i < blocks.Length; i++)
+        for (int i = 1; i < blocks.Count; i++)
         {
             float dist = Vector3.Magnitude(blocks[i].transform.position - playerPos);
             if (dist < minDist)

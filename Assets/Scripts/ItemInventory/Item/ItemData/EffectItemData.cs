@@ -14,4 +14,12 @@ public class EffectItemData : ItemData
             item.ExcuteEffect();
         }
     }
+
+    public void ItemEffect(int amount)
+    {
+        foreach (var item in itemEffects)
+        {
+            item.ExcuteEffect(amount);
+        }
+    }
 }

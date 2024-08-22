@@ -272,50 +272,34 @@ public class Player : MonoBehaviour
     public void InitbySceneLoaded(SceneInfo curScene)
     {
         isBounded = false;
-        Vector3 pos = Vector3.zero;
-
+        if(curScene == SceneInfo.Start)
+        {
+            SetIdleStatePlayer();
+            isStateChangeable = false;
+            return;
+        }
+        
+        Vector3 pos = GameObject.FindGameObjectWithTag("StartPos").transform.position;
         switch (curScene)
         {
-            case SceneInfo.Start:
-                SetIdleStatePlayer();
-                isStateChangeable = false;
-                return;
-
             case SceneInfo.Town_1:      // 1
                 if (isTutorial)
                 {
                     isTutorial = false;
                     pos = new Vector3(-2.5f, 22.5f, 0);
                 }
-                else pos = new Vector3(-31.1f, 10f, 0);
                 break;
-
             case SceneInfo.Tutorial:    // 2
                 isTutorial = true;
-                pos = new Vector3(0.125f, 2f, 0);
                 break;
-
             case SceneInfo.Puzzle_1:    // 3
+            case SceneInfo.Battle_1_A:  // 4
+            case SceneInfo.Battle_1_B:  // 5
+            case SceneInfo.Battle_1_C:  // 6
                 isCombatZone = true;
-                pos = new Vector3(-14f, 14f, 0);
                 break;
 
-            case SceneInfo.Battle_1_A: // 4
-                isCombatZone = true;
-                pos = new Vector3(-60f, -30f, 0);
-                break;
-
-            case SceneInfo.Battle_1_B: // 5
-                isCombatZone = true;
-                pos = new Vector3(-55f, 18f, 0);
-                break;
-
-            case SceneInfo.Battle_1_C:
-                isCombatZone = true;
-                pos = new Vector3(-60f, -30f, 0);
-                break;
-
-            case SceneInfo.Boss_1:
+            case SceneInfo.Boss_1:      // 7
                 isCombatZone = true;
                 pos = new Vector3(-13f, -13f, 0);
                 break;

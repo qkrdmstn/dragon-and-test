@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class MapControl : MonoBehaviour
@@ -11,24 +9,55 @@ public class MapControl : MonoBehaviour
     public PolygonCollider2D confineColl;
 
     MapIndicator mapIndicator;
-
+    Collider2D coll;
     public static int curMapNum;
 
     private Spawner spawner;
     public bool flag;
 
+    #region FindPortal
+    enum Dir  {  Top, Bottom, Right, Left }
+    int layerMask;
+    Vector2Int[] dirs;
+    string myGoTo;
+    Vector2Int goToDir;
+    #endregion
+
+    private void Awake()
+    {
+        coll = GetComponent<Collider2D>();
+
+        dirs = new Vector2Int[4];
+        dirs[0] = new Vector2Int(0, 1);
+        dirs[1] = new Vector2Int(0, -1);
+        dirs[2] = new Vector2Int(1, 0);
+        dirs[3] = new Vector2Int(-1, 0);
+
+        layerMask = 1 << LayerMask.NameToLayer("Portal");
+        myGoTo = gameObject.name.Substring(4);
+        goToDir = dirs[(int)Enum.Parse<Dir>(myGoTo)];
+    }
+
     private void Start()
     {
         myMapType = transform.parent.parent.gameObject;
+
         spawner = FindObjectOfType<Spawner>();
         mapIndicator = FindObjectOfType<MapIndicator>();
+        FindGoToPos();
+
         confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
 
-        if (gameObject.name.Equals("GoToRight")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToLeft");
-        else if (gameObject.name.Equals("GoToLeft")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToRight");
-        else if (gameObject.name.Equals("GoToTop")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToBottom");
-        else if (gameObject.name.Equals("GoToBottom")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToTop");
-        // leftTop & rightTop & leftBtm & rightBtm 코드 생성해야함
+    }
+
+    void FindGoToPos()
+    {
+        RaycastHit2D[] hit = new RaycastHit2D[1];
+        if(coll.Raycast(goToDir, hit, 10f, layerMask) > 0)
+        {
+            gotoPos = hit[0].transform;
+            gotoMapType = gotoPos.parent.parent.gameObject;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

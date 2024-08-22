@@ -309,19 +309,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 8
   damage: 1
+  distanceToPlayer: 0
+  moneyRange: {x: 3, y: 6}
   moveSpeed: 1
   knockbackForce: 1
   knockbackDuration: 0.1
-  isKnockedBack: 0
   knockbackTimer: 0
-  knockbackVel: {x: 0, y: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   eventManager: {fileID: 0}
   spawn: {fileID: 0}
-  temp: {fileID: 0}
+  monsterAnimController: {fileID: 0}
+  agent: {fileID: 0}
   inEffect: 0
   isDead: 0
+  isChase: 0
+  isKnockedBack: 0
   inAttack: 0
   cooldown: 8
   attackSpeed: 10
@@ -331,5 +334,3 @@ MonoBehaviour:
   attackWarning: {fileID: 1142790128}
   chaseRange: 10
   attackRange: 10
-  distanceToPlayer: 0
-  agent: {fileID: 0}
