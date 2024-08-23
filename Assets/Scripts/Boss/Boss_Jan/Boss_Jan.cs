@@ -76,6 +76,10 @@ public class Boss_Jan : Boss
     public float spawnDelay = 1.0f;
     public float spawnTimer;
 
+    [Header("Drop Item Info")]
+    GameObject moneyPrefab;
+    public int moneyValue;
+
     #region Componets
     #endregion
 
@@ -98,6 +102,8 @@ public class Boss_Jan : Boss
         bossField = FindObjectOfType<BlockInfo>();
         bossField.InitializeBlockInfo(0);
         pattern3Object = FindObjectOfType<Pattern3Object>();
+
+        moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
 
         stateMachine = new BossStateMachine();
 
@@ -166,7 +172,7 @@ public class Boss_Jan : Boss
     }
 
     //피격
-    public virtual void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
@@ -192,7 +198,7 @@ public class Boss_Jan : Boss
     }
 
     //데미지 처리
-    public virtual void OnDamaged(int damage)
+    private void OnDamaged(int damage)
     {
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
 
@@ -234,7 +240,7 @@ public class Boss_Jan : Boss
     }
 
     //죽음
-    public virtual void Dead()
+    private void Dead()
     {
         if (!isDead)
         {
@@ -247,7 +253,16 @@ public class Boss_Jan : Boss
             {
                 monsterBases[i].Dead();
             }
+
+            MoneyDrop();
         }
+    }
+
+    private void MoneyDrop()
+    {
+        ItemObject item = moneyPrefab.GetComponent<ItemObject>();
+        GameObject moneyObj = Instantiate(moneyPrefab, this.transform.position + Vector3.down * 3, Quaternion.identity);
+        moneyObj.GetComponent<InteractionData>().sequence = moneyValue;
     }
 
     private void OnDrawGizmos()

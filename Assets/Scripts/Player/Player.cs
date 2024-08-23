@@ -283,6 +283,7 @@ public class Player : MonoBehaviour
         switch (curScene)
         {
             case SceneInfo.Town_1:      // 1
+                isCombatZone = false;
                 if (isTutorial)
                 {
                     isTutorial = false;
