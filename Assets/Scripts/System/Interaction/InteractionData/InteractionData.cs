@@ -10,7 +10,8 @@ public class InteractionData : MonoBehaviour
         Item,
         Shop,
         Blanket,
-        Tutorial
+        Tutorial,
+        Puzzle
     };
 
     public InteractionType type;
