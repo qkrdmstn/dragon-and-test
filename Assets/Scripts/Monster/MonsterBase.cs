@@ -237,12 +237,8 @@ public class MonsterBase : MonoBehaviour
     protected void MoneyDrop()
     {
         ItemObject item = money.GetComponent<ItemObject>();
-        float randomVal = Random.Range(0.0f, 1.0f);
-        if (randomVal <= item.dropProb)
-        {
-            GameObject moneyObj = Instantiate(money, this.transform.position, Quaternion.identity);
-            moneyObj.GetComponent<InteractionData>().sequence = Random.Range(moneyRange.x, moneyRange.y);
-        }
+        GameObject moneyObj = Instantiate(money, this.transform.position, Quaternion.identity);
+        moneyObj.GetComponent<InteractionData>().sequence = Random.Range(moneyRange.x, moneyRange.y);
     }
 
     public Direction CheckDir()

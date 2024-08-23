@@ -54,7 +54,7 @@ public class ShopInteraction : Interaction
                     break;
                 case ItemType.Armor:
                     (itemData as EffectItemData).ItemEffect();
-                    InventoryData.instance.AddAmorItem(itemData);
+                    InventoryData.instance.AddArmorItem(itemData);
                     break;
             }
             Player.instance.money -= itemData.price;

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-//using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class PickUpItemInteraction : Interaction
@@ -28,7 +25,7 @@ public class PickUpItemInteraction : Interaction
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
-                InventoryData.instance.AddAmorItem(itemData);
+                InventoryData.instance.AddArmorItem(itemData);
                 break;
         }
         isDone = true;

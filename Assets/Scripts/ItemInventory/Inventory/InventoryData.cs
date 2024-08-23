@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-//using UnityEngine.UIElements;
-using UnityEngine.UI;
 
 public class InventoryData : MonoBehaviour
 {
@@ -12,7 +8,7 @@ public class InventoryData : MonoBehaviour
     public List<InventoryItem> gunItems;
     public Dictionary<ItemData, InventoryItem> gunDictionary;
 
-    public InventoryItem amorItem;
+    public InventoryItem armorItem;
 
     [Header("Inventory UI")]
     [SerializeField] private Transform gunSlotParent;
@@ -56,21 +52,20 @@ public class InventoryData : MonoBehaviour
         UpdateSlotUI();
     }
 
-    public void AddAmorItem(ItemData _amorItem)
+    public void AddArmorItem(ItemData _armorItem)
     {
-        amorItem = new InventoryItem(_amorItem);
+        armorItem = new InventoryItem(_armorItem);
         UpdateSlotUI();
     }
 
     private void UpdateSlotUI()
     {
-
         for(int i=0; i<gunItems.Count; i++)
         {
             gunItemSlot[i].UpdateSlot(gunItems[i]);
         }
 
-        if(amorItem.data != null)
-            amorItemSlot.UpdateSlot(amorItem);
+        if(armorItem.data != null)
+            amorItemSlot.UpdateSlot(armorItem);
     }
 }
