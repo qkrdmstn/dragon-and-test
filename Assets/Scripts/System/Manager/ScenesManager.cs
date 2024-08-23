@@ -107,7 +107,7 @@ public class ScenesManager : MonoBehaviour
         }
 
         string curSceneName = sceneInfos[scene.buildIndex].myScene.ToString();
-        if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1")) curSceneName = "Battle_1";
+        if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1") || curSceneName.Contains("Boss_1")) curSceneName = "Battle_1";
         UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
 
         GunManager.instance.Initialize();
