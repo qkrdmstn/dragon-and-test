@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -25,8 +26,9 @@ public class SpawnEditorManager : MonoBehaviour
 
     [Header("Reference")]
     private SpawnEditor_Camera cam;
-    private SpawnEditor_BlockInfo[] blocks;
+    public List<SpawnEditor_BlockInfo> blocks;
     public SpawnEditor_BlockInfo totalBlock;
+    public Vector2[] mapHierarchy;
 
     [Header("State info")]
     public SpawnEditor_State curState;
@@ -68,10 +70,22 @@ public class SpawnEditorManager : MonoBehaviour
 
     private void InitializeBlockInfo()
     {
-        blocks = FindObjectsOfType<SpawnEditor_BlockInfo>();
-        Array.Sort(blocks);
+        //blocks = FindObjectsOfType<SpawnEditor_BlockInfo>();
+        //Array.Sort(blocks);
 
-        for (int i = 0; i < blocks.Length; i++)
+        //mapIndicator = FindObjectOfType<MapIndicator>();
+        int layer = 1 << LayerMask.NameToLayer("MapSort");
+        for (int i = 0; i < mapHierarchy.Length; i++)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(mapHierarchy[i], Vector2.right, 250f, layer);
+            foreach (RaycastHit2D hit in hits)
+            {
+                blocks.Add(hit.transform.GetComponentInParent<SpawnEditor_BlockInfo>());
+            }
+        }
+        blocks = blocks.Distinct().ToList();
+
+        for (int i = 0; i < blocks.Count; i++)
             blocks[i].InitializeBlockInfo(i);
 
         //total block
@@ -79,7 +93,7 @@ public class SpawnEditorManager : MonoBehaviour
         float maxX = blocks[0].max.x;
         float minY = blocks[0].min.y;
         float maxY = blocks[0].max.y;
-        for (int i = 1; i < blocks.Length; i++)
+        for (int i = 1; i < blocks.Count; i++)
         {
             minX = Mathf.Min(minX, blocks[i].min.x);
             maxX = Mathf.Max(maxX, blocks[i].max.x);
@@ -110,7 +124,7 @@ public class SpawnEditorManager : MonoBehaviour
             {
                 //Initial Direction Setting
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                for (int i = 0; i < blocks.Length; i++)
+                for (int i = 0; i < blocks.Count; i++)
                 {
                     if (blocks[i].IsInBlock(mousePos))
                     {
@@ -208,7 +222,7 @@ public class SpawnEditorManager : MonoBehaviour
     public async void SaveSpawnData()
     {   // clear는 구글 시트 스크립트에서 처리
         List<SpawnDB> paramLists = new List<SpawnDB>();
-        for (int i = 0; i < blocks.Length; i++) //각 blockinfo에 포함된 spawn data 취합
+        for (int i = 0; i < blocks.Count; i++) //각 blockinfo에 포함된 spawn data 취합
         {
             for (int j = 0; j < blocks[i].blockSpawnData.Count; j++)
             {
@@ -229,7 +243,7 @@ public class SpawnEditorManager : MonoBehaviour
     public async void LoadSpawnData()
     {
         //Spawn Data Clear in Unity
-        for (int i = 0; i < blocks.Length; i++) //각 blockinfo에 포함된 spawn data 취합
+        for (int i = 0; i < blocks.Count; i++) //각 blockinfo에 포함된 spawn data 취합
         {
             blocks[i].blockSpawnData.Clear();
         }
@@ -253,7 +267,7 @@ public class SpawnEditorManager : MonoBehaviour
     public void ResetSpawnData()
     {
         //Spawn Data Clear
-        for (int i = 0; i < blocks.Length; i++) //각 blockinfo에 포함된 spawn data 취합
+        for (int i = 0; i < blocks.Count; i++) //각 blockinfo에 포함된 spawn data 취합
         {
             blocks[i].blockSpawnData.Clear();
             blocks[i].VisualizeSpawnData();
