@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Unity.Mathematics;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class MonsterNear : MonsterBase
     float[] directions = { 0, 45, 90, 180, 270, 315, 360};
     int shootNumber = 0;
     #endregion
-
+    public bool isTanker = false;
     #region States
     public MonsterChaseStateNear chaseState { get; private set; }
     public MonsterAttackStateNear attackState { get; private set; }
@@ -46,7 +47,7 @@ public class MonsterNear : MonsterBase
         stateMachine.Initialize(chaseState);
     }
 
-    IEnumerator AnimSpawn()
+    protected virtual IEnumerator AnimSpawn()
     {
         SpeedToZero();
         monsterAnimController.SetAnim();
@@ -195,7 +196,7 @@ public class MonsterNear : MonsterBase
         }
     }
 
-    IEnumerator AnimDead()
+    protected virtual IEnumerator AnimDead()
     {
         monsterAnimController.SetAnim(MonsterAnimState.Death, CheckDir());
         float sec = Mathf.Clamp(deadSec, 0f, 0.7f);

@@ -32,16 +32,19 @@ public class MonsterChaseStateNear : MonsterState
         if (monster.isChase)
         {   //navigate
             monster.agent.SetDestination(player.transform.position);
-            Direction newDir = monster.CheckDir();
-            if (monster.isFirst)
+            if(!monster.isTanker)
             {
-                monster.isFirst = false;
-                monster.monsterAnimController.SetAnim(MonsterAnimState.Run, newDir);
-            }
-            else if (curDir != newDir)
-            {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
-                curDir = newDir;
-                monster.monsterAnimController.SetAnim(MonsterAnimState.Run, curDir);
+                Direction newDir = monster.CheckDir();
+                if (monster.isFirst)
+                {
+                    monster.isFirst = false;
+                    monster.monsterAnimController.SetAnim(MonsterAnimState.Run, newDir);
+                }
+                else if (curDir != newDir)
+                {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+                    curDir = newDir;
+                    monster.monsterAnimController.SetAnim(MonsterAnimState.Run, curDir);
+                }
             }
         }
 

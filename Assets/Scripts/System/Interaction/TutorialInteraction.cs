@@ -400,10 +400,12 @@ public class TutorialInteraction : MonoBehaviour
         else return false;
     }
 
+    public bool isDashed = false;
     bool CheckDash()
     {
         if (Player.instance.IsDash())
         {
+            isDashed = true;
             UIManager.instance.curUIGroup.SwitchAnim("isDash", false);
             return true;
         }

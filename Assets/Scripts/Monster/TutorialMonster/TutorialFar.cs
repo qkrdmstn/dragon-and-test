@@ -31,6 +31,8 @@ public class TutorialFar : MonsterFar
                 tutorial.isAttacked = true;
                 return;
             }
+            else if (!tutorial.isDashed)
+                return;
         }
         else if (myNum == TutorialInteraction.TutorialMonsters.skill && !tutorial.useSkill) return;
 
