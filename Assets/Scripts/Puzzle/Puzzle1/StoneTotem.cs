@@ -14,24 +14,24 @@ public class StoneTotem : MonoBehaviour
     public SeotdaHwatuName myCard;
 
     public int index = -1;
-    public int answerIdx = -1;
     public bool isChanging;
 
     public SpriteRenderer cardImg;
     public Sprite blankImg;
     public List<Sprite> decks;
 
-    Puzzle1Manager puzzleManager;
+    PuzzleInteraction puzzleInteraction;
 
     void Start()
     {
-        puzzleManager = FindObjectOfType<Puzzle1Manager>();
+        puzzleInteraction = Player.instance.GetComponentInChildren<PuzzleInteraction>();
 
+        decks = new List<Sprite>(1);
         HwatuData[] datas = SkillManager.instance.hwatuData;
-        for(int i=0; i<datas.Length; i++)
-        {
-            if(myCard == datas[i].hwatu.type) answerIdx = i;
+        Array.Sort(datas);
 
+        for (int i=0; i<datas.Length; i++)
+        {
             switch (myType)
             {
                 case TotemType.Main:
@@ -44,10 +44,9 @@ public class StoneTotem : MonoBehaviour
                     break;
             }
         }
-        Array.Sort(datas);
         do
         {   // 퍼즐 달 제외한 랜덤한 화투패 선정
-            index = UnityEngine.Random.Range(0, 10);
+            index = UnityEngine.Random.Range(0, 10);    // 1~10월
         } while (index == (int)month);
 
         cardImg.sprite = decks[index];
@@ -73,11 +72,11 @@ public class StoneTotem : MonoBehaviour
 
         index = (++index) % 10;
         cardImg.sprite = decks[index];
-        if (index == answerIdx)
+        if (index == (int)month)
         {
-            puzzleManager.isClear[(int)myType] = true;
+            puzzleInteraction.isClear[(int)myType] = true;
         }
-        else puzzleManager.isClear[(int)myType] = false;
+        else puzzleInteraction.isClear[(int)myType] = false;
 
         isChanging = false;
     }

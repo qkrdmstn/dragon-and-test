@@ -9,7 +9,7 @@ public class PlayerInteraction : MonoBehaviour
     //public bool isBounded;
     int curIdxInteraction;
 
-    public Interaction dialogueInteraction, shopInteraction, blanketInteraction, pickupItemInteraction;
+    public Interaction dialogueInteraction, shopInteraction, blanketInteraction, pickupItemInteraction, puzzleInteraction;
 
     CircleCollider2D col;
     Collider2D[] inRangeInteraction;
@@ -23,15 +23,16 @@ public class PlayerInteraction : MonoBehaviour
         shopInteraction = gameObject.AddComponent<ShopInteraction>();
         blanketInteraction = gameObject.AddComponent<BlanketInteraction>();
         pickupItemInteraction = gameObject.AddComponent<PickUpItemInteraction>();
+        puzzleInteraction = gameObject.AddComponent<PuzzleInteraction>();
     }
 
     void Update()
     {
         if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
-        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone)
+        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone)
         {
             ChangePlayerInteractionState(false);
-            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
@@ -70,7 +71,9 @@ public class PlayerInteraction : MonoBehaviour
                 case InteractionData.InteractionType.Tutorial:
                     TutorialInteraction();
                     break;
-
+                case InteractionData.InteractionType.Puzzle:
+                    PuzzleInteraction();
+                    break;
             }
         }
     }
@@ -187,5 +190,11 @@ public class PlayerInteraction : MonoBehaviour
                 tuto.LoadEvent(interaction.sequence);
 
         else ChangePlayerInteractionState(false);
+    }
+
+    void PuzzleInteraction()
+    {
+        // lever 가동 모션
+        puzzleInteraction.LoadEvent(interaction);
     }
 }
