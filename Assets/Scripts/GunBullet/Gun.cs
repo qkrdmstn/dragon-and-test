@@ -24,6 +24,9 @@ public class Gun : MonoBehaviour
     public int loadedBullet;
     public float maxRecoilDegree;
     public float recoilIncrease;
+    public float bulletSpeed;
+    public float range;
+    public float knockbackForce;
     public GameObject gunPrefab;
 
     [Header("Bullet Prefabs")]
@@ -113,6 +116,9 @@ public class Gun : MonoBehaviour
         loadedBullet = _data.loadedBullet;
         maxRecoilDegree = _data.maxRecoilDegree;
         recoilIncrease = _data.recoilIncrease;
+        bulletSpeed = _data.bulletSpeed;
+        range = _data.range;
+        knockbackForce = _data.knockbackForce;
 
         gunPrefab = _data.gunPrefab;
         bulletPrefab = _data.bulletPrefab;
@@ -153,7 +159,7 @@ public class Gun : MonoBehaviour
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
             Bullet bullet = bulletObj.GetComponent<Bullet>();
 
-            bullet.BulletInitialize(bulletDamage, dir);
+            bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update
@@ -196,7 +202,7 @@ public class Gun : MonoBehaviour
 
     public void Reload()
     {
-        if(loadedBullet != magazineSize)
+        if(loadedBullet != magazineSize && maxBullet > 0)
         {
             Player.instance.animController.isBreath = false;
 
@@ -226,7 +232,17 @@ public class Gun : MonoBehaviour
             reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
             yield return new WaitForFixedUpdate();
         }
-        loadedBullet = magazineSize;
+        int reloadBulletSize = magazineSize - loadedBullet;
+        if(reloadBulletSize <= maxBullet)
+        {
+            loadedBullet = magazineSize;
+            maxBullet -= reloadBulletSize;
+        }
+        else
+        {
+            loadedBullet += maxBullet;
+            maxBullet -= maxBullet;
+        }
         isReloading = false;
 
         reloadUIImg.gameObject.SetActive(false);

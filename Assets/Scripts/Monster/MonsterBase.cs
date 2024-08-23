@@ -113,11 +113,12 @@ public class MonsterBase : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            OnDamaged(1);
+            Bullet bullet = collision.GetComponent<Bullet>();
+            OnDamaged(bullet.damage);
 
             Vector2 dir = this.transform.position - player.transform.position;
             dir.Normalize();
-            Knockback(dir, knockbackForce);
+            Knockback(dir, bullet.knockbackForce);
         }
     }
 

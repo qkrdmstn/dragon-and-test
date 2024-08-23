@@ -1,5 +1,7 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New Gun Data", menuName = "Data/Gun")]
+
 public class GunData : ScriptableObject
 {
     [Header("Gun info")]
@@ -11,6 +13,9 @@ public class GunData : ScriptableObject
     public int loadedBullet;
     public float maxRecoilDegree;
     public float recoilIncrease;
+    public float bulletSpeed;
+    public float range;
+    public float knockbackForce;
 
     [Header("Item Data")]
     public ItemData gunItemData;
@@ -29,6 +34,9 @@ public class GunData : ScriptableObject
         this.loadedBullet = _data.loadedBullet;
         this.maxRecoilDegree = _data.maxRecoilDegree;
         this.recoilIncrease = _data.recoilIncrease;
+        this.bulletSpeed = _data.bulletSpeed;
+        this.range = _data.range;
+        this.knockbackForce = _data.knockbackForce;
 
         this.gunItemData = _data.gunItemData;
 
@@ -46,6 +54,9 @@ public class GunData : ScriptableObject
         this.loadedBullet = _gun.loadedBullet;
         this.maxRecoilDegree = _gun.maxRecoilDegree;
         this.recoilIncrease = _gun.recoilIncrease;
+        this.bulletSpeed = _gun.bulletSpeed;
+        this.range = _gun.range;
+        this.knockbackForce = _gun.knockbackForce;
 
         this.gunPrefab = _gun.gunPrefab;
         this.bulletPrefab = _gun.bulletPrefab;

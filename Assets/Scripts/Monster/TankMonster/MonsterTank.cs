@@ -55,7 +55,8 @@ public class MonsterTank : MonsterNear
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            OnDamaged(1);
+            Bullet bullet = collision.GetComponent<Bullet>();
+            OnDamaged(bullet.damage);
         }
     }
 

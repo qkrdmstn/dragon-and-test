@@ -170,7 +170,8 @@ public class Boss_Jan : Boss
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            OnDamaged(1);
+            Bullet bullet = collision.GetComponent<Bullet>();
+            OnDamaged(bullet.damage);
         }
     }
 
