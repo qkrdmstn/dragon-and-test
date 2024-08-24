@@ -48,7 +48,7 @@ public class BlanketInteraction : Interaction
             if (!TutorialInteraction.isBlanket) return;
             EndInteraction();
         }
-        else if(blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
+        else if (blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
         {
             blanketUI.SetSkillInfoUIInActive();
         }
@@ -85,7 +85,7 @@ public class BlanketInteraction : Interaction
     {
         //화투 생성 위치
         RectTransform initTransform = hwatuUI.GetComponent<RectTransform>();
-        
+
         //화투 생성
         for (int i = 0; i < SkillManager.instance.materialCardCnt; i++)
         {
@@ -107,7 +107,7 @@ public class BlanketInteraction : Interaction
 
     private void UpdateMaterialHwatuUIInitPos(float duration)
     {
-        int numOfCard = SkillManager.instance.materialCardCnt - selectedCnt - 1;
+        int numOfCard = 10 - selectedCnt - 1; //최대 카드 - 모포 위의 카드 - 1
 
         float interval = (maxPos.x - minPos.x) / (float)numOfCard;
         int j = 0;
@@ -154,7 +154,7 @@ public class BlanketInteraction : Interaction
 
         if (selectedCnt >= 2) //화투 select에 빈 곳이 없을 경우, 실패
             return false;
-        else if(selectedCnt >= 1)
+        else if (selectedCnt >= 1)
         {
             //섯다 조합 체크
             Hwatu hwatu1;
@@ -183,7 +183,7 @@ public class BlanketInteraction : Interaction
 
         UpdateMaterialHwatuUIInitPos(0.5f);
 
-        if(selectedCnt == 2)
+        if (selectedCnt == 2)
         {
             Invoke("CombinationSeletedHwatu", 0.2f); //화투패 UI 작아지는 애니메이션 후, 조합 실행
         }
@@ -197,7 +197,7 @@ public class BlanketInteraction : Interaction
 
         for (int i = 0; i < 2; i++)
         {
-            if(selectedHwatuUI[i] == hwatuData)
+            if (selectedHwatuUI[i] == hwatuData)
             {
                 selectedHwatuUI[i] = null;
                 selectedCnt -= 1;

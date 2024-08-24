@@ -8,7 +8,6 @@ using DG.Tweening;
 public class MaterialHwatuSlotUI : MonoBehaviour
     , IPointerEnterHandler
     , IPointerExitHandler
-    , IPointerClickHandler
     , IBeginDragHandler
     , IEndDragHandler
     , IDragHandler
@@ -40,7 +39,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
         originSiblingIndex = transform.GetSiblingIndex(); // 가장 위에 렌더링되는 카드가 자연스럽도록 Sibling의 순서를 바꿈
         transform.SetAsLastSibling();
 
-        MoveTransform(originPos + new Vector3(0, 100, 0), originRot, originScale, 0.25f);
+        MoveTransform(originPos + new Vector3(0, 100, 0), originRot, originScale, 0.25f, false);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -49,37 +48,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
             return;
 
         transform.SetSiblingIndex(originSiblingIndex);
-        MoveTransform(0.25f);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        //if (isTweening)
-        //    return;
-
-        //BlanketInteraction blanketInteraction = FindObjectOfType<BlanketInteraction>();
-        //if (!isSelected)
-        //{
-        //    int cellNum = blanketInteraction.AddSelectedHwatu(this);
-        //    if(cellNum >= 0) //추가 성공
-        //    {
-        //        //칸 위치 이동
-        //        BlanketUI blanketUI = transform.GetComponentInParent<BlanketUI>();
-        //        Vector3 pos = blanketUI.materialHwatuPlace[cellNum].transform.position;
-        //        Quaternion rot = Quaternion.identity;
-        //        Vector3 scale = new Vector3(4, 4, 1);
-        //        MoveTransform(pos, rot, scale, 0.5f);
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("Hwatu Select Fail");
-        //    }
-        //}
-        //else if(isSelected)
-        //{
-        //    blanketInteraction.DeleteSelectedHwatu(this);
-        //}
-        //Debug.Log("Click");
+        MoveTransform(0.25f, false);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -167,7 +136,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
 
     public void MoveTransform(float dotweenTime = 0, bool tweenSetting = true)
     {
-        if(tweenSetting)
+        if (tweenSetting)
         {
             transform.DOMove(originPos, dotweenTime).OnStart(TweenStart);
             transform.DORotateQuaternion(originRot, dotweenTime);
