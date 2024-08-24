@@ -20,7 +20,6 @@ public class ShopInteraction : Interaction
 
         this.itemData = data.itemData;
         interaction = data.gameObject;
-        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].SetActive(true);
         StartCoroutine(ManageEvent());
     }
 

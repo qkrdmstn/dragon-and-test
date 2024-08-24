@@ -98,7 +98,6 @@ public class DialogueInteraction : Interaction
         {
             SetActiveSelectUI(false);
         }
-        if (isShop) UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].SetActive(false);
     }
 
     void SetUPUI() {
