@@ -27,20 +27,21 @@ public class Gun : MonoBehaviour
     public float bulletSpeed;
     public float range;
     public float knockbackForce;
+    public bool isAutomatic;
     public GameObject gunPrefab;
 
     [Header("Bullet Prefabs")]
     public GameObject bulletPrefab;
 
     [Header("Gun State")]
-    [SerializeField] private bool isReloading = false;
-    [SerializeField] private int continuousShootCnt = 0;
+    [SerializeField] protected bool isReloading = false;
+    [SerializeField] protected int continuousShootCnt = 0;
 
     [Header("CameraSetting")]
     // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
     public CamShakeProfile profile;
     public CameraManager cameraManager;
-    private CinemachineImpulseSource impulseSource;
+    protected CinemachineImpulseSource impulseSource;
 
     [Header("UI")]
     public Image reloadUIImg;
@@ -68,8 +69,10 @@ public class Gun : MonoBehaviour
         {
             if (loadedBullet == 0 && Input.GetKeyDown(KeyCode.Mouse0))
                 Reload();
-            else if (Input.GetKey(KeyCode.Mouse0))
-                Shoot();
+            else if(isAutomatic && Input.GetKey(KeyCode.Mouse0))
+                    Shoot();
+            else if (!isAutomatic && Input.GetKeyDown(KeyCode.Mouse0))
+                    Shoot();
 
             if (Input.GetKeyDown(KeyCode.R))
                 Reload();
@@ -115,12 +118,13 @@ public class Gun : MonoBehaviour
         bulletSpeed = _data.bulletSpeed;
         range = _data.range;
         knockbackForce = _data.knockbackForce;
+        isAutomatic = _data.isAutomatic;
 
         gunPrefab = _data.gunPrefab;
         bulletPrefab = _data.bulletPrefab;
     }
 
-    public void Shoot()
+    protected virtual void Shoot()
     {
         if(loadedBullet > 0 && shootTimer < 0.0)
         {
@@ -152,7 +156,7 @@ public class Gun : MonoBehaviour
             if (dir.y < 0)
                 theta *= -1;
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
-            Bullet bullet = bulletObj.GetComponent<Bullet>();
+            PlayerNormalBullet bullet = bulletObj.GetComponent<PlayerNormalBullet>();
 
             bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir);
             StartCoroutine(InactiveIsAttacking());
@@ -161,8 +165,8 @@ public class Gun : MonoBehaviour
             GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
         }
     }
-    
-    private Vector2 GetShootingDirection()
+
+    protected virtual Vector2 GetShootingDirection()
     {
         //Initial Direction Setting
         Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -178,7 +182,7 @@ public class Gun : MonoBehaviour
         return result;
     }
 
-    IEnumerator InactiveIsAttacking()
+    protected IEnumerator InactiveIsAttacking()
     {
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
 
@@ -194,7 +198,7 @@ public class Gun : MonoBehaviour
         }
     }
 
-    public void Reload()
+    protected virtual void Reload()
     {
         if(loadedBullet != magazineSize && maxBullet > 0)
         {

@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2618088524873001671}
   - component: {fileID: 2618088524873001665}
-  - component: {fileID: 2960511163376235610}
+  - component: {fileID: 2576855496995338142}
   - component: {fileID: 7032463676864471577}
   m_Layer: 0
-  m_Name: Gun2
+  m_Name: Gun_SniperRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2960511163376235610
+--- !u!114 &2576855496995338142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,11 +95,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2618088524873001669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43ec54cf00b59d146874f61b10a3b54c, type: 3}
+  m_Script: {fileID: 11500000, guid: 55694393076cf6e4c87b6d2a6639e9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shootTimer: 0
-  initData: {fileID: 11400000, guid: d9fc65f545ba35d4a994369c3770bc8e, type: 2}
+  initData: {fileID: 11400000, guid: b246e9c7c2ca3d7418c322e83cf338a1, type: 2}
   damage: 1
   shootDelay: 0
   reloadTime: 0
@@ -108,11 +108,13 @@ MonoBehaviour:
   loadedBullet: 0
   maxRecoilDegree: 0
   recoilIncrease: 0
+  bulletSpeed: 0
+  range: 0
+  knockbackForce: 0
+  isAutomatic: 0
   gunPrefab: {fileID: 0}
   bulletPrefab: {fileID: 0}
   isReloading: 0
-  clickReloadFlag: 0
-  isAttacking: 0
   continuousShootCnt: 0
   profile: {fileID: 11400000, guid: 9ba0c8b5bcc7e435d8936bd30374b50f, type: 2}
   cameraManager: {fileID: 0}

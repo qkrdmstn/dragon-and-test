@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2618088524873001670}
   - component: {fileID: 7032463676864471577}
   m_Layer: 0
-  m_Name: Gun
+  m_Name: GunBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,11 +108,13 @@ MonoBehaviour:
   loadedBullet: 0
   maxRecoilDegree: 0
   recoilIncrease: 0
+  bulletSpeed: 0
+  range: 0
+  knockbackForce: 0
+  isAutomatic: 0
   gunPrefab: {fileID: 0}
   bulletPrefab: {fileID: 0}
   isReloading: 0
-  clickReloadFlag: 0
-  isAttacking: 0
   continuousShootCnt: 0
   profile: {fileID: 11400000, guid: 9ba0c8b5bcc7e435d8936bd30374b50f, type: 2}
   cameraManager: {fileID: 0}

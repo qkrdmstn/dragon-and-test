@@ -80,12 +80,6 @@ public class Boss_Jan : Boss
     public GameObject moneyPrefab;
     public int moneyValue;
 
-    #region Observer
-    private BossHPUI bossHPUI;
-    #endregion
-    #region Componets
-    #endregion
-
     #region States
     public BossStateMachine stateMachine;
 
@@ -113,8 +107,6 @@ public class Boss_Jan : Boss
         pattern3Object = FindObjectOfType<Pattern3Object>();
 
         moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
-
-        bossHPUI = FindObjectOfType<BossHPUI>();
     }
 
     private void InitState()
@@ -173,16 +165,6 @@ public class Boss_Jan : Boss
             curState = BossStates_Jan.pattern3;
     }
 
-    //피격
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            Bullet bullet = collision.GetComponent<Bullet>();
-            OnDamaged(bullet.damage);
-        }
-    }
-
     public bool IsWithinChaseRange() //플레이어가 추적 범위 내에 있는지 check
     {
         float dist = Vector3.Magnitude(player.transform.position - this.transform.position);
@@ -199,69 +181,11 @@ public class Boss_Jan : Boss
         return false;
     }
 
-    //데미지 처리
-    private void OnDamaged(int damage)
-    {
-        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
-
-        curHP -= damage;
-        //피격 시, 패시브 스킬
-        //독사
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14))
-        {
-            //지속 데미지 -> duration과 interval이 없음
-            StartCoroutine(DOTDamage(5.0f, 1.0f, 1));
-        }
-        //구삥
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19))
-        {
-            //9% 확률로 몬스터 기절 duration
-        }
-
-        if (curHP <= 0)
-        {
-            Dead();
-        }
-
-        bossHPUI.UpdateHPUI(curHP, maxHP);
-    }
-
-    IEnumerator DOTDamage(float duration, float interval, int perDamage)
-    {
-        float timer = interval;
-        while (duration < 0.0f)
-        {
-            yield return null;
-            timer -= Time.deltaTime;
-
-            if (timer < 0.0f)
-            {
-                duration -= interval;
-                timer = interval;
-                curHP -= perDamage;
-            }
-        }
-    }
-
-    //죽음
-    private void Dead()
+    public override void Dead()
     {
         if (!isDead)
-        {
-            isDead = true;
-            StopAllCoroutines();
-
-            MonsterBase[] monsterBases = FindObjectsByType<MonsterBase>(FindObjectsSortMode.None); 
-            BossBullet_Jan[] bossBullets = FindObjectsByType<BossBullet_Jan>(FindObjectsSortMode.None); 
-            Debug.Log("Dead!!!!!!!");
-
-            for (int i = 0; i < monsterBases.Length; i++)
-                monsterBases[i].Dead();
-
-            for (int i = 0; i < bossBullets.Length; i++)
-                Destroy(bossBullets[i].gameObject);
             MoneyDrop();
-        }
+        base.Dead();
     }
 
     private void MoneyDrop()

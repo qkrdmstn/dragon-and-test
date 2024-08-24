@@ -52,15 +52,20 @@ public class StoneTotem : MonoBehaviour
         cardImg.sprite = decks[index];
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("Bullet"))
-        {
-            collision.GetComponent<Bullet>().InActiveBullet();
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(collision.CompareTag("Bullet"))
+    //    {
+    //        Destroy(collision.gameObject);
+    //        if (!isChanging)
+    //            StartCoroutine(HwatuChangeCoroutine());
+    //    }
+    //}
 
-            if (!isChanging)
-                StartCoroutine(HwatuChangeCoroutine());
-        }
+    public void OnDamaged()
+    {
+        if (!isChanging)
+            StartCoroutine(HwatuChangeCoroutine());
     }
 
     IEnumerator HwatuChangeCoroutine()

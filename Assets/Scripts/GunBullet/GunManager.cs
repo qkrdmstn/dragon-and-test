@@ -77,24 +77,9 @@ public class GunManager : MonoBehaviour
         for (int i = 0; i < childCnt; i++)
         {
             GameObject gunObj = gunParent.GetChild(i).gameObject;
-            GunData _data;
-            if (i >= gunDataList.Count)
-            {
-                _data = new GunData(gunObj.GetComponent<Gun>().initData);
-                AddGunDataList(_data);
-            }
-            else
-                _data = gunDataList[i];
-
+            GunData _data = new GunData(gunObj.GetComponent<Gun>().initData);
+            AddGunDataList(_data);
             LoadGunData(gunObj, _data);
-        }
-
-        for (int i = childCnt; i < gunDataList.Count; i++)
-        {
-            GunData _oldData = gunDataList[i];
-            GameObject _newGunObj = Instantiate(gunDataList[i].gunPrefab, gunParent.position, gunParent.rotation, gunParent);
-
-            LoadGunData(_newGunObj, _oldData);
         }
         gunNum = gunDataList.Count;
     }
@@ -131,25 +116,6 @@ public class GunManager : MonoBehaviour
         GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx].gunItemData);
         Gun _gun = gunParent.GetChild(currentIdx).GetComponent<Gun>();
         UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
-    }
-
-    public void SaveGunData() 
-    {
-        UpdateGunData();
-    }
-
-    private void UpdateGunData()
-    {
-        for (int i = 0; i < gunDataList.Count; i++)
-        {
-            GameObject _gunObj = gunDictionary[gunDataList[i]];
-            Debug.Log(_gunObj);
-            Gun _gun = _gunObj.GetComponent<Gun>();
-            Debug.Log(_gun);
-            gunDataList[i].gunDataUpdate(_gun);
-        }
-
-        gunDictionary.Clear();
     }
 
     void SwapGun(bool up)

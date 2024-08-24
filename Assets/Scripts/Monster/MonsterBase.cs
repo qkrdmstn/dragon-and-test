@@ -112,15 +112,15 @@ public class MonsterBase : MonoBehaviour
     //피격
     public virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            Bullet bullet = collision.GetComponent<Bullet>();
-            OnDamaged(bullet.damage);
+        //if (collision.gameObject.CompareTag("Bullet"))
+        //{
+        //    PlayerNormalBullet bullet = collision.GetComponent<PlayerNormalBullet>();
+        //    OnDamaged(bullet.damage);
 
-            Vector2 dir = this.transform.position - player.transform.position;
-            dir.Normalize();
-            Knockback(dir, bullet.knockbackForce);
-        }
+        //    Vector2 dir = this.transform.position - player.transform.position;
+        //    dir.Normalize();
+        //    Knockback(dir, bullet.knockbackForce);
+        //}
     }
 
     //넉백
