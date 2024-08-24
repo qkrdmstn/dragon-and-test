@@ -214,6 +214,7 @@ public class Player : MonoBehaviour
         isCombatZone = false;
         isDamaged = false;
         curHP = maxHP;
+        money = 0;
 
         SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
         animController.isBreath = false;
