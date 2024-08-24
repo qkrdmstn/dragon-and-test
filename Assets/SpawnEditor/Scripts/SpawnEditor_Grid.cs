@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class SpawnEditor_Grid : MonoBehaviour
 {
-    [SerializeField] private SpawnEditor_BlockInfo[] blocks;
+    public Vector2[] mapHierarchy;
+    [SerializeField] private List<SpawnEditor_BlockInfo> blocks;
 
     [Header("Grid info")]
     [SerializeField] private LineRenderer[] lines;
@@ -23,10 +25,22 @@ public class SpawnEditor_Grid : MonoBehaviour
 
     private void InitializeBlockInfo()
     {
-        blocks = FindObjectsOfType<SpawnEditor_BlockInfo>();
-        Array.Sort(blocks);
+        //blocks = FindObjectsOfType<SpawnEditor_BlockInfo>();
+        //Array.Sort(blocks);
 
-        for (int i = 0; i < blocks.Length; i++)
+        //mapIndicator = FindObjectOfType<MapIndicator>();
+        int layer = 1 << LayerMask.NameToLayer("MapSort");
+        for (int i = 0; i < mapHierarchy.Length; i++)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(mapHierarchy[i], Vector2.right, 250f, layer);
+            foreach (RaycastHit2D hit in hits)
+            {
+                blocks.Add(hit.transform.GetComponentInParent<SpawnEditor_BlockInfo>());
+            }
+        }
+        blocks = blocks.Distinct().ToList();
+
+        for (int i = 0; i < blocks.Count; i++)
             blocks[i].InitializeBlockInfo(i);
     }
 
@@ -52,7 +66,7 @@ public class SpawnEditor_Grid : MonoBehaviour
         if (SpawnEditorManager.instance.curState == SpawnEditor_State.BlockSetting)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            for (int i = 0; i < blocks.Length; i++)
+            for (int i = 0; i < blocks.Count; i++)
             {
                 Color lineColor = Color.cyan;
                 if (blocks[i].IsInBlock(mousePos))
