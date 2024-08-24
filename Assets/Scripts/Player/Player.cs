@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public Gun gun;
     public GameObject gunParent;
     public bool isAttackable = true;
+    public int reinforceAttack = 0;
 
     [Header("State Check")]
     public bool isCombatZone = false;

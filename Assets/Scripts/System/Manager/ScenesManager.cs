@@ -107,7 +107,7 @@ public class ScenesManager : MonoBehaviour
         if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1") || curSceneName.Contains("Boss_1")) curSceneName = "Battle_1";
         UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
 
-        if(_sceneInfo != SceneInfo.Start && GunManager.instance == null)
+        if(_sceneInfo != SceneInfo.Start && GunManager.instance.gunParent == null)
             GunManager.instance.Initialize();
         isLoading = false;
     }

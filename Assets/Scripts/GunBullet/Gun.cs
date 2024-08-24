@@ -158,7 +158,7 @@ public class Gun : MonoBehaviour
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
             PlayerNormalBullet bullet = bulletObj.GetComponent<PlayerNormalBullet>();
 
-            bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir);
+            bullet.BulletInitialize(bulletDamage + Player.instance.reinforceAttack, range, bulletSpeed, knockbackForce, dir);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update

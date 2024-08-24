@@ -38,7 +38,7 @@ public class Gun_LaserPistol : Gun
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
             PlayerLaserBullet bullet = bulletObj.GetComponent<PlayerLaserBullet>();
 
-            bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, 0.1f, dir);
+            bullet.BulletInitialize(bulletDamage + Player.instance.reinforceAttack, range, bulletSpeed, knockbackForce, dir);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update
