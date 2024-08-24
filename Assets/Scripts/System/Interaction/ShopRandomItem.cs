@@ -18,7 +18,6 @@ public class ShopRandomItem : MonoBehaviour
         gunItemDatas = Resources.LoadAll<ItemData>("Gun/ItemData");
         armorItemDatas = Resources.LoadAll<ItemData>("Armor");
         fruitItemData = Resources.Load<ItemData>("Material/DragonFruit");
-
     }
     private void Start()
     {
@@ -31,7 +30,6 @@ public class ShopRandomItem : MonoBehaviour
     {
         int armorCnt = Random.Range(1,3);
         int fruitCnt = 3 - armorCnt;
-        Debug.Log("SetCountType");
         SetCountGun();
         SetCountArmor(armorCnt);
         SetCountFruit(fruitCnt);
@@ -39,7 +37,7 @@ public class ShopRandomItem : MonoBehaviour
 
     void SetCountGun()
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[Random.Range(0, 1)];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[Random.Range(0, 3)];
         itemObjs[cnt].SetItemData();
         cnt++;
     }
