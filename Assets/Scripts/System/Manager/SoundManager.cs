@@ -51,7 +51,7 @@ public class SoundManager : MonoBehaviour
     [Header("----- AudioSources")]
     AudioSource BGMSource;
     AudioSource[] walkSources;
-    AudioSource[] effectSources;
+    AudioSource[][] effectSources;
 
     public GameObject[] effectSlots;
     public int channels;
@@ -84,15 +84,16 @@ public class SoundManager : MonoBehaviour
         BGMSource.volume = _bgmVolume;
         BGMSource.loop = true;
 
+        effectSources = new AudioSource[effectSlots.Length][];
         // Effect
-        foreach(GameObject obj in effectSlots)
+        for (int i=0; i<effectSlots.Length; i++)
         {
-            effectSources = new AudioSource[channels];
-            for (int i = 0; i < channels; i++)
+            effectSources[i] = new AudioSource[channels];
+            for (int j = 0; j < channels; j++)
             {
-                effectSources[i] = obj.AddComponent<AudioSource>();
-                effectSources[i].playOnAwake = false;
-                effectSources[i].volume = _effectVolume;
+                effectSources[i][j] = effectSlots[i].AddComponent<AudioSource>();
+                effectSources[i][j].playOnAwake = false;
+                effectSources[i][j].volume = _effectVolume;
             }
         }
 
@@ -161,19 +162,19 @@ public class SoundManager : MonoBehaviour
     {
         int clipIdx = (int)Enum.Parse(clip.GetType(), clip.ToString());
 
-        PlayEffectSound(effects[(int)_type].effectClips[clipIdx]);
+        PlayEffectSound((int)_type, effects[(int)_type].effectClips[clipIdx]);
     }
 
-    public void PlayEffectSound(AudioClip _clip)
+    public void PlayEffectSound(int effectSlotIdx, AudioClip _clip)
     {
         for (int audioIdx = 0; audioIdx < channels; audioIdx++)
         {
             int loopIdx = (audioIdx + channelIndex) % channels;
-            if (effectSources[loopIdx].isPlaying) continue;
+            if (effectSources[effectSlotIdx][loopIdx].isPlaying) continue;
 
             channelIndex = loopIdx;
-            effectSources[loopIdx].clip = _clip;
-            effectSources[loopIdx].Play();
+            effectSources[effectSlotIdx][loopIdx].clip = _clip;
+            effectSources[effectSlotIdx][loopIdx].Play();
             break;
         }
     }
