@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class PlayerNormalBullet : MonoBehaviour
 {
     [Header("Bullet Information")]
     public int damage;
-    //public int bounce;
     public float range;
     public float curDist;
     public float knockbackForce;
@@ -32,14 +31,6 @@ public class Bullet : MonoBehaviour
             Destroy(this.gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //�ӽ� Bound
-        if (!IsInDomain())
-            Destroy(this.gameObject);
-    }
-
     public void BulletInitialize(int _damage, float _range, float _speed, float _knockbackForce, Vector2 _dir)
     {
         damage = _damage;
@@ -51,15 +42,34 @@ public class Bullet : MonoBehaviour
         curDist = 0;
     }
 
-    private bool IsInDomain()
-    {
-        return transform.position.x <= 100 && transform.position.x >= -100 && transform.position.y <= 100 && transform.position.y >= -100;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.CompareTag("Monster"))
+        {
+            MonsterBase monster = collision.GetComponent<MonsterBase>();
+            Boss boss = collision.GetComponent<Boss>();
 
-        if (collision.gameObject.CompareTag("Monster") || collision.gameObject.CompareTag("Ground"))
+            if (monster != null)
+            {
+                monster.OnDamaged(damage);
+
+                Vector2 dir = this.transform.position - Player.instance.transform.position;
+                dir.Normalize();
+                monster.Knockback(dir, knockbackForce);
+            }
+            else if (boss != null)
+                boss.OnDamaged(damage);
+            InActiveBullet();
+        }
+
+        if (collision.gameObject.CompareTag("PuzzleTotem"))
+        {
+            StoneTotem stoneTotem = collision.GetComponent<StoneTotem>();
+            stoneTotem.OnDamaged();
+            InActiveBullet();
+        }
+
+        if (collision.gameObject.CompareTag("Ground"))
         {
             InActiveBullet();
         }

@@ -80,14 +80,4 @@ public class MonsterTank : MonsterNear
 
         OutAttack();
     }
-
-    public override void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            Bullet bullet = collision.GetComponent<Bullet>();
-            OnDamaged(bullet.damage);
-        }
-    }
-
 }

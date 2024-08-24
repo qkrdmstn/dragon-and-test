@@ -45,7 +45,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerDownHandler
         if(item != null && item.data != null)
         {
             //Exception handling for click of dragonHwatu slot
-            if (item.data.itemType == ItemType.DragonHwatu || item.data.itemType == ItemType.Gun)
+            if (item.data.itemType == ItemType.DragonHwatu)
                 return;
 
             info.UpdateItemInfo(item.data);

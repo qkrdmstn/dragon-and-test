@@ -33,11 +33,13 @@ public class InventoryData : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+
+        gunItems = new List<InventoryItem>();
     }
 
     private void Start()
     {
-        gunItems = new List<InventoryItem>();
+        
     }
 
     public void AddGunItem(ItemData _gunItem)
@@ -60,7 +62,7 @@ public class InventoryData : MonoBehaviour
 
     private void UpdateSlotUI()
     {
-        for(int i=0; i<gunItems.Count; i++)
+        for (int i = 0; i < gunItems.Count; i++)
         {
             gunItemSlot[i].UpdateSlot(gunItems[i]);
         }

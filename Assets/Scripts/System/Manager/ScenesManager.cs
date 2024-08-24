@@ -75,9 +75,6 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeScene(int _sceneInfo)
     {
-        if (_sceneInfo != (int)SceneInfo.Tutorial)
-            GunManager.instance.SaveGunData(); // why 
-
         SceneManager.LoadScene(_sceneInfo);
     }
 

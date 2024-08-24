@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 873cf2e1d1c4fb74c8e54b9c67135018, type: 3}
-  m_Name: Gun3
+  m_Name: Gun_LaserPistorData
   m_EditorClassIdentifier: 
   damage: 3
-  shootDelay: 0.9
-  reloadTime: 1.5
-  maxBullet: 100
+  shootDelay: 0.4
+  reloadTime: 1.2
+  maxBullet: 200
   magazineSize: 10
   loadedBullet: 10
-  maxRecoilDegree: 5
+  maxRecoilDegree: 8
   recoilIncrease: 0.1
-  bulletSpeed: 60
+  bulletSpeed: 200
   range: 100
-  knockbackForce: 3
-  gunItemData: {fileID: 11400000, guid: 1028b3547fb800842b64e728f99325fb, type: 2}
+  knockbackForce: 0
+  isAutomatic: 0
+  gunItemData: {fileID: 11400000, guid: 5a6133b21b657504c8ee2f3585ff1b95, type: 2}
   gunPrefab: {fileID: 2938919487152415488, guid: c8aa684481346ad4fa6bf237d5d8429e, type: 3}
   bulletPrefab: {fileID: 1331701923673328244, guid: a30701ba901da9d46b23ea081ca8b3cf, type: 3}

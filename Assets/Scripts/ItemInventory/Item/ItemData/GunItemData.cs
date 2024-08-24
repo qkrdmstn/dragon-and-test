@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Gun Item Data", menuName = "Data/GunItem")]
 public class GunItemData : ItemData
 {
-    public GunData GunData;
+    public GunData gunData;
 }

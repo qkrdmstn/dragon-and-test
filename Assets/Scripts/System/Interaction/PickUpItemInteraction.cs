@@ -21,7 +21,7 @@ public class PickUpItemInteraction : Interaction
                 // 인터렉션 데이터의 시퀀스 값에 더해질 effect value를 저장해서 넘겨주는 형태
                 break;
             case ItemType.Gun:
-                InventoryData.instance.AddGunItem(itemData);
+                GunManager.instance.AddGun((itemData as GunItemData).gunData.gunPrefab);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
