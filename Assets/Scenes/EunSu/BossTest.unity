@@ -3015,7 +3015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunDataList: []
   gunNum: 0
-  gunParent: {fileID: 0}
+  gunParent: {fileID: 1029433456}
   currentGun: {fileID: 0}
   currentIdx: 0
   currentGunLoadedBullet: 0
@@ -3728,6 +3728,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022006326}
   m_CullTransparentMesh: 1
+--- !u!4 &1029433456 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1152160112286246390, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
+  m_PrefabInstance: {fileID: 1886376953}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1056128210
 GameObject:
   m_ObjectHideFlags: 0
@@ -7132,7 +7137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 75.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4903863899094149215, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_SizeDelta.x
@@ -7358,6 +7363,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop
       objectReference: {fileID: 0}
+    - target: {fileID: 9009978903917284645, guid: 639f41b8e124033448e00fb99dc3d3da, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009978903917284646, guid: 639f41b8e124033448e00fb99dc3d3da, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -7495,7 +7504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971533, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971537, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_RootOrder
