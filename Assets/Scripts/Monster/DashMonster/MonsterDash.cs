@@ -108,6 +108,7 @@ public class MonsterDash : MonsterBase
     {
         warning = false;
         attackWarning.SetActive(false);
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.dashAttack);
         rigidBody.AddForce(direction * attackSpeed);
     }
 

@@ -55,7 +55,7 @@ public class SoundManager : MonoBehaviour
 
     public GameObject[] effectSlots;
     public int channels;
-    int channelIndex;
+    int[] channelIndex;
     int walkChannelIndex;
 
     public bool isFadeOut = false;
@@ -85,6 +85,7 @@ public class SoundManager : MonoBehaviour
         BGMSource.loop = true;
 
         effectSources = new AudioSource[effectSlots.Length][];
+        channelIndex = new int[effectSlots.Length];
         // Effect
         for (int i=0; i<effectSlots.Length; i++)
         {
@@ -169,11 +170,12 @@ public class SoundManager : MonoBehaviour
     {
         for (int audioIdx = 0; audioIdx < channels; audioIdx++)
         {
-            int loopIdx = (audioIdx + channelIndex) % channels;
+            int loopIdx = (audioIdx + channelIndex[effectSlotIdx]) % channels;
             if (effectSources[effectSlotIdx][loopIdx].isPlaying) continue;
 
-            channelIndex = loopIdx;
+            channelIndex[effectSlotIdx] = loopIdx;
             effectSources[effectSlotIdx][loopIdx].clip = _clip;
+
             effectSources[effectSlotIdx][loopIdx].Play();
             break;
         }

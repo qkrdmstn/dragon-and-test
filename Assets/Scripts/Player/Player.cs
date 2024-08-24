@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
     public bool isDamaged = false;
     public bool isFall = false;
     public bool isBounded = false;
-
+    public bool isDead = false;
     #region Componets
     public PlayerAnimController animController { get; private set; }
 
@@ -171,9 +171,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Player Dead");
                     PlayerDead();
-                    GameManager.instance.SetTimeScale(0f);
                 }
             }
             else if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12))
@@ -205,6 +203,8 @@ public class Player : MonoBehaviour
 
     private void PlayerDead()
     {
+        isDead = true;
+        GameManager.instance.SetTimeScale(0f);
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
     }
 
@@ -212,6 +212,7 @@ public class Player : MonoBehaviour
     {   
         isAttackable = false;
         isCombatZone = false;
+        isDead = false;
         isDamaged = false;
         curHP = maxHP;
         money = 0;
@@ -282,6 +283,7 @@ public class Player : MonoBehaviour
         }
         
         Vector3 pos = GameObject.FindGameObjectWithTag("StartPos").transform.position;
+        
         switch (curScene)
         {
             case SceneInfo.Town_1:      // 1
@@ -299,12 +301,9 @@ public class Player : MonoBehaviour
             case SceneInfo.Battle_1_A:  // 4
             case SceneInfo.Battle_1_B:  // 5
             case SceneInfo.Battle_1_C:  // 6
-                isCombatZone = true;
-                break;
-
             case SceneInfo.Boss_1:      // 7
+                isAttackable = true;
                 isCombatZone = true;
-                //pos = new Vector3(-13f, -13f, 0);
                 break;
         }
 

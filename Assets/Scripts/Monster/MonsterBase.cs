@@ -142,8 +142,6 @@ public class MonsterBase : MonoBehaviour
     //데미지 처리
     public virtual void OnDamaged(int damage)
     {
-        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
-
         HP -= damage;
         //피격 시, 패시브 스킬
         //독사
@@ -162,6 +160,7 @@ public class MonsterBase : MonoBehaviour
         {
             Dead();
         }
+        else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
     }
 
     IEnumerator DOTDamage(float duration, float interval, int perDamage)
@@ -185,7 +184,6 @@ public class MonsterBase : MonoBehaviour
     public void EffectState()
     {
         if (!inEffect) tempState = stateMachine.currentState;
-        //Debug.Log(tempState);
         stateMachine.ChangeState(effectState);
     }
 

@@ -57,6 +57,7 @@ public class MonsterFar : MonsterBase
     {
         if(loadedBullet > 0 && monsterShootTimer < 0.0)
         {
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.farAttack);
             monsterShootTimer = monsterShootDelay;
             loadedBullet--;
             Vector3 dir = player.transform.position-transform.position;

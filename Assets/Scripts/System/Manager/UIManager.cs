@@ -46,7 +46,7 @@ public class UIManager : MonoBehaviour
             SetFadeObjState(false);
         }
 
-        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction && !Player.instance.isTutorial)
+        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction && !Player.instance.isTutorial && !Player.instance.isDead)
         {
             if (isFading) return;
             if (ScenesManager.instance.GetSceneNum() != 1)

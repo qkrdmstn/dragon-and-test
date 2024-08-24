@@ -68,7 +68,6 @@ public class MonsterNear : MonsterBase
     public override void Attack()
     {
         inAttack = true;
-        
 
         AttackPoint();
     }
