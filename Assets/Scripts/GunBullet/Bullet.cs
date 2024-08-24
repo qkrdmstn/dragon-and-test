@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float lifeTimer;
-
     [Header("Bullet Information")]
     public int damage;
     //public int bounce;
@@ -37,8 +35,6 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lifeTimer -= Time.deltaTime;
-
         //�ӽ� Bound
         if (!IsInDomain())
             Destroy(this.gameObject);

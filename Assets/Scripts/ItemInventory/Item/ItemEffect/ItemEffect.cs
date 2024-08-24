@@ -12,6 +12,6 @@ public class ItemEffect : ScriptableObject
 
     public virtual void ExcuteEffect(int amount)
     {
-        Debug.Log("Excute Effect - amount "+amount);
+        Debug.Log("Excute Effect - amount "+ amount);
     }
 }

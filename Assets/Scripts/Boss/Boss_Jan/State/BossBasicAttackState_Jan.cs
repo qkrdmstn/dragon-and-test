@@ -61,7 +61,7 @@ public class BossBasicAttackState_Jan : BossState_Jan
         float degree = Random.Range(-boss.maxRecoilDegree, boss.maxRecoilDegree);
         shootDir = Quaternion.AngleAxis(degree, Vector3.forward) * shootDir;
 
-        bullet.BulletInitialize(shootDir, boss.bulletSpeed);
+        bullet.BulletInitialize(shootDir, boss.bulletSpeed, boss.bulletRange);
     }
 
     IEnumerator ReloadCoroutine()

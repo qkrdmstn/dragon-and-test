@@ -60,9 +60,6 @@ public class GunManager : MonoBehaviour
                 if (scroll < 0 && swapTimer < 0.0f)
                     SwapGun(false);
             }
-
-            if (Input.GetKeyDown(KeyCode.O))
-                AddGun(tempPrefab);
         }
     }
 

@@ -9,9 +9,9 @@ public class BossPattern2State_Jan : BossState_Jan
     private Vector2Int maxGridPos;
     private int impactLayerMask = LayerMask.GetMask("Player");
 
-    public BossPattern2State_Jan(Boss_Jan _boss, BossStateMachine _stateMachine, Player _player, BlockInfo _bossField) : base(_boss, _stateMachine, _player)
+    public BossPattern2State_Jan(Boss_Jan _boss, BossStateMachine _stateMachine, Player _player) : base(_boss, _stateMachine, _player)
     {
-        bossField = _bossField;
+        bossField = boss.bossField;
         maxGridPos = bossField.GetMaxGridPos();
     }
 
@@ -20,6 +20,7 @@ public class BossPattern2State_Jan : BossState_Jan
         base.Enter();
 
         boss.isPattern2 = true;
+        boss.SetVelocity(Vector2.zero);
         boss.StartCoroutine(Pattern2Reload());
     }
 

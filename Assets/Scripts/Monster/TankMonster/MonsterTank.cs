@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MonsterTank : MonsterNear
 {
@@ -40,7 +41,7 @@ public class MonsterTank : MonsterNear
         {
             isChase = false;
             isDead = true;
-            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             {
                 spawn.DeathCount();
                 ItemDrop();

@@ -95,18 +95,18 @@ public class ScenesManager : MonoBehaviour
         if (scene.buildIndex == 9)
             _sceneInfo = SceneInfo.Town_1;
 
-        if (scene.buildIndex == 6)
+        if (scene.buildIndex == 6 || scene.name == "BossTest")
             _sceneInfo = SceneInfo.Boss_1;
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
         Player.instance.InitbySceneLoaded(_sceneInfo);
 
-        foreach(UIState ui in sceneInfos[scene.buildIndex].curSceneUIState)
+        foreach(UIState ui in sceneInfos[(int)_sceneInfo].curSceneUIState)
         {
             ManageActiveUI(ui.myUI.ToString(), ui.state);
         }
 
-        string curSceneName = sceneInfos[scene.buildIndex].myScene.ToString();
+        string curSceneName = sceneInfos[(int)_sceneInfo].myScene.ToString();
         if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1") || curSceneName.Contains("Boss_1")) curSceneName = "Battle_1";
         UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
 

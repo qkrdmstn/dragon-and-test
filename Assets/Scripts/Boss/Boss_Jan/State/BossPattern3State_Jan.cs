@@ -6,9 +6,9 @@ public class BossPattern3State_Jan : BossState_Jan
 {
     private Pattern3Object pattern3Object;
 
-    public BossPattern3State_Jan(Boss_Jan _boss, BossStateMachine _stateMachine, Player _player, Pattern3Object _pattern3Object) : base(_boss, _stateMachine, _player)
+    public BossPattern3State_Jan(Boss_Jan _boss, BossStateMachine _stateMachine, Player _player) : base(_boss, _stateMachine, _player)
     {
-        pattern3Object = _pattern3Object;
+        pattern3Object = _boss.pattern3Object;
     }
 
     public override void Enter()
@@ -26,7 +26,6 @@ public class BossPattern3State_Jan : BossState_Jan
     public override void Update()
     {
         base.Update();
-        boss.SetVelocity(Vector2.zero);
     }
 
     IEnumerator Pattern3()

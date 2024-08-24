@@ -36,7 +36,6 @@ public class BossPattern1State_Jan : BossState_Jan
     public override void Update()
     {
         base.Update();
-        boss.SetVelocity(Vector2.zero);
     }
 
     IEnumerator Pattern1Shoot()
@@ -52,7 +51,7 @@ public class BossPattern1State_Jan : BossState_Jan
                 Vector2 shootDir = Quaternion.AngleAxis((360 / boss.sphereShootNum) * j /*+ (180 / boss.sphereShootNum)*/, Vector3.forward) * Vector3.right;
                 shootDir.Normalize();
 
-                bullet.BulletInitialize(shootDir, boss.sphereBulletSpeed);
+                bullet.BulletInitialize(shootDir, boss.sphereBulletSpeed, boss.sphereBulletRange);
             }
             yield return new WaitForSeconds(boss.spherePathInterval);
 
@@ -65,6 +64,8 @@ public class BossPattern1State_Jan : BossState_Jan
             }
             yield return new WaitForSeconds(boss.waveInterval);
         }
+
+        stateMachine.ChangeState(boss.bossIdleState);
     }
 
     IEnumerator Pattern1PathShoot(Vector3 pivotDir, PathType pathType)
@@ -86,12 +87,10 @@ public class BossPattern1State_Jan : BossState_Jan
                 Vector2 shootDir = Quaternion.AngleAxis((60 / bulletColNum) * j, Vector3.forward) * pivotDir;
                 shootDir.Normalize();
 
-                bullet.BulletInitialize(shootDir, boss.pathBulletSpeed, boss.pathBulletLifeTime);
+                bullet.BulletInitialize(shootDir, boss.pathBulletSpeed, boss.pathBulletRange);
             }
             yield return new WaitForSeconds(boss.pathInterval);
         }
-
-
     }
 
     private int[,] GetPathTypeMat(PathType pathType)

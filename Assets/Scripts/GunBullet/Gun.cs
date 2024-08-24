@@ -34,8 +34,6 @@ public class Gun : MonoBehaviour
 
     [Header("Gun State")]
     [SerializeField] private bool isReloading = false;
-    [SerializeField] private bool clickReloadFlag = false;
-    [SerializeField] private bool isAttacking = false;
     [SerializeField] private int continuousShootCnt = 0;
 
     [Header("CameraSetting")]
@@ -68,10 +66,7 @@ public class Gun : MonoBehaviour
 
         if (Player.instance.isAttackable && !isReloading)
         {
-            if (Input.GetKeyUp(KeyCode.Mouse0) && loadedBullet == 0)
-                clickReloadFlag = true;
-
-            if (clickReloadFlag && Input.GetKeyDown(KeyCode.Mouse0))
+            if (loadedBullet == 0 && Input.GetKeyDown(KeyCode.Mouse0))
                 Reload();
             else if (Input.GetKey(KeyCode.Mouse0))
                 Shoot();
@@ -99,7 +94,8 @@ public class Gun : MonoBehaviour
         if(isReloading)
         {
             isReloading = false;
-            clickReloadFlag = true;
+            reloadUIImg.gameObject.SetActive(false);
+
             //Reload Visulaize
             renderer.color = new Color(1, 1, 1);
             continuousShootCnt = 0;
@@ -137,7 +133,6 @@ public class Gun : MonoBehaviour
             //Shoot Setting
             shootTimer = shootDelay;
             loadedBullet--;
-            isAttacking = true;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
@@ -195,7 +190,6 @@ public class Gun : MonoBehaviour
         
         if (!Input.GetKey(KeyCode.Mouse0))
         {
-            isAttacking = false;
             Player.instance.animController.isBreath = false;
         }
     }
@@ -206,8 +200,6 @@ public class Gun : MonoBehaviour
         {
             Player.instance.animController.isBreath = false;
 
-            clickReloadFlag = false;
-            isAttacking = false;
             isReloading = true;
 
             //장전 UI 활성화 및 위치 설정

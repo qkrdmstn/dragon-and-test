@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MonsterNear : MonsterBase
 {
@@ -174,7 +175,7 @@ public class MonsterNear : MonsterBase
 
             GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
             MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
-            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.birdAttack);
+            //SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.birdAttack);
             auraScript.BulletInitialize(dir);
             ++shootNumber;
             yield return new WaitForSeconds(0.7f);
@@ -202,7 +203,7 @@ public class MonsterNear : MonsterBase
         float sec = Mathf.Clamp(deadSec, 0f, 0.7f);
         yield return new WaitForSeconds(sec);
 
-        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
         {
             spawn.DeathCount();
             ItemDrop();

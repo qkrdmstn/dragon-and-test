@@ -22,17 +22,16 @@ public class Boss_Jan : Boss
     [Header("Chase State Info")]
     public float chaseRange;
 
-    [Header("Attack State Info")]
-    public float attackRange;
-
     [Header("Basic Attack State Info")]
     public GameObject bulletPrefab;
+    public float attackRange;
     public float shootDelay;
     public float reloadTime;
     public int magazineSize;
     public int loadedBullet;
     public float maxRecoilDegree;
     public float bulletSpeed;
+    public float bulletRange;
     public int reloadCnt = 0;
 
     [Header("Pattern1 Info")]
@@ -41,10 +40,12 @@ public class Boss_Jan : Boss
     public float sphereInterval;
     public float spherePathInterval;
     public float sphereBulletSpeed = 7.0f;
+    public float sphereBulletRange;
 
     public float pathInterval;
     public float pathBulletLifeTime;
     public float pathBulletSpeed = 3.5f;
+    public float pathBulletRange;
 
     public float waveInterval = 2.0f;
     public float waveNum;
@@ -67,7 +68,6 @@ public class Boss_Jan : Boss
     public float pattern3RotationTime = 1.0f;
     public float pattern3DisplayTime = 1.0f;
 
-
     [Header("Spawn Monster State Info")]
     public GameObject[] spawnMosnterPrefabs;
     public BlockInfo bossField;
@@ -77,9 +77,12 @@ public class Boss_Jan : Boss
     public float spawnTimer;
 
     [Header("Drop Item Info")]
-    GameObject moneyPrefab;
+    public GameObject moneyPrefab;
     public int moneyValue;
 
+    #region Observer
+    private BossHPUI bossHPUI;
+    #endregion
     #region Componets
     #endregion
 
@@ -92,28 +95,38 @@ public class Boss_Jan : Boss
     public BossPattern1State_Jan bossPattern1State;
     public BossPattern2State_Jan bossPattern2State;
     public BossPattern3State_Jan bossPattern3State;
-    public BossMonsterSpawnState_Jan bossMonsterSpawnState;
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
         spawnTimer = spawnPeriod;
+        InitComponent();
+
+        InitState();
+    }
+
+    private void InitComponent()
+    {
         bossField = FindObjectOfType<BlockInfo>();
         bossField.InitializeBlockInfo(0);
         pattern3Object = FindObjectOfType<Pattern3Object>();
 
         moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
 
+        bossHPUI = FindObjectOfType<BossHPUI>();
+    }
+
+    private void InitState()
+    {
         stateMachine = new BossStateMachine();
 
         bossIdleState = new BossIdleState_Jan(this, stateMachine, player);
         bossChaseState = new BossChaseState_Jan(this, stateMachine, player);
         bossBasicAttackState = new BossBasicAttackState_Jan(this, stateMachine, player);
         bossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
-        bossPattern2State = new BossPattern2State_Jan(this, stateMachine, player, bossField);
-        bossPattern3State = new BossPattern3State_Jan(this, stateMachine, player, pattern3Object);
-        bossMonsterSpawnState = new BossMonsterSpawnState_Jan(this, stateMachine, player, bossField);
+        bossPattern2State = new BossPattern2State_Jan(this, stateMachine, player);
+        bossPattern3State = new BossPattern3State_Jan(this, stateMachine, player);
 
         switch (initState)
         {
@@ -122,7 +135,7 @@ public class Boss_Jan : Boss
                 break;
             case BossStates_Jan.chase:
                 stateMachine.Initialize(bossChaseState);
-                break;            
+                break;
             case BossStates_Jan.basicAttack:
                 stateMachine.Initialize(bossBasicAttackState);
                 break;
@@ -135,19 +148,10 @@ public class Boss_Jan : Boss
             case BossStates_Jan.pattern3:
                 stateMachine.Initialize(bossPattern3State);
                 break;
-            case BossStates_Jan.spawnMonster:
-                stateMachine.Initialize(bossMonsterSpawnState);
-                break;
             default:
                 stateMachine.Initialize(bossIdleState);
                 break;
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
     }
 
     // Update is called once per frame
@@ -167,8 +171,6 @@ public class Boss_Jan : Boss
             curState = BossStates_Jan.pattern2;        
         else if (stateMachine.currentState == bossPattern3State)
             curState = BossStates_Jan.pattern3;
-        else if (stateMachine.currentState == bossMonsterSpawnState)
-            curState = BossStates_Jan.spawnMonster;
     }
 
     //피격
@@ -220,6 +222,8 @@ public class Boss_Jan : Boss
         {
             Dead();
         }
+
+        bossHPUI.UpdateHPUI(curHP, maxHP);
     }
 
     IEnumerator DOTDamage(float duration, float interval, int perDamage)
@@ -245,15 +249,17 @@ public class Boss_Jan : Boss
         if (!isDead)
         {
             isDead = true;
+            StopAllCoroutines();
 
             MonsterBase[] monsterBases = FindObjectsByType<MonsterBase>(FindObjectsSortMode.None); 
+            BossBullet_Jan[] bossBullets = FindObjectsByType<BossBullet_Jan>(FindObjectsSortMode.None); 
             Debug.Log("Dead!!!!!!!");
 
             for (int i = 0; i < monsterBases.Length; i++)
-            {
                 monsterBases[i].Dead();
-            }
 
+            for (int i = 0; i < bossBullets.Length; i++)
+                Destroy(bossBullets[i].gameObject);
             MoneyDrop();
         }
     }

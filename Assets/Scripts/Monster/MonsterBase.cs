@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MonsterBase : MonoBehaviour
 {
@@ -64,7 +65,7 @@ public class MonsterBase : MonoBehaviour
 
         if (Player.instance.isTutorial) return;
 
-        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
 
@@ -82,7 +83,7 @@ public class MonsterBase : MonoBehaviour
 
         if (Player.instance.isTutorial) return;
 
-        if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+        if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             spawn = eventManager.GetComponent<Spawner>();
     }
 
@@ -194,7 +195,7 @@ public class MonsterBase : MonoBehaviour
         {
             isDead = true;
             Destroy(gameObject);
-            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1)
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             {
                 spawn.DeathCount();
                 ItemDrop();

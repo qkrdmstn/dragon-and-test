@@ -6,19 +6,16 @@ using TMPro;
 
 public class BossHPUI : MonoBehaviour
 {
-
-    public TextMeshProUGUI text;
-    public Boss boss;
+    public Image img;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        text = GetComponentInChildren<TextMeshProUGUI>();
-        boss = FindObjectOfType<Boss>();
+        img = GetComponent<Image>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateHPUI(int curHP, int maxHP)
     {
-        text.text = "BossHP: " + boss.curHP;
+        img.fillAmount = (float)curHP / (float)maxHP;
     }
+
 }
