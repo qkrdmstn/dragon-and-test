@@ -42,6 +42,8 @@ public class TutorialFar : MonsterFar
     public override void Dead()
     {
         tutorial.monsters[(int)myNum].isKilled = true;
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
+
         gameObject.SetActive(false);
     }
 

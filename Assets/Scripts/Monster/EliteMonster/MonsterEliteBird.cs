@@ -5,25 +5,31 @@ using UnityEngine;
 public class MonsterEliteBird : MonsterBase
 {
     #region MonsterShoot
-    public float fireInterval = 0.2f;
-    public float monsterReloadDelay = 2f;
+    [Header("MonsterEliteBird ------------------")]
+    public float fireInterval;
+    public float monsterReloadDelay;
     public bool isReloading = false;
     public bool isAttacking = false;
-    public int loadedBullet;
-    public int magazineSize=3;
-    public float bulletAngle = 20;
+
     public GameObject monsterBullet;
-    public int bulletNum;
+    public int loadedBullet;
+    public int magazineSize;
+    public float bulletAngle;       // 부채꼴 사이각
+    public int bulletsOnce;         // 최초 발사 총알 수
+    public int bulletNum;           // total shoot count
+    public float[] shootNumTheta;   // 지그재그...
     #endregion
 
     #region States
     public MonsterChaseStateBird chaseState { get; private set; }
     public MonsterEscapeStateBird escapeState { get; private set; }
     public MonsterAttackStateBird attackState { get; private set; }
-    public float chaseRange = 20.0f;
-    public float attackRange = 8.0f;
-    public float escapeRange = 4.0f;
-    private Vector3 dir;
+
+    [Header("RangeByState")]
+    public float chaseRange;
+    public float attackRange;
+    public float escapeRange;
+    Vector3 dir;
     #endregion
 
     public override void Awake()
@@ -44,17 +50,14 @@ public class MonsterEliteBird : MonsterBase
     public override void Update()
     {
         base.Update();
-        //Debug.Log(stateMachine.currentState);
-        stateMachine.currentState.Update();
-        
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        
-        if(loadedBullet<=0 && !isAttacking && !isReloading) Reload();
+
+        stateMachine.currentState.Update();
     }
     
     public override void Attack()
     {
-        if (!isAttacking && !isReloading) Shoot();
+        if (!isAttacking && loadedBullet > 0 && !isReloading) Shoot();
     }
     
     public void Shoot()
@@ -67,27 +70,29 @@ public class MonsterEliteBird : MonsterBase
             
             StartCoroutine(SpawnBullets());
         }
-
         isAttacking = false;
     }
 
+
     IEnumerator SpawnBullets()
     {
-        for (int j=0; j < bulletNum; j++)
-        {
+        int curbulletsOnce = bulletsOnce;
+        float theta = bulletAngle / bulletsOnce;
 
-            for (int i=0; i < 6; i++)
+        for (int j = 0; j < bulletNum; j++)
+        {
+            for (int i = 0; i < curbulletsOnce; i++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position;
-                // - new Vector3(0, 0.6f, 0);
-                
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(bulletAngle*(i-2.5f), Vector3.forward) * dir);
+
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(theta * (i - shootNumTheta[j]), Vector3.forward) * dir);
             }
+            curbulletsOnce--;
             yield return new WaitForSeconds(fireInterval);
         }
-        
+        if (loadedBullet <= 0 && !isReloading) Reload();
     }
 
     public void Reload()
@@ -99,6 +104,7 @@ public class MonsterEliteBird : MonsterBase
     IEnumerator ReloadProcess()
     {
         yield return new WaitForSeconds(monsterReloadDelay);
+
         loadedBullet = magazineSize;
         isReloading = false;
     }
@@ -114,5 +120,4 @@ public class MonsterEliteBird : MonsterBase
     {
         agent.speed = moveSpeed;
     }
-
 }

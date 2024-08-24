@@ -64,7 +64,6 @@ public class MonsterBase : MonoBehaviour
         money = Resources.Load<GameObject>("Prefabs/Item/Money");
 
         if (Player.instance.isTutorial) return;
-
         if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
@@ -80,6 +79,8 @@ public class MonsterBase : MonoBehaviour
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Spawn);
 
         if (Player.instance.isTutorial) return;
 
@@ -194,13 +195,14 @@ public class MonsterBase : MonoBehaviour
         if(!isDead)
         {
             isDead = true;
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
+
             Destroy(gameObject);
             if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             {
                 spawn.DeathCount();
                 ItemDrop();
             }
-
         }
     }
 

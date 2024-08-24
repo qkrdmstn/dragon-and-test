@@ -32,7 +32,9 @@ public class MonsterChaseStateNear : MonsterState
         if (monster.isChase)
         {   //navigate
             monster.agent.SetDestination(player.transform.position);
-            if(!monster.isTanker)
+            //SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.nearChase);
+
+            if (!monster.isTanker)
             {
                 Direction newDir = monster.CheckDir();
                 if (monster.isFirst)

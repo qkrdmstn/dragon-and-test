@@ -38,6 +38,8 @@ public class TutorialNear : MonsterNear
             HwatuObjectDrop();
 
         tutorial.monsters[(int)myNum].isKilled = true;
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
+
         gameObject.SetActive(false);
     }
 

@@ -5,20 +5,19 @@ using System;
 
 public enum SoundType
 {
-    Player,
-    Monster,
-    UI
+    Player, Monster, UI
 }
 public enum PlayerSfx
 {
-    Walk,
-    Breath,
-    Dash
+    Walk, Breath, Dash
 }
+
 public enum MonsterSfx
 {
-    Damage,
-    birdAttack
+    Damage, Spawn, Dead,            // 공통
+    nearChase, nearAttack,          // 참새 1
+    dashAttack,                     // 참새 2
+    farChase, farAttack             // 매 1
 }
 public enum UISfx
 {
@@ -53,6 +52,8 @@ public class SoundManager : MonoBehaviour
     AudioSource BGMSource;
     AudioSource[] walkSources;
     AudioSource[] effectSources;
+
+    public GameObject[] effectSlots;
     public int channels;
     int channelIndex;
     int walkChannelIndex;
@@ -84,12 +85,15 @@ public class SoundManager : MonoBehaviour
         BGMSource.loop = true;
 
         // Effect
-        effectSources = new AudioSource[channels];
-        for (int i = 0; i < channels; i++)
+        foreach(GameObject obj in effectSlots)
         {
-            effectSources[i] = transform.GetChild(1).gameObject.AddComponent<AudioSource>();
-            effectSources[i].playOnAwake = false;
-            effectSources[i].volume = _effectVolume;
+            effectSources = new AudioSource[channels];
+            for (int i = 0; i < channels; i++)
+            {
+                effectSources[i] = obj.AddComponent<AudioSource>();
+                effectSources[i].playOnAwake = false;
+                effectSources[i].volume = _effectVolume;
+            }
         }
 
         walkSources = new AudioSource[channels];

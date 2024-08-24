@@ -30,6 +30,6 @@ public class MonsterAttackStateBird : MonsterState
         monster.Attack();
 
         if(monster.distanceToPlayer < monster.escapeRange) stateMachine.ChangeState(monster.escapeState);
-        if(monster.distanceToPlayer > monster.attackRange) stateMachine.ChangeState(monster.chaseState);
+        else if(monster.distanceToPlayer > monster.attackRange) stateMachine.ChangeState(monster.chaseState);
     }
 }

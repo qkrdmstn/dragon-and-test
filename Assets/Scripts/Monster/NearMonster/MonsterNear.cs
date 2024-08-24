@@ -68,6 +68,8 @@ public class MonsterNear : MonsterBase
     public override void Attack()
     {
         inAttack = true;
+        
+
         AttackPoint();
     }
     
@@ -175,7 +177,7 @@ public class MonsterNear : MonsterBase
 
             GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
             MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
-            //SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.birdAttack);
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.nearAttack);
             auraScript.BulletInitialize(dir);
             ++shootNumber;
             yield return new WaitForSeconds(0.7f);
@@ -193,6 +195,8 @@ public class MonsterNear : MonsterBase
         {
             isChase = false;    
             isDead = true;
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
+
             StartCoroutine(AnimDead());
         }
     }

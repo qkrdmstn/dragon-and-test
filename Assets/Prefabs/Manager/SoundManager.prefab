@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 462036005582657143}
   m_Layer: 0
-  m_Name: Effect
+  m_Name: PlayerEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 462036006682061991}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &462036006098286656
 GameObject:
@@ -92,8 +92,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 462036006098286718}
-  - {fileID: 462036005582657143}
   - {fileID: 1573099815099734064}
+  - {fileID: 462036005582657143}
+  - {fileID: 3583909176370244200}
+  - {fileID: 797422781645413662}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -110,27 +112,96 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BGMClips:
-  - {fileID: 8300000, guid: 2d913f494eef84a1691479d8cfc83a20, type: 3}
-  - {fileID: 8300000, guid: 02fce55367b9145b4a9df3f48e22ea09, type: 3}
-  - {fileID: 8300000, guid: 178dca1087c1540968214ede259ba1f4, type: 3}
+  - {fileID: 8300000, guid: eff385b447a1a87438f377cdb1b7a78c, type: 3}
+  - {fileID: 8300000, guid: 24402b4205bd6164080a224c4347875c, type: 3}
+  - {fileID: 8300000, guid: 669a3c031604a904886a94efd0747ab2, type: 3}
   effects:
   - myType: 0
     effectClips:
-    - {fileID: 8300000, guid: d8ead4fd5c6c94752b3987dbc4cc5581, type: 3}
-    - {fileID: 8300000, guid: 33cbeea4dfd764c3a80123052cf9f5d2, type: 3}
-    - {fileID: 8300000, guid: 52e098c92d9df4f3b9c26bb874ce519a, type: 3}
+    - {fileID: 8300000, guid: d62608d0d480a2e4cb84fc0b756094c2, type: 3}
+    - {fileID: 8300000, guid: 22a7e40b921ced448b00165d848cfbbd, type: 3}
+    - {fileID: 8300000, guid: 39139e1c3956a7c4f887a0f1edfaf4c5, type: 3}
   - myType: 1
     effectClips:
-    - {fileID: 8300000, guid: 88a73b661fd7c43c4b9137fd4f210637, type: 3}
+    - {fileID: 8300000, guid: 517a934015fe9cf46b17d0eaf3abfbfa, type: 3}
+    - {fileID: 8300000, guid: 9cf72d6567d02074db832f4c09bbc729, type: 3}
+    - {fileID: 8300000, guid: 4cd2c9dada14aec47a8583420269a81a, type: 3}
+    - {fileID: 8300000, guid: 6e800f7c5d6b40c499e6c8ef1aedf22b, type: 3}
+    - {fileID: 8300000, guid: 1600653601c664042bfecc13015f8e71, type: 3}
+    - {fileID: 8300000, guid: 805badac77369984ba9db75e58ade6ac, type: 3}
+    - {fileID: 8300000, guid: 809e92c2465b8db4986ac44a742ec7e8, type: 3}
+    - {fileID: 8300000, guid: 6c5a19694b7c4c64ea4bad1702184761, type: 3}
   - myType: 2
     effectClips:
-    - {fileID: 8300000, guid: 2fd885aaab18b4e95ad512cb6114bcff, type: 3}
+    - {fileID: 8300000, guid: 9b290f2680294434f94aae07a4a49eab, type: 3}
   _bgmVolume: 0.3
-  _effectVolume: 0.3
+  _effectVolume: 0.15
   fadeDuration: 1.5
   fadeTimer: 0
-  channels: 10
+  channels: 25
   isFadeOut: 0
+--- !u!1 &4742957363217854997
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 797422781645413662}
+  m_Layer: 0
+  m_Name: UIEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &797422781645413662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4742957363217854997}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 462036006682061991}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4950994714391672499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3583909176370244200}
+  m_Layer: 0
+  m_Name: MonsterEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3583909176370244200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4950994714391672499}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 462036006682061991}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5223742180318179317
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,5 +231,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 462036006682061991}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

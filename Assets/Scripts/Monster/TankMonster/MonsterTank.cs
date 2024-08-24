@@ -41,6 +41,8 @@ public class MonsterTank : MonsterNear
         {
             isChase = false;
             isDead = true;
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
+
             if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
             {
                 spawn.DeathCount();

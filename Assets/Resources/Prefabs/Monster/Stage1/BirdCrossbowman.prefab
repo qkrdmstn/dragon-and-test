@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 3658305940032686977}
   - component: {fileID: 3658305940032686976}
   - component: {fileID: 3658305940032686979}
-  - component: {fileID: 3658305940032686978}
-  - component: {fileID: 3658305940032686989}
   - component: {fileID: 3658305940032686988}
   - component: {fileID: 3658305940032686991}
+  - component: {fileID: 7402561287738126548}
   m_Layer: 8
   m_Name: BirdCrossbowman
   m_TagString: Monster
@@ -30,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3658305940032686990}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.85, y: -3.51, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -110,43 +109,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!70 &3658305940032686978
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3658305940032686990}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2.069941, y: 2.069941}
-  m_Direction: 0
---- !u!95 &3658305940032686989
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3658305940032686990}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!195 &3658305940032686988
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -199,15 +161,37 @@ MonoBehaviour:
   isDead: 0
   isChase: 1
   isKnockedBack: 0
-  fireInterval: 0.2
+  isTest: 0
+  fireInterval: 0.9
   monsterReloadDelay: 3
   isReloading: 0
   isAttacking: 0
   loadedBullet: 1
   magazineSize: 1
-  bulletAngle: 15
+  bulletAngle: 50
+  bulletsOnce: 6
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
-  bulletNum: 0
+  bulletNum: 3
+  shootNumTheta:
+  - 2.25
+  - 1.75
+  - 1.25
   chaseRange: 15
-  attackRange: 10
-  escapeRange: 4
+  attackRange: 4
+  escapeRange: 2.6
+--- !u!58 &7402561287738126548
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658305940032686990}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.25}
+  serializedVersion: 2
+  m_Radius: 4
