@@ -43,6 +43,7 @@ public class GunManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+        Initialize();
     }
 
     private void Update()
