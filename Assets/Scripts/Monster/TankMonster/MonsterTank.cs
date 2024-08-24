@@ -75,7 +75,7 @@ public class MonsterTank : MonsterNear
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position - new Vector3(0, 0.6f, 0);
 
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis((360 / bulletCount) * j + (180 / bulletCount) * (i % 2), Vector3.forward) * dir);
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis((360.0f / (float)bulletCount) * j + (180 / bulletCount) * (i % 2), Vector3.forward) * Vector3.right);
             }
             yield return new WaitForSeconds(fireInterval);
         }
