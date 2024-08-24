@@ -14,7 +14,7 @@ public class MapOutOfRange : MonoBehaviour
             isTrigger = true;
             if (gameObject.name.Contains("Battle"))
             {
-                _goToScene = Random.Range(4, 6);
+                _goToScene = Random.Range(4, 7);
             }
             ScenesManager.instance.isLoading = true;
             Player.instance.SetIdleStatePlayer();

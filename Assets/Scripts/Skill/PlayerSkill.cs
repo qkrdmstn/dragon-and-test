@@ -145,8 +145,10 @@ public class PlayerSkill : MonoBehaviour
                 DashSkill(data.range, data.speed);
                 break;
             case SeotdaHwatuCombination.KK1:
+                StartCoroutine(ReinforceAttack(data.duration));
                 break;
             case SeotdaHwatuCombination.KK0:
+                player.OnDamamged(data.damage);
                 break;
             case SeotdaHwatuCombination.blank:
                 break;
@@ -346,6 +348,14 @@ public class PlayerSkill : MonoBehaviour
 
 
     #endregion
+
+    IEnumerator ReinforceAttack(float duration)
+    {
+        player.reinforceAttack += 1;
+        yield return new WaitForSeconds(duration);
+        player.reinforceAttack -= 1;
+    }
+
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = Color.red;

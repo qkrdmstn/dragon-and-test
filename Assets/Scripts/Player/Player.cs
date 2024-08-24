@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public Gun gun;
     public GameObject gunParent;
     public bool isAttackable = true;
+    public int reinforceAttack = 0;
 
     [Header("State Check")]
     public bool isCombatZone = false;
@@ -213,6 +214,7 @@ public class Player : MonoBehaviour
         isCombatZone = false;
         isDamaged = false;
         curHP = maxHP;
+        money = 0;
 
         SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
         animController.isBreath = false;
@@ -302,7 +304,7 @@ public class Player : MonoBehaviour
 
             case SceneInfo.Boss_1:      // 7
                 isCombatZone = true;
-                pos = new Vector3(-13f, -13f, 0);
+                //pos = new Vector3(-13f, -13f, 0);
                 break;
         }
 

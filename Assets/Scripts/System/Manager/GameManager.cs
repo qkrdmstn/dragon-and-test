@@ -24,9 +24,13 @@ public class GameManager : MonoBehaviour
     public void GoToScene(int _sceneInfo)
     {
         UIManager.instance.StartFade(_sceneInfo);
+        StartCoroutine(ReloadPlayerCoroutine());
+    }
+    IEnumerator ReloadPlayerCoroutine()
+    {
+        yield return new WaitUntil(() => UIManager.instance.isEndFade);
         Player.instance.ReloadPlayer();
     }
-
     public void SetTimeScale(float value)
     {
         if (value > 0) isStop = false;

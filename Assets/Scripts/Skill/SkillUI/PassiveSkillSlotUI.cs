@@ -53,12 +53,13 @@ public class PassiveSkillSlotUI : MonoBehaviour
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        skillInfoUI.SetActive(true);
+        if(data != SeotdaHwatuCombination.blank)
+            skillInfoUI.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-
-        skillInfoUI.SetActive(false);
+        if (data != SeotdaHwatuCombination.blank)
+            skillInfoUI.SetActive(false);
     }
 }
