@@ -41,12 +41,17 @@ public class BlanketUI : MonoBehaviour
             return false;
     }
 
+    TutorialInteraction checkTrashTutorial;
     public bool IsInTrashCan(RectTransform rectTransform)
     {
         if (isSkillInfoUI) return false;
         else if (Player.instance.isTutorial)
         {
-            FindObjectOfType<TutorialInteraction>().OnTrashSkill();
+            if (checkTrashTutorial == null) checkTrashTutorial = FindObjectOfType<TutorialInteraction>();
+
+            if (rectTransform.CompareTag("Hwatu"))
+                checkTrashTutorial.OnTrashHwatu();
+            else checkTrashTutorial.OnTrashSkill();
             return false;
         }
 

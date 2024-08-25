@@ -24,7 +24,7 @@ public enum TutorialUIListOrder
     Move
 }
 
-public class TutorialInteraction : MonoBehaviour
+public class TutorialInteraction : Interaction
 {
     [SerializeField] List<GameObject> scareScrows;
     [SerializeField] List<BoxCollider2D> boundColliders;
@@ -186,10 +186,10 @@ public class TutorialInteraction : MonoBehaviour
         StartCoroutine(StartDialog());
     }
 
-    public void LoadEvent(int sequence)
+    public override void LoadEvent(InteractionData data)
     {   // player가 상호작용한 허수아비에 맞춰 이벤트가 진행됩니다.
-        SetScarescrow((ScareScrowType)sequence);
-        StartCurStage(sequence);
+        SetScarescrow((ScareScrowType)data.sequence);
+        StartCurStage(data.sequence);
         Debug.Log("startThisStage");
         jokboUIGroup.isPossibleJokbo = false;   // 족보 대화 중ㅇㅔ는 활성화 불가
     }
@@ -234,7 +234,6 @@ public class TutorialInteraction : MonoBehaviour
                 else if (curIdx == 4)
                 {
                     generateBullet = true;
-                    isInteraction = false;
                 }
                 break;
             case 2: // 재장전
@@ -313,6 +312,7 @@ public class TutorialInteraction : MonoBehaviour
 
     IEnumerator StartDialog()
     {
+        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[3].SetActive(false);
         yield return new WaitUntil(()=> UIManager.instance.isEndFade);
 
         if (!isInteraction)
@@ -364,28 +364,21 @@ public class TutorialInteraction : MonoBehaviour
         }
     }
 
-    void IsDone()
+    public void IsDone()
     {
+        Debug.Log("Isdone");
+        curScarescrow = null;
+
         childrens[1].gameObject.SetActive(false);
         childrens[3].gameObject.SetActive(false);
 
-        if(curSequence > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
-
         dialogTxts[0].text = "";
         dialogTxts[1].text = "";
-
-        // -------------- 다음을 위한 초기화
-        curScarescrow = null;
-        
-        Player.instance
-            .GetComponentInChildren<PlayerInteraction>()
-            .ChangePlayerInteractionState(false);    // 상호작용 종료
     }
 
     void StartCurStage(int sequence)
     {
         curSequence = sequence;
-        //curIdx = 0;
 
         boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
         canSpeak = true;
@@ -395,12 +388,18 @@ public class TutorialInteraction : MonoBehaviour
     {
         checkSequenceDone[curSequence] = true;
         curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
+
+        if (curSequence > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
+
         isInteraction = false;
-        Debug.Log("ClearThisStage");
         curSequence = -1;
         curIdx = 0;
         canSpeak = false;
         isActiveDone = false;
+
+        Player.instance
+            .GetComponentInChildren<PlayerInteraction>()
+            .ChangePlayerInteractionState(false);    // 상호작용 종료
     }
 
     #region CheckTutorialSituation
@@ -502,7 +501,11 @@ public class TutorialInteraction : MonoBehaviour
         blanket.isClear = true;
         blanket.sequence = 1;
 
-        if (isBlanketInteration)  return true;
+        if (isBlanketInteration)
+        {
+            UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[3].SetActive(true);
+            return true;
+        }
         else return false;
     }
 
@@ -516,6 +519,10 @@ public class TutorialInteraction : MonoBehaviour
         else return false;
     }
 
+    public void OnTrashHwatu()
+    {
+        dialogTxts[1].text = "튜토리얼 중에는 화투패를 버릴 수 없어.";
+    }
     public void OnTrashSkill()
     {
         dialogTxts[1].text = "튜토리얼 중에는 스킬을 버릴 수 없어.";

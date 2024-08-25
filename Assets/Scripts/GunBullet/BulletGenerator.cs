@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletGenerator : MonoBehaviour
@@ -8,34 +7,14 @@ public class BulletGenerator : MonoBehaviour
     [SerializeField] float bulletSpeed;
     [SerializeField] float spawnSpeed;
     [SerializeField] int spawnCnt;
-    bool isStart = false;
-
-    float posX, collX;
-
-    private void Start()
-    {
-        posX = transform.position.x;
-        collX = posX + GetComponent<BoxCollider2D>().offset.x;
-    }
-
-    private void Update()
-    {
-        if (isStart)
-        {
-            if(Player.instance.transform.position.x > collX)
-            {
-                GetComponent<BoxCollider2D>().isTrigger = false;
-            }
-        }
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!TutorialInteraction.generateBullet) return;
-        if (!isStart && collision.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
+            TutorialInteraction.generateBullet = false;
             GetComponentInParent<TutorialInteraction>().isActiveDone = true;
-            isStart = true;
             StartCoroutine(InstantiateBullets());
         }
     }

@@ -186,8 +186,8 @@ public class PlayerInteraction : MonoBehaviour
             ChangePlayerInteractionState(false);
         }
         else if (!tuto.checkSequenceDone[interaction.sequence] &&
-            interaction.sequence > 0 && !tuto.isInteraction)
-                tuto.LoadEvent(interaction.sequence);
+            interaction.sequence > 0 && !tuto.isInteraction && tuto.curIdx == 0)
+                tuto.LoadEvent(interaction);
 
         else ChangePlayerInteractionState(false);
     }

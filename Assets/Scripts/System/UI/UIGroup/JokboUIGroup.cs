@@ -56,7 +56,6 @@ public class JokboUIGroup : UIGroup {
                 gameObject.SetActive(false);
             }
             childUI[1].transform.GetChild(0).gameObject.SetActive(false);   // back
-            childUI[1].transform.GetChild(1).gameObject.SetActive(true);   // exit
             childUI[2].SetActive(true);
         }
     }
