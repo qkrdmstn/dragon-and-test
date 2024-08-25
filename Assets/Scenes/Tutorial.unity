@@ -4822,7 +4822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 4
   damage: 1
   distanceToPlayer: 0
   moneyRange: {x: 0, y: 0}
@@ -4850,6 +4850,7 @@ MonoBehaviour:
   tempcool: 0
   attackDuration: 0.6
   attackRange: 3
+  isTanker: 0
   myNum: 4
   myState:
     monster: {fileID: 0}
@@ -6352,7 +6353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 4
   damage: 1
   distanceToPlayer: 0
   moneyRange: {x: 0, y: 0}
@@ -6380,6 +6381,7 @@ MonoBehaviour:
   tempcool: 0
   attackDuration: 0.6
   attackRange: 3
+  isTanker: 0
   myNum: 6
   myState:
     monster: {fileID: 0}
@@ -6567,7 +6569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 4
   damage: 1
   distanceToPlayer: 0
   moneyRange: {x: 0, y: 0}
@@ -6595,6 +6597,7 @@ MonoBehaviour:
   tempcool: 0
   attackDuration: 0.6
   attackRange: 3
+  isTanker: 0
   myNum: 5
   myState:
     monster: {fileID: 0}
@@ -6803,6 +6806,7 @@ MonoBehaviour:
   curIdx: 0
   checkSequenceDone: 
   isAttacked: 0
+  isDashed: 0
   jokboUIGroup: {fileID: 0}
   useSkill: 0
 --- !u!1 &1548631745
@@ -7328,6 +7332,7 @@ MonoBehaviour:
   bullets: {fileID: 1331701923673328244, guid: 5d4ebeeb5cdcb45afa757820ede0e70d, type: 3}
   bulletSpeed: 8
   spawnSpeed: 1
+  spawnCnt: 3
 --- !u!1 &1695424388
 GameObject:
   m_ObjectHideFlags: 0
@@ -8531,7 +8536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunItems: []
-  amorItem:
+  armorItem:
     data: {fileID: 0}
     stackSize: 0
   gunSlotParent: {fileID: 0}

@@ -115,23 +115,23 @@ public class TutorialInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (curSequence < 0) return;
-
         if(curScarescrow != null)
         {   // 허수아비의 머리 위에 말풍선을 위치
             childrens[1].position = 
                 Camera.main.WorldToScreenPoint(curScarescrow.transform.position) + padding;
         }
+        if (curSequence < 0) return;
 
         if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
         {   // 일반 대화 출력
             if (isActiveDone) { isActiveDone = false; canSpeak = true; }
 
             SetNextDialog();
+            
             if (curIdx >= tutorialDatas[curSequence].dialogues.Count)
-            {
                 IsDone();
-            }
+            else if (curIdx == tutorialDatas[curSequence].dialogues.Count - 1)
+                ClearCurStage();
             else curIdx++;
         }
         else if (curSequence > 0 && isInteraction)
@@ -189,12 +189,11 @@ public class TutorialInteraction : MonoBehaviour
     public void LoadEvent(int sequence)
     {   // player가 상호작용한 허수아비에 맞춰 이벤트가 진행됩니다.
         SetScarescrow((ScareScrowType)sequence);
-        curSequence = sequence;
-        canSpeak = true;
-        boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
-
+        StartCurStage(sequence);
+        Debug.Log("startThisStage");
         jokboUIGroup.isPossibleJokbo = false;   // 족보 대화 중ㅇㅔ는 활성화 불가
     }
+
 
     void SetScarescrow(ScareScrowType type)
     {
@@ -268,9 +267,12 @@ public class TutorialInteraction : MonoBehaviour
                     TutorialUIforAnim("isOpenJokbo", true, TutorialUIListOrder.OpenJokbo);
                     onTutorials = CheckOpenJokbo;
                 }
-                else if(curIdx == 10)
+                else if(curIdx == 9)
                 {
                     isNPCImg = false;
+                }
+                else if(curIdx == 10)
+                {
                     jokboUIGroup.JokboState(false);
                 }
                 break;
@@ -367,25 +369,38 @@ public class TutorialInteraction : MonoBehaviour
         childrens[1].gameObject.SetActive(false);
         childrens[3].gameObject.SetActive(false);
 
-        checkSequenceDone[curSequence] = true;
         if(curSequence > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
 
         dialogTxts[0].text = "";
         dialogTxts[1].text = "";
 
         // -------------- 다음을 위한 초기화
-        curSequence = -1;   
-        curIdx = 0;
-        canSpeak = false;
-        isInteraction = false;
-        isActiveDone = false;
-
         curScarescrow = null;
-        curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
         
         Player.instance
             .GetComponentInChildren<PlayerInteraction>()
             .ChangePlayerInteractionState(false);    // 상호작용 종료
+    }
+
+    void StartCurStage(int sequence)
+    {
+        curSequence = sequence;
+        //curIdx = 0;
+
+        boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
+        canSpeak = true;
+    }
+
+    void ClearCurStage()
+    {
+        checkSequenceDone[curSequence] = true;
+        curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
+        isInteraction = false;
+        Debug.Log("ClearThisStage");
+        curSequence = -1;
+        curIdx = 0;
+        canSpeak = false;
+        isActiveDone = false;
     }
 
     #region CheckTutorialSituation

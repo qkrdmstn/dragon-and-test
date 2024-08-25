@@ -7,6 +7,7 @@ public class BulletGenerator : MonoBehaviour
     [SerializeField] GameObject bullets;
     [SerializeField] float bulletSpeed;
     [SerializeField] float spawnSpeed;
+    [SerializeField] int spawnCnt;
     bool isStart = false;
 
     float posX, collX;
@@ -41,7 +42,7 @@ public class BulletGenerator : MonoBehaviour
 
     IEnumerator InstantiateBullets()
     {
-        for(int i=0; i<4; i++)
+        for(int i=0; i< spawnCnt; i++)
         {
             GameObject tmpGO = Instantiate(bullets, transform);
             foreach(Rigidbody2D rigid in tmpGO.GetComponentsInChildren<Rigidbody2D>())
