@@ -24,9 +24,11 @@ public class DialogueInteraction : Interaction
     List<DialogData> dialogDatas = new List<DialogData>();              // 현재 eventName과 동일한 대화목록
     List<bool> selections = new List<bool>();
     InteractionData data;
+    DialogueUIGroup dialogueUIGroup;
 
     private async void Start()
     {
+        dialogueUIGroup = UIManager.instance.GetComponentInChildren<DialogueUIGroup>(true);
         await LoadDialogueDBEntity();
     }
 
@@ -43,7 +45,6 @@ public class DialogueInteraction : Interaction
 
         UIManager.instance.SceneUI["Dialogue"].SetActive(true);
         Init();
-        
         if(data.eventName == "상점") isShop = true;
         LoadDialogData();
 
@@ -90,10 +91,13 @@ public class DialogueInteraction : Interaction
         SetFalseUI();
     }
 
-    void SetFalseUI()
+    public void SetFalseUI()
     {
         UIManager.instance.SceneUI["Dialogue"].SetActive(false);
-
+        if (dialogueUIGroup.isExit)
+        {
+            dialogueUIGroup.isExit = false;
+        }
         if (GetSelectUI())
         {
             SetActiveSelectUI(false);
@@ -118,10 +122,10 @@ public class DialogueInteraction : Interaction
         selectionTxt[0].color = Color.black;
         selectionTxt[1].color = Color.black;
     }
-
+    
     bool UpdateDialogue()
     {   // manage Dialogue event
-        if (Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 대화 도중 나갈 수 있습니다.
+        if (dialogueUIGroup.isExit || Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 대화 도중 나갈 수 있습니다.
         if (isDone)  SetActiveDialogUI(false);
 
         if (keyInput)
@@ -153,10 +157,7 @@ public class DialogueInteraction : Interaction
                 keyInput = false;
                 isSelectFirst = true;
                 selections[curIdx] = true;  // 현 대화 분기에 대한 선택 완료
-
                 SetActiveSelectUI(false);
-
-                // TODO ------------------> 해당  선택 결과에 따른 퀘스트 시스템에 정보 연결 필요
 
                 // 상점 상호작용의 경우, moneyCheck & state에 따른 송출 대화 분기 생성
                 if (isShop) result = gameObject.GetComponent<ShopInteraction>().CheckBuyState(result);
@@ -178,15 +179,8 @@ public class DialogueInteraction : Interaction
         return isDone;
     }
 
-    void SetActiveDialogUI(bool visible)
-    {   // manage dialogue UI
-        if (visible) {
-            // ToDo Func : Cam zoom-in
-        }
-        else {
-            // ToDo Func : Cam zoom-out
-        }
-
+    public void SetActiveDialogUI(bool visible)
+    {   
         dialogueTxt.gameObject.SetActive(visible);
 
         if (isFirst) isFirst = false;
@@ -281,7 +275,7 @@ public class DialogueInteraction : Interaction
 
         result = -1;
         curIdx = 0;
-
+        Debug.Log("ddd");
         isFirst = true;
 
         isDone = false;

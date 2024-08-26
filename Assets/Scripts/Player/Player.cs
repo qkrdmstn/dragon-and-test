@@ -4,6 +4,7 @@ using Cinemachine;
 
 public class Player : MonoBehaviour
 {
+    #region Value
     public static Player instance = null;
 
     [Header("Life info")]
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
     public CamShakeProfile profile;
     public CameraManager cameraManager;
     private CinemachineImpulseSource impulseSource;
+    #endregion
 
     private void Awake()
     {
@@ -313,5 +315,14 @@ public class Player : MonoBehaviour
     public void ControlPlayerPos(Vector3 pos)
     {
         transform.position = pos;
+    }
+
+    public void ChangePlayerInteractionState(bool state)
+    {
+        isInteraction = state;   // player의 상호작용 여부 관찰
+        if (state) SetIdleStatePlayer();
+
+        isStateChangeable = !state;
+        isAttackable = !state;
     }
 }

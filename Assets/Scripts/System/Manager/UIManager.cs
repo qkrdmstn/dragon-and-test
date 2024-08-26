@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public enum UI
 {
@@ -16,6 +15,7 @@ public class UIManager : MonoBehaviour
     public Fade fade;
     public bool isEndFade = false;
     public bool isFading = false;
+    public bool isUIOn = false;
 
     public SerializableDictionary<string, GameObject> SceneUI;
     public UIGroup curUIGroup;
@@ -46,25 +46,37 @@ public class UIManager : MonoBehaviour
             SetFadeObjState(false);
         }
 
-        if (ScenesManager.instance.GetSceneNum() > 0 && Input.GetKeyDown(KeyCode.Escape) && !Player.instance.isInteraction && !Player.instance.isTutorial && !Player.instance.isDead)
+        if(isUIOn)
+        {   // jokbo esc 누르고 플레이어 상호작용 상태 `false`로 바뀐 뒤,
+            // 해당 update문으로 들어오기 때문에 바로 gameExit도 활성화되는 문제 해결을 위한 변수 생성
+            // TODO -----  인벤토리도 똑같아서 해당 변수활용을 통해 문제 해결 필요
+            isUIOn = false;
+        }
+        else if (!Player.instance.isInteraction && !Player.instance.isDead && Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isFading) return;
-            if (ScenesManager.instance.GetSceneNum() != 1)
-                exitDesc.text = "저장은 \"마을\" 에서만 가능합니다.\n이외의 장소에서 종료시, 데이터는 저장되지 않습니다.";
-            else
-                exitDesc.text = "데이터를 저장합니다.";
+            int curScene = ScenesManager.instance.GetSceneNum();
+            if (isFading || curScene == 0 || curScene == 3) return;
 
             if (SceneUI["GameExit"].activeSelf)
             {
-                SceneUI["GameExit"].SetActive(false);
-                GameManager.instance.SetTimeScale(1f);
+                SetActiveExitUI(false);
             }
             else
             {
-                SceneUI["GameExit"].SetActive(true);
-                GameManager.instance.SetTimeScale(0f);
+                SetActiveExitUI(true);
             }
         }
+    }
+
+    public void SetActiveExitUI(bool visible)
+    {
+        if (ScenesManager.instance.GetSceneNum() != 1)
+            exitDesc.text = "저장은 \"마을\" 에서만 가능합니다.\n이외의 장소에서 종료시, 데이터는 저장되지 않습니다.";
+        else
+            exitDesc.text = "데이터를 저장합니다.";
+
+        SceneUI["GameExit"].SetActive(visible);
+        GameManager.instance.SetTimeScale(visible ? 0f : 1f);
     }
 
     public void SetFadeObjState(bool state)

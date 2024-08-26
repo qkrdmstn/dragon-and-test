@@ -31,25 +31,25 @@ public class PlayerInteraction : MonoBehaviour
         if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
         if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone)
         {
-            ChangePlayerInteractionState(false);
+            Player.instance.ChangePlayerInteractionState(false);
             pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
-    public void ChangePlayerInteractionState(bool state)
-    {
-        Player.instance.isInteraction = state;   // player의 상호작용 여부 관찰
-        if (state) Player.instance.SetIdleStatePlayer();
+    //public void ChangePlayerInteractionState(bool state)
+    //{
+    //    Player.instance.isInteraction = state;   // player의 상호작용 여부 관찰
+    //    if (state) Player.instance.SetIdleStatePlayer();
 
-        Player.instance.isStateChangeable = !state;
-        Player.instance.isAttackable = !state;
-    }
+    //    Player.instance.isStateChangeable = !state;
+    //    Player.instance.isAttackable = !state;
+    //}
 
     void DoInteraction()
     {
         if (!Player.instance.isInteraction)
         {
-            ChangePlayerInteractionState(true);
+            Player.instance.ChangePlayerInteractionState(true);
 
             switch (interaction.type)
             {
@@ -170,7 +170,7 @@ public class PlayerInteraction : MonoBehaviour
         if (interaction.eventName == "족보")
         {
             tuto.jokboUIGroup.isPossibleJokbo = true;
-            ChangePlayerInteractionState(false);
+            Player.instance.ChangePlayerInteractionState(false);
             return;
         }
 
@@ -183,18 +183,17 @@ public class PlayerInteraction : MonoBehaviour
         if (interaction.sequence == 0 && tuto.curIdx >= 2)
         {
             tuto.isInteraction = true;
-            ChangePlayerInteractionState(false);
+            Player.instance.ChangePlayerInteractionState(false);
         }
         else if (!tuto.checkSequenceDone[interaction.sequence] &&
             interaction.sequence > 0 && !tuto.isInteraction && tuto.curIdx == 0)
                 tuto.LoadEvent(interaction);
 
-        else ChangePlayerInteractionState(false);
+        else Player.instance.ChangePlayerInteractionState(false);
     }
 
     void PuzzleInteraction()
-    {
-        // lever 가동 모션
+    {    // lever 가동 모션
         puzzleInteraction.LoadEvent(interaction);
     }
 }

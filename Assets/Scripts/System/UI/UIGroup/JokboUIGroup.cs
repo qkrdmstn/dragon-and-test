@@ -30,6 +30,7 @@ public class JokboUIGroup : UIGroup {
         if (!isPossibleJokbo) { return; }
         else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {   // close
+            UIManager.instance.isUIOn = true;
             JokboState(false);
             return;
         }
@@ -139,11 +140,8 @@ public class JokboUIGroup : UIGroup {
     public void JokboState(bool state)
     {   // true : open / false : close
         SetUI();
-
-        Player.instance.isStateChangeable = !state;
-        Player.instance.isAttackable = !state;
-        Player.instance.isInteraction = state;
-
         childUI[0].SetActive(state);
+
+        Player.instance.ChangePlayerInteractionState(state);
     }
 }

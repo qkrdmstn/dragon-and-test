@@ -182,7 +182,6 @@ public class TutorialInteraction : Interaction
         SetScarescrow(ScareScrowType.Start);
         
         playerInteraction = Player.instance.GetComponentInChildren<PlayerInteraction>();
-
         StartCoroutine(StartDialog());
     }
 
@@ -190,10 +189,8 @@ public class TutorialInteraction : Interaction
     {   // player가 상호작용한 허수아비에 맞춰 이벤트가 진행됩니다.
         SetScarescrow((ScareScrowType)data.sequence);
         StartCurStage(data.sequence);
-        Debug.Log("startThisStage");
         jokboUIGroup.isPossibleJokbo = false;   // 족보 대화 중ㅇㅔ는 활성화 불가
     }
-
 
     void SetScarescrow(ScareScrowType type)
     {
@@ -358,7 +355,7 @@ public class TutorialInteraction : Interaction
                 isInteraction = true;
                 canSpeak = false;
 
-                playerInteraction.ChangePlayerInteractionState(false);
+                Player.instance.ChangePlayerInteractionState(false);
             }
             ManageEvent();
         }
@@ -397,9 +394,7 @@ public class TutorialInteraction : Interaction
         canSpeak = false;
         isActiveDone = false;
 
-        Player.instance
-            .GetComponentInChildren<PlayerInteraction>()
-            .ChangePlayerInteractionState(false);    // 상호작용 종료
+        Player.instance.ChangePlayerInteractionState(false);    // 상호작용 종료
     }
 
     #region CheckTutorialSituation
