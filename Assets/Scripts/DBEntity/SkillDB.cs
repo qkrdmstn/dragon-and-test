@@ -17,6 +17,8 @@ public class SkillDB
     public float duration;
     public float speed;
     public float period;
+    public float probability;
+    public float growCoefficient;
 
     public SkillDB(string synergyCode, string synergyName, string info, int damage, float coolTime, float range, float force, float duration, float speed, float period)
     {

@@ -15,10 +15,6 @@ public class PlayerSkill : MonoBehaviour
     public GameObject[] skillPrefabs;
     Dictionary<SeotdaHwatuCombination, GameObject> skillObjDictionary = new Dictionary<SeotdaHwatuCombination, GameObject>();
 
-    #region Components
-    private Player player;
-    #endregion
-
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +32,6 @@ public class PlayerSkill : MonoBehaviour
                 }
             }
         }
-        player = GetComponent<Player>();
 
         impactLayerMask = LayerMask.GetMask("Monster", "MonsterBullet");
     }
@@ -148,7 +143,7 @@ public class PlayerSkill : MonoBehaviour
                 StartCoroutine(ReinforceAttack(data.duration));
                 break;
             case SeotdaHwatuCombination.KK0:
-                player.OnDamamged(data.damage);
+                Player.instance.OnDamamged(data.damage);
                 break;
             case SeotdaHwatuCombination.blank:
                 break;
@@ -156,6 +151,7 @@ public class PlayerSkill : MonoBehaviour
 
     }
 
+    #region Active
     #region BlankBullet
     private void BlankBullet(int damage, float impactRadius, float impactForce)
     {
@@ -176,14 +172,19 @@ public class PlayerSkill : MonoBehaviour
             else if (target.CompareTag("Monster"))
             {
                 MonsterBase monster = target.GetComponent<MonsterBase>();
+                Boss boss = target.GetComponent<Boss>();
 
-                if(monster != null)
+                if (monster != null)
                 {
                     Vector2 impactDir = target.transform.position - this.transform.position;
                     impactDir.Normalize();
 
                     monster.Knockback(impactDir, impactForce);
                     monster.OnDamaged(damage);
+                }
+                else if (boss != null)
+                {
+                    boss.OnDamaged(damage);
                 }
             }
         }
@@ -199,11 +200,10 @@ public class PlayerSkill : MonoBehaviour
     IEnumerator DashSkillCoroutine(float dist, float speed)
     {
         //Change Layer & Change Color
-        player.ChangePlayerLayer(14);
-        player.SetIdleStatePlayer();
-        player.isStateChangeable = false;
-        player.isAttackable = false;
-
+        Player.instance.ChangePlayerLayer(14);
+        Player.instance.SetIdleStatePlayer();
+        Player.instance.isStateChangeable = false;
+        Player.instance.isAttackable = false;
 
         float curDist = 0.0f;
         //Initial Direction Setting
@@ -214,15 +214,15 @@ public class PlayerSkill : MonoBehaviour
         {
             float dv = Time.deltaTime * speed;
             Vector2 dashVel = speed * dir;
-            player.SetVelocity(dashVel);
+            Player.instance.SetVelocity(dashVel);
             curDist += dv;
             yield return new WaitForFixedUpdate();
         }
-        player.SetVelocity(0, 0);
+        Player.instance.SetVelocity(0, 0);
 
-        player.ChangePlayerLayer(6);
-        player.isStateChangeable = true;
-        player.isAttackable = true;
+        Player.instance.ChangePlayerLayer(6);
+        Player.instance.isStateChangeable = true;
+        Player.instance.isAttackable = true;
     }
     #endregion
 
@@ -233,24 +233,36 @@ public class PlayerSkill : MonoBehaviour
         int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
         int[] dy = { 1, 0, -1, 0, 1, 1, -1, -1 };
         float[] degree = { 90.0f, 0.0f, -90.0f, 180.0f, 135.0f, 45.0f, -45.0f, -135.0f};
-
-        int numProjectile = 0;
-        if (code == SeotdaHwatuCombination.TT4)
-            numProjectile = 4;
-        else if (code == SeotdaHwatuCombination.TT8)
-            numProjectile = 8;
         
-        for(int i=0; i< numProjectile; i++)
+        //if (code == SeotdaHwatuCombination.TT4)
         {
-            Vector2 dir = new Vector2(dx[i], dy[i]);
+            Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
             dir.Normalize();
+            float theta = Vector2.Angle(Vector2.right, dir);
+            if (dir.y < 0)
+                theta *= -1;
 
             GameObject prefabs = skillObjDictionary[code];
-            GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
+            GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
             SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
             Debug.Log(projectile);
-            projectile.Initialize(0, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+            projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
         }
+        //else if (code == SeotdaHwatuCombination.TT8)
+        //{
+        //    int numProjectile = 4;
+        //    for (int i = 0; i < numProjectile; i++)
+        //    {
+        //        Vector2 dir = new Vector2(dx[i], dy[i]);
+        //        dir.Normalize();
+
+        //        GameObject prefabs = skillObjDictionary[code];
+        //        GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
+        //        SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
+        //        Debug.Log(projectile);
+        //        projectile.Initialize(0, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+        //    }
+        //}
     }
     #endregion
 
@@ -294,7 +306,7 @@ public class PlayerSkill : MonoBehaviour
 
     IEnumerator FlameThrowerCoroutine(SeotdaHwatuCombination code, int damage, float duration, float period)
     {
-        player.isAttackable = false;
+        Player.instance.isAttackable = false;
 
         float timer = duration;
 
@@ -310,7 +322,7 @@ public class PlayerSkill : MonoBehaviour
             yield return null;
         }
         Destroy(Obj);
-        player.isAttackable = true;
+        Player.instance.isAttackable = true;
     }
     #endregion
 
@@ -351,14 +363,42 @@ public class PlayerSkill : MonoBehaviour
 
     IEnumerator ReinforceAttack(float duration)
     {
-        player.reinforceAttack += 1;
+        Player.instance.reinforceAttack += 1;
         yield return new WaitForSeconds(duration);
-        player.reinforceAttack -= 1;
+        Player.instance.reinforceAttack -= 1;
     }
+    #endregion
+
+    #region Passive
+    public void AL12Effect(GameObject pivotMonster, int damage)
+    {
+        SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(pivotMonster.transform.position, al12Data.range, LayerMask.GetMask("Monster"));
+        for (int i = 0; i < inRangeTarget.Length; i++)
+        {
+            GameObject target = inRangeTarget[i].gameObject;
+            if (target == pivotMonster)
+                continue;
+
+            MonsterBase monster = target.GetComponent<MonsterBase>();
+            Boss boss = target.GetComponent<Boss>();
+            if (monster != null) //몬스터일 경우,
+            {
+                monster.OnDamaged(damage);
+            }
+            else if (boss != null) //보스일 경우.
+            {
+                boss.OnDamaged(damage);
+            }
+        }
+    }
+    #endregion
 
     //private void OnDrawGizmos()
     //{
+    //    SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+
     //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(this.transform.position, _impactRadius);
+    //    Gizmos.DrawWireSphere(this.transform.position, al12Data.range);
     //}
 }

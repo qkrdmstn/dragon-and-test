@@ -34,14 +34,16 @@ public class PassiveSkillSlotUI : MonoBehaviour
         blanketInteraction = FindObjectOfType<BlanketInteraction>();
     }
 
-    public void UpdateSlot(SeotdaHwatuCombination _data)
+    public void UpdateSlot(SeotdaHwatuCombination skill)
     {
-        data = _data;
+        data = skill;
         skillImage.color = Color.white;
-        skillInfoTxt.text = SkillManager.instance.skillDBDictionary[_data].info;
 
+        SkillDB skillData = SkillManager.instance.GetSkillDB(skill);
+        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
+        
         if (data != SeotdaHwatuCombination.blank)
-            skillImage.sprite = SkillManager.instance.skillSpriteDictionary[_data];
+            skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
     }
 
     public void ClearSlot()

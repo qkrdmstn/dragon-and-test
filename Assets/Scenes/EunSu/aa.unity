@@ -22970,6 +22970,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLoading: 0
+  isLoadedDB: 0
+  sceneInfos: []
 --- !u!4 &563956163
 Transform:
   m_ObjectHideFlags: 0
@@ -64489,7 +64491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunItems: []
-  amorItem:
+  armorItem:
     data: {fileID: 0}
     stackSize: 0
   gunSlotParent: {fileID: 999864434}
@@ -78881,6 +78883,62 @@ PrefabInstance:
       propertyPath: img
       value: 
       objectReference: {fileID: 3129077020077168873, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+    - target: {fileID: 2598379933348090635, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851130447537, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 36.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 17.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 27.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377851302421785, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -11.990001
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 35.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 17.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 27.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852107742948, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -37.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3263377852241448129, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -78928,6 +78986,58 @@ PrefabInstance:
     - target: {fileID: 3263377852241448135, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_Name
       value: UIManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 41.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 17.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 27.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852571881671, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -63.010002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263377852794532595, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 75.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903863899094149215, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5541536147047344057, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7166247682727219822, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_IsActive
@@ -81191,6 +81301,7 @@ MonoBehaviour:
   spawnDB: []
   blocks: []
   curBlockNum: 0
+  mapHierarchy: []
   curWave: 0
   numMonster: 0
   spawnDelay: 1.5

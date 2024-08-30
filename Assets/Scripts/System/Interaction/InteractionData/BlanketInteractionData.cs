@@ -36,5 +36,9 @@ public class BlanketInteractionData : InteractionData
             isClear = true;
         else if(isClear != curBlock.blockClear)
             isClear = curBlock.blockClear;
+
+        //모포 사용 후, 제거
+        if (isClear && !isActive)
+            Destroy(this.gameObject);
     }
 }

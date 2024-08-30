@@ -140,14 +140,16 @@ public class Gun : MonoBehaviour
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
-            int bulletDamage = damage;
+            int bulletDamage = damage + Player.instance.reinforceAttack;
+            float bulletScale = 1.0f;
             //장삥
-            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110))
-            { //10%로 데미지 1 증가
-                float prob = 0.1f;
-                float randomVal = Random.Range(0.0f, 1.0f);
-                if (randomVal <= prob)
-                    bulletDamage++;
+            //10%로 데미지 1 증가
+            SkillDB jpp110Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JPP110);
+            float randomVal = Random.Range(0.0f, 1.0f);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110) && randomVal <= jpp110Data.probability)
+            {
+                bulletDamage += jpp110Data.damage;
+                bulletScale = 1.5f;
             }
 
             //Create Bullet
@@ -155,10 +157,10 @@ public class Gun : MonoBehaviour
             float theta = Vector2.Angle(Vector2.right, dir);
             if (dir.y < 0)
                 theta *= -1;
-            GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
+            GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta + 90));
             PlayerNormalBullet bullet = bulletObj.GetComponent<PlayerNormalBullet>();
 
-            bullet.BulletInitialize(bulletDamage + Player.instance.reinforceAttack, range, bulletSpeed, knockbackForce, dir);
+            bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir, bulletScale);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update
@@ -186,12 +188,6 @@ public class Gun : MonoBehaviour
     {
         yield return new WaitUntil(() => !Input.GetKey(KeyCode.Mouse0));
 
-        //1끗 차이
-        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.KK1))
-            yield return new WaitForSeconds(shootDelay * 0.9f);
-        else
-            yield return new WaitForSeconds(shootDelay);
-        
         if (!Input.GetKey(KeyCode.Mouse0))
         {
             Player.instance.animController.isBreath = false;

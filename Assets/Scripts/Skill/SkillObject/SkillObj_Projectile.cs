@@ -38,11 +38,12 @@ public class SkillObj_Projectile : SkillObject
         if (collision.gameObject.CompareTag("Monster"))
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
+            Boss boss = collision.GetComponent<Boss>();
 
-            SkillAttack(monster);
-
-            if (statusEffect != null || statusEffect.status != StatusEffect.None)
-                statusEffect.ApplyStatusEffect(monster);
+            if (monster != null)
+                MonsterDamaged(monster);
+            else if (boss != null)
+                BossDamaged(boss);
         }
 
         if (collision.gameObject.CompareTag("Ground"))
@@ -51,15 +52,22 @@ public class SkillObj_Projectile : SkillObject
         }
     }
 
-    public override void SkillAttack(MonsterBase monster)
-    {
-        monster.OnDamaged(damage);
-    }
-
     public void InActiveProjectile()
     {
         Destroy(this.gameObject);
     }
 
+    public void MonsterDamaged(MonsterBase monster)
+    {
+        monster.OnDamaged(damage);
+
+        if (statusEffect != null || statusEffect.status != StatusEffect.None)
+            statusEffect.ApplyStatusEffect(monster);
+    }
+
+    public void BossDamaged(Boss boss)
+    {
+        boss.OnDamaged(damage);
+    }
 }
 

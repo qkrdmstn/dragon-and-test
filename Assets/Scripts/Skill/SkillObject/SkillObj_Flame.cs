@@ -33,7 +33,7 @@ public class SkillObj_Flame : SkillObject
             ContactFilter2D filter = new ContactFilter2D();
             filter.SetLayerMask(LayerMask.GetMask("Monster"));
 
-            if (Physics2D.OverlapCollider(collider2d, filter, inRangeTarget) != 0)
+            if (Physics2D.OverlapCollider(collider2d, filter.NoFilter(), inRangeTarget) != 0)
             {
                 timer = damagePeriod;
                 for (int i = 0; i < inRangeTarget.Count; i++)
@@ -42,7 +42,12 @@ public class SkillObj_Flame : SkillObject
                         continue;
 
                     MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
-                    SkillAttack(monster);
+                    Boss boss = inRangeTarget[i].GetComponent<Boss>();
+                    Debug.Log("sss");
+                    if (monster != null)
+                        MonsterDamaged(monster);
+                    else if (boss != null)
+                        BossDamaged(boss);
                 }
             }
         }
@@ -55,13 +60,18 @@ public class SkillObj_Flame : SkillObject
         timer -= Time.deltaTime;
     }
 
-    public override void SkillAttack(MonsterBase monster)
+    public void MonsterDamaged(MonsterBase monster)
     {
-        timer = damagePeriod;
         monster.OnDamaged(damage);
 
         if (statusEffect != null && statusEffect.status != StatusEffect.None)
             statusEffect.ApplyStatusEffect(monster);
+    }
+
+    public void BossDamaged(Boss boss)
+    {
+        boss.OnDamaged(damage);
+        Debug.Log("ASD");
     }
 
     private void SetDir()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerNormalBullet : MonoBehaviour
@@ -31,14 +32,15 @@ public class PlayerNormalBullet : MonoBehaviour
             Destroy(this.gameObject);
     }
 
-    public void BulletInitialize(int _damage, float _range, float _speed, float _knockbackForce, Vector2 _dir)
+    public void BulletInitialize(int _damage, float _range, float _speed, float _knockbackForce, Vector2 _dir, float _scale)
     {
         damage = _damage;
         range = _range;
         bulletSpeed = _speed;
         knockbackForce = _knockbackForce;
         dir = _dir;
-        
+        transform.localScale = transform.lossyScale * _scale;
+
         curDist = 0;
     }
 
@@ -50,15 +52,9 @@ public class PlayerNormalBullet : MonoBehaviour
             Boss boss = collision.GetComponent<Boss>();
 
             if (monster != null)
-            {
-                monster.OnDamaged(damage);
-
-                Vector2 dir = this.transform.position - Player.instance.transform.position;
-                dir.Normalize();
-                monster.Knockback(dir, knockbackForce);
-            }
+                MonsterDamaged(monster);
             else if (boss != null)
-                boss.OnDamaged(damage);
+                BossDamaged(boss);
             InActiveBullet();
         }
 
@@ -78,5 +74,63 @@ public class PlayerNormalBullet : MonoBehaviour
     public void InActiveBullet()
     {
         Destroy(this.gameObject);
+    }
+
+    public void MonsterDamaged(MonsterBase monster)
+    {
+        monster.OnDamaged(damage);
+
+        //알리
+        SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        float randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
+        {
+            PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
+            playerSkill.AL12Effect(monster.gameObject, damage);
+        }
+
+        //독사
+        SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        {
+            //지속 데미지 -> duration과 interval이 없음
+            monster.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
+        }
+
+        //구삥
+        SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
+        randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Data.probability)
+        {
+            monster.EffectState();
+        }
+
+        Vector2 dir = this.transform.position - Player.instance.transform.position;
+        dir.Normalize();
+        monster.Knockback(dir, knockbackForce);
+    }
+
+    public void BossDamaged(Boss boss)
+    {
+        boss.OnDamaged(damage);
+
+        //알리
+        SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        float randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
+        {
+            PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
+            playerSkill.AL12Effect(boss.gameObject, damage);
+        }
+
+        //독사
+        SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        {
+            //지속 데미지 -> duration과 interval이 없음
+            boss.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
+        }
     }
 }

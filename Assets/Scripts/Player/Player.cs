@@ -164,35 +164,19 @@ public class Player : MonoBehaviour
 
             if (curHP <= 0) //Dead
             {
-                if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410))
-                { //4% 확률로 죽음 회피 & 체력 회복
-                    float prob = 0.04f;
-                    float randomVal = Random.Range(0.0f, 1.0f);
-                    if (randomVal <= prob)
-                        curHP = maxHP;
+                //장사
+                //4% 확률로 죽음 회피 & 체력 회복
+                SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
+                float randomVal = Random.Range(0.0f, 1.0f);
+                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Data.probability)
+                {
+                    curHP = 1;
+                    isDamaged = false;
                 }
                 else
                 {
                     PlayerDead();
                 }
-            }
-            else if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12))
-            { //피격 시 12%로 2초간 무적
-                float prob = 0.12f;
-                float randomVal = Random.Range(0.0f, 1.0f);
-                if (randomVal <= prob)
-                {
-                    //Change Layer & Change Color
-                    ChangePlayerLayer(7);
-                    StartCoroutine(DamagedProcess(2.0f));
-                }
-                else
-                {
-                    //Change Layer & Change Color
-                    ChangePlayerLayer(7);
-                    StartCoroutine(DamagedProcess(hitDuration));
-                }
-
             }
             else
             {
