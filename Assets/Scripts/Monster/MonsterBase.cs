@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class MonsterBase : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MonsterBase : MonoBehaviour
     #region Move
     [Header("Move & knockBack")]
     public float moveSpeed;
+    public float tempMoveSpeed;
     public float knockbackForce; // 넉백 힘
     public float knockbackDuration; // 넉백 지속 시간
     public float knockbackTimer; // 넉백 지속 시간을 계산하는 타이머
@@ -238,5 +240,18 @@ public class MonsterBase : MonoBehaviour
     {
         Vector3 dir = player.transform.position - transform.position;
         return monsterAnimController.FindDirToPlayer(dir);
+    }
+
+    public void SetNormalSpeed()
+    {
+        Debug.Log("normal");
+        agent.speed = tempMoveSpeed;
+    }
+
+    public void SetSlowSpeed(float scale)
+    {
+        Debug.Log("slow");
+        tempMoveSpeed = agent.speed;
+        agent.speed = moveSpeed - moveSpeed * scale;
     }
 }

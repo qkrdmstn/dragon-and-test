@@ -70,6 +70,7 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuCombination.GTT13:
                 break;
             case SeotdaHwatuCombination.JTT:
+                SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force);
                 break;
             case SeotdaHwatuCombination.TT9:
                 GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.duration, data.range);
@@ -96,6 +97,7 @@ public class PlayerSkill : MonoBehaviour
                 FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period);
                 break;
             case SeotdaHwatuCombination.TT1:
+                SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force);
                 break;
             case SeotdaHwatuCombination.AL12:
                 break;
@@ -143,7 +145,6 @@ public class PlayerSkill : MonoBehaviour
                 StartCoroutine(ReinforceAttack(data.duration));
                 break;
             case SeotdaHwatuCombination.KK0:
-                Player.instance.OnDamamged(data.damage);
                 break;
             case SeotdaHwatuCombination.blank:
                 break;
@@ -329,6 +330,12 @@ public class PlayerSkill : MonoBehaviour
     #region GuidedMissile 
     private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float duration, float range)
     {
+        SkillObj_Missile[] beforeObj = FindObjectsByType<SkillObj_Missile>(FindObjectsSortMode.None);
+        for(int i=0; i<beforeObj.Length; i++)
+        {
+            Destroy(beforeObj[i]);
+        }
+        
         int numProjectile = 0;
         if (code == SeotdaHwatuCombination.TT9)
             numProjectile = 9;
@@ -338,7 +345,7 @@ public class PlayerSkill : MonoBehaviour
         GameObject prefab = skillObjDictionary[code];
         for(int i=0; i< numProjectile; i++)
         {
-            float angle = 360.0f / numProjectile * (i - numProjectile/2);
+            float angle = 360.0f / numProjectile * (i - numProjectile / 2);
             Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector2(1,0);
             float theta = Vector2.Angle(Vector2.right, direction);
             if (direction.y < 0)
@@ -359,6 +366,25 @@ public class PlayerSkill : MonoBehaviour
     //}
 
 
+    #endregion
+
+    #region SphereAttack 
+    private void SphereAttack(SeotdaHwatuCombination code, int damage, float speed, float range, float period, float force)
+    {
+        GameObject prefab = skillObjDictionary[code];
+
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+        dir.Normalize();
+        float theta = Vector2.Angle(Vector2.right, dir);
+        if (dir.y < 0)
+            theta *= -1;
+
+        GameObject prefabs = skillObjDictionary[code];
+        GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
+        SkillObj_Sphere projectile = projectilObj.GetComponent<SkillObj_Sphere>();
+        Debug.Log(projectile);
+        projectile.Initialize(damage, dir, speed, range, StatusEffect.None, period, force);
+    }
     #endregion
 
     IEnumerator ReinforceAttack(float duration)

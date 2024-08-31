@@ -136,6 +136,10 @@ public class Gun : MonoBehaviour
 
             //Shoot Setting
             shootTimer = shootDelay;
+            if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            {
+                shootTimer -= shootDelay * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
+            }
             loadedBullet--;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);

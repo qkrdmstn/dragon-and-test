@@ -170,8 +170,13 @@ public class SkillManager : MonoBehaviour
     public void AddSkill(SeotdaHwatuCombination skill)
     {
         int skillNum = (int)skill;
+        if(skill == SeotdaHwatuCombination.KK0)
+        {
+            int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
+            Player.instance.OnDamamged(damage);
+        }
         //Add Passive Skill
-        if (skillNum >= 13 && skillNum <= 18)
+        else if (skillNum >= 13 && skillNum <= 18)
         {
             //스킬 보유 X
             if (passiveSkillData.FindIndex(x => x == skill) == -1)

@@ -1,34 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-public class SkillObj_Flame : SkillObject
+public class SkillObj_Sphere : SkillObject
 {
+    [SerializeField] private float range;
+    [SerializeField] private float projectileSpeed;
     [SerializeField] private float damagePeriod;
     [SerializeField] private float timer;
     [SerializeField] private List<Collider2D> inRangeTarget;
+    [SerializeField] private float slowScale;
 
-    private Player player;
+    private Rigidbody2D rigid;
     private Collider2D collider2d;
-    public SkillObj_Flame() : base()
-    {
-    }
 
-    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _period)
+    public void Initialize(int _damage, Vector2 _dir, float _projectileSpeed, float _range, StatusEffect _statusEffect, float _period, float _slowScale)
     {
-        player = FindObjectOfType<Player>();
+        rigid = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<Collider2D>();
 
         base.Initialize(_damage, _dir, _statusEffect);
+
+        range = _range;
+        projectileSpeed = _projectileSpeed;
         timer = 0.0f;
         damagePeriod = _period;
-        SetDir();
+        slowScale = _slowScale;
     }
 
     private void FixedUpdate()
     {
-        timer -= Time.deltaTime;
+        rigid.velocity = dir * projectileSpeed;
+        range -= rigid.velocity.magnitude * Time.deltaTime;
+        if (range < 0.0f)
+            InActiveProjectile();
+
         if (timer < 0.0f)
         {
             ContactFilter2D filter = new ContactFilter2D();
@@ -44,7 +50,6 @@ public class SkillObj_Flame : SkillObject
 
                     MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
                     Boss boss = inRangeTarget[i].GetComponent<Boss>();
-                    Debug.Log("sss");
                     if (monster != null)
                         MonsterDamaged(monster);
                     else if (boss != null)
@@ -54,10 +59,39 @@ public class SkillObj_Flame : SkillObject
         }
     }
 
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        SetDir();
-        transform.position = player.transform.position;
+        if (!collision.CompareTag("Monster"))
+            return;
+
+        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        Boss boss = collision.GetComponent<Boss>();
+        if (monster != null)
+            monster.SetSlowSpeed(slowScale);
+        else if (boss != null)
+        {
+            boss.moveSpeed = 3.65f - 3.65f * slowScale;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("Monster"))
+            return;
+
+        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        Boss boss = collision.GetComponent<Boss>();
+        if (monster != null)
+            monster.SetNormalSpeed();
+        else if (boss != null)
+        {
+            boss.moveSpeed = 3.65f;
+        }
+            
+    }
+    private void Update()
+    {
+        timer -= Time.deltaTime;
     }
 
     public void MonsterDamaged(MonsterBase monster)
@@ -73,15 +107,8 @@ public class SkillObj_Flame : SkillObject
         boss.OnDamaged(damage);
     }
 
-    private void SetDir()
+    public void InActiveProjectile()
     {
-        //Initial Direction Setting
-        dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
-        dir.Normalize();
-        float theta = Vector2.Angle(Vector2.right, dir);
-        if (dir.y < 0)
-            theta *= -1;
-
-        this.transform.rotation = Quaternion.Euler(0, 0, theta);
+        Destroy(this.gameObject);
     }
 }
