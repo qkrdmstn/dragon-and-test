@@ -47,7 +47,6 @@ public class MapControl : MonoBehaviour
         FindGoToPos();
 
         confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
-
     }
 
     void FindGoToPos()
