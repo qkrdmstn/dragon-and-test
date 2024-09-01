@@ -75,15 +75,17 @@ public class SaveManager : MonoBehaviour
 
     public void StartLoadData(int index)
     {
-        if (data[index] == null)
-        {
-            SetSelectSlotIdx(index);
-        }
-        else
+        SetSelectSlotIdx(index);
+        if (data[index] != null)
         {
             Player.instance.curHP = data[index].playerHP;
             Player.instance.money = data[index].money;
             Player.instance.shield = data[index].curShieldCnt;
+            if (data[index].isClearTutorial)
+            {
+                UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>().isPossibleJokbo = true;
+                Player.instance.isClearTutorial = true;
+            }
 
             SkillManager.instance.materialHwatuDataList = data[index].hwatus;
             SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
@@ -96,7 +98,6 @@ public class SaveManager : MonoBehaviour
 
     IEnumerator IsLoadedStartData()
     {
-        Debug.Log("data Loading...");
         yield return new WaitUntil(()=>ScenesManager.instance.IsCompletedLoadData(0));
 
         UIManager.instance.StartFade((int)SceneInfo.Town_1);
@@ -124,6 +125,7 @@ public class SaveManager : MonoBehaviour
         {
             startBtns[0].SetActive(false);
             startBtns[1].SetActive(true);
+            SetDataUI();
         }
         else
         {

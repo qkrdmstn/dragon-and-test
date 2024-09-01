@@ -274,6 +274,7 @@ public class Player : MonoBehaviour
     }
 
     public bool isTutorial = false;
+    public bool isClearTutorial = false;
     public void InitbySceneLoaded(SceneInfo curScene)
     {
         isBounded = false;

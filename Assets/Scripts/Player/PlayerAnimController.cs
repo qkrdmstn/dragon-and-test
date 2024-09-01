@@ -1,6 +1,5 @@
 using System;
 using Spine;
-using Spine.Unity;
 using Spine.Unity.AttachmentTools;
 
 public enum PlayerAnimState
@@ -15,14 +14,6 @@ public class PlayerAnimController : AnimController
 	protected override void Awake()
     {
         base.Awake();
-    }
-
-    private void Update()
-    {
-        if (isBreath)
-        {
-            ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
-        }
     }
 
     public override void SetAnim<T>(T _animState, float x = 0, float y = 0) 
@@ -59,7 +50,7 @@ public class PlayerAnimController : AnimController
 
         base.SetAnim();
 
-        if (animState != PlayerAnimState.Wave && animState == PlayerAnimState.Run)
+        if (animState != PlayerAnimState.Wave && (animState == PlayerAnimState.Run || animState == PlayerAnimState.Idle))
 		{   // 마우스 이동의 얼굴 방향 및 표정 스킨 갱신 (단 대시중에는 변경 금지)
 			ChangeSkinSlot(SetMouseDirection(Player.instance.stateMachine.currentState.mouseDir.x, Player.instance.stateMachine.currentState.mouseDir.y));
 		}

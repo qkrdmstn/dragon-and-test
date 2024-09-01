@@ -1,19 +1,26 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.EventSystems;
+
+public enum MapType
+{
+    Battle, Puzzle 
+}
 public class MapIndicator : MonoBehaviour
 {
+    public MapType type;
+
     public GameObject playerUI;
     public GameObject mapUI;
     public GameObject shopUI;
     public GameObject blanketUI;
+    public GameObject puzzleUI;
     public GameObject bossUI;
-    RectTransform playerRect, mapRect, shopRect, blanketRect, bossRect;
+    RectTransform playerRect, mapRect, bossRect, puzzleRect;
     List<MapInfo> mapRects;
 
+    RectTransform panel;
     Spawner spanwner;
     public List<BlockInfo> blocks;
 
@@ -21,12 +28,14 @@ public class MapIndicator : MonoBehaviour
     public bool isOverlaped = false;
     [Header("Blocks Information")]
     public int startBlock;
+    public int curBlock;
     public int endBlock;
     public int[] blanketBlockNum;
     public int[] shopBlockNum;
-    public int curBlock;
-    public Vector3 bossUIPos;
-    [Range(1, 2f)]public float size;
+
+    public Vector3 bossUIPos, puzzleUIPos;
+    [Range(25, 50f)] public int defaultSize;
+    [Range(1, 2f)] public float size;
 
     public class MapInfo
     {
@@ -41,19 +50,51 @@ public class MapIndicator : MonoBehaviour
 
     private void Awake()
     {
+        panel = transform.parent.GetComponent<RectTransform>();
+        panel.SetAsLastSibling();
         mapRects = new List<MapInfo>();
         mapRect = mapUI.GetComponent<RectTransform>();
-        spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
+
+        if(type == MapType.Battle)
+            spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
+        else
+        {   // boss scene까지 연계 -> 보스 완료 후 다음 넘어갈 때 destory 예정
+            DontDestroyOnLoad(transform.root.gameObject);
+        }
     }
     private void Start()
     {
-        blocks = spanwner.blocks;
-        isVisited = new bool[blocks.Count];
-        curBlock = startBlock;
-        InstantiateBlockUI();
+        if (type == MapType.Battle)
+        {
+            blocks = spanwner.blocks;
+            isVisited = new bool[blocks.Count];
+
+            curBlock = startBlock;
+            InstantiateBattleBlockUI();
+        }
+        else
+        {
+            InitializePuzzleBlock();
+        }
     }
 
-    void InstantiateBlockUI()
+    #region Puzzle
+    void InitializePuzzleBlock()
+    {
+        puzzleRect = Instantiate(puzzleUI, Vector3.zero, Quaternion.identity, this.transform).GetComponent<RectTransform>();
+        puzzleRect.sizeDelta = new Vector2(size * defaultSize, size * defaultSize);
+        puzzleRect.anchoredPosition = puzzleUIPos;
+
+        bossRect = Instantiate(bossUI, Vector3.zero, Quaternion.identity, this.transform).GetComponent<RectTransform>();
+        bossRect.sizeDelta = new Vector2(size * defaultSize, size * defaultSize);
+        bossRect.anchoredPosition = bossUIPos;
+
+        //playerRect = Instantiate(playerUI, puzzleRect.position, Quaternion.identity, puzzleRect.transform).GetComponent<RectTransform>();  // choice
+    }
+    #endregion
+
+    #region Battle
+    void InstantiateBattleBlockUI()
     {
         for (int i = 0; i < blocks.Count; i++)
         {   // spawner에서 정렬된 block을 기준으로 미니맵 Rect를 생성함
@@ -66,7 +107,7 @@ public class MapIndicator : MonoBehaviour
             if (i == endBlock)
             {   // 마지막 block은 boss까지 연계해서 생성
                 bossRect = Instantiate(bossUI, Vector3.one, Quaternion.identity, this.transform).GetComponent<RectTransform>();
-                bossRect.sizeDelta = new Vector2(size * 25, size * 25);
+                bossRect.sizeDelta = new Vector2(size * defaultSize, size * defaultSize);
                 bossRect.anchoredPosition = bossUIPos;
                 for (int j = 0; j < bossRect.childCount; j++)
                 {   
@@ -78,10 +119,10 @@ public class MapIndicator : MonoBehaviour
             PolygonCollider2D tmpColl = blocks[i].GetComponentInChildren<PolygonCollider2D>();
             Vector2 rectSize = Vector2.one;
             if (tmpColl.bounds.size.x >= 35) rectSize.x = size * 52f;
-            else rectSize.x = size * 25;
+            else rectSize.x = size * defaultSize;
 
             if (tmpColl.bounds.size.y >= 35) rectSize.y = size * 52f;
-            else rectSize.y = size * 25;
+            else rectSize.y = size * defaultSize;
 
             tmp.sizeDelta = rectSize;
             tmp.GetComponent<BoxCollider2D>().size = rectSize;
@@ -137,7 +178,6 @@ public class MapIndicator : MonoBehaviour
             isOverlaped = true;
         }
     }
-    
 
     void SetInActiveAllBlockUIs()
     {   // 초기 시작을 제외한 나머지 block 비활성화
@@ -174,4 +214,5 @@ public class MapIndicator : MonoBehaviour
             SetInActiveBlockUI(num, true);
         }
     }
+    #endregion
 }

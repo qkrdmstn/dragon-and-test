@@ -13,7 +13,7 @@ public class MapOutOfRange : MonoBehaviour
         {
             if (gameObject.name.Contains("Battle"))
             {
-                _goToScene = 6;
+                _goToScene = Random.Range(4, 7);
             }
             else if(_goToScene == 3)
             {

@@ -17,6 +17,7 @@ public class PlayerData
     public int money;
     public GunData curGun;
     public int curShieldCnt;
+    public bool isClearTutorial;
 
     public PlayerData(float originPlayTime)
     {
@@ -40,6 +41,8 @@ public class PlayerData
 
         curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;
         curShieldCnt = Player.instance.shield;
+
+        isClearTutorial = Player.instance.isClearTutorial;
     }
 }
 
