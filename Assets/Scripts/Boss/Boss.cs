@@ -42,18 +42,6 @@ public class Boss : MonoBehaviour
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
 
         curHP -= damage;
-        //피격 시, 패시브 스킬
-        //독사
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14))
-        {
-            //지속 데미지 -> duration과 interval이 없음
-            StartCoroutine(DOTDamage(5.0f, 1.0f, 1));
-        }
-        //구삥
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19))
-        {
-            //9% 확률로 몬스터 기절 duration
-        }
 
         if (curHP <= 0)
         {
@@ -63,19 +51,25 @@ public class Boss : MonoBehaviour
         bossHPUI.UpdateHPUI(curHP, maxHP);
     }
 
-    IEnumerator DOTDamage(float duration, float interval, int perDamage)
+    public void DotDamage(float duration, float interval, int perDamage)
+    {
+        StartCoroutine(DotDamageCoroutine(duration, interval, perDamage));
+    }
+
+    IEnumerator DotDamageCoroutine(float duration, float interval, int perDamage)
     {
         float timer = interval;
-        while (duration < 0.0f)
+        while (duration >= 0.0f)
         {
             yield return null;
             timer -= Time.deltaTime;
-
+            duration -= Time.deltaTime;
             if (timer < 0.0f)
             {
-                duration -= interval;
                 timer = interval;
                 curHP -= perDamage;
+                bossHPUI.UpdateHPUI(curHP, maxHP);
+                SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
             }
         }
     }

@@ -114,7 +114,7 @@ public class SkillManager : MonoBehaviour
     private async Task LoadSkillDB()
     {
         //스킬 DataBase 로드
-        datas = await DataManager.instance.GetValues<SkillDB>(SheetType.SkillDB, "A1:J33");
+        datas = await DataManager.instance.GetValues<SkillDB>(SheetType.SkillDB, "A1:L33");
         for (int i = 0; i < datas.Length; i++)
         {
             skillDBDictionary.Add(datas[i].TransStringToEnum(), datas[i]);
@@ -170,17 +170,25 @@ public class SkillManager : MonoBehaviour
     public void AddSkill(SeotdaHwatuCombination skill)
     {
         int skillNum = (int)skill;
+        if(skill == SeotdaHwatuCombination.KK0)
+        {
+            int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
+            Player.instance.OnDamamged(damage);
+        }
         //Add Passive Skill
-        if (skillNum >= 13 && skillNum <= 18)
+        else if (skillNum >= 13 && skillNum <= 18)
         {
             //스킬 보유 X
             if (passiveSkillData.FindIndex(x => x == skill) == -1)
             {
                 passiveSkillData.Add(skill);
-                passiveSkillCnt.Add(skill, 0);
+                passiveSkillCnt.Add(skill, 1);
             }
-            passiveSkillCnt[skill]++;
-
+            else
+            {
+                passiveSkillCnt[skill]++;
+                skillDBDictionary[skill].probability += skillDBDictionary[skill].growCoefficient;
+            }
             UpdatePassiveSkillSlot();
         }
         else //Add Active Skill
@@ -231,11 +239,14 @@ public class SkillManager : MonoBehaviour
         float tempTimer = timer[0];
         timer[0] = timer[1];
         timer[1] = tempTimer;
+
+        StopAllCoroutines();
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
             if (activeSkillData[i] == SeotdaHwatuCombination.blank)
                 continue;
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
+            
             StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
         }
     }
@@ -247,7 +258,7 @@ public class SkillManager : MonoBehaviour
         if (activeSkillData[i] == SeotdaHwatuCombination.blank)
             return;
 
-        SkillDB data = skillDBDictionary[activeSkillData[i]];
+        SkillDB data = GetSkillDB(activeSkillData[i]);
         skill.UseSkill(data);
 
         //CoolTime UI setting
@@ -311,5 +322,21 @@ public class SkillManager : MonoBehaviour
         DeleteAllSkill();
         // passive
         // todo
+    }
+
+    public SkillDB GetSkillDB(SeotdaHwatuCombination skillName)
+    {
+        SkillDB data = skillDBDictionary[skillName];
+        return data;
+    }
+
+    public string GetSkillInfo(SeotdaHwatuCombination skillName)
+    {
+        SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
+        float prob = skillData.probability;
+        string skillInfo = skillData.info;
+        skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+
+        return skillInfo;
     }
 }

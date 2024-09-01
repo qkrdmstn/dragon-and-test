@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMoveState : PlayerState
 {
+    private float moveSpeed;
+
     public PlayerMoveState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
@@ -11,6 +13,13 @@ public class PlayerMoveState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        moveSpeed = player.moveSpeed;
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+        {
+            SkillDB sr46Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46);
+            moveSpeed += moveSpeed * (sr46Data.probability);
+        }
     }
 
     public override void Exit()
@@ -39,7 +48,7 @@ public class PlayerMoveState : PlayerState
         Vector2 dir = new Vector2(xInput, yInput);
         dir.Normalize();
 
-        Vector2 move = dir * player.moveSpeed;
+        Vector2 move = dir * moveSpeed;
         player.SetVelocity(move.x, move.y);
         player.animController.SetAnim(PlayerAnimState.Run, xInput, yInput);
 

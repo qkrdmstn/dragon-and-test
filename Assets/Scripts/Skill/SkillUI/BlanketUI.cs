@@ -67,11 +67,11 @@ public class BlanketUI : MonoBehaviour
             return false;
     }
 
-    public void SetSkillInfoUIActive(SkillDB skillData, Sprite skillSprite) //스킬 조합 시, 호출되는 스킬 정보 UI 설정
+    public void SetSkillInfoUIActive(SeotdaHwatuCombination skill) //스킬 조합 시, 호출되는 스킬 정보 UI 설정
     {
-        skillImage.sprite = skillSprite;
-        skillNameTxt.text = skillData.synergyName;
-        skillInfoTxt.text = skillData.info;
+        skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
+        skillNameTxt.text = SkillManager.instance.skillDBDictionary[skill].synergyName;
+        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
 

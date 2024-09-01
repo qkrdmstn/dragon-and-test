@@ -233,6 +233,6 @@ public class BlanketInteraction : Interaction
         }
         selectedCnt = 0;
 
-        blanketUI.SetSkillInfoUIActive(SkillManager.instance.skillDBDictionary[result], SkillManager.instance.skillSpriteDictionary[result]);
+        blanketUI.SetSkillInfoUIActive(result);
     }
 }

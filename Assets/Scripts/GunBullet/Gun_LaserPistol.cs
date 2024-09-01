@@ -16,18 +16,25 @@ public class Gun_LaserPistol : Gun
 
             //Shoot Setting
             shootTimer = shootDelay;
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            {
+                shootTimer -= shootDelay * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
+            }
             loadedBullet--;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
-            int bulletDamage = damage;
+            int bulletDamage = damage + Player.instance.reinforceAttack;
+            float bulletScale = 1.0f;
+
             //장삥
-            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110))
-            { //10%로 데미지 1 증가
-                float prob = 0.1f;
-                float randomVal = Random.Range(0.0f, 1.0f);
-                if (randomVal <= prob)
-                    bulletDamage++;
+            //10%로 데미지 1 증가
+            SkillDB jpp110Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JPP110);
+            float randomVal = Random.Range(0.0f, 1.0f);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110) && randomVal <= jpp110Data.probability)
+            {
+                bulletDamage += jpp110Data.damage;
+                bulletScale = 1.5f;
             }
 
             //Create Bullet
@@ -38,7 +45,7 @@ public class Gun_LaserPistol : Gun
             GameObject bulletObj = Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, 0, theta));
             PlayerLaserBullet bullet = bulletObj.GetComponent<PlayerLaserBullet>();
 
-            bullet.BulletInitialize(bulletDamage + Player.instance.reinforceAttack, range, bulletSpeed, knockbackForce, dir);
+            bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir, bulletScale);
             StartCoroutine(InactiveIsAttacking());
 
             //Gun Inventory Update
