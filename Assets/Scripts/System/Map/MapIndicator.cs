@@ -51,7 +51,6 @@ public class MapIndicator : MonoBehaviour
     private void Awake()
     {
         panel = transform.parent.GetComponent<RectTransform>();
-        panel.SetAsLastSibling();
         mapRects = new List<MapInfo>();
         mapRect = mapUI.GetComponent<RectTransform>();
 
@@ -64,6 +63,7 @@ public class MapIndicator : MonoBehaviour
     }
     private void Start()
     {
+        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(panel.anchoredPosition.x, -panel.rect.height - 10f);
         if (type == MapType.Battle)
         {
             blocks = spanwner.blocks;
@@ -110,7 +110,7 @@ public class MapIndicator : MonoBehaviour
                 bossRect.sizeDelta = new Vector2(size * defaultSize, size * defaultSize);
                 bossRect.anchoredPosition = bossUIPos;
                 for (int j = 0; j < bossRect.childCount; j++)
-                {   
+                {
                     bossRect.GetChild(j).gameObject.SetActive(false);
                 }
             }

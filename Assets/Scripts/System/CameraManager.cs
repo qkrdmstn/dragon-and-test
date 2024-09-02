@@ -46,6 +46,5 @@ public class CameraManager : MonoBehaviour
         impulseListener.m_ReactionSettings.m_AmplitudeGain = profile.listenerAmplitude;
         impulseListener.m_ReactionSettings.m_FrequencyGain = profile.listenerFrequency;
         impulseListener.m_ReactionSettings.m_Duration = profile.listenerDuration;
-
     }
 }

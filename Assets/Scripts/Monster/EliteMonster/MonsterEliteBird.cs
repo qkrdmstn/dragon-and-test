@@ -66,11 +66,9 @@ public class MonsterEliteBird : MonsterBase
         if(loadedBullet > 0 && (!isReloading))
         {
             loadedBullet--;
-            dir = player.transform.position - transform.position;
             
             StartCoroutine(SpawnBullets());
         }
-        isAttacking = false;
     }
 
 
@@ -80,7 +78,8 @@ public class MonsterEliteBird : MonsterBase
         float theta = bulletAngle / bulletsOnce;
 
         for (int j = 0; j < bulletNum; j++)
-        {
+        {   
+            dir = player.transform.position - transform.position;
             for (int i = 0; i < curbulletsOnce; i++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
@@ -93,6 +92,7 @@ public class MonsterEliteBird : MonsterBase
             yield return new WaitForSeconds(fireInterval);
         }
         if (loadedBullet <= 0 && !isReloading) Reload();
+        isAttacking = false;
     }
 
     public void Reload()
