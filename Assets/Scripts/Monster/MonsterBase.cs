@@ -231,9 +231,9 @@ public class MonsterBase : MonoBehaviour
 
     protected void MoneyDrop()
     {
-        ItemObject item = money.GetComponent<ItemObject>();
         GameObject moneyObj = Instantiate(money, this.transform.position, Quaternion.identity);
-        moneyObj.GetComponent<InteractionData>().sequence = Random.Range(moneyRange.x, moneyRange.y);
+        MoneyItemObject moneyItem = moneyObj.GetComponent<MoneyItemObject>();
+        moneyItem.amount = Random.Range(moneyRange.x, moneyRange.y);
     }
 
     public Direction CheckDir()
@@ -251,6 +251,8 @@ public class MonsterBase : MonoBehaviour
     public void SetSlowSpeed(float scale)
     {
         Debug.Log("slow");
+        if (agent.speed <= tempMoveSpeed - tempMoveSpeed * scale)
+            return;
         tempMoveSpeed = agent.speed;
         agent.speed = moveSpeed - moveSpeed * scale;
     }

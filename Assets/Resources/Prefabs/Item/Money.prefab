@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4820365139060234721}
   - component: {fileID: 4820365139060234720}
-  - component: {fileID: 7585571131185312660}
-  - component: {fileID: 2991897626811350477}
+  - component: {fileID: -8211649631432916365}
   - component: {fileID: 7572572195535768346}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Money
-  m_TagString: Interaction
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,7 +86,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7585571131185312660
+--- !u!114 &-8211649631432916365
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,28 +95,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4820365139060234723}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b69dd53a4d3d7b6409f471afa1fc64cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 243fda9614443b74898a403d4bf1383e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  eventName: money
-  sequence: 0
-  npcImg: {fileID: 0}
-  itemData: {fileID: 11400000, guid: ed955dcb1ad8a4bed86be63438ff983e, type: 2}
---- !u!114 &2991897626811350477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4820365139060234723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50117e32dab41d24ba688f975b1e2e36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemData: {fileID: 11400000, guid: ed955dcb1ad8a4bed86be63438ff983e, type: 2}
-  dropProb: 1
+  amount: 1
 --- !u!70 &7572572195535768346
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
