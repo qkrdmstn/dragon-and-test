@@ -23,6 +23,7 @@ public class Spawner : MonoBehaviour
     public List<BlockInfo> blocks;
     public int curBlockNum;
     public Vector2[] mapHierarchy;
+    public MapIndicator mapIndicator;
     //MapIndicator mapIndicator;
 
     [Header("Wave info")]
@@ -204,6 +205,7 @@ public class Spawner : MonoBehaviour
     private void BlockClear()
     {
         blocks[curBlockNum].blockClear = true;
+        mapIndicator.BlinkBlock(true);
         curWave = 0;
         //mapIndicator.BlockClear(curBlockNum);
     }

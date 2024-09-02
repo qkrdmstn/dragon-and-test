@@ -102,7 +102,7 @@ public class TutorialInteraction : Interaction
 
     public static bool generateBullet = false;
 
-    private async void Start()
+    async void Start()
     {
         await LoadTutorialDBEntity();
         checkSequenceDone = new bool[tutorialDatas.Count];
@@ -113,7 +113,7 @@ public class TutorialInteraction : Interaction
         StartFirstDialog();
     }
 
-    private void Update()
+    void Update()
     {
         if(curScarescrow != null)
         {   // 허수아비의 머리 위에 말풍선을 위치

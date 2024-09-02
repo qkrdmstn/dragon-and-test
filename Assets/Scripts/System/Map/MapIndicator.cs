@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Rendering.LookDev;
 
 public enum MapType
 {
@@ -22,10 +25,13 @@ public class MapIndicator : MonoBehaviour
 
     RectTransform panel;
     Spawner spanwner;
+    List<int> curNearBlocksNum;
     public List<BlockInfo> blocks;
 
     bool[] isVisited;
+    bool isFirst = true;
     public bool isOverlaped = false;
+
     [Header("Blocks Information")]
     public int startBlock;
     public int curBlock;
@@ -36,6 +42,7 @@ public class MapIndicator : MonoBehaviour
     public Vector3 bossUIPos, puzzleUIPos;
     [Range(25, 50f)] public int defaultSize;
     [Range(1, 2f)] public float size;
+    Vector2 activePosforMoney, inactivePosforMoney;
 
     public class MapInfo
     {
@@ -51,19 +58,22 @@ public class MapIndicator : MonoBehaviour
     private void Awake()
     {
         panel = transform.parent.GetComponent<RectTransform>();
+        activePosforMoney = new Vector2(panel.anchoredPosition.x, -panel.rect.height - 10f);
+        inactivePosforMoney = new Vector2(panel.anchoredPosition.x, 0f);
+
         mapRects = new List<MapInfo>();
+        curNearBlocksNum = new List<int>();
         mapRect = mapUI.GetComponent<RectTransform>();
 
         if(type == MapType.Battle)
             spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
-        else
-        {   // boss scene까지 연계 -> 보스 완료 후 다음 넘어갈 때 destory 예정
-            DontDestroyOnLoad(transform.root.gameObject);
-        }
+        //else
+        //{   // boss scene까지 연계 -> 보스 완료 후 다음 넘어갈 때 destory 예정
+        //    DontDestroyOnLoad(transform.root.gameObject);
+        //}
     }
     private void Start()
     {
-        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(panel.anchoredPosition.x, -panel.rect.height - 10f);
         if (type == MapType.Battle)
         {
             blocks = spanwner.blocks;
@@ -72,10 +82,10 @@ public class MapIndicator : MonoBehaviour
             curBlock = startBlock;
             InstantiateBattleBlockUI();
         }
-        else
-        {
-            InitializePuzzleBlock();
-        }
+        //else
+        //{
+        //    InitializePuzzleBlock();
+        //}
     }
 
     #region Puzzle
@@ -145,8 +155,18 @@ public class MapIndicator : MonoBehaviour
             Instantiate(shopUI, mapRects[shopBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[shopBlockNum[i]].mapRect.transform);
         }
         playerRect = Instantiate(playerUI, mapRects[startBlock].mapRect.transform.position, Quaternion.identity, mapRects[startBlock].mapRect.transform).GetComponent<RectTransform>();
+        mapRects[startBlock].mapRect.GetComponentInChildren<Animator>().SetBool("isOn", false);
 
         SetInActiveAllBlockUIs();
+    }
+
+    void OverlapPlayerUI()
+    {   // 플레이어 UI에 따른 모포, 상점 UI 활성화 상태 변경
+        if (mapRects[curBlock].mapRect.childCount > 2)
+        {   // BG + Shop || blanket + player
+            mapRects[curBlock].mapRect.GetChild(1).gameObject.SetActive(false);
+            isOverlaped = true;
+        }
     }
 
     public void MoveBlockPlayer(int goToBlockNum)   // goToBlockNum is a Hierarchy Order
@@ -170,13 +190,30 @@ public class MapIndicator : MonoBehaviour
         FindNearBlocks(goToBlockNum);
     }
 
-    void OverlapPlayerUI()
-    {   // 플레이어 UI에 따른 모포, 상점 UI 활성화 상태 변경
-        if (mapRects[curBlock].mapRect.childCount > 2)
-        {   // BG + Shop || blanket + player
-            mapRects[curBlock].mapRect.GetChild(1).gameObject.SetActive(false);
-            isOverlaped = true;
+    void FindNearBlocks(int _curBlock)
+    {   // 현재 맵의 이동 포탈과 연계해 idx에 맞춰 다음 맵 활성화
+        MapControl[] tmp = mapRects[_curBlock].gotoMaps;
+        if (_curBlock == endBlock)
+        {
+            for (int j = 0; j < bossRect.childCount; j++)
+            {   // boss 가기 직전 block이라면 bossRect 활성화
+                bossRect.GetChild(j).gameObject.SetActive(true);
+            }
         }
+
+        BlinkBlock(false);
+        if (curNearBlocksNum.Count > 0)
+            curNearBlocksNum.Clear();
+
+        for (int i = 0; i < tmp.Length; i++)
+        {   // index 주의할 것
+            int num = int.Parse(tmp[i].gotoMapType.name.Substring(5))-1; // hierarchy는 1부터 시작하므로 보정
+            if (!isVisited[num])
+                curNearBlocksNum.Add(num);
+
+            SetInActiveBlockUI(num, true);
+        }
+        transform.parent.gameObject.SetActive(false);   // panel부터 active 관리
     }
 
     void SetInActiveAllBlockUIs()
@@ -197,21 +234,26 @@ public class MapIndicator : MonoBehaviour
         }
     }
 
-    void FindNearBlocks(int _curBlock)
-    {   // 현재 맵의 이동 포탈과 연계해 idx에 맞춰 다음 맵 활성화
-        MapControl[] tmp = mapRects[_curBlock].gotoMaps;
-        if (_curBlock == endBlock)
+    public void BlinkBlock(bool state)
+    {
+        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
+                = state ? activePosforMoney : inactivePosforMoney;
+
+        if (state)
         {
-            for (int j = 0; j < bossRect.childCount; j++)
-            {   // boss 가기 직전 block이라면 bossRect 활성화
-                bossRect.GetChild(j).gameObject.SetActive(true);
+            transform.parent.gameObject.SetActive(state);   // panel부터 active 관리
+
+            if(curBlock == endBlock)
+            {
+                Animator anim = bossRect.GetComponentInChildren<Animator>();
+                anim.SetBool("isOn", state);
             }
         }
 
-        for (int i = 0; i < tmp.Length; i++)
-        {   // index 주의할 것
-            int num = int.Parse(tmp[i].gotoMapType.name.Substring(5))-1; // hierarchy는 1부터 시작하므로 보정
-            SetInActiveBlockUI(num, true);
+        foreach (int num in curNearBlocksNum)
+        {
+            Animator anim = mapRects[num].mapRect.GetComponentInChildren<Animator>();
+            anim.SetBool("isOn", state);
         }
     }
     #endregion
