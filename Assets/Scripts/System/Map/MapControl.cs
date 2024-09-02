@@ -36,18 +36,13 @@ public class MapControl : MonoBehaviour
         layerMask = 1 << LayerMask.NameToLayer("Portal");
         myGoTo = gameObject.name.Substring(4);
         goToDir = dirs[(int)Enum.Parse<Dir>(myGoTo)];
-    }
 
-    private void Start()
-    {
         myMapType = transform.parent.parent.gameObject;
 
         spawner = FindObjectOfType<Spawner>();
         mapIndicator = FindObjectOfType<MapIndicator>();
+
         FindGoToPos();
-
-        confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
-
     }
 
     void FindGoToPos()
@@ -57,6 +52,7 @@ public class MapControl : MonoBehaviour
         {
             gotoPos = hit[0].transform;
             gotoMapType = gotoPos.parent.parent.gameObject;
+            confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
         }
     }
 
@@ -73,7 +69,7 @@ public class MapControl : MonoBehaviour
 
                 UIManager.instance.SetFadeObjState(true);
                 UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
-                //mapIndicator.MoveBlockPlayer(curMapNum);
+                mapIndicator.MoveBlockPlayer(curMapNum);
 
                 Player.instance.SetIdleStatePlayer();
                 Player.instance.isStateChangeable = false;

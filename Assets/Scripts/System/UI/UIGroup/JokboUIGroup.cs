@@ -2,10 +2,18 @@ using UnityEngine;
 using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class JokboHwatuUI
+{
+    public GameObject[] hwatu;
+}
 
 public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
+    public JokboHwatuUI[] hwatuUIs;
     SynergyEntity[] skillDB;
     public bool isPossibleJokbo = false;
     bool isFirst = true;
@@ -64,36 +72,27 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach (GameObject obj in hwatuInfoPages)
+        foreach (JokboHwatuUI obj in hwatuUIs)
         {
-            TextMeshProUGUI[] childobjs = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
-
-            if (childobjs.Length == 0) continue;
-            for (int i = 0; i < childobjs.Length; i += 2)
+            for(int i=0; i<obj.hwatu.Length; i++)
             {
-                childobjs[i].text = skillDB[idx].synergyName;
-                childobjs[i + 1].text = skillDB[idx].info;
+                GameObject hwatu = obj.hwatu[i];
+                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
+                childTxts[0].text = skillDB[idx].synergyName;
+                childTxts[1].text = skillDB[idx].info;
                 idx++;
-            }
 
-            Image[] imgs = obj.GetComponentsInChildren<Image>(true);
-            for (int i = 0; i < imgs.Length; i += 3)
-            {
-                if (imgs[i].transform.name == "Viewport") i++;
-                if (imgs[i].transform.name == "Scrollbar Vertical") break;
-                if (imgs[i].transform.name.Contains("KK")) break;
-
-                int synergeType = GetSynergeName(imgs[i].transform.name);
+                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true);
+                int synergeType = GetSynergeName(hwatu.name);
 
                 SeotdaHwatuName[] cards = Hwatu.GetHwatuCombination((SeotdaHwatuCombination)synergeType);
-
                 for (int j = 0; j < SkillManager.instance.hwatuData.Length; j++)
                 {
                     if (cards[0] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        imgs[i + 1].sprite = SkillManager.instance.hwatuData[j].sprite;
-
+                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
+                    // 1번은 plus
                     else if (cards[1] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        imgs[i + 2].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        childImgs[2].sprite = SkillManager.instance.hwatuData[j].sprite;
                 }
             }
         }

@@ -149,6 +149,7 @@ public class TutorialInteraction : Interaction
     {   // 튜토리얼 종료
         SkillManager.instance.DeleteSkill(SeotdaHwatuCombination.TT3);
         Player.instance.curHP = Player.instance.maxHP;
+        Player.instance.isClearTutorial = true;
     }
 
     public GameObject GetCurScarescrow() => curScarescrow;

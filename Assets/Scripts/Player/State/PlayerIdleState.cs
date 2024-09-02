@@ -24,7 +24,6 @@ public class PlayerIdleState : PlayerState
 
         if (GameManager.instance.isStop) return;
         player.animController.SetAnim(PlayerAnimState.Idle, mouseDir.x, mouseDir.y);
-        
 
         if (xInput != 0 || yInput != 0)
             stateMachine.ChangeState(player.moveState);

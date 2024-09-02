@@ -11,7 +11,7 @@ public enum BlockChild
     Interaction
 }
 
-public class BlockUIInfo : MonoBehaviour, IComparable
+public class BlockUIInfo : MonoBehaviour
 {
     public bool isWay, isInteraction;
     public Transform[] childrens;  // bg, question, way, interaction;
@@ -47,22 +47,5 @@ public class BlockUIInfo : MonoBehaviour, IComparable
             childrens[interactionNum].gameObject.SetActive(state);
         else
             childrens[(int)childNum].gameObject.SetActive(state);
-    }
-
-    public int CompareTo(object obj)
-    {
-        Vector2 thisPos = this.transform.position;
-        Vector2 comparePos = (obj as BlockUIInfo).transform.position;
-
-        if (thisPos.y > comparePos.y)
-            return -1;
-        else if (thisPos.y == comparePos.y)
-        {
-            if (thisPos.x < comparePos.x)
-                return -1;
-            return 1;
-        }
-        else
-            return 1;
     }
 }

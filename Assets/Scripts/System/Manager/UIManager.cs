@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
             // TODO -----  인벤토리도 똑같아서 해당 변수활용을 통해 문제 해결 필요
             isUIOn = false;
         }
-        else if (!Player.instance.isInteraction && !Player.instance.isDead && Input.GetKeyDown(KeyCode.Escape))
+        else if (!Player.instance.isInteraction && !Player.instance.isDead && !Player.instance.isTutorial && Input.GetKeyDown(KeyCode.Escape))
         {
             int curScene = ScenesManager.instance.GetSceneNum();
             if (isFading || curScene == 0 || curScene == 3) return;
