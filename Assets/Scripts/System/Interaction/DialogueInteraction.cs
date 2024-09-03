@@ -9,7 +9,6 @@ public class DialogueInteraction : Interaction
     public int curIdx;
     public bool isFirst = true;
     public bool isSelectFirst = true;
-    public bool isShop = false;
 
     UnityEngine.UI.Image npcImg;
     TextMeshProUGUI npcName;
@@ -32,20 +31,12 @@ public class DialogueInteraction : Interaction
         await LoadDialogueDBEntity();
     }
 
-    int SetItemPrice()
-    {
-        if (isShop) return data.itemData.price;
-        else
-            return 0;
-    }
-
     public override void LoadEvent(InteractionData data)
     {
         this.data = data;
 
         UIManager.instance.SceneUI["Dialogue"].SetActive(true);
         Init();
-        if(data.eventName == "상점") isShop = true;
         LoadDialogData();
 
         if (isFirst) SetUPUI();
@@ -71,8 +62,7 @@ public class DialogueInteraction : Interaction
                         dialogues[i].npcName,
                         dialogues[i].dialogue,
                         dialogues[i].isSelect,
-                        dialogues[i].selectType,
-                        SetItemPrice()
+                        dialogues[i].selectType
                     )
                 );
                 selections.Add(false);
@@ -141,26 +131,20 @@ public class DialogueInteraction : Interaction
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Debug.Log("w-0");
                 result = 0;
                 Selection(0);
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
-                Debug.Log("s-1");
                 result = 1;
                 Selection(1);
             }
             else if ((Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0)) && result > -1)
             {   // 특정 경우를 선택한 경우
-                Debug.Log("enter");
                 keyInput = false;
                 isSelectFirst = true;
                 selections[curIdx] = true;  // 현 대화 분기에 대한 선택 완료
                 SetActiveSelectUI(false);
-
-                // 상점 상호작용의 경우, moneyCheck & state에 따른 송출 대화 분기 생성
-                if (isShop) result = gameObject.GetComponent<ShopInteraction>().CheckBuyState(result);
 
                 // 분기를 끝내고 다음 대화 연결
                 SetActiveDialogUI(true);
@@ -218,12 +202,7 @@ public class DialogueInteraction : Interaction
                     case 1:     // [아니오] - 선택에 따른 대화 종료
                         isNegative = true;   
                         break;
-                    case 2:     // [그외] -- 구매불가
-                        idx += 2;
-                        break;
                 }
-
-                if (isShop) isNegative = true;
 
                 result = -1;
                 dialogueTxt.text = dialogDatas[idx]._dialogue;
@@ -275,12 +254,10 @@ public class DialogueInteraction : Interaction
 
         result = -1;
         curIdx = 0;
-        Debug.Log("ddd");
         isFirst = true;
 
         isDone = false;
         isNegative = false;
-        isShop = false;
         keyInput = false;
 
         dialogDatas.Clear();

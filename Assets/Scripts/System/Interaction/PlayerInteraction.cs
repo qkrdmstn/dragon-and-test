@@ -36,15 +36,6 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    //public void ChangePlayerInteractionState(bool state)
-    //{
-    //    Player.instance.isInteraction = state;   // player의 상호작용 여부 관찰
-    //    if (state) Player.instance.SetIdleStatePlayer();
-
-    //    Player.instance.isStateChangeable = !state;
-    //    Player.instance.isAttackable = !state;
-    //}
-
     void DoInteraction()
     {
         if (!Player.instance.isInteraction)
@@ -61,8 +52,6 @@ public class PlayerInteraction : MonoBehaviour
                     pickupItemInteraction.LoadEvent(interaction);
                     break;
                 case InteractionData.InteractionType.Shop:
-                    // ToDo ITEM INTERACTION
-                    dialogueInteraction.LoadEvent(interaction);
                     shopInteraction.LoadEvent(interaction);
                     break;
                 case InteractionData.InteractionType.Blanket:
