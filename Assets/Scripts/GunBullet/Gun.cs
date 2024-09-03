@@ -232,7 +232,8 @@ public class Gun : MonoBehaviour
         if(reloadBulletSize <= maxBullet)
         {
             loadedBullet = magazineSize;
-            maxBullet -= reloadBulletSize;
+            if(maxBullet < 10000) //총알 무한대
+                maxBullet -= reloadBulletSize;
         }
         else
         {

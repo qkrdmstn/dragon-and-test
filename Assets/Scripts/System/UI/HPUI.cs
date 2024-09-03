@@ -10,6 +10,17 @@ public class HPUI : MonoBehaviour
     
     private void Update()
     {
-        HPImage.sprite = HPSprites[Player.instance.curHP];
+
+        if (Player.instance.curHP == 0)
+        {
+            HPImage.sprite = null;
+            HPImage.color = Color.clear;
+        }
+        else
+        {
+            HPImage.sprite = HPSprites[Player.instance.curHP];
+            HPImage.color = Color.white;
+
+        }
     }
 }

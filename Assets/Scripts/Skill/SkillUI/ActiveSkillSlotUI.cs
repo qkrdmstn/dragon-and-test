@@ -14,7 +14,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
 {
     [Header("Skill Info")]
     [SerializeField] private Image skillImage;
-    public Sprite defalutImage;
     public SeotdaHwatuCombination data;
 
     [Header("Transform Info")]
@@ -55,8 +54,8 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     public void ClearSlot()
     {
-        skillImage.sprite = defalutImage;
-        skillImage.color = Color.white;
+        skillImage.sprite = null;
+        skillImage.color = Color.clear;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -43,8 +43,10 @@ public class GunInventoryData : MonoBehaviour
     {
         maxBullet = _maxBullet;
         loadedBullet = _loadedBullet;
-
-        bulletText.text = (loadedBullet + " / " + maxBullet).ToString();
+        if(maxBullet >= 10000) //총알 무한대
+            bulletText.text = "<size=27.5>" + loadedBullet.ToString() + "</size><size=17.5> / ∞</size>";
+        else
+            bulletText.text = "<size=27.5>" + loadedBullet.ToString() + "</size><size=17.5> / " + maxBullet.ToString() + "</size>";
     }
 
     //sawpinventory
