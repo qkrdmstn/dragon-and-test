@@ -44,7 +44,7 @@ public class GunInventoryData : MonoBehaviour
         maxBullet = _maxBullet;
         loadedBullet = _loadedBullet;
 
-        bulletText.text = (loadedBullet + " / " + maxBullet).ToString();
+        bulletText.text = "<size=40>" + loadedBullet.ToString() + "</size><size=23>/" + maxBullet.ToString() + "</size>";
     }
 
     //sawpinventory

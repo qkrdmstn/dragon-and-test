@@ -2741,8 +2741,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11242f5b6d6474006bfc544216f72431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   playerUI: {fileID: 1193387790}
-  firstBlock: 4
+  mapUI: {fileID: 0}
+  shopUI: {fileID: 0}
+  blanketUI: {fileID: 0}
+  puzzleUI: {fileID: 0}
+  bossUI: {fileID: 0}
+  blocks: []
+  isOverlaped: 0
+  startBlock: 0
+  curBlock: 0
+  endBlock: 0
+  blanketBlockNum: 
+  shopBlockNum: 
+  bossUIPos: {x: 0, y: 0, z: 0}
+  puzzleUIPos: {x: 0, y: 0, z: 0}
+  defaultSize: 0
+  size: 0
 --- !u!1 &701350682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5771,6 +5787,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
       propertyPath: m_AnchoredPosition.x
+      value: 145.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4403480961655505589, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4903863899094149215, guid: 4ef12b43a0c874674a4ed85efe03aa54, type: 3}

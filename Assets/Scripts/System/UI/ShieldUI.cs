@@ -10,6 +10,15 @@ public class ShieldUI : MonoBehaviour
 
     private void Update()
     {
-        ShieldImage.sprite = ShieldSprites[Player.instance.shield];
+        if(Player.instance.shield == 0)
+        {
+            ShieldImage.sprite = null;
+            ShieldImage.color = Color.clear;
+        }
+        else
+        {
+            ShieldImage.sprite = ShieldSprites[Player.instance.shield];
+            ShieldImage.color = Color.white;
+        }
     }
 }
