@@ -218,24 +218,24 @@ public class TutorialInteraction : Interaction
 
                     TutorialUIforAnim("isAttack", true, TutorialUIListOrder.BasicSkill);
                 }
-                else if (curIdx == 2)
+                else if (curIdx == 3)
                 {
                     TutorialUIforAnim("isDash", true, TutorialUIListOrder.BasicSkill);
                     onTutorials = CheckDash;
                 }
-                else if (curIdx == 3)
+                else if (curIdx == 4)
                 {
                     monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>().ChaseState(true);
 
                     onTutorials = CheckKill;
                 }
-                else if (curIdx == 4)
+                else if (curIdx == 6)
                 {
                     generateBullet = true;
                 }
                 break;
             case 2: // 재장전
-                if (curIdx == 0) {
+                if (curIdx == 2) {
                     TutorialUIforAnim("isReload", true, TutorialUIListOrder.Reload);
                     onTutorials = CheckReload;
                 }
@@ -255,7 +255,7 @@ public class TutorialInteraction : Interaction
                 if(curIdx == 6)
                 {
                     jokbo = Instantiate(jokbo,
-                        Player.instance.transform.position + Vector3.right,
+                        curScarescrow.transform.position + Vector3.right,
                         Quaternion.identity, transform);
                     onTutorials = CheckGetJokbo;
                 }

@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Rendering.LookDev;
 
 public enum MapType
 {
@@ -29,7 +27,6 @@ public class MapIndicator : MonoBehaviour
     public List<BlockInfo> blocks;
 
     bool[] isVisited;
-    bool isFirst = true;
     public bool isOverlaped = false;
 
     [Header("Blocks Information")]

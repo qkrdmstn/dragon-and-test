@@ -4,7 +4,6 @@ using UnityEngine;
 
 using Spine;
 using Spine.Unity;
-using Spine.Unity.AttachmentTools;
 
 public enum Direction
 {
