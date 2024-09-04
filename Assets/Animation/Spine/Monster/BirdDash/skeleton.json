@@ -1,0 +1,513 @@
+{
+"skeleton": {
+	"hash": "01AD2w5O6c0",
+	"spine": "4.2.36",
+	"x": -75,
+	"y": -35,
+	"width": 150,
+	"height": 150,
+	"images": "../../02_Sprite/01_dash/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "00_body", "parent": "root", "y": 40 },
+	{ "name": "01_effect_up", "parent": "root", "y": 40, "scaleX": 0.94 }
+],
+"slots": [
+	{ "name": "00_body", "bone": "00_body", "attachment": "03_death" },
+	{ "name": "00_effect", "bone": "01_effect_up", "attachment": "01_attack" }
+],
+"skins": [
+	{
+		"name": "back",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_back/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 5 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_back/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_back/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	},
+	{
+		"name": "backL",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_backL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 5 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_backL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_backL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	},
+	{
+		"name": "backR",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_backR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 5 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_backR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_backR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	},
+	{
+		"name": "front",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_front/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 4 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_front/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"02_spawn": {
+					"name": "02_spawn/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 29, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_front/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	},
+	{
+		"name": "frontL",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_frontL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 5 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_frontL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_frontL/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	},
+	{
+		"name": "frontR",
+		"attachments": {
+			"00_body": {
+				"00_run": {
+					"name": "00_run/00_frontR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 12, "start": 0, "digits": 5 }
+				},
+				"01_charge": {
+					"name": "01_charge/00_frontR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				},
+				"03_death": {
+					"name": "03_death/00_frontR/body_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 5 }
+				}
+			},
+			"00_effect": {
+				"01_attack": {
+					"name": "01_charge/00_effect/effect_",
+					"width": 150,
+					"height": 150,
+					"sequence": { "count": 20, "start": 0, "digits": 4 }
+				}
+			}
+		}
+	}
+],
+"animations": {
+	"00_run": {
+		"slots": {
+			"00_body": {
+				"attachment": [
+					{ "name": "00_run" }
+				]
+			}
+		},
+		"attachments": {
+			"back": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 },
+							{ "time": 0.3667, "mode": "loop", "index": 11 }
+						]
+					}
+				}
+			},
+			"backL": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 },
+							{ "time": 0.3667, "mode": "loop", "index": 11 }
+						]
+					}
+				}
+			},
+			"backR": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"front": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontL": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontR": {
+				"00_body": {
+					"00_run": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			}
+		}
+	},
+	"01_attack": {
+		"slots": {
+			"00_body": {
+				"attachment": [
+					{ "name": "01_charge" }
+				]
+			}
+		},
+		"bones": {
+			"00_body": {
+				"shear": [
+					{ "time": 0.7 }
+				]
+			},
+			"01_effect_up": {
+				"translate": [
+					{ "x": -0.59, "y": 0.88 }
+				]
+			}
+		},
+		"attachments": {
+			"back": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"backL": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"backR": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"front": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontL": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontR": {
+				"00_body": {
+					"01_charge": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				},
+				"00_effect": {
+					"01_attack": {
+						"sequence": [
+							{ "mode": "loop", "delay": 0.0333 }
+						]
+					}
+				}
+			}
+		}
+	},
+	"02_spawn": {
+		"slots": {
+			"00_body": {
+				"attachment": [
+					{ "name": "02_spawn" },
+					{ "time": 0.9667 }
+				]
+			}
+		},
+		"attachments": {
+			"front": {
+				"00_body": {
+					"02_spawn": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			}
+		}
+	},
+	"03_death": {
+		"slots": {
+			"00_body": {
+				"attachment": [
+					{ "time": 0.6333 }
+				]
+			},
+			"00_effect": {
+				"rgb": [
+					{ "time": 0.2333, "color": "66372f" },
+					{ "time": 0.4667, "color": "ffffff" }
+				],
+				"alpha": [
+					{ "time": 0.7, "value": 1 }
+				],
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"attachments": {
+			"back": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"backL": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"backR": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"front": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontL": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			},
+			"frontR": {
+				"00_body": {
+					"03_death": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.0333 }
+						]
+					}
+				}
+			}
+		}
+	}
+}
+}
