@@ -28,6 +28,7 @@ public class TutorialInteraction : Interaction
 {
     [SerializeField] List<GameObject> scareScrows;
     [SerializeField] List<BoxCollider2D> boundColliders;
+    [SerializeField] List<Cinemachine.CinemachineTriggerAction> triggerActions;
 
     public enum TutorialMonsters
     {
@@ -289,7 +290,7 @@ public class TutorialInteraction : Interaction
                     Player.instance.isCombatZone = false;
                     onTutorials = CheckSkillinBlanket;
                 }
-                else if (curIdx == 11)
+                else if (curIdx == 12)
                 {
                     isNPCImg = false;
                     isBlanket = true;
@@ -310,7 +311,6 @@ public class TutorialInteraction : Interaction
 
     IEnumerator StartDialog()
     {
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[3].SetActive(false);
         yield return new WaitUntil(()=> UIManager.instance.isEndFade);
 
         if (!isInteraction)
@@ -377,7 +377,7 @@ public class TutorialInteraction : Interaction
     void StartCurStage(int sequence)
     {
         curSequence = sequence;
-
+        triggerActions[curSequence - 1].enabled = false;
         boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
         canSpeak = true;
     }
@@ -385,6 +385,7 @@ public class TutorialInteraction : Interaction
     void ClearCurStage()
     {
         checkSequenceDone[curSequence] = true;
+        triggerActions[curSequence].enabled = true;
         curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
 
         if (curSequence > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능

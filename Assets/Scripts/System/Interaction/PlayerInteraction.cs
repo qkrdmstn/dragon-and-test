@@ -29,10 +29,10 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
-        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone)
+        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone || shopInteraction.isDone)
         {
             Player.instance.ChangePlayerInteractionState(false);
-            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = shopInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
