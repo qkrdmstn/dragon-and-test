@@ -90,11 +90,11 @@ public class PlayerInteraction : MonoBehaviour
             }
             interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
 
-            if (interaction.type == InteractionData.InteractionType.Blanket)
+            if (interaction?.type == InteractionData.InteractionType.Blanket)
             {
                 if(!IsClearBlanket(interaction)) return;
             }
-            else if(interaction.type == InteractionData.InteractionType.Tutorial && interaction.eventName == "blanket")
+            else if(interaction?.type == InteractionData.InteractionType.Tutorial && interaction.eventName == "blanket")
             {
                 if (!IsClearBlanket(interaction)) return;
             }
