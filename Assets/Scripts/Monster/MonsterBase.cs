@@ -266,7 +266,7 @@ public class MonsterBase : MonoBehaviour
     public virtual void HwatuObjectDrop()
     {
         float randomVal = Random.Range(0.0f, 1.0f);
-        if (randomVal <= 0.1f)
+        if (randomVal <= 0.2f)
         {
             GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
             int index = Random.Range(0, SkillManager.instance.hwatuData.Length);
