@@ -5,7 +5,7 @@ using System;
 
 public enum SoundType
 {
-    Player, Monster, UI
+    Player, Monster, UI, Puzzle
 }
 public enum PlayerSfx
 {
@@ -24,6 +24,11 @@ public enum UISfx
     Snap
 }
 
+public enum PuzzleSfx
+{
+    LeverR, LeverL, Clear, Choose, Select, FailDamage
+}
+
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance = null;
@@ -36,6 +41,7 @@ public class SoundManager : MonoBehaviour
     public class ClipType
     {
         public SoundType myType;
+        public float sfxVolume;
         public AudioClip[] effectClips;
     }
 
@@ -44,7 +50,6 @@ public class SoundManager : MonoBehaviour
 
     [Header("----- AudioState")]
     public float _bgmVolume;
-    public float _effectVolume;
     public float fadeDuration;
     public float fadeTimer;
 
@@ -94,7 +99,7 @@ public class SoundManager : MonoBehaviour
             {
                 effectSources[i][j] = effectSlots[i].AddComponent<AudioSource>();
                 effectSources[i][j].playOnAwake = false;
-                effectSources[i][j].volume = _effectVolume;
+                effectSources[i][j].volume = effects[i].sfxVolume;
             }
         }
 
@@ -103,7 +108,7 @@ public class SoundManager : MonoBehaviour
         {
             walkSources[i] = transform.GetChild(2).gameObject.AddComponent<AudioSource>();
             walkSources[i].playOnAwake = false;
-            walkSources[i].volume = _effectVolume;
+            walkSources[i].volume = effects[(int)SoundType.Player].sfxVolume;
             walkSources[i].clip = effects[(int)SoundType.Player].effectClips[(int)PlayerSfx.Walk];
         }
     }

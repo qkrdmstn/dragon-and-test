@@ -71,7 +71,7 @@ public class StoneTotem : MonoBehaviour
     IEnumerator HwatuChangeCoroutine()
     {
         isChanging = true;
-
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Choose);
         cardImg.sprite = blankImg;
         yield return new WaitForSeconds(0.5f);
 

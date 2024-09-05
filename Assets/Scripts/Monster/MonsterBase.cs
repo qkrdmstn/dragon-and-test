@@ -10,6 +10,7 @@ public class MonsterBase : MonoBehaviour
     public int HP;
     public int damage;
     public float distanceToPlayer;
+    public float deadSec = 0.6f;    // range : 0.0f ~ 0.7f
     [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
     #endregion
 
@@ -53,7 +54,11 @@ public class MonsterBase : MonoBehaviour
     public bool inEffect = false;
     public bool isDead = false;
     public bool isChase;
-    public bool isKnockedBack; // 넉백 상태 여부를 나타내는 변수
+    public bool isKnockedBack;      // 넉백 상태 여부를 나타내는 변수
+
+    // 애니메이션 작업이 완료된 몬스터에게만 적용되는 변수
+    public bool isSpawned = false;  
+    public bool isFirst = true;
 
     public virtual void Awake()
     {
@@ -65,9 +70,9 @@ public class MonsterBase : MonoBehaviour
         dropItems = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
         money = Resources.Load<GameObject>("Prefabs/Item/Money");
 
-        if (Player.instance.isTutorial) return;
-        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
-            eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
+        //if (Player.instance.isTutorial) return;
+        //if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
+        //    eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
     }
 
     public virtual void Start()
@@ -87,7 +92,10 @@ public class MonsterBase : MonoBehaviour
         if (Player.instance.isTutorial) return;
 
         if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
+        {
+            eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
             spawn = eventManager.GetComponent<Spawner>();
+        }
     }
 
     public virtual void Update()
@@ -196,6 +204,44 @@ public class MonsterBase : MonoBehaviour
                 ItemDrop();
             }
         }
+    }
+
+    protected virtual IEnumerator AnimSpawn()
+    {
+        SpeedToZero();
+        monsterAnimController.SetAnim();
+        yield return new WaitForSeconds(1f);
+
+        isSpawned = true;
+        SpeedReturn();
+    }
+
+    protected virtual IEnumerator AnimDead()
+    {
+        monsterAnimController.SetAnim(MonsterAnimState.Death, CheckDir());
+        float sec = Mathf.Clamp(deadSec, 0f, 0.7f);
+        yield return new WaitForSeconds(sec);
+
+        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
+        {
+            spawn.DeathCount();
+            ItemDrop();
+        }
+        yield return new WaitForSeconds(0.7f - sec);
+
+        Destroy(gameObject);
+    }
+
+    public virtual void SpeedToZero()
+    {
+        agent.speed = 0;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = 0;
+    }
+
+    public virtual void SpeedReturn()
+    {
+        agent.speed = moveSpeed;
     }
 
     //아이템 드랍

@@ -110,16 +110,4 @@ public class MonsterMage : MonsterBase
         attackWarning.SetActive(false);
         inAttack = false;
     }
-
-    public void SpeedToZero()
-    {
-        agent.speed = 0;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0.0f;
-    }
-
-    public void SpeedReturn()
-    {
-        agent.speed = moveSpeed;
-    }
 }

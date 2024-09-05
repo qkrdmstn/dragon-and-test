@@ -149,7 +149,8 @@ public class MapIndicator : MonoBehaviour
         }
         for (int i=0; i<shopBlockNum.Length; i++)
         {
-            Instantiate(shopUI, mapRects[shopBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[shopBlockNum[i]].mapRect.transform);
+            GameObject shopObj= Instantiate(shopUI, mapRects[shopBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[shopBlockNum[i]].mapRect.transform);
+            shopObj.SetActive(false);
         }
         playerRect = Instantiate(playerUI, mapRects[startBlock].mapRect.transform.position, Quaternion.identity, mapRects[startBlock].mapRect.transform).GetComponent<RectTransform>();
         mapRects[startBlock].mapRect.GetComponentInChildren<Animator>().SetBool("isOn", false);
@@ -225,6 +226,22 @@ public class MapIndicator : MonoBehaviour
 
     void SetInActiveBlockUI(int blockNum, bool state)
     {
+        foreach (int shopNum in shopBlockNum)
+        {   if (blockNum == shopNum)
+            {
+                if (isVisited[blockNum])
+                {   // 상점을 방문한 뒤에만 UI 활성화
+                    mapRects[blockNum].mapRect.GetChild(1).gameObject.SetActive(state);
+                }
+                else
+                {   // 미방문이었다면 BG만 활성화
+                    mapRects[blockNum].mapRect.GetChild(0).gameObject.SetActive(state);
+                }
+                return;
+            }
+        }
+
+        // 상점이 아닌 경우,
         for (int j = 0; j < mapRects[blockNum].mapRect.childCount; j++)
         {
             mapRects[blockNum].mapRect.GetChild(j).gameObject.SetActive(state);

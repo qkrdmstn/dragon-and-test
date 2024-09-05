@@ -31,11 +31,27 @@ public class PuzzleInteraction : Interaction
     IEnumerator ClearCheck()
     {
         anim.SetBool("isOn", true);
-        yield return new WaitForSeconds(1); 
+        yield return new WaitForSeconds(0.5f);
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.LeverR);
+        yield return new WaitForSeconds(0.75f);
 
         if (isClear[(int)StoneTotem.TotemType.Main] & isClear[(int)StoneTotem.TotemType.Sub])
+        {
+            Debug.Log("Clear!!");
+            yield return new WaitForSeconds(1);
+            
             Puzzle1Clear();
-        else Fail();
+        }
+        else
+        {
+            FailAttack();
+            Debug.Log("fail...");
+
+            yield return new WaitForSeconds(0.5f);
+            anim.SetBool("isOn", false);
+            yield return new WaitForSeconds(0.5f);
+            SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.LeverL);
+        }
 
         isDone = true;
     }
@@ -43,19 +59,13 @@ public class PuzzleInteraction : Interaction
     void Puzzle1Clear()
     {
         portal.SetActive(true);
-        Debug.Log("Clear!!");
-    }
-
-    void Fail()
-    {
-        anim.SetBool("isOn", false);
-        FailAttack();
-        Debug.Log("fail...");
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Clear);
     }
 
     void FailAttack()
     {
         Player.instance.OnDamamged(1);
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.FailDamage);
         // 레이저라던가 ..시각적 연출...
     }
 

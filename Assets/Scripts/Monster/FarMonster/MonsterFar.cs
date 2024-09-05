@@ -87,16 +87,4 @@ public class MonsterFar : MonsterBase
         loadedBullet = magazineSize;
         isReloading = false;
     }
-
-    public virtual void SpeedToZero()
-    {
-        agent.speed = 0;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0;
-    }
-
-    public virtual void SpeedReturn()
-    {
-        agent.speed = moveSpeed;
-    }
 }

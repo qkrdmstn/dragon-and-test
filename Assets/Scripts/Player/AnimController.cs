@@ -80,6 +80,11 @@ public class AnimController : MonoBehaviour
     {
 		skeletonAnimation.skeleton.SetColor(color);
 	}
+
+    public void SetAnimSpeed(float speed)
+    {   
+        skeletonAnimation.timeScale = speed;
+    }
 }
 
 

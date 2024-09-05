@@ -11,6 +11,6 @@ public class MoneyUI : MonoBehaviour
 
     private void Update()
     {
-        txt.text = Player.instance?.money.ToString();
+        txt.text = "X " + Player.instance?.money;
     }
 }

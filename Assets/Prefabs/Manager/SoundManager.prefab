@@ -96,6 +96,7 @@ Transform:
   - {fileID: 462036005582657143}
   - {fileID: 3583909176370244200}
   - {fileID: 797422781645413662}
+  - {fileID: 7878998537519074438}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -134,6 +135,14 @@ MonoBehaviour:
   - myType: 2
     effectClips:
     - {fileID: 8300000, guid: 9b290f2680294434f94aae07a4a49eab, type: 3}
+  - myType: 3
+    effectClips:
+    - {fileID: 8300000, guid: fb332b3d47675f548b4cb1cabcfdcae7, type: 3}
+    - {fileID: 8300000, guid: a30eb14a252735041a6c58d5661d57f9, type: 3}
+    - {fileID: 8300000, guid: 911c6eee1ffbacf4e9e0ec224df8ecd1, type: 3}
+    - {fileID: 8300000, guid: 970d6c4d9ed1af042be15d1a17a8d783, type: 3}
+    - {fileID: 8300000, guid: 2f51b5a88234f1548a24bc9e486d10ca, type: 3}
+    - {fileID: 8300000, guid: 59bac8091507a704eb0b3ea15a77211f, type: 3}
   _bgmVolume: 0.2
   _effectVolume: 0.15
   fadeDuration: 1.5
@@ -142,6 +151,7 @@ MonoBehaviour:
   - {fileID: 462036005582657145}
   - {fileID: 4950994714391672499}
   - {fileID: 4742957363217854997}
+  - {fileID: 4837166159662747332}
   channels: 25
   isFadeOut: 0
 --- !u!1 &4742957363217854997
@@ -174,6 +184,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 462036006682061991}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4837166159662747332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7878998537519074438}
+  m_Layer: 0
+  m_Name: PuzzleEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7878998537519074438
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837166159662747332}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 462036006682061991}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4950994714391672499
 GameObject:

@@ -91,7 +91,6 @@ public class PlayerAnimController : AnimController
 					break;
 			}
 		}
-
 		Attachment originAttachment = slot.Attachment;
 		slot.Attachment = originAttachment?.GetRemappedClone(region, true, true, scale);
 	}

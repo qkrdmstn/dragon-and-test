@@ -36,6 +36,7 @@ public class MonsterAttackStateNear : MonsterState
         {
             if (monster.distanceToPlayer > monster.attackRange)
                 stateMachine.ChangeState(monster.chaseState);
+
             else if(!monster.isKnockedBack)
             {
                 monster.tempcool = monster.cooldown;

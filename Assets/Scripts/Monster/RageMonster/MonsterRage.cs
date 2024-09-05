@@ -96,18 +96,6 @@ public class MonsterRage : MonsterBase
         
     }
 
-    public void SpeedToZero()
-    {
-        agent.speed = 0;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0;
-    }
-
-    public void SpeedReturn()
-    {
-        agent.speed = moveSpeed;
-    }
-
     public void SpeedBoost()
     {
         agent.speed = moveSpeed * 3;
