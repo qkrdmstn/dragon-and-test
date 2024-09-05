@@ -45,11 +45,19 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     public void UpdateSlot(SeotdaHwatuCombination _data)
     {
-        data = _data;
-        skillImage.color = Color.white;
 
         if (data != SeotdaHwatuCombination.blank)
+        {
+            data = _data;
+            skillImage.color = Color.white;
             skillImage.sprite = SkillManager.instance.skillSpriteDictionary[_data];
+        }
+        else
+        {
+            data = SeotdaHwatuCombination.blank;
+            skillImage.color = Color.clear;
+            skillImage.sprite = null;
+        }
     }
 
     public void ClearSlot()
