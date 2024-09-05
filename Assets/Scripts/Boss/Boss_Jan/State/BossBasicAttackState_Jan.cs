@@ -80,7 +80,7 @@ public class BossBasicAttackState_Jan : BossState_Jan
             }
         }
 
-        if(boss.reloadCnt % 3 == 0)
+        if(boss.reloadCnt % 2 == 0)
         {
             float randomVal = Random.Range(0.0f, 1.0f);
             if (randomVal <= boss.pattern1Prob)

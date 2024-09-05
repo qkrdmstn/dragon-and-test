@@ -43,8 +43,11 @@ public class GunManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
+    }
 
-        if(ScenesManager.instance.GetSceneEnum() == SceneInfo.Start)
+    private void Start()
+    {
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start)
             Initialize();
     }
 
