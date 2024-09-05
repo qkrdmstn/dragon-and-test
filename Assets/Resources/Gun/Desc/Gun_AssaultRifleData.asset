@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873cf2e1d1c4fb74c8e54b9c67135018, type: 3}
+  m_Name: Gun_AssaultRifleData
+  m_EditorClassIdentifier: 
+  damage: 1
+  shootDelay: 0.15
+  reloadTime: 1
+  maxBullet: 300
+  magazineSize: 30
+  loadedBullet: 30
+  maxRecoilDegree: 16
+  recoilIncrease: 0.1
+  bulletSpeed: 50
+  range: 120
+  knockbackForce: 1
+  isAutomatic: 1
+  gunItemData: {fileID: 11400000, guid: 14bad825565504349992545e1a6db2bf, type: 2}
+  gunPrefab: {fileID: 2618088524873001669, guid: 55b5aaf147238c842b1a54e4ab7ac499, type: 3}
+  bulletPrefab: {fileID: 1331701923673328244, guid: a30701ba901da9d46b23ea081ca8b3cf, type: 3}

@@ -47,14 +47,16 @@ public class GunManager : MonoBehaviour
 
     private void Start()
     {
-        //if (SceneManager.GetActiveScene().name != "Start")
-        //    Initialize(); ----> ScenesManager와 동시 호출 불필요로 인한 주석처리
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start)
+            Initialize();
     }
 
     private void Update()
     {
         if(SceneManager.GetActiveScene().name != "Start")
         {
+            if(player == null) player = Player.instance;
+
             if (player.isCombatZone && !player.isInteraction)
             {
                 swapTimer -= Time.deltaTime;
@@ -64,17 +66,12 @@ public class GunManager : MonoBehaviour
                 if (scroll < 0 && swapTimer < 0.0f)
                     SwapGun(false);
             }
-
-            if (Input.GetKeyDown(KeyCode.O))
-                AddGun(tempPrefab);
         }
     }
 
     public void Initialize()
     {
-        player = GameObject.FindObjectOfType<Player>();
-        gunParent = player.gunParent.transform;
-        
+        gunParent = Player.instance.transform.GetChild(1);
         LoadGun();
         InitActiveGun();
     }
@@ -85,24 +82,9 @@ public class GunManager : MonoBehaviour
         for (int i = 0; i < childCnt; i++)
         {
             GameObject gunObj = gunParent.GetChild(i).gameObject;
-            GunData _data;
-            if (i >= gunDataList.Count)
-            {
-                _data = new GunData(gunObj.GetComponent<Gun>().initData);
-                AddGunDataList(_data);
-            }
-            else
-                _data = gunDataList[i];
-
+            GunData _data = new GunData(gunObj.GetComponent<Gun>().initData);
+            AddGunDataList(_data);
             LoadGunData(gunObj, _data);
-        }
-
-        for (int i = childCnt; i < gunDataList.Count; i++)
-        {
-            GunData _oldData = gunDataList[i];
-            GameObject _newGunObj = Instantiate(gunDataList[i].gunPrefab, gunParent.position, gunParent.rotation, gunParent);
-
-            LoadGunData(_newGunObj, _oldData);
         }
         gunNum = gunDataList.Count;
     }
@@ -110,7 +92,16 @@ public class GunManager : MonoBehaviour
     public void LoadGunData(GameObject _gun, GunData _oldData)
     {
         _gun.GetComponent<Gun>().InitGunData(_oldData);
-        gunDictionary.Add(_oldData, _gun);
+
+        try
+        {
+            gunDictionary.Add(_oldData, _gun);
+            Debug.Log("Data Add Success!");
+        }
+        catch (ArgumentException ex)
+        {
+            Debug.Log(ex+" : 이미 처리된 데이터입니다.");
+        }
     }
 
     private void InitActiveGun() //Initialize Default Gun
@@ -130,24 +121,6 @@ public class GunManager : MonoBehaviour
         GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx].gunItemData);
         Gun _gun = gunParent.GetChild(currentIdx).GetComponent<Gun>();
         UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
-    }
-
-    public void SaveGunData() 
-    {
-        UpdateGunData();
-        gunDictionary.Clear();
-    }
-
-    private void UpdateGunData()
-    {
-        for (int i = 0; i < gunDataList.Count; i++)
-        {
-            GameObject _gunObj = gunDictionary[gunDataList[i]];
-            Debug.Log(_gunObj);
-            Gun _gun = _gunObj.GetComponent<Gun>();
-            Debug.Log(_gun);
-            gunDataList[i].gunDataUpdate(_gun);
-        }
     }
 
     void SwapGun(bool up)

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -10,29 +10,33 @@ public class SkillManager : MonoBehaviour
     public static SkillManager instance = null;
     
     [Header("Hwatu Data")]
-    public HwatuData[] hwatuData;
+    public HwatuData[] hwatuData; //전체 카드 데이터
+    public GameObject hwatuItemObj;
+    public List<HwatuData> materialHwatuDataList; //조합 카드 데이터
+    public int materialCardCnt = 0;
+    public int materialCardMaxNum = 10;
 
     [Header("DB")]
-    [SerializeField] SkillBalanceTable skillTable;
-    [SerializeField] SynergyInfo synergyTable;
+    SkillDB[] datas;
+    public Dictionary<SeotdaHwatuCombination, SkillDB> skillDBDictionary = new Dictionary<SeotdaHwatuCombination, SkillDB>();
+    public Dictionary<SeotdaHwatuCombination, Sprite> skillSpriteDictionary = new Dictionary<SeotdaHwatuCombination, Sprite>();
 
     [Header("Skill Data")]
-    public int skillCnt;
-    public HwatuData[] hwatuCardSlotData;
-    public SeotdaHwatuCombination curSynergy;
-    public SkillBalanceEntity[] skillData;
+    //Active Skill
+    public int activeSkillCnt;
+    public SeotdaHwatuCombination[] activeSkillData;
     public float[] timer;
 
-    [Header("Skill UI info")]
-    [SerializeField] private GameObject overwritingUI;
-    private CardOverwirteBtn[] overwriteBtns;
-    [SerializeField] private Transform skillSlotParent;
-    private SkillSlotUI[] skillSlot;
-    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
+    //Passive Skill
+    public Dictionary<SeotdaHwatuCombination, int> passiveSkillCnt = new Dictionary<SeotdaHwatuCombination, int>();
+    public List<SeotdaHwatuCombination> passiveSkillData;
 
-    [Header("Skill State info")]
-    public bool isSaving;
-    public bool saveSuccess;
+    [Header("Skill UI info")]
+    [SerializeField] private Transform activeSkillSlotParent;
+    public ActiveSkillSlotUI[] activeSkillSlot;
+    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
+    [SerializeField] private Transform passiveSkillSlotParent;
+    public PassiveSkillSlotUI[] passiveSkillSlot;
 
     private void Awake()
     {
@@ -46,80 +50,24 @@ public class SkillManager : MonoBehaviour
             Destroy(this.gameObject); //새로만든거 삭제
         }
 
-        //배틀 씬에서만 유지
-        if (ScenesManager.instance == null || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_A
-            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_B
-            || ScenesManager.instance.GetSceneNum() == (int)SceneInfo.Battle_1_C)
-        {
-            DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
-        }
+        DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Initialize
+    async void Start()
+    {   //Initialize
         InitializeSkillData();
-        InitializeUI();
-
+        InitializeUI(); 
+        await LoadSkillDB();
     }
 
-    #region Initialize Func
-    private void InitializeSkillData()
-    {
-        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
-        skillTable = Resources.Load<SkillBalanceTable>("SkillDB/SkillBalanceTable");
-        synergyTable = Resources.Load<SynergyInfo>("SynergyDB/SynergyInfo");
-
-        for (int i = 0; i < 20; i++)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                if (skillTable.SkillTableEntity[i].cardName == hwatuData[j].hwatu.type.ToString())
-                {
-                    hwatuData[j].info = skillTable.SkillTableEntity[i].info;
-                    break;
-                }
-            }
-        }
-
-        timer = new float[2];
-
-        hwatuCardSlotData = new HwatuData[2];
-        skillData = new SkillBalanceEntity[2];
-        skillCnt = 0;
-    }
-
-    private void InitializeUI()
-    {
-        GameObject blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
-        overwritingUI = blanketUI.transform.GetChild(1).gameObject;
-        overwriteBtns = overwritingUI.GetComponentsInChildren<CardOverwirteBtn>();
-
-        curSynergy = SeotdaHwatuCombination.blank;
-
-        skillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4].transform;
-        skillSlot = skillSlotParent.GetComponentsInChildren<SkillSlotUI>();
-        Transform cooltimeUIParent = skillSlotParent.GetChild(1);
-        coolTimeImg = new SkillCoolTimeImg[2];
-        for (int i = 0; i < 2; i++)
-        {
-            skillSlot[i].ClearSlot();
-            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
-            coolTimeImg[i].gameObject.SetActive(false);
-        }
-    }
-    #endregion
-
-    // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Tab) && !GameManager.instance.player.isInteraction) //Skill Slot Swap
+        if (Input.GetKeyDown(KeyCode.Tab) && !Player.instance.isInteraction) //Skill Slot Swap
         {
             SkillSwap();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.Q) && !Player.instance.isInteraction)
         {
             if (timer[0] > 0.0f)
                 Debug.Log("Q Skill is cooldown time");
@@ -127,7 +75,7 @@ public class SkillManager : MonoBehaviour
                 Skill(0);
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && !GameManager.instance.player.isInteraction)
+        if (Input.GetKeyDown(KeyCode.E) && !Player.instance.isInteraction)
         {
             if (timer[1] > 0.0f)
                 Debug.Log("E Skill is cooldown time");
@@ -136,35 +84,182 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    #region Initialize Func
+    private void InitializeSkillData()
+    {
+        //화투 데이터 로드
+        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
+
+        //스킬 이미지 로드, Dictionary 구성
+        Sprite [] skillImages = Resources.LoadAll<Sprite>("SkillSprite");
+        for(int i = 0; i < skillImages.Length; i++)
+        {
+            for (int j = 0; j < 33; j++)
+            {
+                if(((SeotdaHwatuCombination)j).ToString() == skillImages[i].name)
+                {
+                    skillSpriteDictionary.Add((SeotdaHwatuCombination)j, skillImages[i]);
+                    break;
+                }
+            }
+        }
+
+        materialHwatuDataList = new List<HwatuData>();
+        passiveSkillData = new List<SeotdaHwatuCombination>();
+        activeSkillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
+        activeSkillCnt = 0;
+        timer = new float[2];
+    }
+
+    private async Task LoadSkillDB()
+    {
+        //스킬 DataBase 로드
+        datas = await DataManager.instance.GetValues<SkillDB>(SheetType.SkillDB, "A1:L33");
+        for (int i = 0; i < datas.Length; i++)
+        {
+            skillDBDictionary.Add(datas[i].TransStringToEnum(), datas[i]);
+        }
+        ScenesManager.instance.isLoadedDB++;
+    }
+
+    private void InitializeUI()
+    {
+        activeSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
+        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>();
+
+        passiveSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5].GetComponent<BlanketUI>().passiveSkillSlotParent;
+        passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>();
+
+        Transform cooltimeUIParent = activeSkillSlotParent.GetChild(1);
+        coolTimeImg = new SkillCoolTimeImg[2];
+        for (int i = 0; i < 2; i++)
+        {
+            activeSkillSlot[i].ClearSlot();
+            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
+            coolTimeImg[i].gameObject.SetActive(false);
+        }
+    }
+    #endregion
+
+    public void AddMaterialCardData(HwatuData _data)
+    {
+        if(materialCardCnt >= materialCardMaxNum)
+        {
+            Debug.Log("The card data is full");
+            return;
+        }    
+
+        materialHwatuDataList.Add(_data);
+        materialCardCnt = materialHwatuDataList.Count;
+        materialHwatuDataList.Sort();
+    }
+
+    public void DeleteMaterialCardData(HwatuData _data)
+    {
+        materialHwatuDataList.Remove(_data);
+        materialCardCnt = materialHwatuDataList.Count;
+        materialHwatuDataList.Sort();
+    }
+
+    public void DeleteAllCardData()
+    {
+        materialHwatuDataList.Clear();
+        materialCardCnt = materialHwatuDataList.Count;
+    }
+
+    public void AddSkill(SeotdaHwatuCombination skill)
+    {
+        int skillNum = (int)skill;
+        if(skill == SeotdaHwatuCombination.KK0)
+        {
+            int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
+            Player.instance.OnDamamged(damage);
+        }
+        //Add Passive Skill
+        else if (skillNum >= 13 && skillNum <= 18)
+        {
+            //스킬 보유 X
+            if (passiveSkillData.FindIndex(x => x == skill) == -1)
+            {
+                passiveSkillData.Add(skill);
+                passiveSkillCnt.Add(skill, 1);
+            }
+            else
+            {
+                passiveSkillCnt[skill]++;
+                skillDBDictionary[skill].probability += skillDBDictionary[skill].growCoefficient;
+            }
+            UpdatePassiveSkillSlot();
+        }
+        else //Add Active Skill
+        {
+            if (activeSkillData[0] == SeotdaHwatuCombination.blank)
+                activeSkillData[0] = skill;
+            else if (activeSkillData[1] == SeotdaHwatuCombination.blank)
+                activeSkillData[1] = skill;
+            activeSkillCnt++;
+
+            UpdateActiveSkillSlot();
+        }
+    }
+
+    public void DeleteSkill(SeotdaHwatuCombination skill)
+    {
+        for(int i=0; i<2; i++)
+        {
+            if (activeSkillData[i] == skill)
+            {
+                activeSkillData[i] = SeotdaHwatuCombination.blank;
+                activeSkillCnt--;
+                break;
+            }
+        }
+        UpdateActiveSkillSlot();
+    }
+
+    public void DeleteAllSkill()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            activeSkillData[i] = SeotdaHwatuCombination.blank;
+            activeSkillCnt--;
+        }
+        UpdateActiveSkillSlot();
+    }
+
     private void SkillSwap()
     {
         //Data Swap
-        HwatuData temp = hwatuCardSlotData[0];
-        hwatuCardSlotData[0] = hwatuCardSlotData[1];
-        hwatuCardSlotData[1] = temp;
-        UpdateSkillData();
+        SeotdaHwatuCombination temp = activeSkillData[0];
+        activeSkillData[0] = activeSkillData[1];
+        activeSkillData[1] = temp;
+        UpdateActiveSkillSlot();
 
         //CoolTime UI Swap
         float tempTimer = timer[0];
         timer[0] = timer[1];
         timer[1] = tempTimer;
+
+        StopAllCoroutines();
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
-            if (skillData[i] == null)
+            if (activeSkillData[i] == SeotdaHwatuCombination.blank)
                 continue;
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
-            StartCoroutine(CoolTimeFunc(skillData[i].coolTime, i, false));
+            
+            StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
         }
     }
 
     //Use Skill
     private void Skill(int i)
     {
-        PlayerSkill skill = GameManager.instance.player.GetComponent<PlayerSkill>();
-        SkillBalanceEntity data = skillData[i];
-        if (hwatuCardSlotData[i] == null)
+        PlayerSkill skill = Player.instance.GetComponent<PlayerSkill>();
+        if (activeSkillData[i] == SeotdaHwatuCombination.blank)
             return;
-        skill.UseSkill(hwatuCardSlotData[i].hwatu.type, data.damage, data.range, data.force, data.speed);
+
+        SkillDB data = GetSkillDB(activeSkillData[i]);
+        skill.UseSkill(data);
 
         //CoolTime UI setting
         timer[i] = data.coolTime;
@@ -172,116 +267,76 @@ public class SkillManager : MonoBehaviour
         StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
     }
 
-    //Skill Add on Slot
-    public void AddSkill(HwatuData data)
+    public void UpdateActiveSkillSlot()
     {
-        isSaving = true;
-        saveSuccess = false;
-        if (skillCnt < 2)
-        {
-            for(int i=0; i<2; i++)
-            {
-                if(hwatuCardSlotData[i] == null)
-                {
-                    hwatuCardSlotData[i] = data;
-                    break;
-                }
-            }
-            skillCnt++;
-            isSaving = false;
-            saveSuccess = true;
-        }
-        else
-        {
-            overwritingUI.SetActive(true);
-            for (int i = 0; i < 2; i++)
-            {
-                int index = i;
-                overwriteBtns[index].UpdateBtn(hwatuCardSlotData[index]);
-                overwriteBtns[index].button.onClick.RemoveAllListeners();
-                overwriteBtns[index].button.onClick.AddListener(() => OverwriteBtnEvent(index, data));
-            }
-        }
-        UpdateSkillData();
-
-         if (skillCnt == 2)
-        {
-            UpdateSynergy();
-        }
-
-    }
-
-    private void UpdateSynergy()
-    {
-        curSynergy = Hwatu.GetHwatuCombination(hwatuCardSlotData[0].hwatu, hwatuCardSlotData[1].hwatu);
-    }
-
-    public SynergyEntity GetCurSynergyEntity()
-    {
-        for (int i = 0; i < synergyTable.SynergyEntity.Count; i++)
-        {
-            if (curSynergy.ToString() == synergyTable.SynergyEntity[i].synergyCode)
-                return synergyTable.SynergyEntity[i];
-        }
-        return null;
-    }
-
-    public void OverwriteBtnEvent(int i, HwatuData data)
-    {
-        hwatuCardSlotData[i] = data;
-        timer[i] = 0.0f;
-        saveSuccess = true;
-        UpdateSynergy();
-        InactiveOverwritingUI();
-        UpdateSkillData();
-    }
-
-    public void InactiveOverwritingUI()
-    {
-        overwritingUI.SetActive(false);
-        isSaving = false;
-    }
-
-    private void UpdateSkillData()
-    {
-        for(int i=0; i < 2; i++)
-        {
-            for(int j=0; j<skillTable.SkillTableEntity.Count; j++)
-            {
-                string cardName = skillTable.SkillTableEntity[j].cardName;
-                SeotdaHwatuName type = (SeotdaHwatuName)Enum.Parse(typeof(SeotdaHwatuName), cardName);
-                if (hwatuCardSlotData[i] == null)
-                {
-                    skillData[i] = null;
-                    break;
-                }
-                else if (hwatuCardSlotData[i].hwatu.type == type)
-                {
-                    skillData[i] = skillTable.SkillTableEntity[j];
-                }
-            }
-        }
-        UpdateSkillSlot();
-    }
-
-    private void UpdateSkillSlot()
-    {
-        for(int i=0; i<2; i++)
-            skillSlot[i].ClearSlot();
         for (int i = 0; i < 2; i++)
-            skillSlot[i].UpdateSlot(hwatuCardSlotData[i]);
+            activeSkillSlot[i].ClearSlot();
+        for (int i = 0; i < 2; i++)
+            activeSkillSlot[i].UpdateSlot(activeSkillData[i]);
+    }
+
+    public void UpdatePassiveSkillSlot()
+    {
+        for(int i=0; i<passiveSkillSlot.Length; i++)
+            passiveSkillSlot[i].ClearSlot();
+        for (int i = 0; i < passiveSkillData.Count; i++)
+            passiveSkillSlot[i].UpdateSlot(passiveSkillData[i]);
     }
 
     IEnumerator CoolTimeFunc(float coolTime, int i, bool flag)
     {
-        if(flag)
+        if (flag)
             timer[i] = coolTime;
         while (timer[i] > 0.0f)
         {
             timer[i] -= Time.deltaTime;
             coolTimeImg[i].img.fillAmount = timer[i] / coolTime;
+            coolTimeImg[i].text.text = Math.Round(timer[i], 1).ToString();
             yield return new WaitForFixedUpdate();
         }
         coolTimeImg[i].gameObject.SetActive(false);
+    }
+
+    public void RollingAdvantage()
+    {
+        for(int i=0; i<2; i++)
+        {
+            timer[i] -= 0.5f;
+        }
+    }
+
+    public bool PassiveCheck(SeotdaHwatuCombination skillName)
+    {
+        for(int i=0; i< passiveSkillData.Count; i++)
+        {
+            if (passiveSkillData[i] == skillName)
+                return true;
+        }
+        return false;
+    }
+
+    public void ClearSkill()
+    {   // hwatu
+        DeleteAllCardData();
+        // active
+        DeleteAllSkill();
+        // passive
+        // todo
+    }
+
+    public SkillDB GetSkillDB(SeotdaHwatuCombination skillName)
+    {
+        SkillDB data = skillDBDictionary[skillName];
+        return data;
+    }
+
+    public string GetSkillInfo(SeotdaHwatuCombination skillName)
+    {
+        SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
+        float prob = skillData.probability;
+        string skillInfo = skillData.info;
+        skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+
+        return skillInfo;
     }
 }

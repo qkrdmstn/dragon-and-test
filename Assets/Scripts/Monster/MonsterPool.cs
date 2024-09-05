@@ -39,7 +39,7 @@ public class MonsterPool : MonoBehaviour
     // 생성
     private GameObject CreatePooledItem()
     {
-        GameObject poolGo = Instantiate(monsterBullet);
+        GameObject poolGo = Instantiate(monsterBullet, this.transform);
         poolGo.GetComponent<MonsterBullet>().pool = this.pool;
         return poolGo;
     }

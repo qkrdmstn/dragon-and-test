@@ -1,34 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-
-//public enum MonsterType1
-//{
-//    BirdWarrior,
-//    BirdTanker,
-//    BirdAcher,
-//    BirdCrossbowman,
-//    BirdBerserker
-//}
+using System.Threading.Tasks;
+using System.Linq;
 
 public class Spawner : MonoBehaviour
 {
     [Header("Spawn Table")]
-    [SerializeField] private string fileName;
     [SerializeField] private int stage;
-    List<Dictionary<string, object>> spawnTable;
+    public SheetType myType;
+
+    private delegate void ControlSpawnData();
+    ControlSpawnData controlSpawnData;
 
     [Header("DB")]
     [SerializeField] private GameObject[] monsterPrefabs;
     [SerializeField] private GameObject circle; //몬스터 생성 위치
     [SerializeField] private Dictionary<string, GameObject> monsterDictionary;
-    [SerializeField] private List<SpawnDB> spawnDB;
+    [SerializeField] private SpawnDB[] spawnDB;
 
     [Header("Block info")]
-    public BlockInfo[] blocks;
+    public List<BlockInfo> blocks;
     public int curBlockNum;
+    public Vector2[] mapHierarchy;
+    public MapIndicator mapIndicator;
+    //MapIndicator mapIndicator;
 
     [Header("Wave info")]
     [SerializeField] private int curWave;
@@ -42,41 +38,48 @@ public class Spawner : MonoBehaviour
     {
         InitializeMonsterDictionary();
         InitializeBlockInfo();
-        InitializeSpawnDB();
+
+        controlSpawnData = StartWave;
     }
 
-    public void Start()
+    public async void Start()
     {
-        UpdateCurBlockNumber(ComputeInitialBlockNumber());
+        await LoadSpawnTable(myType); // load -> data slpit -> wave start 
     }
 
     #region Initialize Func
     private void InitializeBlockInfo()
     {
-        blocks = FindObjectsOfType<BlockInfo>();
-        Array.Sort(blocks);
+        //mapIndicator = FindObjectOfType<MapIndicator>();
+        int layer = 1 << LayerMask.NameToLayer("MapSort");
+        for(int i=0; i<mapHierarchy.Length; i++)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(mapHierarchy[i], Vector2.right, 250f, layer);
+            foreach(RaycastHit2D hit in hits)
+            {
+                blocks.Add(hit.transform.GetComponentInParent<BlockInfo>());
+            }
+        }
+        blocks = blocks.Distinct().ToList();
+        //blocks = FindObjectsOfType<BlockInfo>();
+        //Array.Sort(blocks);
 
-        for (int i = 0; i < blocks.Length; i++)
+        for (int i = 0; i < blocks.Count; i++)
             blocks[i].InitializeBlockInfo(i);
     }
 
-    private void InitializeSpawnDB()
+    public async Task LoadSpawnTable(SheetType _type)
     {
-        //CSV parsing
-        spawnTable = CSVReader.Read("SpawnDB/" + fileName);
-        spawnDB = new List<SpawnDB>();
-        for (int i = 0; i < spawnTable.Count; i++)
-        {
-            int blockNum = int.Parse(spawnTable[i]["blockNumber"].ToString());
-            int wave = int.Parse(spawnTable[i]["wave"].ToString());
-            string monsterType = spawnTable[i]["monsterType"].ToString();
-            float posX = float.Parse(spawnTable[i]["gridPosX"].ToString());
-            float posY = float.Parse(spawnTable[i]["gridPosY"].ToString());
-            Vector2 spawnPosition = new Vector2(posX, posY);
+        spawnDB = await DataManager.instance.GetValues<SpawnDB>(_type,"A1:E");
+        controlSpawnData();
 
-            SpawnDB data = new SpawnDB(blockNum, wave, monsterType, spawnPosition);
-            spawnDB.Add(data);
-        }
+        ScenesManager.instance.isLoadedDB++;
+
+    }
+
+    void StartWave()
+    {
+        UpdateCurBlockNumber(ComputeInitialBlockNumber());
     }
 
     private void InitializeMonsterDictionary()
@@ -94,10 +97,10 @@ public class Spawner : MonoBehaviour
     private int ComputeInitialBlockNumber()
     {
         //플레이어와 가장 가까운 block이 시작 block
-        Vector3 playerPos = GameManager.instance.player.transform.position; //GameManager.instance.player 초기화는 Awake 이후
+        Vector3 playerPos = Player.instance.transform.position; //GameManager.instance.player 초기화는 Awake 이후
         int idx = 0;
         float minDist = Vector3.Magnitude(blocks[0].transform.position - playerPos);
-        for (int i = 1; i < blocks.Length; i++)
+        for (int i = 1; i < blocks.Count; i++)
         {
             float dist = Vector3.Magnitude(blocks[i].transform.position - playerPos);
             if (dist < minDist)
@@ -123,13 +126,16 @@ public class Spawner : MonoBehaviour
 
     private void newWave()
     {
+        if (blocks[curBlockNum].blockClear)
+            return;
+
         //Setting Wave Data
         numMonster = 0; //wave monster count
         int idx = 0;
         while (spawnDB[idx].blockNum != curBlockNum || spawnDB[idx].wave != curWave)
         {
             idx++;
-            if(idx >= spawnDB.Count) //끝까지 일치하는 정보를 못 찾은 경우
+            if(idx >= spawnDB.Length) //끝까지 일치하는 정보를 못 찾은 경우
             {
                 BlockClear();
                 return;
@@ -142,42 +148,45 @@ public class Spawner : MonoBehaviour
         {
             GameObject monster = monsterDictionary[spawnDB[idx].monsterType];
             //GridPos -> WorldPos
-            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].spawnGridPos);
+            Vector3 worldPos = blocks[curBlockNum].GridToWorldPosition(spawnDB[idx].TransIntToVector());
             monsters.Add(monster);
             positions.Add(worldPos);
             idx++;
             numMonster++;
 
-            if (idx >= spawnDB.Count) //끝까지 찾음
+            if (idx >= spawnDB.Length) //끝까지 찾음
                 break;
         }
-        StartCoroutine(SpawnMonster(monsters, positions));
+        //StartCoroutine(SpawnMonster(monsters, positions));
+        SpawnMonster(monsters, positions);
     }
 
-    IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
+    void SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
     {
-        //위치 미리보기
-        List<GameObject> displayPos = new List<GameObject>();
-        for(int i=0; i< positions.Count; i++)
-            displayPos.Add(Instantiate(circle, positions[i], Quaternion.identity));
-
-        //Spawn Delay
-        float spawnTimer = spawnDelay;
-        if (curWave == 0)
-            spawnTimer = 0.0f;
-        while (spawnTimer >= 0.0)
-        {
-            spawnTimer -= Time.deltaTime;
-            yield return null;
-        }
-
         //몬스터 생성
         for (int i = 0; i < positions.Count; i++)
         {
-            Destroy(displayPos[i]);
             Instantiate(monsters[i], positions[i], Quaternion.identity);
         }
     }
+
+    //IEnumerator SpawnMonster(List<GameObject> monsters, List<Vector3> positions)
+    //{
+    //    //위치 미리보기
+    //    List<GameObject> displayPos = new List<GameObject>();
+    //    for(int i=0; i< positions.Count; i++)
+    //        displayPos.Add(Instantiate(circle, positions[i], Quaternion.identity));
+
+    //    //Spawn Delay
+    //    yield return new WaitForSeconds(spawnDelay);
+
+    //    //몬스터 생성
+    //    for (int i = 0; i < positions.Count; i++)
+    //    {
+    //        Destroy(displayPos[i]);
+    //       Instantiate(monsters[i], positions[i], Quaternion.identity);
+    //    }
+    //}
 
     public void DeathCount()
     {
@@ -195,7 +204,9 @@ public class Spawner : MonoBehaviour
 
     private void BlockClear()
     {
-        curWave = 0;
         blocks[curBlockNum].blockClear = true;
+        mapIndicator.BlinkBlock(true);
+        curWave = 0;
+        //mapIndicator.BlockClear(curBlockNum);
     }
 }

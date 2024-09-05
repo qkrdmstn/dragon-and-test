@@ -19,24 +19,31 @@ public class MonsterAttackStateNear : MonsterState
     public override void Exit()
     {
         base.Exit();
+        if (!monster.isSpawned) return;
         monster.SpeedReturn();
     }
 
     public override void Update()
     {
+        if(monster.isDead) return;
+        else if (!monster.isSpawned) return;
+
         base.Update();
 
         //Attack
         monster.tempcool -= Time.deltaTime;
-        if (monster.tempcool<=0.0) 
+        if (monster.tempcool <= 0.00 && !monster.inAttack) 
         {
-            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.chaseState);
+            if (monster.distanceToPlayer > monster.attackRange)
+                stateMachine.ChangeState(monster.chaseState);
+
             else if(!monster.isKnockedBack)
             {
                 monster.tempcool = monster.cooldown;
+                if(!monster.isTanker)
+                    monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, monster.CheckDir());
                 monster.Attack();
             }
         }
-        
     }
 }

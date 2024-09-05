@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class MapControl : MonoBehaviour
@@ -10,21 +8,52 @@ public class MapControl : MonoBehaviour
     public Transform gotoPos;
     public PolygonCollider2D confineColl;
 
+    MapIndicator mapIndicator;
+    Collider2D coll;
     public static int curMapNum;
 
     private Spawner spawner;
     public bool flag;
 
-    private void Start()
+    #region FindPortal
+    enum Dir  {  Top, Bottom, Right, Left }
+    int layerMask;
+    Vector2Int[] dirs;
+    string myGoTo;
+    Vector2Int goToDir;
+    #endregion
+
+    private void Awake()
     {
+        coll = GetComponent<Collider2D>();
+
+        dirs = new Vector2Int[4];
+        dirs[0] = new Vector2Int(0, 1);
+        dirs[1] = new Vector2Int(0, -1);
+        dirs[2] = new Vector2Int(1, 0);
+        dirs[3] = new Vector2Int(-1, 0);
+
+        layerMask = 1 << LayerMask.NameToLayer("Portal");
+        myGoTo = gameObject.name.Substring(4);
+        goToDir = dirs[(int)Enum.Parse<Dir>(myGoTo)];
+
+        myMapType = transform.parent.parent.gameObject;
+
         spawner = FindObjectOfType<Spawner>();
+        mapIndicator = FindObjectOfType<MapIndicator>();
 
-        confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
+        FindGoToPos();
+    }
 
-        if (gameObject.name.Equals("GoToRight")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToLeft");
-        else if (gameObject.name.Equals("GoToLeft")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToRight");
-        else if (gameObject.name.Equals("GoToTop")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToBottom");
-        else if (gameObject.name.Equals("GoToBottom")) gotoPos = gotoMapType.transform.Find("SpawnZone").Find("GoToTop");
+    void FindGoToPos()
+    {
+        RaycastHit2D[] hit = new RaycastHit2D[1];
+        if(coll.Raycast(goToDir, hit, 10f, layerMask) > 0)
+        {
+            gotoPos = hit[0].transform;
+            gotoMapType = gotoPos.parent.parent.gameObject;
+            confineColl = gotoMapType.GetComponentInChildren<PolygonCollider2D>();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -37,11 +66,14 @@ public class MapControl : MonoBehaviour
             {
                 flag = true;
                 curMapNum = gotoMapType.GetComponent<BlockInfo>().blockNumber;
-                UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
-                Debug.Log(curMapNum);
 
-                GameManager.instance.player.SetIdleStatePlayer();
-                GameManager.instance.player.isStateChangeable = false;
+                UIManager.instance.SetFadeObjState(true);
+                UIManager.instance.fade.ManageFade(this, spawner, curMapNum);   // 맵 이동에 따른 전환 효과 실행
+
+                mapIndicator.MoveBlockPlayer(curMapNum);
+
+                Player.instance.SetIdleStatePlayer();
+                Player.instance.isStateChangeable = false;
             }
         }
     }
@@ -51,7 +83,6 @@ public class MapControl : MonoBehaviour
         int myMapNum = myMapType.GetComponent<BlockInfo>().blockNumber;
         if (collision.CompareTag("Player") && curMapNum == myMapNum)
         {
-
             curMapNum = -1;
             Debug.Log(curMapNum);
         }

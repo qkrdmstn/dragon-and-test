@@ -4,22 +4,27 @@ using UnityEngine;
 
 public class MapOutOfRange : MonoBehaviour
 {
-    [SerializeField] int _sceneInfo;
+    public bool isTrigger = false;
+    [SerializeField] int _goToScene;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !isTrigger)
         {
             if (gameObject.name.Contains("Battle"))
             {
-                //_sceneInfo = Random.Range(4, 6);
-                _sceneInfo = 4;
+                _goToScene = Random.Range(4, 7);
             }
-            UIManager.instance.fade.ManageFade(_sceneInfo);
+            else if(_goToScene == 3)
+            {
+                if (!transform.GetComponentInParent<BlockInfo>().blockClear) return;
+            }
+            isTrigger = true;
+            ScenesManager.instance.isLoading = true;
+            Player.instance.SetIdleStatePlayer();
+            Player.instance.isStateChangeable = false;
 
-            if (_sceneInfo < 5)
-                SoundManager.instance.ManageSound(_sceneInfo);
-            else StartCoroutine(SoundManager.instance.FadeOutSound());
+            UIManager.instance.StartFade(_goToScene);
         }
     }
 }

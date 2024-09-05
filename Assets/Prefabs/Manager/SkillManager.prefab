@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3943343154196557555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3943343154196557553}
+  - component: {fileID: 3943343154196557552}
+  m_Layer: 0
+  m_Name: SkillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3943343154196557553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943343154196557555}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.596111, y: -5.4299507, z: -0.120775305}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3943343154196557552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943343154196557555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e97b312a0f3d8be4f84f13b6ca1d1c59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hwatuData: []
+  hwatuItemObj: {fileID: 6790429676363227867, guid: 2c84d4837f896d349a9e66a40ae5646e, type: 3}
+  materialHwatuDataList: []
+  materialCardCnt: 0
+  materialCardMaxNum: 10
+  activeSkillCnt: 0
+  activeSkillData: 
+  timer: []
+  passiveSkillData: 
+  activeSkillSlotParent: {fileID: 0}
+  activeSkillSlot: []
+  coolTimeImg: []
+  passiveSkillSlotParent: {fileID: 0}
+  passiveSkillSlot: []

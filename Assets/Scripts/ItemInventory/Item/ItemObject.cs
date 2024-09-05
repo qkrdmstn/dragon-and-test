@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemObject : MonoBehaviour
 {
     public ItemData itemData;
+    public float dropProb;
 
     public void SetItemData()
     {

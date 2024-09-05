@@ -15,7 +15,14 @@ public class PlayerHit : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("MonsterBullet") || collision.gameObject.CompareTag("Monster"))
         {
-            player.OnDamamged(1);
+            Boss boss = collision.GetComponent<Boss>();
+            if(boss == null || !boss.isDead)
+                player.OnDamamged(1);
+        }
+
+        if(collision.CompareTag("Cliff"))
+        {
+            player.ChangeFallState();
         }
     }
 }

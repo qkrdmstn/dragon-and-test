@@ -7,8 +7,9 @@ public class MonsterState
     #region Components
     protected MonsterStateMachine stateMachine;
     protected GameObject player;
+    protected Direction curDir;
     #endregion
-    
+
     public MonsterState(MonsterStateMachine _stateMachine, GameObject _player)
     {
         this.stateMachine = _stateMachine;
@@ -29,6 +30,4 @@ public class MonsterState
     {
         return;
     }
-
-    
 }

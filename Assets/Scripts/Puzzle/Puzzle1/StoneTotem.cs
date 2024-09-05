@@ -1,68 +1,88 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class StoneTotem : MonoBehaviour
 {
-    public bool isClear;
-    public int index;
-    public HwatuMonth monthAnswer;
-    public HwatuType typeAnswer;
-    public bool isChanging;
-    [SerializeField] private TotemHwatu[] hwatuObjs;
-    [SerializeField] private GameObject blankObj;
-    [SerializeField] private Puzzle1Manager puzzleManager;
+    public enum TotemType
+    {
+        Main, Sub
+    }
+    public TotemType myType;
+    public HwatuMonth month;
+    public SeotdaHwatuName myCard;
 
-    // Start is called before the first frame update
+    public int index = -1;
+    public bool isChanging;
+
+    public SpriteRenderer cardImg;
+    public Sprite blankImg;
+    public List<Sprite> decks;
+
+    PuzzleInteraction puzzleInteraction;
+
     void Start()
     {
-        puzzleManager = FindObjectOfType<Puzzle1Manager>();
+        puzzleInteraction = Player.instance.GetComponentInChildren<PuzzleInteraction>();
 
-        hwatuObjs = new TotemHwatu[transform.childCount - 1];
-        for (int i=0; i < transform.childCount; i++)
+        decks = new List<Sprite>(1);
+        HwatuData[] datas = SkillManager.instance.hwatuData;
+        Array.Sort(datas);
+
+        for (int i=0; i<datas.Length; i++)
         {
-            if (i < transform.childCount - 1)
-                hwatuObjs[i] = transform.GetChild(i).GetComponent<TotemHwatu>();
-            else
-                blankObj = transform.GetChild(i).gameObject;
+            switch (myType)
+            {
+                case TotemType.Main:
+                    if (datas[i].hwatu.isMain)
+                        decks.Add(datas[i].sprite);
+                    break;
+                case TotemType.Sub:
+                    if (!datas[i].hwatu.isMain)
+                        decks.Add(datas[i].sprite);
+                    break;
+            }
         }
+        do
+        {   // 퍼즐 달 제외한 랜덤한 화투패 선정
+            index = UnityEngine.Random.Range(0, 10);    // 1~10월
+        } while (index == (int)month);
 
-        index = Random.Range(0, 11);
-        hwatuObjs[index].gameObject.SetActive(true);
+        cardImg.sprite = decks[index];
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(collision.CompareTag("Bullet"))
+    //    {
+    //        Destroy(collision.gameObject);
+    //        if (!isChanging)
+    //            StartCoroutine(HwatuChangeCoroutine());
+    //    }
+    //}
+
+    public void OnDamaged()
     {
-        if(collision.CompareTag("Bullet"))
-        {
-            collision.GetComponent<Bullet>().InActiveBullet();
-
-            if(!isChanging)
-                StartCoroutine(HwatuChangeCoroutine());
-            
-        }
+        if (!isChanging)
+            StartCoroutine(HwatuChangeCoroutine());
     }
 
-    private IEnumerator HwatuChangeCoroutine()
+    IEnumerator HwatuChangeCoroutine()
     {
         isChanging = true;
-        hwatuObjs[index].gameObject.SetActive(false);
-        blankObj.gameObject.SetActive(true);
-        index++;
-        index %= 12;
-
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Choose);
+        cardImg.sprite = blankImg;
         yield return new WaitForSeconds(0.5f);
 
-        blankObj.gameObject.SetActive(false);
-        hwatuObjs[index].gameObject.SetActive(true);
-
-
-        if (hwatuObjs[index].hwatuMonth == monthAnswer && hwatuObjs[index].hwatuType == typeAnswer)
+        index = (++index) % 10;
+        cardImg.sprite = decks[index];
+        if (index == (int)month)
         {
-            isClear = true;
-            puzzleManager.ClearCheck();
+            puzzleInteraction.isClear[(int)myType] = true;
         }
+        else puzzleInteraction.isClear[(int)myType] = false;
+
         isChanging = false;
     }
 }

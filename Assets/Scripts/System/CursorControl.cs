@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CursorControl : MonoBehaviour
 {
-    [SerializeField] Sprite cursorImg;
+    public Sprite cursorImg;
+    public float cursorFactor;
 
     public Camera cam;
     public Transform player;
@@ -28,6 +29,7 @@ public class CursorControl : MonoBehaviour
     private void Update()
     {
         if (ScenesManager.instance.GetSceneNum() < 1) return;
+        player = Player.instance.transform;
 
         worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         targetPos = (player.position + worldPos) / 2f;
@@ -48,7 +50,9 @@ public class CursorControl : MonoBehaviour
         Vector2 cursorPoint;
 
         cursorTex = UIManager.instance.TextureFromSprite(_cursorImg);
+        //cursorTex = UIManager.instance.ScaleTexture(cursorTex, cursorFactor);
         cursorPoint = new Vector2(cursorTex.width / 2, cursorTex.height / 2);
+
         Cursor.SetCursor(cursorTex, cursorPoint, CursorMode.ForceSoftware);
         Cursor.lockState = CursorLockMode.Confined; // 게임 창 밖으로 커서가 나가지 못함
     }

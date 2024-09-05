@@ -46,6 +46,7 @@ public class Hwatu
 {
     public SeotdaHwatuName type;
     public HwatuMonth month;
+    public bool isMain;
 
     public static SeotdaHwatuCombination GetHwatuCombination(Hwatu card1, Hwatu card2)
     {
@@ -58,6 +59,9 @@ public class Hwatu
         //TT Set
         if (months[0] == months[1])
         {
+            if (types[0] == types[1])
+                return SeotdaHwatuCombination.blank;
+
             switch (months[0])
             {
                 case 10:
@@ -81,7 +85,8 @@ public class Hwatu
                 case 1:
                     return SeotdaHwatuCombination.TT1;
                 default:
-                    break;
+                    return SeotdaHwatuCombination.blank;
+                    
             }
         }
         else if (Array.Exists(types, x => x == SeotdaHwatuName.MarCherryLight) && Array.Exists(types, x => x == SeotdaHwatuName.AugMoon))
@@ -138,11 +143,9 @@ public class Hwatu
                 case 0:
                     return SeotdaHwatuCombination.KK0;
                 default:
-                    break;
+                    return SeotdaHwatuCombination.blank;
             }
         }
-
-        return SeotdaHwatuCombination.KK0;
     }
 
     public static SeotdaHwatuName[] GetHwatuCombination(SeotdaHwatuCombination combination)

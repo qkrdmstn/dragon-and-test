@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873cf2e1d1c4fb74c8e54b9c67135018, type: 3}
+  m_Name: Gun_SniperRifleData
+  m_EditorClassIdentifier: 
+  damage: 3
+  shootDelay: 1
+  reloadTime: 1.6
+  maxBullet: 100
+  magazineSize: 10
+  loadedBullet: 10
+  maxRecoilDegree: 12
+  recoilIncrease: 0.1
+  bulletSpeed: 80
+  range: 200
+  knockbackForce: 1.5
+  isAutomatic: 0
+  gunItemData: {fileID: 11400000, guid: 7dac062c5bf631444a48a48b6e89675f, type: 2}
+  gunPrefab: {fileID: 2618088524873001669, guid: bd9f3f4ef6e257a4f99f615df9852268, type: 3}
+  bulletPrefab: {fileID: 1331701923673328244, guid: a30701ba901da9d46b23ea081ca8b3cf, type: 3}

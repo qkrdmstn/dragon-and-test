@@ -13,28 +13,35 @@ public class MonsterAttackStateDash : MonsterState
     public override void Enter()
     {
         base.Enter();
+        monster.SpeedToZero();
     }
 
     public override void Exit()
     {
         base.Exit();
+        if (!monster.isSpawned) return;
+        monster.SpeedReturn();
     }
 
     public override void Update()
     {
+        if (monster.isDead) return;
+        else if (!monster.isSpawned) return;
+
         base.Update();
 
         //Attack
-        if (monster.tempcool<=0.0) 
+        monster.tempcool -= Time.deltaTime;
+        if (monster.tempcool <= 0.0 && !monster.inAttack)
         {
-            if (monster.distanceToPlayer > monster.attackRange && (!monster.inAttack)) stateMachine.ChangeState(monster.idleState);
+            if (monster.distanceToPlayer > monster.attackRange) 
+                stateMachine.ChangeState(monster.chaseState);
+
             else if(!monster.isKnockedBack)
             {
                 monster.tempcool = monster.cooldown;
                 monster.Attack();
-                stateMachine.ChangeState(monster.idleState);
             }
         }
-        
     }
 }

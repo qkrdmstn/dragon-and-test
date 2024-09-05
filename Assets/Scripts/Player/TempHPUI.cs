@@ -6,14 +6,9 @@ using UnityEngine.UI;
 public class TempHPUI : MonoBehaviour
 {
     public Text txt;
-    private Player player;
 
-    private void Start()
-    {
-        
-    }
     private void Update()
     {
-        txt.text = "HP: " + GameManager.instance.player.curHP + " / " + GameManager.instance.player.maxHP;
+        txt.text = "HP: " + Player.instance.curHP + "\n Shield: " + Player.instance.shield;
     }
 }

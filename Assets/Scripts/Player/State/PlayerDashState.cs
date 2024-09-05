@@ -6,8 +6,9 @@ public class PlayerDashState : PlayerState
 {
     private Vector2 dashDir;
     private Vector2 dash;
+    private float dashSpeed;
 
-    public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
+    public PlayerDashState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
 
@@ -18,28 +19,33 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
-        // 대시 중 무적
-        player.ChangePlayerLayer(7);
-
-        //Dash Direction Setting
+        //Dash Setting
         dashDir = new Vector2(xInput, yInput);
         dashDir.Normalize();
+        dashSpeed = player.dashSpeed;
+        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+        {
+            SkillDB sr46Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46);
+            dashSpeed += dashSpeed * (sr46Data.probability);
+        }
 
         stateTimer = player.dashDuration;
+        SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Dash);
     }
 
     public override void Exit()
     {
         base.Exit();
 
-        //Attack Able Setting
-        player.isAttackable = true;
-        Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
-        curGun.shootTimer -= player.dashDuration;
+        if (!player.isFall)
+        {
+            //Attack Able Setting
+            player.isAttackable = true;
+            Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
+            curGun.shootTimer -= player.dashDuration;
 
-        // 무적 해제
-        player.ChangePlayerLayer(6);
-        player.SetVelocity(0, 0);
+            player.SetVelocity(0, 0);
+        }
     }
 
     public override void Update()
@@ -47,9 +53,9 @@ public class PlayerDashState : PlayerState
         base.Update();
 
         //Exponantial
-        dash = dashDir * player.dashSpeed * Mathf.Exp(player.dashExpCoefficient * (player.dashDuration - stateTimer));
+        dash = dashDir * dashSpeed * Mathf.Exp(player.dashExpCoefficient * (player.dashDuration - stateTimer));
         player.SetVelocity(dash.x, dash.y);
-
+        player.animController.SetAnim(PlayerAnimState.Wave, xInput, yInput);
         //Dash Duration
         if (stateTimer < 0.0)
             stateMachine.ChangeState(player.idleState);

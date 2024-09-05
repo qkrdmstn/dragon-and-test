@@ -1,17 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Cinemachine;
-using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    #region Value
+    public static Player instance = null;
+
     [Header("Life info")]
     public int curHP = 10;
     public int maxHP = 10;
     public int money = 0;
+    public int shield = 0;
     [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]
@@ -28,24 +28,26 @@ public class Player : MonoBehaviour
     [Header("Knockback Tempinfo")]
     public Vector2 knockbackDi2;
     public float knockbackMagnitude2;
-    //Temp variable
-    //public GameObject DeadUI;
 
     [Header("Gun info")]
     public Gun gun;
     public GameObject gunParent;
     public bool isAttackable = true;
+    public int reinforceAttack = 0;
 
     [Header("State Check")]
-    public bool isCombatZone = true;
+    public bool isCombatZone = false;
     public bool isStateChangeable = true;
     public bool isInteraction = false;
     public bool isDamaged = false;
-
+    public bool isFall = false;
+    public bool isBounded = false;
+    public bool isDead = false;
+    public bool isTownStart = false;
     #region Componets
-    public Animator anim { get; private set; }
+    public PlayerAnimController animController { get; private set; }
+
     public Rigidbody2D rb { get; private set; }
-    public SpriteRenderer spriteRenderer { get; private set; }
     public Collider2D col { get; private set; }
     public PlayerHit playerHit { get; private set; }
     #endregion
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour
     public PlayerMoveState moveState { get; private set; }
     public PlayerDashState dashState { get; private set; }
     public PlayerKnockbackState knockbackState { get; private set; }
+    public PlayerFallState fallState { get; private set; }
 
     #endregion
 
@@ -63,33 +66,40 @@ public class Player : MonoBehaviour
     public CamShakeProfile profile;
     public CameraManager cameraManager;
     private CinemachineImpulseSource impulseSource;
+    #endregion
 
     private void Awake()
     {
         stateMachine = new PlayerStateMachine(this);
 
-        idleState = new PlayerIdleState(this, stateMachine, "Idle");
-        moveState = new PlayerMoveState(this, stateMachine, "Move");
-        dashState = new PlayerDashState(this, stateMachine, "Dash");
-        knockbackState = new PlayerKnockbackState(this, stateMachine, "Knockback");
+        idleState = new PlayerIdleState(this, stateMachine, PlayerAnimState.Idle);
+        moveState = new PlayerMoveState(this, stateMachine, PlayerAnimState.Run);
+        dashState = new PlayerDashState(this, stateMachine, PlayerAnimState.Wave);
+        knockbackState = new PlayerKnockbackState(this, stateMachine, PlayerAnimState.knockBack);
+        fallState = new PlayerFallState(this, stateMachine, PlayerAnimState.Fall);
 
-        if (SceneManager.GetActiveScene().name.Contains("Battle")
-            || SceneManager.GetActiveScene().name == "Puzzle_1"
-            || SceneManager.GetActiveScene().name == "Tutorial" || SceneManager.GetActiveScene().name == "Skill")
-            isCombatZone = true;
-        else
-            isCombatZone = false;
+        if (instance == null)
+        { //생성 전이면
+            instance = this; //생성
+        }
+        else if (instance != this)
+        { //이미 생성되어 있으면
+            Destroy(this.gameObject); //새로만든거 삭제
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+
+        animController = GetComponentInChildren<PlayerAnimController>();
+
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+
+        stateMachine.Initialize(idleState);
     }
 
     private void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<Collider2D>();
         playerHit = GetComponentInChildren<PlayerHit>();
-
-        stateMachine.Initialize(idleState);
 
         cameraManager = FindObjectOfType<CameraManager>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -97,7 +107,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log(stateMachine.currentState);
+        if(cameraManager == null) cameraManager = FindObjectOfType<CameraManager>();
+
         stateMachine.currentState.Update();
 
         //Check CombatZone
@@ -120,46 +131,93 @@ public class Player : MonoBehaviour
         rb.velocity = vel;
     }
 
+    public Vector2 GetVelocity()
+    {
+        return rb.velocity;
+    }
+
     public void OnDamamged(int damage)
     {
+        if(IsDash())
+        {
+            SkillManager.instance.RollingAdvantage();
+            return;
+        }    
+
         if(!isDamaged)
         {
             isDamaged = true;
-            // monster에게 맞았을때 쉐이킹 
-            cameraManager.CameraShakeFromProfile(profile, impulseSource);
-
-            curHP -= damage;
-            // Debug.Log("HP: " + HP);
-            if (curHP <= 0)
+            // monster에게 맞았을때 쉐이킹
+            try
             {
-                Debug.Log("Player Dead");
-                PlayerDead();
-                Time.timeScale = 0.0f;
+                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            }
+            catch (System.NullReferenceException ex)
+            {
+                cameraManager = FindObjectOfType<CameraManager>();
+                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+            }
+
+            if (shield > 0)
+                shield -= damage;
+            else
+                curHP -= damage;
+
+            if (curHP <= 0) //Dead
+            {
+                //장사
+                //4% 확률로 죽음 회피 & 체력 회복
+                SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
+                float randomVal = Random.Range(0.0f, 1.0f);
+                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Data.probability)
+                {
+                    curHP = 1;
+                    isDamaged = false;
+                }
+                else
+                {
+                    PlayerDead();
+                }
             }
             else
             {
                 //Change Layer & Change Color
                 ChangePlayerLayer(7);
-                StartCoroutine(DamagedProcess());
+                StartCoroutine(DamagedProcess(hitDuration));
             }
         }
     }
 
     private void PlayerDead()
     {
+        isDead = true;
+        GameManager.instance.SetTimeScale(0f);
         UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
-        //DeadUI.SetActive(true);
     }
 
-    IEnumerator DamagedProcess()
+    public void ReloadPlayer()
+    {   
+        isAttackable = false;
+        isCombatZone = false;
+        isDead = false;
+        isDamaged = false;
+        curHP = maxHP;
+        money = 0;
+
+        SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
+        animController.isBreath = false;
+        animController.SetAnim(PlayerAnimState.Idle);
+    }
+
+    IEnumerator DamagedProcess(float duration)
     {
         for (int i = 0; i < 2; i++) 
         {
-            spriteRenderer.color = new Color(1, 1, 1, 0.4f);
-            yield return new WaitForSeconds(hitDuration / 4.0f);
+            animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
+            yield return new WaitForSeconds(duration / 4.0f);
 
-            spriteRenderer.color = new Color(1, 1, 1, 1);
-            yield return new WaitForSeconds(hitDuration / 4.0f);
+            animController.SetMaterialColor(new Color(1, 1, 1, 1f));
+            yield return new WaitForSeconds(duration / 4.0f);
         }
         ChangePlayerLayer(6);
         isDamaged = false;
@@ -176,7 +234,6 @@ public class Player : MonoBehaviour
         if (stateMachine.currentState == dashState)
             return true;
         return false;
-
     }
 
     public void PlayerKnockBack(Vector2 dir, float mag)
@@ -195,4 +252,63 @@ public class Player : MonoBehaviour
         playerHit.gameObject.layer = layer;
     }
 
+    public void ChangeFallState()
+    {
+        isFall = true;
+        stateMachine.ChangeState(fallState);
+    }
+
+    public bool isTutorial = false;
+    public bool isClearTutorial = false;
+    public void InitbySceneLoaded(SceneInfo curScene)
+    {
+        isBounded = false;
+        if(curScene == SceneInfo.Start)
+        {
+            SetIdleStatePlayer();
+            isStateChangeable = false;
+            return;
+        }
+        
+        Vector3 pos = GameObject.FindGameObjectWithTag("StartPos").transform.position;
+        
+        switch (curScene)
+        {
+            case SceneInfo.Town_1:      // 1
+                isCombatZone = false;
+                if (isTutorial)
+                {
+                    isTutorial = false;
+                    pos = new Vector3(-2.5f, 22.5f, 0);
+                }
+                break;
+            case SceneInfo.Tutorial:    // 2
+                isTutorial = true;
+                break;
+            case SceneInfo.Puzzle_1:    // 3
+            case SceneInfo.Battle_1_A:  // 4
+            case SceneInfo.Battle_1_B:  // 5
+            case SceneInfo.Battle_1_C:  // 6
+            case SceneInfo.Boss_1:      // 7
+                isAttackable = true;
+                isCombatZone = true;
+                break;
+        }
+
+        ControlPlayerPos(pos);
+    }
+
+    public void ControlPlayerPos(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public void ChangePlayerInteractionState(bool state)
+    {
+        isInteraction = state;   // player의 상호작용 여부 관찰
+        if (state) SetIdleStatePlayer();
+
+        isStateChangeable = !state;
+        isAttackable = !state;
+    }
 }

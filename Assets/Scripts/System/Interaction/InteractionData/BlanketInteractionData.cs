@@ -8,13 +8,15 @@ public class BlanketInteractionData : InteractionData
     public BlockInfo curBlock;
     public bool isClear;
     public bool isActive;
+    public bool isTutorial;
 
     private void Start()
     {
+        if (isTutorial) return;
         isClear = false;
         isActive = true;
+        
         spawner = GameObject.FindObjectOfType<Spawner>();
-
         BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
         for(int i=0; i<blocks.Length; i++)
         {
@@ -28,9 +30,15 @@ public class BlanketInteractionData : InteractionData
 
     private void Update()
     {
+        if (isTutorial) return;
+
         if (curBlock == null)
             isClear = true;
         else if(isClear != curBlock.blockClear)
             isClear = curBlock.blockClear;
+
+        //모포 사용 후, 제거
+        if (isClear && !isActive)
+            Destroy(this.gameObject);
     }
 }

@@ -8,14 +8,18 @@ public class MonsterBullet : MonoBehaviour
 {
 
     [Header("Bullet Information")]
+    public float lifeTimer;
+    public float lifeTime;
     public int damage;
     //public int bounce;
 
     [Header("Bullet Movement")]
     public Vector2 dir;
-    public float bulletSpeed;
-
+    //public float bulletSpeed = 1f;
+    public float normalSpeed = 5f;
+    private float speed;
     public bool isRelease;
+    public bool isPooled;
     #region Components
     private Rigidbody2D rigid;
     public IObjectPool<GameObject> pool { get; set; }
@@ -29,21 +33,44 @@ public class MonsterBullet : MonoBehaviour
 
     void Update()
     {
-        rigid.velocity = dir * bulletSpeed;
+        lifeTimer -= Time.deltaTime;
+        rigid.velocity = dir.normalized * speed;
 
-        if (!IsInDomain() && !isRelease)
+        if ((!IsInDomain() || lifeTimer < 0.0f) && !isRelease)
         {
-            isRelease = true;
-            pool.Release(this.gameObject);
+            if (isPooled)
+            {
+                isRelease = true;
+                pool.Release(this.gameObject);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
         }
+        
+    }
+
+    public void BulletInitialize(Vector2 _dir, float _speed)
+    {
+        isRelease = false;
+        dir = _dir;
+        lifeTimer = lifeTime;
+        speed = _speed;
+        
+        float theta = Vector2.Angle(Vector2.right, _dir);
+        if (_dir.y < 0)
+            theta *= -1;
+        this.transform.rotation = Quaternion.Euler(0, 0, theta);
     }
 
     public void BulletInitialize(Vector2 _dir)
     {
         isRelease = false;
         dir = _dir;
+        lifeTimer = lifeTime;
+        speed = normalSpeed;
 
-        
         float theta = Vector2.Angle(Vector2.right, _dir);
         if (_dir.y < 0)
             theta *= -1;
@@ -59,10 +86,23 @@ public class MonsterBullet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Ground"))
         {
-            if(!isRelease)
+            if (other.CompareTag("Player") && Player.instance.IsDash())
             {
-                isRelease = true;
-                pool.Release(gameObject);
+                return;
+            }
+
+            if (!isRelease)
+            {
+                if(isPooled)
+                {
+                    isRelease = true;
+                    pool.Release(gameObject);
+                }
+                else
+                {
+                    Destroy(this.gameObject);
+                }
+                
             }
         }
     }

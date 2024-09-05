@@ -1,51 +1,70 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
 using UnityEngine.UI;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class JokboHwatuUI
+{
+    public GameObject[] hwatu;
+}
 
 public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
-    //public GameObject[] hwatus;
-    [SerializeField] SynergyInfo synergyTable;
-
+    public JokboHwatuUI[] hwatuUIs;
+    SynergyEntity[] skillDB;
+    public bool isPossibleJokbo = false;
     bool isFirst = true;
 
     private void Awake()
     {
-        //hwatus = new GameObject[3];
         SetSynergyName();
     }
 
+    private async void Start()
+    {
+        await LoadJokboDBEntity();
+    }
+
+    async Task LoadJokboDBEntity()
+    {
+        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:C");
+        ScenesManager.instance.isLoadedDB++;
+    }
     private void Update()
     {
-        if (ScenesManager.instance.GetSceneNum() == 0 || !TutorialUIGroup.isJokbo) return;
-        // start이거나 튜토리얼에서 족보를 아직 획득하지 않았다면 열리지 않습니다.
+        if (!isPossibleJokbo) { return; }
+        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {   // close
+            UIManager.instance.isUIOn = true;
+            JokboState(false);
+            return;
+        }
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SetUI();
-            JokboState(!childUI[0].activeSelf); // 현재 족보 상태에 따라 열고 닫습니다.
-        }   // activeSelf = true : close / false : open
+        if (Player.instance.isInteraction) return;
+        else if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
+        {   // open
+            JokboState(true);
+        }
     }
 
     void SetUI()
     {
         if (isFirst)
-        {   
+        {
             InitDesc();
             isFirst = false;
         }
 
         if (!childUI[0].activeSelf)
-        {   
+        {
             foreach (GameObject gameObject in hwatuInfoPages)
             {
                 gameObject.SetActive(false);
             }
             childUI[1].transform.GetChild(0).gameObject.SetActive(false);   // back
-            childUI[1].transform.GetChild(1).gameObject.SetActive(true);   // exit
             childUI[2].SetActive(true);
         }
     }
@@ -53,45 +72,35 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach(GameObject obj in hwatuInfoPages)
-        {   // ?? ??? ??? ?? ??
-            TextMeshProUGUI[] childobjs = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
-            
-            if (childobjs.Length == 0) continue;
-            for(int i=0; i<childobjs.Length;i+=2)
+        foreach (JokboHwatuUI obj in hwatuUIs)
+        {
+            for(int i=0; i<obj.hwatu.Length; i++)
             {
-                childobjs[i].text = synergyTable.SynergyEntity[idx].synergyName;    // name
-                childobjs[i + 1].text = synergyTable.SynergyEntity[idx].info;       // synergtDesc
+                GameObject hwatu = obj.hwatu[i];
+                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
+                childTxts[0].text = skillDB[idx].synergyName;
+                childTxts[1].text = skillDB[idx].info;
                 idx++;
-            }
 
-            // ?? ?? ??? ??
-            Image[] imgs = obj.GetComponentsInChildren<Image>(true);
-            Debug.Log(imgs.Length);
-            for (int i = 0; i < imgs.Length; i += 3)
-            {
-                if (imgs[i].transform.name == "Viewport") i++;
-                if (imgs[i].transform.name == "Scrollbar Vertical") break;
-                if (imgs[i].transform.name.Contains("KK")) break;
-
-                int synergeType = GetSynergeName(imgs[i].transform.name);
+                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true);
+                int synergeType = GetSynergeName(hwatu.name);
 
                 SeotdaHwatuName[] cards = Hwatu.GetHwatuCombination((SeotdaHwatuCombination)synergeType);
-
                 for (int j = 0; j < SkillManager.instance.hwatuData.Length; j++)
                 {
                     if (cards[0] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        imgs[i + 1].sprite = SkillManager.instance.hwatuData[j].sprite;
-
+                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
+                    // 1번은 plus
                     else if (cards[1] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        imgs[i + 2].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        childImgs[2].sprite = SkillManager.instance.hwatuData[j].sprite;
                 }
             }
         }
     }
 
     string[] synergeName;
-    void SetSynergyName() {
+    void SetSynergyName()
+    {
         synergeName = new string[22];
         synergeName[0] = SeotdaHwatuCombination.GTT38.ToString();
         synergeName[1] = SeotdaHwatuCombination.GTT18.ToString();
@@ -119,7 +128,7 @@ public class JokboUIGroup : UIGroup {
 
     int GetSynergeName(string curSynergy)
     {
-        for(int i=0; i<synergeName.Length;i++)
+        for (int i = 0; i < synergeName.Length; i++)
         {
             if (curSynergy == synergeName[i]) return i;
         }
@@ -129,13 +138,9 @@ public class JokboUIGroup : UIGroup {
 
     public void JokboState(bool state)
     {   // true : open / false : close
-        GameManager.instance.player.isStateChangeable = !state;
-        GameManager.instance.player.isAttackable = !state;
-        GameManager.instance.player.isInteraction = state;
-        
-        Time.timeScale = state ? 0.0f : 1.0f;
+        SetUI();
         childUI[0].SetActive(state);
 
-        if (!TutorialUIGroup.isCloseJokbo && !state) TutorialUIGroup.isCloseJokbo = true;
+        Player.instance.ChangePlayerInteractionState(state);
     }
 }

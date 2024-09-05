@@ -1,3 +1,4 @@
+using Spine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,13 +26,29 @@ public class MonsterChaseStateDash : MonsterState
 
     public override void Update()
     {
+        if (monster.isDead) Exit();
+        else if (!monster.isSpawned) return;
+
         base.Update();
 
-        //if(monster.distanceToPlayer>1f && !monster.isKnockedBack) monster.rigidBody.velocity = direction * monster.tempSpeed;
-        
-        if (monster.distanceToPlayer < monster.attackRange && monster.tempcool<=0.0)
-            stateMachine.ChangeState(monster.attackState);
+        if (monster.isChase)
+        {   //navigate
+            monster.agent.SetDestination(player.transform.position);
 
-        if (monster.distanceToPlayer > monster.chaseRange) stateMachine.ChangeState(monster.idleState);
+            Direction newDir = monster.CheckDir();
+            if (monster.isFirst)
+            {
+                monster.isFirst = false;
+                monster.monsterAnimController.SetAnim(MonsterAnimState.Run, newDir);
+            }
+            else if (curDir != newDir)
+            {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+                curDir = newDir;
+                monster.monsterAnimController.SetAnim(MonsterAnimState.Run, curDir);
+            }
+        }
+
+        if (monster.distanceToPlayer < monster.attackRange && monster.tempcool <= 0.0 && !monster.inAttack)
+            stateMachine.ChangeState(monster.attackState);
     }
 }

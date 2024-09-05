@@ -1,41 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
-//using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-//using Unity.VisualScripting;
-//using UnityEditor.Hardware;
-//using UnityEditor.Experimental.GraphView;
 
 public class BlanketInteraction : Interaction
 {
-    private Player player;
+    [Header("Prefabs")]
+    [SerializeField] private GameObject[] materialHwatuUIObject; //로드되는 Prefab
 
-    [Header("UI info")]
-    [SerializeField] private GameObject blanketUI;
-    public BlanketHwatuSelectBtn[] selectBtns;
-    [SerializeField] private GameObject cancleUI;
-    public Button[] cancleBtns;
-    [SerializeField] private SynergyUI synergyUI;
+    [Header("UI")]
+    [SerializeField] private List<GameObject> materialHwatuUIObjectList = new List<GameObject>(); //실제 UI
+    [SerializeField] private BlanketUI blanketUI;
+    [SerializeField] private HwatuUI hwatuUI;
 
-    private void Awake()
+    [Header("Transform Info")]
+    [SerializeField] private RectTransform materialHwatuParent; //화투 이동 위치
+    [SerializeField] private Vector2 minPos;
+    [SerializeField] private Vector2 maxPos;
+
+    [Header("Data")]
+    [SerializeField] private MaterialHwatuSlotUI[] selectedHwatuUI = new MaterialHwatuSlotUI[2];
+    public int selectedCnt = 0;
+
+    [Header("State")]
+    public bool isBlanketInteraction;
+
+    private void Start()
     {
-        player = GetComponentInParent<Player>();
+        //materialUI Object Load
+        materialHwatuUIObject = Resources.LoadAll<GameObject>("Prefabs/MaterialHwatuUI");
+
+        //UI Info Init
+        GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4];
+        hwatuUI = hwatuUIObject.GetComponent<HwatuUI>();
+        GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
+        blanketUI = blanketUIObject.GetComponent<BlanketUI>();
+
+        //Transform Info Init
+        materialHwatuParent = blanketUI.materialHwatuParent.GetComponent<RectTransform>();
+        minPos = materialHwatuParent.anchoredPosition - materialHwatuParent.sizeDelta / 2; //material 화투 최대/최소 위치
+        maxPos = materialHwatuParent.anchoredPosition + materialHwatuParent.sizeDelta / 2;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && player.isCombatZone && !isDone && player.isInteraction)
+        if (!blanketUI.isSkillInfoUI && isBlanketInteraction && Input.GetKeyDown(KeyCode.Escape))
         {
-            if(synergyUI.gameObject.activeSelf)
-                synergyUI.gameObject.SetActive(false);
-            else if (SkillManager.instance.isSaving)
-                SkillManager.instance.InactiveOverwritingUI();
-            else
-            {
-                ActiveCancleUI();
-            }
+            if (Player.instance.isTutorial && !TutorialInteraction.isBlanket) return;
+            EndInteraction();
+        }
+        else if (blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
+        {
+            blanketUI.SetSkillInfoUIInActive();
         }
     }
 
@@ -46,118 +61,178 @@ public class BlanketInteraction : Interaction
 
     private void Init()
     {
+        isBlanketInteraction = true;
         isDone = false;
-        blanketUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3];
-        selectBtns = blanketUI.GetComponentsInChildren<BlanketHwatuSelectBtn>();
 
-        cancleUI = blanketUI.transform.GetChild(2).gameObject;
-        cancleBtns = cancleUI.GetComponentsInChildren<Button>();
+        //기존 material hwatu 삭제
+        for (int i = 0; i < materialHwatuUIObjectList.Count; i++)
+            Destroy(materialHwatuUIObjectList[i]);
+        materialHwatuUIObjectList.Clear();
+        selectedCnt = 0;
 
-        synergyUI = blanketUI.transform.GetChild(3).GetComponent<SynergyUI>();
+        //화투 UI 비활성화 및 모포 UI 활성화
+        hwatuUI.gameObject.SetActive(false);
+        blanketUI.gameObject.SetActive(true);
 
-        blanketUI.SetActive(true);
-        InitButton();
+        //화투 생성
+        CreateMaterialHwatuUIObject();
+
+        //화투 이동
+        UpdateMaterialHwatuUIInitPos(1.0f);
     }
 
-    private void InitButton()
+    private void CreateMaterialHwatuUIObject()
     {
-        int[] index = new int[3];
-        while (!IsDuplicate(index))
+        //화투 생성 위치
+        RectTransform initTransform = hwatuUI.GetComponent<RectTransform>();
+
+        //화투 생성
+        for (int i = 0; i < SkillManager.instance.materialCardCnt; i++)
         {
-            index = GetRandomIndex();
+            HwatuData data1 = SkillManager.instance.materialHwatuDataList[i];
+            for (int j = 0; j < materialHwatuUIObject.Length; j++)
+            {
+                HwatuData data2 = materialHwatuUIObject[j].GetComponent<MaterialHwatuSlotUI>().hwatuData;
+                if (data1.hwatu.type == data2.hwatu.type)
+                {
+                    //Hwatu UI에 카드 생성
+                    Vector3 initPos = initTransform.position;
+                    GameObject Obj = Instantiate(materialHwatuUIObject[j], initPos, Quaternion.identity, materialHwatuParent);
+                    materialHwatuUIObjectList.Add(Obj);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void UpdateMaterialHwatuUIInitPos(float duration)
+    {
+        int numOfCard = 10 - selectedCnt - 1; //최대 카드 - 모포 위의 카드 - 1
+
+        float interval = (maxPos.x - minPos.x) / (float)numOfCard;
+        int j = 0;
+        for (int i = 0; i < materialHwatuUIObjectList.Count; i++)
+        {
+            MaterialHwatuSlotUI ui = materialHwatuUIObjectList[i].GetComponent<MaterialHwatuSlotUI>();
+            if (ui.isSelected) //선택된 화투패 제외
+                continue;
+
+            //OriginPos 설정 및 이동
+            float posX = materialHwatuParent.position.x + minPos.x + interval * j;
+            if (numOfCard == 0)
+                posX = materialHwatuParent.position.x;
+
+            //float radius = materialHwatuParent.sizeDelta.x / 2;
+            float posY = materialHwatuParent.position.y; //(Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(posX - materialHwatuParent.position.x, 2)));
+            Vector3 originPos = new Vector3(posX, posY, 0);
+
+            ui.originPos = originPos;
+            ui.originRot = Quaternion.identity;
+            ui.originScale = new Vector3(2, 2, 1);
+            ui.MoveTransform(duration);
+
+            j++;
+        }
+    }
+
+    public void EndInteraction()
+    {
+        isDone = true;
+        isBlanketInteraction = false;
+
+        blanketUI.gameObject.SetActive(false);
+        hwatuUI.gameObject.SetActive(true);
+        Debug.Log("EndInteraction");
+    }
+
+    public bool AddSelectedHwatu(MaterialHwatuSlotUI ui) //실패 시, -1 반환 / 성공 시, 저장된 칸 반환
+    {
+        HwatuData hwatuData = ui.hwatuData;
+
+        if (SkillManager.instance.activeSkillCnt >= 2) //스킬이 이미 가득 찼을 경우, 실패
+            return false;
+
+        if (selectedCnt >= 2) //화투 select에 빈 곳이 없을 경우, 실패
+            return false;
+        else if (selectedCnt >= 1)
+        {
+            //섯다 조합 체크
+            Hwatu hwatu1;
+            if (selectedHwatuUI[0] != null)
+                hwatu1 = selectedHwatuUI[0].hwatuData.hwatu;
+            else
+                hwatu1 = selectedHwatuUI[1].hwatuData.hwatu;
+            SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatuData.hwatu);
+
+            if (result == SeotdaHwatuCombination.blank) //섯다에 없는 조합일 경우, 실패
+                return false;
         }
 
-        for (int i=0; i<3; i++)
+        //앞에서부터 빈 곳에 selected hwatu data 저장
+        if (selectedHwatuUI[0] == null)
         {
-            HwatuData data = SkillManager.instance.hwatuData[index[i]];
-            selectBtns[i].UpdateBtn(data);
-            selectBtns[i].button.onClick.RemoveAllListeners();
-            selectBtns[i].button.onClick.AddListener(() => SelectBtnEvent(data));
+            selectedHwatuUI[0] = ui;
         }
-    }
-
-    private int[] GetRandomIndex()
-    {
-        int[] index = new int[3];
-        for (int i = 0; i < 3; i++)
-            index[i] = Random.Range(0, 20);
-        return index;
-    }
-
-    private bool IsDuplicate(int[] index)
-    {
-        for(int i=0; i<3; i++)
+        else if (selectedHwatuUI[1] == null)
         {
-            HwatuData[] usedHwatu = SkillManager.instance.hwatuCardSlotData; //이미 사용된 화투 
-            for (int j = 0; j < 2; j++) 
-            {
-                if (usedHwatu[j] == null)
-                    continue;
-                if (SkillManager.instance.hwatuData[index[i]].hwatu == usedHwatu[j].hwatu)
-                    return false;
-            }
+            selectedHwatuUI[1] = ui;
+        }
 
-            for(int j=i+1; j<3; j++) //3개 중 중복
-            {
-                if (index[i] == index[j])
-                    return false;
-            }
+        ui.isSelected = true;
+        selectedCnt++;
+
+        UpdateMaterialHwatuUIInitPos(0.5f);
+
+        if (selectedCnt == 2)
+        {
+            Invoke("CombinationSeletedHwatu", 0.2f); //화투패 UI 작아지는 애니메이션 후, 조합 실행
         }
         return true;
     }
 
-    public void SelectBtnEvent(HwatuData data)
+    public void DeleteSelectedHwatu(MaterialHwatuSlotUI ui)
     {
-        
-        SkillManager.instance.AddSkill(data);
+        HwatuData hwatuData = ui.hwatuData;
+        ui.isSelected = false;
 
-        StartCoroutine(WaitOverwriting());
-    }
-
-    IEnumerator WaitOverwriting()
-    {
-        yield return new WaitUntil(() => !SkillManager.instance.isSaving && SkillManager.instance.saveSuccess);
-        InactiveUI(false);
-    }
-
-    public void CancleBtnEvent(int i)
-    {
-        if (i == 0)
-            InactiveUI(true);
-        cancleUI.SetActive(false);
-    }
-
-    private void ActiveCancleUI()
-    {
-        cancleUI.SetActive(true);
         for (int i = 0; i < 2; i++)
         {
-            int index = i;
-            cancleBtns[index].onClick.RemoveAllListeners();
-            cancleBtns[index].onClick.AddListener(() => CancleBtnEvent(index));
+            if (selectedHwatuUI[i] == hwatuData)
+            {
+                selectedHwatuUI[i] = null;
+                selectedCnt -= 1;
+                break;
+            }
         }
+
+        UpdateMaterialHwatuUIInitPos(0.5f);
     }
 
-    private void InactiveUI(bool isCancle)
+    public void DeleteHwatu(MaterialHwatuSlotUI ui)
     {
-        if (SkillManager.instance.skillCnt == 2 && !isCancle) //스킬 획득 포기 시, SynergyUI Active X
-            StartCoroutine(ActiveSynergyUI());
-        else
+        SkillManager.instance.DeleteMaterialCardData(ui.hwatuData);
+        materialHwatuUIObjectList.Remove(ui.gameObject);
+        Destroy(ui.gameObject);
+
+        UpdateMaterialHwatuUIInitPos(0.5f);
+    }
+
+    public void CombinationSeletedHwatu()
+    {
+        //스킬 생성
+        SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(selectedHwatuUI[0].hwatuData.hwatu, selectedHwatuUI[1].hwatuData.hwatu);
+        SkillManager.instance.AddSkill(result);
+
+        //사용된 material hwatu 삭제
+        for (int i = 0; i < 2; i++)
         {
-            blanketUI.SetActive(false);
-            isDone = true;
+            SkillManager.instance.DeleteMaterialCardData(selectedHwatuUI[i].hwatuData);
+            materialHwatuUIObjectList.Remove(selectedHwatuUI[i].gameObject);
+            Destroy(selectedHwatuUI[i].gameObject);
+            selectedHwatuUI[i] = null;
         }
-    }
+        selectedCnt = 0;
 
-    IEnumerator ActiveSynergyUI()
-    {
-        synergyUI.gameObject.SetActive(true);
-        SynergyEntity entity = SkillManager.instance.GetCurSynergyEntity();
-        HwatuData[] hwatuDatas = SkillManager.instance.hwatuCardSlotData;
-        synergyUI.UpdateSynergyUI(entity, hwatuDatas);
-
-        yield return new WaitUntil(() => !synergyUI.gameObject.activeSelf);
-        blanketUI.SetActive(false);
-        isDone = true;
+        blanketUI.SetSkillInfoUIActive(result);
     }
 }

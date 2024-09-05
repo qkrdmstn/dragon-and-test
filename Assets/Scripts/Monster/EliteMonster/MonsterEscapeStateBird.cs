@@ -10,15 +10,10 @@ public class MonsterEscapeStateBird : MonsterState
         monster = _monster;
     }
 
-
     public override void Enter()
     {
         base.Enter();
         monster.SpeedReturn();
-
-        Vector3 targetPosition = monster.transform.position - player.transform.position.normalized * monster.chaseRange * 1.2f;
-        monster.agent.SetDestination(targetPosition);
-
     }
 
     public override void Exit()
@@ -31,7 +26,11 @@ public class MonsterEscapeStateBird : MonsterState
     {
         base.Update();
 
-        if (monster.distanceToPlayer > monster.attackRange * 0.9f) stateMachine.ChangeState(monster.attackState);
+        Vector3 targetPosition = (monster.transform.position - player.transform.position).normalized * monster.chaseRange;
+        Debug.DrawRay(monster.transform.position, targetPosition, Color.yellow);
+        monster.agent.SetDestination(targetPosition);
 
+        if (monster.distanceToPlayer > monster.attackRange) stateMachine.ChangeState(monster.chaseState);
+        else if (monster.distanceToPlayer < monster.attackRange && monster.distanceToPlayer > monster.escapeRange) stateMachine.ChangeState(monster.attackState);
     }
 }

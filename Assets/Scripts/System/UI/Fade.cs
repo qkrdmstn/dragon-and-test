@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Video;
 
 public class Fade : MonoBehaviour
 {
-    [SerializeField] float fadeTime;
+    [SerializeField] float startFadeTime;
+    [SerializeField] float endFadeTime;
     float start, end, time;
     public Image fadePanel;
-
+    [SerializeField] VideoPlayer loadingVideo;
     void Start()
     {
-        fadePanel = GetComponent<Image>();
-
         start = 1f;
         end = 0f;
-        fadeTime = 2f;
+        startFadeTime = 2f;
+        endFadeTime = 1f;
     }
 
     public void ManageFade(int _sceneNum)
     {
-       // SceneInfo _sceneInfo = (SceneInfo)_sceneNum;
-        if (_sceneNum == 1)
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start && _sceneNum == 1)
         {
             TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
             for (int i = 0; i < texts.Length; i++)
@@ -40,12 +40,13 @@ public class Fade : MonoBehaviour
 
     IEnumerator FadeCoroutine(int _sceneInfo)
     {   // Image
+        
         Color fadeColor = fadePanel.color;
 
         time = 0f;
         while (fadeColor.a < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             fadeColor.a = Mathf.Lerp(end, start, time); // 0 ~ 1
             fadePanel.color = fadeColor;
@@ -54,22 +55,31 @@ public class Fade : MonoBehaviour
         }
 
         {
+            loadingVideo.gameObject.SetActive(true);
+            loadingVideo.Play();
             ScenesManager.instance.ChangeScene(_sceneInfo);
+
+            if (ScenesManager.instance.sceneInfos[_sceneInfo].loadDBcnt > 0)
+                yield return new WaitUntil(() => ScenesManager.instance.IsCompletedLoadData(_sceneInfo));
+
+            yield return new WaitForSeconds(.5f);
+            loadingVideo.Pause();
+            loadingVideo.gameObject.SetActive(false);
         }
-        yield return new WaitForSeconds(.5f);
 
         time = 0f;
         while (fadeColor.a > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
-            fadePanel.color = fadeColor;
-
+            fadePanel.color = fadeColor; 
             yield return null;
         }
+        Player.instance.isStateChangeable = true;
         Time.timeScale = 1f;
-
+        UIManager.instance.isEndFade = true;
+        
         yield return null;
     }
 
@@ -80,7 +90,7 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (fadeColor.a < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             fadeColor.a = Mathf.Lerp(end, start, time); // 0 ~ 1
             fadePanel.color = fadeColor;
@@ -89,17 +99,19 @@ public class Fade : MonoBehaviour
         }
 
         {   
-            GameManager.instance.player.transform.position = mapControl.gotoPos.position;
-            GameManager.instance.player.cameraManager.UpdateConfineArea(mapControl.confineColl);
+            Player.instance.transform.position = mapControl.gotoPos.position;
+            Player.instance.cameraManager.UpdateConfineArea(mapControl.confineColl);
+            
             yield return new WaitForSeconds(.5f);
-            GameManager.instance.player.isStateChangeable = true;
+
+            Player.instance.isStateChangeable = true;
             spawner.UpdateCurBlockNumber(curMapNum);
             mapControl.flag = false;
         }
         time = 0f;
         while (fadeColor.a > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             fadeColor.a = Mathf.Lerp(start, end, time); // 1 ~ 0
             fadePanel.color = fadeColor;
@@ -107,7 +119,7 @@ public class Fade : MonoBehaviour
             yield return null;
         }
         Time.timeScale = 1f;
-
+        UIManager.instance.isEndFade = true;
         yield return null;
     }
 
@@ -116,22 +128,19 @@ public class Fade : MonoBehaviour
         time = 0f;
         while (text.alpha > 0f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / startFadeTime;
 
             text.alpha = Mathf.Lerp(start, end, time); // 1 ~ 0
-            //fadePanel.color = fadeColor;
-
             yield return null;
         }
+
         // - 밝아집니다
         time = 0f;
         while (text.alpha < 1f)
         {
-            time += Time.deltaTime / fadeTime;
+            time += Time.deltaTime / endFadeTime;
 
             text.alpha = Mathf.Lerp(end, start, time); // 0 ~ 1
-            //fadePanel.color = fadeColor;
-
             yield return null;
         }
     }

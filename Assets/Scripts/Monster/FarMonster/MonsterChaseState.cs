@@ -13,7 +13,8 @@ public class MonsterChaseState : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SpeedReturn();
+        if(!monster.isChase) monster.SpeedToZero();
+        else monster.SpeedReturn();
     }
 
     public override void Exit()
@@ -30,6 +31,5 @@ public class MonsterChaseState : MonsterState
         monster.agent.SetDestination(player.transform.position);
 
         if(monster.distanceToPlayer < monster.attackRange) stateMachine.ChangeState(monster.attackState);
-        
     }
 }
