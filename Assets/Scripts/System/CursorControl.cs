@@ -50,7 +50,7 @@ public class CursorControl : MonoBehaviour
         Vector2 cursorPoint;
 
         cursorTex = UIManager.instance.TextureFromSprite(_cursorImg);
-        cursorTex = UIManager.instance.ScaleTexture(cursorTex, cursorFactor);
+        //cursorTex = UIManager.instance.ScaleTexture(cursorTex, cursorFactor);
         cursorPoint = new Vector2(cursorTex.width / 2, cursorTex.height / 2);
 
         Cursor.SetCursor(cursorTex, cursorPoint, CursorMode.ForceSoftware);
