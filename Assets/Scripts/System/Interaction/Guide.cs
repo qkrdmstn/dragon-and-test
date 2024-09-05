@@ -8,16 +8,15 @@ public class Guide : MonoBehaviour
     public RectTransform startTalkBubble;
     public bool isFirst = false;
     public bool isStart = false;
-    public bool isEnd = false;
     public bool isInteraction = false;
 
     void Update()
     {
-        if (isEnd) return;
+        if (Player.instance.isTownStart) return;
         else if(Player.instance.isInteraction && Input.GetKeyDown(KeyCode.F))
         {
             TurnOffAnimBool("isInteraction");
-            isEnd = true;
+            Player.instance.isTownStart = true;
             return;
         }
         else if(!isFirst && UIManager.instance.isEndFade)

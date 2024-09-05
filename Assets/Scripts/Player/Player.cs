@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     public bool isFall = false;
     public bool isBounded = false;
     public bool isDead = false;
+    public bool isTownStart = false;
     #region Componets
     public PlayerAnimController animController { get; private set; }
 

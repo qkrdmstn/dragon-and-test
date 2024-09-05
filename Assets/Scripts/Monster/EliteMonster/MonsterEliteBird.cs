@@ -15,6 +15,7 @@ public class MonsterEliteBird : MonsterBase
     public int loadedBullet;
     public int magazineSize;
     public float bulletAngle;       // 부채꼴 사이각
+    public float bulletSpeed;
     public int bulletsOnce;         // 최초 발사 총알 수
     public int bulletNum;           // total shoot count
     public float[] shootNumTheta;   // 지그재그...
@@ -86,7 +87,7 @@ public class MonsterEliteBird : MonsterBase
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = transform.position;
 
-                bulletComponent.BulletInitialize(Quaternion.AngleAxis(theta * (i - shootNumTheta[j]), Vector3.forward) * dir);
+                bulletComponent.BulletInitialize(Quaternion.AngleAxis(theta * (i - shootNumTheta[j]), Vector3.forward) * dir, bulletSpeed);
             }
             curbulletsOnce--;
             yield return new WaitForSeconds(fireInterval);
