@@ -89,10 +89,11 @@ MonoBehaviour:
   HP: 4
   damage: 1
   distanceToPlayer: 0
-  moneyRange: {x: 1, y: 3}
+  moneyRange: {x: 2, y: 4}
   moveSpeed: 5
-  knockbackForce: 1
-  knockbackDuration: 0.05
+  tempMoveSpeed: 0
+  knockbackForce: 40
+  knockbackDuration: 1
   knockbackTimer: 0
   player: {fileID: 0}
   playerScript: {fileID: 0}
@@ -105,7 +106,7 @@ MonoBehaviour:
   isChase: 1
   isKnockedBack: 0
   sword: {fileID: 9212423105049567020}
-  swordAura: {fileID: 1692984963978023852, guid: b2acc51242dca944ab618b9a4aacc0fc, type: 3}
+  swordAura: {fileID: 1692984963978023852, guid: 0c2f66270596cec41855271b7d2ac03e, type: 3}
   isSpawned: 0
   isFirst: 1
   deadSec: 0.6
@@ -114,6 +115,7 @@ MonoBehaviour:
   tempcool: 0
   attackDuration: 0.6
   attackRange: 3
+  isTanker: 0
 --- !u!195 &2032848082544233926
 NavMeshAgent:
   m_ObjectHideFlags: 0
