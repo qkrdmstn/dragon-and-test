@@ -1762,9 +1762,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 524524595}
   startTalkBubble: {fileID: 767031514}
+  triggerAction: {fileID: 795034146}
   isFirst: 0
   isStart: 0
-  isEnd: 0
   isInteraction: 0
 --- !u!95 &524524595
 Animator:
@@ -3181,9 +3181,9 @@ MonoBehaviour:
             m_StringArgument: isInteraction
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 795034149}
-          m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-          m_MethodName: set_enabled
+        - m_Target: {fileID: 524524592}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: 
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

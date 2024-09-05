@@ -6,13 +6,18 @@ public class Guide : MonoBehaviour
 {
     public Animator anim;
     public RectTransform startTalkBubble;
+    public GameObject triggerAction;
     public bool isFirst = false;
     public bool isStart = false;
     public bool isInteraction = false;
 
     void Update()
     {
-        if (Player.instance.isTownStart) return;
+        if (Player.instance.isTownStart)
+        {
+            TurnOffTrigger();
+            return;
+        }
         else if(Player.instance.isInteraction && Input.GetKeyDown(KeyCode.F))
         {
             TurnOffAnimBool("isInteraction");
@@ -33,6 +38,10 @@ public class Guide : MonoBehaviour
             Vector3 uiPos = Player.instance.transform.position + Vector3.up * 1.25f;
             startTalkBubble.position = Camera.main.WorldToScreenPoint(uiPos);
         }
+    }
+    public void TurnOffTrigger()
+    {
+        triggerAction.SetActive(false);
     }
 
     public void TurnOnAnimBool(string animName)
