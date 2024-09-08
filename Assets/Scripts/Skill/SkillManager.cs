@@ -244,7 +244,10 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
             if (activeSkillData[i] == SeotdaHwatuCombination.blank)
+            {
+                coolTimeImg[i].gameObject.SetActive(false);
                 continue;
+            }
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
             
             StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));

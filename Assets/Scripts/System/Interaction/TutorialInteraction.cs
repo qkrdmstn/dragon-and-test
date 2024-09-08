@@ -151,6 +151,8 @@ public class TutorialInteraction : Interaction
         SkillManager.instance.DeleteSkill(SeotdaHwatuCombination.TT3);
         Player.instance.curHP = Player.instance.maxHP;
         Player.instance.isClearTutorial = true;
+        Gun gun = GunManager.instance.currentGun.GetComponent<Gun>();
+        gun.loadedBullet = gun.magazineSize;
     }
 
     public GameObject GetCurScarescrow() => curScarescrow;
