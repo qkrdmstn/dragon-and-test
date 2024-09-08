@@ -1,3 +1,4 @@
+using DG.Tweening.Plugins;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,7 +74,7 @@ public class PlayerSkill : MonoBehaviour
                 SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force);
                 break;
             case SeotdaHwatuCombination.TT9:
-                GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.duration, data.range);
+                GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range);
                 break;
             case SeotdaHwatuCombination.TT8:
                 SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed);
@@ -82,7 +83,7 @@ public class PlayerSkill : MonoBehaviour
                 BlankBullet(data.damage, data.range, data.force);
                 break;
             case SeotdaHwatuCombination.TT6:
-                GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.duration, data.range);
+                GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range);
                 break;
             case SeotdaHwatuCombination.TT5:
                 BlankBullet(data.damage, data.range, data.force);
@@ -300,9 +301,18 @@ public class PlayerSkill : MonoBehaviour
     //#endregion
 
     #region Flame
+    Coroutine flameCoroutine;
+    GameObject flameObject;
     private void FlameThrower(SeotdaHwatuCombination code, int damage, float duration, float period)
     {
-        StartCoroutine(FlameThrowerCoroutine(code, damage, duration, period));
+        if (flameCoroutine != null)
+        {
+            //이전에 사용한 동일 스킬 파괴
+            StopCoroutine(flameCoroutine);
+            Destroy(flameObject);
+        }
+
+        flameCoroutine = StartCoroutine(FlameThrowerCoroutine(code, damage, duration, period));
     }
 
     IEnumerator FlameThrowerCoroutine(SeotdaHwatuCombination code, int damage, float duration, float period)
@@ -311,10 +321,9 @@ public class PlayerSkill : MonoBehaviour
 
         float timer = duration;
 
-
         GameObject prefabs = skillObjDictionary[code];
-        GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.identity);
-        SkillObj_Flame flame = Obj.GetComponent<SkillObj_Flame>();
+        flameObject = Instantiate(prefabs, transform.position, Quaternion.identity);
+        SkillObj_Flame flame = flameObject.GetComponent<SkillObj_Flame>();
         flame.Initialize(damage, new Vector2(0,0), StatusEffect.None, period);
         while (timer >= 0.0f)
         {
@@ -322,13 +331,13 @@ public class PlayerSkill : MonoBehaviour
 
             yield return null;
         }
-        Destroy(Obj);
+        Destroy(flameObject);
         Player.instance.isAttackable = true;
     }
     #endregion
 
     #region GuidedMissile 
-    private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float duration, float range)
+    private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float range)
     {
         SkillObj_Missile[] beforeObj = FindObjectsByType<SkillObj_Missile>(FindObjectsSortMode.None);
         for(int i=0; i<beforeObj.Length; i++)
