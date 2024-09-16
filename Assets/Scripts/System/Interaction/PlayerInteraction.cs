@@ -150,15 +150,15 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    TutorialInteraction tuto;
+    TutorialInteraction tutorialInteraction;
     private void TutorialInteraction()
     {
-        if(tuto == null)
-            tuto = GameObject.Find("System").GetComponent<TutorialInteraction>();
+        if(tutorialInteraction == null)
+            tutorialInteraction = GameObject.Find("System").GetComponent<TutorialInteraction>();
 
-        if (interaction.eventName == "족보")
+        if (tutorialInteraction.interactionF && interaction.eventName == "Jokbo")
         {
-            tuto.jokboUIGroup.isPossibleJokbo = true;
+            tutorialInteraction.jokboUIGroup.isPossibleJokbo = true;
             Player.instance.ChangePlayerInteractionState(false);
             return;
         }
@@ -169,15 +169,17 @@ public class PlayerInteraction : MonoBehaviour
             BlanketDoInteraction();
         }
 
-        if (interaction.sequence == 0 && tuto.curIdx >= 2)
+        if (!tutorialInteraction.curScarescrowState.isSequenceDone)
         {
-            tuto.isInteraction = true;
-            Player.instance.ChangePlayerInteractionState(false);
+            if (interaction.sequence == 0 && tutorialInteraction.curIdx >= 2)
+            {
+                tutorialInteraction.isInteraction = true;
+                Player.instance.ChangePlayerInteractionState(false);
+            }
+            else if (tutorialInteraction.curScarescrowType == ScareScrowType.None &&
+                interaction.sequence > 0 && !tutorialInteraction.isInteraction && tutorialInteraction.curIdx == 0)
+                tutorialInteraction.LoadEvent(interaction);
         }
-        else if (!tuto.checkSequenceDone[interaction.sequence] &&
-            interaction.sequence > 0 && !tuto.isInteraction && tuto.curIdx == 0)
-                tuto.LoadEvent(interaction);
-
         else Player.instance.ChangePlayerInteractionState(false);
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorialNear : MonsterNear
 {
     [Header("Tutorial----------")]
-    public TutorialInteraction.TutorialMonsters myNum;
+    public TutorialMonsters myNum;
     public TutorialInteraction.MonsterState myState;
     TutorialInteraction tutorial;
 
@@ -27,7 +27,7 @@ public class TutorialNear : MonsterNear
     }
     public override void OnDamaged(int damage)
     {
-        if (myNum == TutorialInteraction.TutorialMonsters.skill && !tutorial.useSkill) return;
+        if (myNum == TutorialMonsters.skill && !tutorial.useSkill) return;
 
         base.OnDamaged(damage);
     }
