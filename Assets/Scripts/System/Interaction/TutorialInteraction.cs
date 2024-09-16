@@ -27,8 +27,8 @@ public enum TutorialUIListOrder
 public class TutorialInteraction : Interaction
 {
     [SerializeField] List<GameObject> scareScrows;
-    [SerializeField] List<BoxCollider2D> boundColliders;
-    [SerializeField] List<Cinemachine.CinemachineTriggerAction> triggerActions;
+    [SerializeField] List<GameObject> doors;
+    Animator anim;
 
     public enum TutorialMonsters
     {
@@ -49,7 +49,6 @@ public class TutorialInteraction : Interaction
 
     public Vector3 padding;
     GameObject curScarescrow = null;
-    BoxCollider2D curBoundCollider = null;
     PlayerInteraction playerInteraction;
 
     delegate bool OnTutorials();
@@ -129,9 +128,7 @@ public class TutorialInteraction : Interaction
 
             SetNextDialog();
             
-            if (curIdx >= tutorialDatas[curSequence].dialogues.Count)
-                IsDone();
-            else if (curIdx == tutorialDatas[curSequence].dialogues.Count - 1)
+            if (curIdx == tutorialDatas[curSequence].dialogues.Count - 1)   // 마지막 대화
                 ClearCurStage();
             else curIdx++;
         }
@@ -197,7 +194,6 @@ public class TutorialInteraction : Interaction
     void SetScarescrow(ScareScrowType type)
     {
         curScarescrow = scareScrows[(int)type];
-        curBoundCollider = boundColliders[(int)type];
     }
 
     void TutorialUIforAnim(string animName, bool state, TutorialUIListOrder attachUIIdx)
@@ -247,7 +243,6 @@ public class TutorialInteraction : Interaction
                     monsters[(int)TutorialMonsters.battle1].monster.SetActive(true);
                     monsters[(int)TutorialMonsters.battle2].monster.SetActive(true);
                     monsters[(int)TutorialMonsters.battle3].monster.SetActive(true);
-                    boundColliders[6].isTrigger = true;
 
                     onTutorials = CheckBattle;
                 }
@@ -362,31 +357,19 @@ public class TutorialInteraction : Interaction
         }
     }
 
-    public void IsDone()
-    {
-        Debug.Log("Isdone");
-        curScarescrow = null;
-
-        childrens[1].gameObject.SetActive(false);
-        childrens[3].gameObject.SetActive(false);
-
-        dialogTxts[0].text = "";
-        dialogTxts[1].text = "";
-    }
-
     void StartCurStage(int sequence)
     {
         curSequence = sequence;
-        triggerActions[curSequence - 1].enabled = false;
-        boundColliders[curSequence - 1].isTrigger = false;  // 이전 허수아비에게 돌아가지 못합니다.
         canSpeak = true;
+        anim?.SetTrigger("isClose");
     }
 
     void ClearCurStage()
     {
         checkSequenceDone[curSequence] = true;
-        triggerActions[curSequence].enabled = true;
-        curBoundCollider.isTrigger = true;  // 다음 이동을 위한 콜리전 해제
+
+        anim = doors[curSequence].GetComponent<Animator>();
+        anim.SetTrigger("isOpen");
 
         if (curSequence > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
 
@@ -397,6 +380,17 @@ public class TutorialInteraction : Interaction
         isActiveDone = false;
 
         Player.instance.ChangePlayerInteractionState(false);    // 상호작용 종료
+    }
+
+    public void IsDone()
+    {
+        curScarescrow = null;
+
+        childrens[1].gameObject.SetActive(false);
+        childrens[3].gameObject.SetActive(false);
+
+        dialogTxts[0].text = "";
+        dialogTxts[1].text = "";
     }
 
     #region CheckTutorialSituation
