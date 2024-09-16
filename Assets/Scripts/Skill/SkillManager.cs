@@ -262,12 +262,15 @@ public class SkillManager : MonoBehaviour
             return;
 
         SkillDB data = GetSkillDB(activeSkillData[i]);
-        skill.UseSkill(data);
+        float coolTime = skill.UseSkill(data);
 
-        //CoolTime UI setting
-        timer[i] = data.coolTime;
-        coolTimeImg[i].gameObject.SetActive(true);
-        StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+        if (coolTime > 0.0f)
+        {
+            //CoolTime UI setting
+            timer[i] = data.coolTime;
+            coolTimeImg[i].gameObject.SetActive(true);
+            StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+        }
     }
 
     public void UpdateActiveSkillSlot()

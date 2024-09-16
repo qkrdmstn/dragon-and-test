@@ -58,9 +58,10 @@ public class PlayerSkill : MonoBehaviour
         //    BlankBullet(2, 6, 30);
         //}
     }
-    public void UseSkill(SkillDB data)
+    public float UseSkill(SkillDB data)
     {
         SeotdaHwatuCombination code = data.TransStringToEnum();
+        float cooTime = 0.0f;
         //Debug.Log(code + " damage:" + data.damage + " range:" + data.range + " force:" + data.force + " speed:" + data.speed);
         switch (code)
         {
@@ -71,95 +72,76 @@ public class PlayerSkill : MonoBehaviour
             case SeotdaHwatuCombination.GTT13:
                 break;
             case SeotdaHwatuCombination.JTT:
-                SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force);
+                cooTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT9:
-                GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range);
+                cooTime = GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT8:
-                SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed);
+                cooTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT7:
-                BlankBullet(data.damage, data.range, data.force);
+                cooTime = cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT6:
-                GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range);
+                cooTime = GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT5:
-                BlankBullet(data.damage, data.range, data.force);
+                cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT4:
-                SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed);
+                cooTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT3:
-                FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period);
+                cooTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT2:
-                FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period);
+                cooTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT1:
-                SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force);
-                break;
-            case SeotdaHwatuCombination.AL12:
-                break;
-            case SeotdaHwatuCombination.DS14:
-                break;
-            case SeotdaHwatuCombination.GPP19:
-                break;
-            case SeotdaHwatuCombination.JPP110:
-                break;
-            case SeotdaHwatuCombination.JS410:
-                break;
-            case SeotdaHwatuCombination.SR46:
-                break;
-            case SeotdaHwatuCombination.AHES74:
-                break;
-            case SeotdaHwatuCombination.TTCatch73:
-                break;
-            case SeotdaHwatuCombination.MTGR94:
+                cooTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK9:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK8:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK7:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK6:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK5:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK4:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK3:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK2:
-                DashSkill(data.range, data.speed);
+                cooTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK1:
-                StartCoroutine(ReinforceAttack(data.duration));
+                cooTime = ReinforceAttack(data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK0:
                 break;
             case SeotdaHwatuCombination.blank:
                 break;
         }
-
+        return cooTime;
     }
 
     #region Active
     #region BlankBullet
-    private void BlankBullet(int damage, float impactRadius, float impactForce)
+    private float BlankBullet(int damage, float impactRadius, float impactForce, float coolTime)
     {
         _impactRadius = impactRadius;
 
-        Debug.Log("BlankBullet");
         Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(this.transform.position, impactRadius, impactLayerMask);
         for (int i = 0; i < inRangeTarget.Length; i++)
         {
@@ -190,13 +172,17 @@ public class PlayerSkill : MonoBehaviour
                 }
             }
         }
+
+        return coolTime;
     }
     #endregion
 
     #region Dash
-    private void DashSkill(float dist, float speed)
+    private float DashSkill(float dist, float speed, float coolTime)
     {
         StartCoroutine(DashSkillCoroutine(dist, speed));
+
+        return coolTime;
     }
 
     IEnumerator DashSkillCoroutine(float dist, float speed)
@@ -229,42 +215,26 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region Sokbak
-    private void SokbakSkill(SeotdaHwatuCombination code, int damage, float dist, float projectileSpeed)
+    private float SokbakSkill(SeotdaHwatuCombination code, int damage, float dist, float projectileSpeed, float coolTime)
     {
         //방위
-        int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
-        int[] dy = { 1, 0, -1, 0, 1, 1, -1, -1 };
-        float[] degree = { 90.0f, 0.0f, -90.0f, 180.0f, 135.0f, 45.0f, -45.0f, -135.0f};
-        
-        //if (code == SeotdaHwatuCombination.TT4)
-        {
-            Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
-            dir.Normalize();
-            float theta = Vector2.Angle(Vector2.right, dir);
-            if (dir.y < 0)
-                theta *= -1;
+        //int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
+        //int[] dy = { 1, 0, -1, 0, 1, 1, -1, -1 };
+        //float[] degree = { 90.0f, 0.0f, -90.0f, 180.0f, 135.0f, 45.0f, -45.0f, -135.0f};
 
-            GameObject prefabs = skillObjDictionary[code];
-            GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
-            SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
-            Debug.Log(projectile);
-            projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
-        }
-        //else if (code == SeotdaHwatuCombination.TT8)
-        //{
-        //    int numProjectile = 4;
-        //    for (int i = 0; i < numProjectile; i++)
-        //    {
-        //        Vector2 dir = new Vector2(dx[i], dy[i]);
-        //        dir.Normalize();
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+        dir.Normalize();
+        float theta = Vector2.Angle(Vector2.right, dir);
+        if (dir.y < 0)
+            theta *= -1;
 
-        //        GameObject prefabs = skillObjDictionary[code];
-        //        GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, degree[i]));
-        //        SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
-        //        Debug.Log(projectile);
-        //        projectile.Initialize(0, dist, dir, projectileSpeed, StatusEffect.Sokbak);
-        //    }
-        //}
+        GameObject prefabs = skillObjDictionary[code];
+        GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
+        SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
+        Debug.Log(projectile);
+        projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+
+        return coolTime;
     }
     #endregion
 
@@ -303,16 +273,16 @@ public class PlayerSkill : MonoBehaviour
     #region Flame
     Coroutine flameCoroutine;
     GameObject flameObject;
-    private void FlameThrower(SeotdaHwatuCombination code, int damage, float duration, float period)
+    private float FlameThrower(SeotdaHwatuCombination code, int damage, float duration, float period, float coolTime)
     {
         if (flameCoroutine != null)
         {
-            //이전에 사용한 동일 스킬 파괴
-            StopCoroutine(flameCoroutine);
-            Destroy(flameObject);
+            return 0.0f;
         }
 
         flameCoroutine = StartCoroutine(FlameThrowerCoroutine(code, damage, duration, period));
+
+        return coolTime;
     }
 
     IEnumerator FlameThrowerCoroutine(SeotdaHwatuCombination code, int damage, float duration, float period)
@@ -337,12 +307,12 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region GuidedMissile 
-    private void GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float range)
+    private float GuidedMissile(SeotdaHwatuCombination code, int damage, float speed, float range, float coolTime)
     {
         SkillObj_Missile[] beforeObj = FindObjectsByType<SkillObj_Missile>(FindObjectsSortMode.None);
-        for(int i=0; i<beforeObj.Length; i++)
+        if(beforeObj.Length != 0)
         {
-            Destroy(beforeObj[i]);
+            return 0.0f;
         }
         
         int numProjectile = 0;
@@ -367,6 +337,8 @@ public class PlayerSkill : MonoBehaviour
             SkillObj_Missile missile = projectile.GetComponent<SkillObj_Missile>();
             missile.Initialize(damage, direction, StatusEffect.None, speed, range, theta);
         }
+
+        return coolTime;
     }
 
     //IEnumerator GuidedMissileCoroutine(SeotdaHwatuName name, int damage, float speed, float duration, int numProjectile)
@@ -378,7 +350,7 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region SphereAttack 
-    private void SphereAttack(SeotdaHwatuCombination code, int damage, float speed, float range, float period, float force)
+    private float SphereAttack(SeotdaHwatuCombination code, int damage, float speed, float range, float period, float force, float coolTime)
     {
         GameObject prefab = skillObjDictionary[code];
 
@@ -393,10 +365,19 @@ public class PlayerSkill : MonoBehaviour
         SkillObj_Sphere projectile = projectilObj.GetComponent<SkillObj_Sphere>();
         Debug.Log(projectile);
         projectile.Initialize(damage, dir, speed, range, StatusEffect.None, period, force);
+
+        return coolTime;
     }
     #endregion
 
-    IEnumerator ReinforceAttack(float duration)
+    private float ReinforceAttack(float duration, float coolTime)
+    {
+        StartCoroutine(ReinforceAttackCoroutine(duration));
+
+        return coolTime;
+    }
+
+    IEnumerator ReinforceAttackCoroutine(float duration)
     {
         Player.instance.reinforceAttack += 1;
         yield return new WaitForSeconds(duration);
