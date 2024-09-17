@@ -157,6 +157,7 @@ public class Player : MonoBehaviour
                 cameraManager = FindObjectOfType<CameraManager>();
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
+            if (isTutorial) return;
 
             if (shield > 0)
                 shield -= damage;

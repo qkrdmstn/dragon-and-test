@@ -169,17 +169,18 @@ public class PlayerInteraction : MonoBehaviour
             BlanketDoInteraction();
         }
 
-        if (!tutorialInteraction.curScarescrowState.isSequenceDone)
+        if (interaction.sequence == 0 && tutorialInteraction.curIdx >= 2)
         {
-            if (interaction.sequence == 0 && tutorialInteraction.curIdx >= 2)
-            {
-                tutorialInteraction.isInteraction = true;
-                Player.instance.ChangePlayerInteractionState(false);
-            }
-            else if (tutorialInteraction.curScarescrowType == ScareScrowType.None &&
-                interaction.sequence > 0 && !tutorialInteraction.isInteraction && tutorialInteraction.curIdx == 0)
-                tutorialInteraction.LoadEvent(interaction);
+            tutorialInteraction.isInteraction = true;
+            Player.instance.ChangePlayerInteractionState(false);
         }
+        else if((int)tutorialInteraction.curScarescrowState.type == interaction.sequence && tutorialInteraction.curScarescrowState.isSequenceDone)   // 종료된 허수아비
+            Player.instance.ChangePlayerInteractionState(false);
+
+        else if (tutorialInteraction.curScarescrowType == ScareScrowType.None &&
+            interaction.sequence > 0 && !tutorialInteraction.isInteraction && tutorialInteraction.curIdx == 0)
+            tutorialInteraction.LoadEvent(interaction);
+
         else Player.instance.ChangePlayerInteractionState(false);
     }
 

@@ -19,10 +19,6 @@ public class UIGroup : MonoBehaviour
     {
     }
 
-    public virtual void AttachUIforPlayer(int childUIIdx)
-    {
-    }
-
     public void EndInteraction()
     {
         if (!isExit) isExit = true;

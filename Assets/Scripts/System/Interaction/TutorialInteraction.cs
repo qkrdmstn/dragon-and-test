@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,10 +7,6 @@ using UnityEngine;
 public enum ScareScrowType
 {
     Start, AttackDash, Bullet, Reload, MiniBattle, Jokbo, Skill, None
-}
-public enum TutorialUIListOrder
-{
-    Dialogue, Interation, BasicSkill, Reload, OpenJokbo, HwatuSkill, Move
 }
 
 public enum TutorialMonsters
@@ -26,45 +21,40 @@ public enum DialogType
 
 public class TutorialInteraction : Interaction
 {
-    [System.Serializable]
-    public class ScarescrowState
+    [System.Serializable] public class ScarescrowState
     {
         public GameObject scareScrow;
         public DialogType type;
         public bool isSequenceDone;
     }
+    [Header("NPC state")]
     [SerializeField] List<ScarescrowState> scareScrows;
     public ScarescrowState curScarescrowState;
     public ScareScrowType curScarescrowType;
 
     [SerializeField] List<GameObject> doors;
     Animator doorAnim;
-
     
-    [System.Serializable]
-    public class MonsterState
+    [System.Serializable]  public class MonsterState
     {
         public GameObject monster;
         public bool isKilled;
     }
+    [Header("Spawn Objs")]
     public List<MonsterState> monsters;
 
     [SerializeField] GameObject jokbo;
     [SerializeField] BlanketInteractionData blanket;
+
     BlanketInteraction blanketInteraction;
+    PlayerInteraction playerInteraction;
     TutorialDBEntity[] tutoDB;
 
-    public Vector3 padding;
-    PlayerInteraction playerInteraction;
-
-    delegate bool OnTutorials();
-    OnTutorials onTutorials;
-
-    bool OccurTutorial(OnTutorials tutoFunction)
-    {
-        return tutoFunction();
-    }
-
+    [Header("BulletDashTutorial")]
+    public GameObject bulletGenerator;
+    public GameObject bulletEndAction;
+    public static bool generateBullet = false;
+    
     # region DialogInteractionInfo
     List<TutorialData> tutorialDatas = new List<TutorialData>();
     struct TutorialData {
@@ -92,7 +82,7 @@ public class TutorialInteraction : Interaction
     }
     #endregion
 
-    // DialogUI
+    [Header("DialogUI")]
     public TutorialUIGroup tutorialUIGroup;
     public JokboUIGroup jokboUIGroup;
     public GameObject curDialogUI;
@@ -106,14 +96,21 @@ public class TutorialInteraction : Interaction
     public bool isLastDance = false;
 
     public int curIdx = 0;
+    public float paddingValue = 195f;
 
-    public static bool generateBullet = false;
+    delegate bool OnTutorials();
+    OnTutorials onTutorials;
+
+    bool OccurTutorial(OnTutorials tutoFunction)
+    {
+        return tutoFunction();
+    }
 
     async void Start()
     {
         await LoadTutorialDBEntity();
-        tutorialUIGroup = UIManager.instance.curUIGroup.GetComponent<TutorialUIGroup>();
         jokboUIGroup = UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>();
+        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(false); // 튜토리얼에서 체력 표시 X
         StartFirstDialog();
     }
 
@@ -121,15 +118,15 @@ public class TutorialInteraction : Interaction
     {
         if (curScarescrowType != ScareScrowType.None && curScarescrowState.type == DialogType.Bubble)
         {   // 허수아비의 머리 위에 말풍선을 위치
-            tutorialUIGroup.dialogUIs[(int)DialogType.Bubble].transform.position = 
-                Camera.main.WorldToScreenPoint(curScarescrowState.scareScrow.transform.position) + padding;
+            tutorialUIGroup.dialogUIs[(int)DialogType.Bubble].transform.position =
+                Camera.main.WorldToScreenPoint(curScarescrowState.scareScrow.transform.position) + (Vector3.up * paddingValue);
         }
         if (curScarescrowType == ScareScrowType.None) return;
 
         int curSequenceIdx = GetCurSequenceIdx();
 
         if (interactionF && OccurTutorial(onTutorials))
-        {
+        {   // 퀘스트 행동 여부 판단
             interactionF = false;
             isInteraction = false;
             isActiveDone = true;
@@ -138,16 +135,22 @@ public class TutorialInteraction : Interaction
                 isLastDance = false;
                 ClearCurStage();
             }
-            UIManager.instance.curUIGroup.AttachUIforPlayer(-1);
         }
-        else if (curSequenceIdx > 0 && isInteraction && Input.GetKeyDown(KeyCode.F))
-        {   // 현재 대화에 대한 이벤트 호출
-            interactionF = true;
-            curDialogUI.SetActive(false);
+        else if (curSequenceIdx > 0 && !interactionF && isInteraction)
+        {
+            if (curScarescrowType == ScareScrowType.Skill && curIdx > 4)  // 여기서부터는 상호작용 키를 안눌러도 퀘스트 행동 가능
+                interactionF = true;
+            else if (Input.GetKeyDown(KeyCode.F))
+            {   // 현재 대화에 대한 이벤트 호출 - 상호 작용 키를 누르고 퀘스트 행동 가능
+                interactionF = true;
+                curDialogUI.SetActive(false);
+                curScarescrowState.scareScrow.SetActive(false);
+            }
+            Player.instance.ChangePlayerInteractionState(false);
         }
         else if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
         {   // 일반 대화 출력
-            if (isActiveDone) { isActiveDone = false; canSpeak = true; }
+            if (isActiveDone) { isActiveDone = false; canSpeak = true; curScarescrowState.scareScrow.SetActive(true); }
 
             SetNextDialog();
             if (curIdx == tutorialDatas[curSequenceIdx].dialogues.Count - 1)
@@ -166,6 +169,7 @@ public class TutorialInteraction : Interaction
         SkillManager.instance.DeleteSkill(SeotdaHwatuCombination.TT3);
         Player.instance.curHP = Player.instance.maxHP;
         Player.instance.isClearTutorial = true;
+        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(true);
     }
 
     public GameObject GetCurScarescrowObj() => curScarescrowState.scareScrow;
@@ -205,6 +209,7 @@ public class TutorialInteraction : Interaction
     public override void LoadEvent(InteractionData data)
     {   // player가 상호작용한 허수아비에 맞춰 이벤트가 진행됩니다.
         SetScarescrow(data.sequence);
+
         StartCurStage();
         jokboUIGroup.isPossibleJokbo = false;   // 족보 대화 중ㅇㅔ는 활성화 불가
     }
@@ -233,13 +238,7 @@ public class TutorialInteraction : Interaction
     void StartCurStage()
     {
         canSpeak = true;
-        doorAnim?.SetTrigger("isClose");
-    }
-
-    void TutorialUIforAnim(string animName, bool state, TutorialUIListOrder attachUIIdx)
-    {
-        UIManager.instance.curUIGroup.SwitchAnim(animName, state);
-        UIManager.instance.curUIGroup.AttachUIforPlayer((int)attachUIIdx);
+        SetDoorState("isClose");
     }
 
     void ManageEvent()
@@ -260,7 +259,11 @@ public class TutorialInteraction : Interaction
                 break;
             case ScareScrowType.Bullet: // 총알 구르기 연습
                 if (curIdx == 0)
+                {
                     generateBullet = true;
+                    bulletGenerator.SetActive(true);
+                    bulletEndAction.SetActive(true);
+                }
                 break;
             case ScareScrowType.Reload: // 재장전
                 if (curIdx == 1)
@@ -303,14 +306,27 @@ public class TutorialInteraction : Interaction
                     onTutorials = CheckBlanket;
                     curScarescrowState.type = DialogType.Right;
                 }
+                else if(curIdx == 4)
+                {
+                    tutorialUIGroup.SwitchAnim("isSkillInfo", true);
+                }
                 else if (curIdx == 5)
-                {   // 아래에 있는 화투패를 드래그 해서 모포 2장 올려놓으면 스킬을 만들 수 있어!
+                {   // 아래에 있는 화투패를 드래그 해서 모포 2장 올려놓으면 스킬을 만들 수 있어
+                    tutorialUIGroup.SwitchAnim("isSkillInfo", false);
+                    tutorialUIGroup.SwitchAnim("isHwatuCombination", true);
                     blanketInteraction = playerInteraction.blanketInteraction as BlanketInteraction;
                     Player.instance.isCombatZone = false;
                     onTutorials = CheckSkillinBlanket;
                 }
+                else if(curIdx == 7)
+                    tutorialUIGroup.SwitchAnim("isSkillKey", true);
+                else if(curIdx == 8)
+                    tutorialUIGroup.SwitchAnim("isSkillKey", false);
+                else if(curIdx == 9)
+                    tutorialUIGroup.SwitchAnim("isTrash", true);
                 else if (curIdx == 10)
                 {
+                    tutorialUIGroup.SwitchAnim("isTrash", false);
                     isBlanket = true;
 
                     Player.instance.isCombatZone = true;
@@ -331,7 +347,7 @@ public class TutorialInteraction : Interaction
             curIdx++;
             yield return new WaitForSeconds(.5f);
 
-            TutorialUIforAnim("isInteraction", true, TutorialUIListOrder.Interation);
+            //tutorialUIGroup.SwitchAnim("isInteraction", true);
             yield return new WaitForSeconds(1f);
 
             SetNextDialog();    // curIdx = 1
@@ -339,7 +355,7 @@ public class TutorialInteraction : Interaction
         }
 
         yield return new WaitUntil(() => isInteraction);
-        UIManager.instance.curUIGroup.SwitchAnim("isInteraction", false);
+        //tutorialUIGroup.SwitchAnim("isInteraction", false);
 
         canSpeak = true;
         isActiveDone = true;
@@ -360,8 +376,6 @@ public class TutorialInteraction : Interaction
             {   // 현재 대화에 대하여 발생될 이벤트가 있다면 대화 진행을 멈추고 이벤트에 맞는 함수를 지정합니다.
                 isInteraction = true;
                 canSpeak = false;
-
-                Player.instance.ChangePlayerInteractionState(false);
             }
             ManageEvent();
         }
@@ -373,7 +387,8 @@ public class TutorialInteraction : Interaction
 
         int curSequenceIdx = GetCurSequenceIdx();
         doorAnim = doors[curSequenceIdx].GetComponent<Animator>();
-        doorAnim.SetTrigger("isOpen");
+        if(curScarescrowType != ScareScrowType.Bullet)
+            SetDoorState("isOpen");
 
         if (curSequenceIdx > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
 
@@ -383,6 +398,18 @@ public class TutorialInteraction : Interaction
         curIdx = 0;
 
         Player.instance.ChangePlayerInteractionState(false);    // 상호작용 종료
+    }
+
+    public void SetDoorState(string animName)
+    {
+        if(animName.Equals("isOpen"))
+            SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Clear);
+        else
+        {
+            // 닫히는 소리
+        }
+
+        doorAnim?.SetTrigger(animName);
     }
 
     public void IsDone()
@@ -397,11 +424,11 @@ public class TutorialInteraction : Interaction
     public bool isAttacked = false;
     bool CheckAttack()
     {
-        TutorialUIforAnim("isAttack", true, TutorialUIListOrder.BasicSkill);
+        tutorialUIGroup.SwitchAnim("isAttack", true);
 
         if (isAttacked)
         {
-            UIManager.instance.curUIGroup.SwitchAnim("isAttack", false);
+            tutorialUIGroup.SwitchAnim("isAttack", false);
             return true;
         }
         else return false;
@@ -410,12 +437,12 @@ public class TutorialInteraction : Interaction
     public bool isDashed = false;
     bool CheckDash()
     {
-        TutorialUIforAnim("isDash", true, TutorialUIListOrder.BasicSkill);
+        tutorialUIGroup.SwitchAnim("isDash", true);
 
         if (Player.instance.IsDash())
         {
             isDashed = true;
-            UIManager.instance.curUIGroup.SwitchAnim("isDash", false);
+            tutorialUIGroup.SwitchAnim("isDash", false);
             return true;
         }
         else return false;
@@ -439,11 +466,11 @@ public class TutorialInteraction : Interaction
 
     bool CheckReload()
     {
-        TutorialUIforAnim("isReload", true, TutorialUIListOrder.Reload);
+        tutorialUIGroup.SwitchAnim("isReload", true);
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            UIManager.instance.curUIGroup.SwitchAnim("isReload", false);
+            tutorialUIGroup.SwitchAnim("isReload", false);
             return true;
         }
         return false;
@@ -482,11 +509,11 @@ public class TutorialInteraction : Interaction
 
     bool CheckOpenJokbo()
     {
-        TutorialUIforAnim("isOpenJokbo", true, TutorialUIListOrder.OpenJokbo);
+        tutorialUIGroup.SwitchAnim("isOpenJokbo", true);
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            UIManager.instance.curUIGroup.SwitchAnim("isOpenJokbo", false);
+            tutorialUIGroup.SwitchAnim("isOpenJokbo", false);
 
             UIManager.instance.SceneUI["Battle_1"].SetActive(false);
             UIManager.instance.SceneUI["Inventory"].SetActive(false);
@@ -527,10 +554,12 @@ public class TutorialInteraction : Interaction
     }
 
     public static bool isBlanket = false;
+    public static bool isPossibleCombination = false;
     bool CheckSkillinBlanket()
     {
         if (blanketInteraction.selectedCnt == 2)
         { // 화투패 2장 획득 완료
+            tutorialUIGroup.SwitchAnim("isHwatuCombination", false);
             return true;
         }
         else return false;
@@ -549,11 +578,10 @@ public class TutorialInteraction : Interaction
     bool isLoadSkillMonster = false;
     bool CheckUseSkill()
     {   // 3땡 : 일정 시간동안 브레스영역이 활성화 되고 여기 닿으면 데미지
-        if(!isLoadSkillMonster && !UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[5].activeSelf)
+        if (!isLoadSkillMonster && !UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[5].activeSelf)
         {   // 모포가 꺼지면 몬스터 소환
-           curDialogUI.SetActive(false);
-
             isLoadSkillMonster = true;
+            curDialogUI.SetActive(false);
             monsters[(int)TutorialMonsters.skill].monster.SetActive(true);
         }
         else if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
