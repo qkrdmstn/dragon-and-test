@@ -244,7 +244,10 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
             if (activeSkillData[i] == SeotdaHwatuCombination.blank)
+            {
+                coolTimeImg[i].gameObject.SetActive(false);
                 continue;
+            }
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
             
             StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
@@ -259,12 +262,15 @@ public class SkillManager : MonoBehaviour
             return;
 
         SkillDB data = GetSkillDB(activeSkillData[i]);
-        skill.UseSkill(data);
+        float coolTime = skill.UseSkill(data);
 
-        //CoolTime UI setting
-        timer[i] = data.coolTime;
-        coolTimeImg[i].gameObject.SetActive(true);
-        StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+        if (coolTime > 0.0f)
+        {
+            //CoolTime UI setting
+            timer[i] = data.coolTime;
+            coolTimeImg[i].gameObject.SetActive(true);
+            StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+        }
     }
 
     public void UpdateActiveSkillSlot()

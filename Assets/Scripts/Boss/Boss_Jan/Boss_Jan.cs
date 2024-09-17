@@ -9,6 +9,7 @@ public enum BossStates_Jan
     pattern1,
     pattern2,
     pattern3,
+    pattern4,
     spawnMonster,
     hit
 }
@@ -68,6 +69,11 @@ public class Boss_Jan : Boss
     public float pattern3RotationTime = 1.0f;
     public float pattern3DisplayTime = 1.0f;
 
+    [Header("Pattern4 Info")]
+    public float pattern4StartInterval = 1.1f;
+    public float pattern4EndInterval = 0.5f;
+    public float pattern4BulletSpeed = 0.6f;
+
     [Header("Spawn Monster State Info")]
     public GameObject[] spawnMosnterPrefabs;
     public BlockInfo bossField;
@@ -89,6 +95,7 @@ public class Boss_Jan : Boss
     public BossPattern1State_Jan bossPattern1State;
     public BossPattern2State_Jan bossPattern2State;
     public BossPattern3State_Jan bossPattern3State;
+    public BossPattern4State_Jan bossPattern4State;
     #endregion
 
     protected override void Awake()
@@ -119,6 +126,7 @@ public class Boss_Jan : Boss
         bossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
         bossPattern2State = new BossPattern2State_Jan(this, stateMachine, player);
         bossPattern3State = new BossPattern3State_Jan(this, stateMachine, player);
+        bossPattern4State = new BossPattern4State_Jan(this, stateMachine, player);
 
         switch (initState)
         {
@@ -140,6 +148,9 @@ public class Boss_Jan : Boss
             case BossStates_Jan.pattern3:
                 stateMachine.Initialize(bossPattern3State);
                 break;
+            case BossStates_Jan.pattern4:
+                stateMachine.Initialize(bossPattern4State);
+                break;
             default:
                 stateMachine.Initialize(bossIdleState);
                 break;
@@ -153,16 +164,18 @@ public class Boss_Jan : Boss
 
         if (stateMachine.currentState == bossIdleState)
             curState = BossStates_Jan.idle;
-        else if(stateMachine.currentState == bossChaseState)
+        else if (stateMachine.currentState == bossChaseState)
             curState = BossStates_Jan.chase;
         else if (stateMachine.currentState == bossBasicAttackState)
             curState = BossStates_Jan.basicAttack;
         else if (stateMachine.currentState == bossPattern1State)
             curState = BossStates_Jan.pattern1;
         else if (stateMachine.currentState == bossPattern2State)
-            curState = BossStates_Jan.pattern2;        
+            curState = BossStates_Jan.pattern2;
         else if (stateMachine.currentState == bossPattern3State)
             curState = BossStates_Jan.pattern3;
+        else if (stateMachine.currentState == bossPattern4State)
+            curState = BossStates_Jan.pattern4;
     }
 
     public bool IsWithinChaseRange() //플레이어가 추적 범위 내에 있는지 check
