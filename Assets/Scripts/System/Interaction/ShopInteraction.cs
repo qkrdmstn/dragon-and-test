@@ -204,6 +204,7 @@ public class ShopInteraction : Interaction
 
     public void SetActiveShopUI(bool visible)
     {   // manage dialog UI
+        UIManager.instance.SceneUI["Inventory"].SetActive(!visible);    // inventory UI
         UIManager.instance.SceneUI["Shop"].SetActive(visible);
     }
 

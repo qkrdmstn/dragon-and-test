@@ -146,10 +146,8 @@ public class Player : MonoBehaviour
 
         if(!isDamaged)
         {
-            isDamaged = true;
-            // monster에게 맞았을때 쉐이킹
             try
-            {
+            {    // monster에게 맞았을때 쉐이킹
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
             catch (System.NullReferenceException ex)
@@ -157,8 +155,10 @@ public class Player : MonoBehaviour
                 cameraManager = FindObjectOfType<CameraManager>();
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
-            if (isTutorial) return;
+            if (isTutorial)
+                return;
 
+            isDamaged = true;
             if (shield > 0)
                 shield -= damage;
             else

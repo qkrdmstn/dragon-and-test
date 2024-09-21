@@ -110,7 +110,7 @@ public class TutorialInteraction : Interaction
     {
         await LoadTutorialDBEntity();
         jokboUIGroup = UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>();
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(false); // 튜토리얼에서 체력 표시 X
+        //UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(false); // 튜토리얼에서 체력 표시 X
         StartFirstDialog();
     }
 
@@ -441,6 +441,7 @@ public class TutorialInteraction : Interaction
     bool CheckDash()
     {
         tutorialUIGroup.SwitchAnim("isDash", true);
+        monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>().SetAttackable();
 
         if (Player.instance.IsDash())
         {
@@ -457,9 +458,7 @@ public class TutorialInteraction : Interaction
         if (isStartKill)
         {
             isStartKill = false;
-            TutorialFar tutorialFar = monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>();
-            tutorialFar.ChaseState(true);
-            tutorialFar.SetAttackable();
+            monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>().ChaseState(true);
         }
 
         if (monsters[(int)TutorialMonsters.attack].isKilled)
