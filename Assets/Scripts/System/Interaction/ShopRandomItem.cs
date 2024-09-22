@@ -37,7 +37,13 @@ public class ShopRandomItem : MonoBehaviour
 
     void SetCountGun()
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[Random.Range(1, 3)];
+        int gunIdx = -1;
+        do
+        {
+            gunIdx = Random.Range(0, 4);
+        } while (gunIdx == 1);
+
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[gunIdx];
         itemObjs[cnt].SetItemData();
         cnt++;
     }
@@ -67,6 +73,5 @@ public class ShopRandomItem : MonoBehaviour
             itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = fruitItemData;
             itemObjs[cnt].SetItemData();
         }
-
     }
 }

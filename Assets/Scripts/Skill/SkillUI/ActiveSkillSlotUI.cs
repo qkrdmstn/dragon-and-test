@@ -36,11 +36,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
         originScale = new Vector3(1, 1, 1);
 
         data = SeotdaHwatuCombination.blank;
-
-        if(this.name == "SkillData1")
-            activeSkillSlotIndex = 0;
-        else
-            activeSkillSlotIndex = 1;
     }
 
     private void Start()
