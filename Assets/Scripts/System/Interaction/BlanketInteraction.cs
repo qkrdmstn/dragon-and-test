@@ -107,8 +107,8 @@ public class BlanketInteraction : Interaction
 
     private void UpdateMaterialHwatuUIInitPos(float duration)
     {
-        int numOfCard = 10 - selectedCnt - 1; //최대 카드 - 모포 위의 카드 - 1
-
+        int numOfCard = 9; //최대 카드 - 모포 위의 카드 - 1
+        Debug.Log(numOfCard);
         float interval = (maxPos.x - minPos.x) / (float)numOfCard;
         int j = 0;
         for (int i = 0; i < materialHwatuUIObjectList.Count; i++)
@@ -145,12 +145,9 @@ public class BlanketInteraction : Interaction
         Debug.Log("EndInteraction");
     }
 
-    public bool AddSelectedHwatu(MaterialHwatuSlotUI ui) //실패 시, -1 반환 / 성공 시, 저장된 칸 반환
+    public bool AddSelectedHwatu(MaterialHwatuSlotUI ui)
     {
         HwatuData hwatuData = ui.hwatuData;
-
-        if (SkillManager.instance.activeSkillCnt >= 2) //스킬이 이미 가득 찼을 경우, 실패
-            return false;
 
         if (selectedCnt >= 2) //화투 select에 빈 곳이 없을 경우, 실패
             return false;
@@ -165,6 +162,8 @@ public class BlanketInteraction : Interaction
             SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatuData.hwatu);
 
             if (result == SeotdaHwatuCombination.blank) //섯다에 없는 조합일 경우, 실패
+                return false;
+            else if(SkillManager.instance.activeSkillCnt >= 2 && !SkillManager.instance.IsPassive(result)) //액티브 가득 참 & 현재 조합이 액티브일 경우
                 return false;
         }
 
@@ -190,21 +189,17 @@ public class BlanketInteraction : Interaction
         return true;
     }
 
-    public void DeleteSelectedHwatu(MaterialHwatuSlotUI ui)
+    public void CancelSelectedHwatu()
     {
-        HwatuData hwatuData = ui.hwatuData;
-        ui.isSelected = false;
-
         for (int i = 0; i < 2; i++)
         {
-            if (selectedHwatuUI[i] == hwatuData)
+            if (selectedHwatuUI[i] != null)
             {
+                selectedHwatuUI[i].isSelected = false;
                 selectedHwatuUI[i] = null;
                 selectedCnt -= 1;
-                break;
             }
         }
-
         UpdateMaterialHwatuUIInitPos(0.5f);
     }
 

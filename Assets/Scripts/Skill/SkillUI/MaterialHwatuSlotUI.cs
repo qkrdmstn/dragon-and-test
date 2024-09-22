@@ -47,7 +47,6 @@ public class MaterialHwatuSlotUI : MonoBehaviour
         if (isSelected || isTweening || isDrag)
             return;
 
-        transform.SetSiblingIndex(originSiblingIndex);
         MoveTransform(0.25f, false);
     }
 
@@ -68,13 +67,13 @@ public class MaterialHwatuSlotUI : MonoBehaviour
         isDrag = false;
         RectTransform rectTransform = this.GetComponent<RectTransform>();
         BlanketUI blanketUI = transform.GetComponentInParent<BlanketUI>();
+        BlanketInteraction blanketInteraction = FindObjectOfType<BlanketInteraction>();
 
         bool isInBlanket = blanketUI.IsInBlanket(rectTransform);
         bool isInTrashCan = blanketUI.IsInTrashCan(rectTransform);
 
         if (isInBlanket) //모포에 완전히 겹쳤다면,
         {
-            BlanketInteraction blanketInteraction = FindObjectOfType<BlanketInteraction>();
             bool isCombinationPossible = blanketInteraction.AddSelectedHwatu(this); //조합 체크
 
             if (isCombinationPossible) // 가능한 조합
@@ -87,21 +86,12 @@ public class MaterialHwatuSlotUI : MonoBehaviour
                 transform.SetAsLastSibling();
             }
             else
-            {
-                MoveTransform(0.25f, true); //원래 자리로 돌려보내기
-                transform.SetSiblingIndex(originSiblingIndex);
-            }
+                blanketInteraction.CancelSelectedHwatu();
         }
         else if (isInTrashCan) //쓰레기통에 겹치면
-        {
-            BlanketInteraction blanketInteraction = FindObjectOfType<BlanketInteraction>();
             blanketInteraction.DeleteHwatu(this);
-        }
         else
-        {
-            MoveTransform(0.25f, true); //원래 자리로 돌려보내기
-            transform.SetSiblingIndex(originSiblingIndex);
-        }
+            blanketInteraction.CancelSelectedHwatu();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -134,7 +124,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
         }
     }
 
-    public void MoveTransform(float dotweenTime = 0, bool tweenSetting = true)
+    public void MoveTransform(float dotweenTime = 0, bool tweenSetting = true) //OriginPos로 이동
     {
         if (tweenSetting)
         {
@@ -148,6 +138,7 @@ public class MaterialHwatuSlotUI : MonoBehaviour
             transform.DORotateQuaternion(originRot, dotweenTime);
             transform.DOScale(originScale, dotweenTime);
         }
+        transform.SetSiblingIndex(originSiblingIndex);
     }
 
     private void TweenStart()

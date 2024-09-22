@@ -169,14 +169,12 @@ public class SkillManager : MonoBehaviour
 
     public void AddSkill(SeotdaHwatuCombination skill)
     {
-        int skillNum = (int)skill;
         if(skill == SeotdaHwatuCombination.KK0)
         {
             int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
             Player.instance.OnDamamged(damage);
         }
-        //Add Passive Skill
-        else if (skillNum >= 13 && skillNum <= 18)
+        else if (IsPassive(skill)) //Add Passive Skill
         {
             //스킬 보유 X
             if (passiveSkillData.FindIndex(x => x == skill) == -1)
@@ -205,7 +203,7 @@ public class SkillManager : MonoBehaviour
 
     public void DeleteSkill(SeotdaHwatuCombination skill)
     {
-        for(int i=0; i<2; i++)
+        for (int i = 0; i < 2; i++)
         {
             if (activeSkillData[i] == skill)
             {
@@ -214,6 +212,13 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
+        UpdateActiveSkillSlot();
+    }
+
+    public void DeleteSkill(int index)
+    {
+        activeSkillData[index] = SeotdaHwatuCombination.blank;
+        activeSkillCnt--;
         UpdateActiveSkillSlot();
     }
 
@@ -311,7 +316,7 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public bool PassiveCheck(SeotdaHwatuCombination skillName)
+    public bool PassiveCheck(SeotdaHwatuCombination skillName) //패시브 보유 여부 확인
     {
         for(int i=0; i< passiveSkillData.Count; i++)
         {
@@ -320,6 +325,15 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
+
+    public bool IsPassive(SeotdaHwatuCombination skillName) //해당 스킬이 패시브 스킬인지 확인
+    {
+        int skillNum = (int)skillName;
+        if (skillNum >= 13 && skillNum <= 21)
+            return true;
+        else 
+            return false;
+    }       
 
     public void ClearSkill()
     {   // hwatu
@@ -345,4 +359,6 @@ public class SkillManager : MonoBehaviour
 
         return skillInfo;
     }
+
+
 }
