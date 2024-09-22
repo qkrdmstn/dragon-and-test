@@ -66,6 +66,7 @@ public class PlayerSkill : MonoBehaviour
         switch (code)
         {
             case SeotdaHwatuCombination.GTT38:
+                cooTime = Superman(data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.GTT18:
                 break;
@@ -370,6 +371,25 @@ public class PlayerSkill : MonoBehaviour
     }
     #endregion
 
+    #region SuperMan
+    private float Superman(float duration, float coolTime)
+    {
+        StartCoroutine(SupermanCoroutine(duration));
+
+        return coolTime;
+    }
+
+    IEnumerator SupermanCoroutine(float duration)
+    {
+        SkillManager.instance.ClearCoolTimer();
+        Player.instance.isSuperman = true;
+        yield return new WaitForSeconds(duration);
+        Player.instance.isSuperman = false;
+    }
+
+    #endregion
+
+    #region Reinforce
     private float ReinforceAttack(float duration, float coolTime)
     {
         StartCoroutine(ReinforceAttackCoroutine(duration));
@@ -383,6 +403,8 @@ public class PlayerSkill : MonoBehaviour
         yield return new WaitForSeconds(duration);
         Player.instance.reinforceAttack -= 1;
     }
+    #endregion
+
     #endregion
 
     #region Passive

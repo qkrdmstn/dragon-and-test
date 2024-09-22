@@ -108,7 +108,6 @@ public class BlanketInteraction : Interaction
     private void UpdateMaterialHwatuUIInitPos(float duration)
     {
         int numOfCard = 9; //최대 카드 - 모포 위의 카드 - 1
-        Debug.Log(numOfCard);
         float interval = (maxPos.x - minPos.x) / (float)numOfCard;
         int j = 0;
         for (int i = 0; i < materialHwatuUIObjectList.Count; i++)

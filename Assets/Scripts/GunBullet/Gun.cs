@@ -135,11 +135,7 @@ public class Gun : MonoBehaviour
             }
 
             //Shoot Setting
-            shootTimer = shootDelay;
-            if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
-            {
-                shootTimer -= shootDelay * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
-            }
+            shootTimer = CalcShootDelay();
             loadedBullet--;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
@@ -186,6 +182,17 @@ public class Gun : MonoBehaviour
         Vector2 result = direction;
         result.Normalize();
         return result;
+    }
+
+    public float CalcShootDelay()
+    {
+        float timer = shootDelay;
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            timer -= shootDelay * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
+        if(Player.instance.isSuperman)
+            timer -= shootDelay * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GTT38).probability;
+
+        return timer;
     }
 
     protected IEnumerator InactiveIsAttacking()

@@ -36,7 +36,7 @@ public class Boss_Jan : Boss
     public int reloadCnt = 0;
 
     [Header("Pattern1 Info")]
-    public float pattern1Prob = 0.5f;
+    public float pattern1Prob = 0.3f;
     public float sphereShootNum;
     public float sphereInterval;
     public float spherePathInterval;
@@ -70,6 +70,7 @@ public class Boss_Jan : Boss
     public float pattern3DisplayTime = 1.0f;
 
     [Header("Pattern4 Info")]
+    public float pattern4Prob = 0.2f;
     public float pattern4StartInterval = 1.1f;
     public float pattern4EndInterval = 0.5f;
     public float pattern4BulletSpeed = 0.6f;

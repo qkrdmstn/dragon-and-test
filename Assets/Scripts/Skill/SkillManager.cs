@@ -271,10 +271,13 @@ public class SkillManager : MonoBehaviour
 
         if (coolTime > 0.0f)
         {
-            //CoolTime UI setting
-            timer[i] = data.coolTime;
-            coolTimeImg[i].gameObject.SetActive(true);
-            StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+            if(!Player.instance.isSuperman || activeSkillData[i] == SeotdaHwatuCombination.GTT38) //초사이언 스킬쿨 초기화, 38 광땡은 예외
+            {
+                //CoolTime UI setting
+                timer[i] = data.coolTime;
+                coolTimeImg[i].gameObject.SetActive(true);
+                StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+            }
         }
     }
 
@@ -315,6 +318,15 @@ public class SkillManager : MonoBehaviour
             timer[i] -= 0.5f;
         }
     }
+
+    public void ClearCoolTimer()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            timer[i] = 0.0f;
+        }
+    }
+
 
     public bool PassiveCheck(SeotdaHwatuCombination skillName) //패시브 보유 여부 확인
     {

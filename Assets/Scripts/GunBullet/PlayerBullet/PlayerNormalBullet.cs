@@ -113,7 +113,12 @@ public class PlayerNormalBullet : MonoBehaviour
 
     public void BossDamaged(Boss boss)
     {
-        boss.OnDamaged(damage);
+        //암행어사
+        SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
+            boss.OnDamaged(damage + (int)ahes74Data.probability);
+        else
+            boss.OnDamaged(damage);
 
         //알리
         SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);

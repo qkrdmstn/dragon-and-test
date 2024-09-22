@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System.Diagnostics;
 
 public class Player : MonoBehaviour
 {
@@ -44,6 +45,8 @@ public class Player : MonoBehaviour
     public bool isBounded = false;
     public bool isDead = false;
     public bool isTownStart = false;
+    public bool isSuperman = false;
+
     #region Componets
     public PlayerAnimController animController { get; private set; }
 
@@ -134,6 +137,17 @@ public class Player : MonoBehaviour
     public Vector2 GetVelocity()
     {
         return rb.velocity;
+    }
+
+    public float ClacSpeed(float baseSpeed)
+    {
+        float speed = baseSpeed;
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            speed += baseSpeed * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
+        if (isSuperman)
+            speed += baseSpeed * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GTT38).probability;
+
+        return speed;
     }
 
     public void OnDamamged(int damage)

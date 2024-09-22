@@ -88,7 +88,9 @@ public class BossBasicAttackState_Jan : BossState_Jan
             else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob)
                 stateMachine.ChangeState(boss.bossPattern2State);            
             else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob + boss.pattern3Prob)
-                stateMachine.ChangeState(boss.bossPattern3State);
+                stateMachine.ChangeState(boss.bossPattern3State);            
+            else if (randomVal <= boss.pattern1Prob + boss.pattern2Prob + boss.pattern3Prob + boss.pattern4Prob)
+                stateMachine.ChangeState(boss.bossPattern4State);
         }
         else
             stateMachine.ChangeState(boss.bossIdleState);
