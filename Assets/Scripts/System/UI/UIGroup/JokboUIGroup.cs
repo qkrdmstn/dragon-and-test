@@ -72,13 +72,17 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach (JokboHwatuUI obj in hwatuUIs)
+        for(int k =0; k< hwatuUIs.Length; k++)
         {
-            for(int i=0; i<obj.hwatu.Length; i++)
+            for (int i = 0; i < hwatuUIs[k].hwatu.Length; i++)
             {
-                GameObject hwatu = obj.hwatu[i];
+                if (k == 3)
+                {
+                    idx++; continue;
+                }
+
+                GameObject hwatu = hwatuUIs[k].hwatu[i];
                 TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
-                childTxts[0].text = skillDB[idx].synergyName;
 
                 Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true); // hwatu1+ hwatu2 + skillImg 
                 int synergeType = GetSynergeName(hwatu.name);
@@ -99,13 +103,15 @@ public class JokboUIGroup : UIGroup {
                         hwatu2 = SkillManager.instance.hwatuData[j].hwatu;
                     }
                 }
-                if(hwatu1 != null && hwatu2 != null)
+
+                childTxts[0].text = skillDB[idx].synergyName;
+                if (hwatu1 != null && hwatu2 != null)
                 {
                     SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatu2);
                     childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[result];
                     childTxts[1].text = SkillManager.instance.GetSkillInfo(result, false);
                 }
-                    idx++;
+                idx++;
             }
         }
     }

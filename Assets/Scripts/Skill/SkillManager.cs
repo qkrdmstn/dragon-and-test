@@ -182,10 +182,8 @@ public class SkillManager : MonoBehaviour
                 passiveSkillCnt.Add(skill, 1);
             }
             else
-            {
                 passiveSkillCnt[skill]++;
-                skillDBDictionary[skill].probability += skillDBDictionary[skill].growCoefficient;
-            }
+
             UpdatePassiveSkillSlot();
         }
         else //Add Active Skill
@@ -373,13 +371,21 @@ public class SkillManager : MonoBehaviour
 
     public string GetSkillInfo(SeotdaHwatuCombination skillName, bool flag) //true면 성장계수 반영
     {
-        SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
+        SkillDB skillData = GetSkillDB(skillName);
         float prob = skillData.probability;
         string skillInfo = skillData.info;
         if(flag)
             skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((GetSkillProb(skillName) * 100), 1).ToString() + "%</color>");
         else
             skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+
+        if (skillName == SeotdaHwatuCombination.AHES74)
+        {
+            if (flag)
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + GetSkillProb(skillName).ToString() + "</color>");
+            else
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + skillData.probability.ToString() + "</color>");
+        }
 
         return skillInfo;
     }
