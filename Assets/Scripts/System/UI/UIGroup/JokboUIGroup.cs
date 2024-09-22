@@ -79,8 +79,6 @@ public class JokboUIGroup : UIGroup {
                 GameObject hwatu = obj.hwatu[i];
                 TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
                 childTxts[0].text = skillDB[idx].synergyName;
-                childTxts[1].text = skillDB[idx].info;
-                idx++;
 
                 Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true); // hwatu1+ hwatu2 + skillImg 
                 int synergeType = GetSynergeName(hwatu.name);
@@ -102,7 +100,12 @@ public class JokboUIGroup : UIGroup {
                     }
                 }
                 if(hwatu1 != null && hwatu2 != null)
-                    childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[Hwatu.GetHwatuCombination(hwatu1, hwatu2)];
+                {
+                    SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatu2);
+                    childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[result];
+                    childTxts[1].text = SkillManager.instance.GetSkillInfo(result, false);
+                }
+                    idx++;
             }
         }
     }

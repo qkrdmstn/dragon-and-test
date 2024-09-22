@@ -283,8 +283,9 @@ public class MonsterBase : MonoBehaviour
         moneyItem.amount = Random.Range(moneyRange.x, moneyRange.y);
 
         SkillDB ttCatch73Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.TTCatch73);
+        float ttCatch73Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.TTCatch73);
         float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.TTCatch73) && randomVal <= ttCatch73Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.TTCatch73) && randomVal <= ttCatch73Prob)
         {
             if (this.name.Contains("BirdTanker") || this.name.Contains("BirdCrossbowman"))
                 moneyItem.amount *= 2;
