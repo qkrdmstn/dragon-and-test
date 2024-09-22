@@ -82,18 +82,27 @@ public class JokboUIGroup : UIGroup {
                 childTxts[1].text = skillDB[idx].info;
                 idx++;
 
-                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true);
+                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true); // hwatu1+ hwatu2 + skillImg 
                 int synergeType = GetSynergeName(hwatu.name);
 
                 SeotdaHwatuName[] cards = Hwatu.GetHwatuCombination((SeotdaHwatuCombination)synergeType);
+                Hwatu hwatu1 = null, hwatu2 = null;
                 for (int j = 0; j < SkillManager.instance.hwatuData.Length; j++)
                 {
                     if (cards[0] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
-                    // 1번은 plus
+                    {
+                        childImgs[1].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        hwatu1 = SkillManager.instance.hwatuData[j].hwatu;
+                    }
+
                     else if (cards[1] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[2].sprite = SkillManager.instance.hwatuData[j].sprite;
+                    {
+                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        hwatu2 = SkillManager.instance.hwatuData[j].hwatu;
+                    }
                 }
+                if(hwatu1 != null && hwatu2 != null)
+                    childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[Hwatu.GetHwatuCombination(hwatu1, hwatu2)];
             }
         }
     }

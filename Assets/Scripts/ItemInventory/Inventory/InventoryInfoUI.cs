@@ -4,8 +4,9 @@ using UnityEngine.UI;
 
 public class InventoryInfoUI : MonoBehaviour
 {
-    [SerializeField] private Image infoImage;
-    [SerializeField] private TextMeshProUGUI infoText;
+    [SerializeField] Image infoImage;
+    [SerializeField] TextMeshProUGUI infoItemName;
+    [SerializeField] TextMeshProUGUI infoIteDesc;
 
     public void UpdateItemInfo(ItemData _data)
     {
@@ -14,7 +15,8 @@ public class InventoryInfoUI : MonoBehaviour
         {
             infoImage.color = Color.white;
             infoImage.sprite = _data.icon;
-            infoText.text = _data.itemInfo;
+            infoItemName.text = _data.itemName;
+            infoIteDesc.text = _data.itemInfo;
         }
     }
 }

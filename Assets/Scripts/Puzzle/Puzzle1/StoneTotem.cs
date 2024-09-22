@@ -79,9 +79,9 @@ public class StoneTotem : MonoBehaviour
         cardImg.sprite = decks[index];
         if (index == (int)month)
         {
-            puzzleInteraction.isClear[(int)myType] = true;
+            puzzleInteraction.isClears[(int)myType] = true;
         }
-        else puzzleInteraction.isClear[(int)myType] = false;
+        else puzzleInteraction.isClears[(int)myType] = false;
 
         isChanging = false;
     }

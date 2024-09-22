@@ -45,7 +45,7 @@ public class TutorialInteraction : Interaction
 
     [SerializeField] GameObject jokbo;
     [SerializeField] BlanketInteractionData blanket;
-
+    MaterialHwatuSlotUI[] materialHwatuSlotUIs;
     BlanketInteraction blanketInteraction;
     PlayerInteraction playerInteraction;
     TutorialDBEntity[] tutoDB;
@@ -110,7 +110,6 @@ public class TutorialInteraction : Interaction
     {
         await LoadTutorialDBEntity();
         jokboUIGroup = UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>();
-        //UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(false); // 튜토리얼에서 체력 표시 X
         StartFirstDialog();
     }
 
@@ -312,13 +311,24 @@ public class TutorialInteraction : Interaction
                 else if(curIdx == 4)
                 {
                     tutorialUIGroup.SwitchAnim("isSkillInfo", true);
+                    materialHwatuSlotUIs = UIManager.instance.SceneUI["Battle_1"].GetComponentsInChildren<MaterialHwatuSlotUI>();
+                    foreach(MaterialHwatuSlotUI material in materialHwatuSlotUIs)
+                    {
+                        material.isSelected = true;
+                    }
                 }
                 else if (curIdx == 5)
                 {   // 아래에 있는 화투패를 드래그 해서 모포 2장 올려놓으면 스킬을 만들 수 있어
                     tutorialUIGroup.SwitchAnim("isSkillInfo", false);
                     tutorialUIGroup.SwitchAnim("isHwatuCombination", true);
+
                     blanketInteraction = playerInteraction.blanketInteraction as BlanketInteraction;
                     Player.instance.isCombatZone = false;
+
+                    foreach (MaterialHwatuSlotUI material in materialHwatuSlotUIs)
+                    {
+                        material.isSelected = false;
+                    }
                     onTutorials = CheckSkillinBlanket;
                 }
                 else if(curIdx == 7)
@@ -406,10 +416,10 @@ public class TutorialInteraction : Interaction
     public void SetDoorState(string animName)
     {
         if(animName.Equals("isOpen"))
-            SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Clear);
+            SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.doorOpen);
         else
         {
-            // 닫히는 소리
+            SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.doorClose);
         }
 
         doorAnim?.SetTrigger(animName);
@@ -537,7 +547,10 @@ public class TutorialInteraction : Interaction
             monsters[(int)TutorialMonsters.hwatu12].monster.SetActive(true);
             monsters[(int)TutorialMonsters.hwatu13].monster.SetActive(true);
         }
-        if (SkillManager.instance.materialCardCnt >= 2) return true;
+        if (SkillManager.instance.materialCardCnt >= 2)
+        {
+            return true;
+        }
         else return false;
     }
 
