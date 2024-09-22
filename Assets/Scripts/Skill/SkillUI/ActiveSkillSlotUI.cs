@@ -28,7 +28,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     private void Awake()
     {
-
         skillImage = GetComponent<Image>();
 
         originPos = GetComponent<RectTransform>().position;

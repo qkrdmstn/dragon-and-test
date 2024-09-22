@@ -63,6 +63,7 @@ public class BlanketInteraction : Interaction
     {
         isBlanketInteraction = true;
         isDone = false;
+        SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.mopo);
 
         //기존 material hwatu 삭제
         for (int i = 0; i < materialHwatuUIObjectList.Count; i++)

@@ -125,17 +125,15 @@ public class SkillManager : MonoBehaviour
     private void InitializeUI()
     {
         activeSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
-        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>();
+        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>(true);
 
         passiveSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5].GetComponent<BlanketUI>().passiveSkillSlotParent;
         passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>();
 
-        Transform cooltimeUIParent = activeSkillSlotParent.GetChild(1);
-        coolTimeImg = new SkillCoolTimeImg[2];
+        coolTimeImg = activeSkillSlotParent.GetComponentsInChildren<SkillCoolTimeImg>(true);
         for (int i = 0; i < 2; i++)
         {
             activeSkillSlot[i].ClearSlot();
-            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
             coolTimeImg[i].gameObject.SetActive(false);
         }
     }

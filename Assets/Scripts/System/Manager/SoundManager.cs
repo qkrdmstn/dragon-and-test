@@ -21,7 +21,7 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-    Snap
+    Snap, mopo, doorOpen, doorClose
 }
 
 public enum PuzzleSfx
@@ -115,15 +115,15 @@ public class SoundManager : MonoBehaviour
     // sceneNum과 BGMClips 배열의 순서동일
     // sceneNum : BGM clip
     // 0 : start
-    // 1 : tutorial
-    // 2 : town 아직 없어서 배틀이 2
-    // 2 : battle
+    // 1 : town, tutorial
+    // 2 : battle, puzzle
+    // 3 : boss
 
     public bool SetBGMClip(SceneInfo sceneNum)
     {
         int _sceneNum = (int)sceneNum;
         // BGM
-        if (_sceneNum == 2)
+        if (_sceneNum == 2) // tutorial
             _sceneNum = 1;
         else if (_sceneNum >= 3)
             _sceneNum = 2;
