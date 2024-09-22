@@ -91,8 +91,8 @@ public class SaveManager : MonoBehaviour
             SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
             SkillManager.instance.activeSkillCnt = data[index].curSkillCnt;
             SkillManager.instance.activeSkillData = data[index].skills;
-            SkillManager.instance.UpdateActiveSkillSlot();
         }
+        SkillManager.instance.UpdateActiveSkillSlot();
         StartCoroutine(IsLoadedStartData());
     }
 

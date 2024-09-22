@@ -37,19 +37,24 @@ public class PassiveSkillSlotUI : MonoBehaviour
     public void UpdateSlot(SeotdaHwatuCombination skill)
     {
         data = skill;
-        skillImage.color = Color.white;
-
-        SkillDB skillData = SkillManager.instance.GetSkillDB(skill);
-        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
-        
         if (data != SeotdaHwatuCombination.blank)
+        {
+            skillImage.color = Color.white;
             skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
+            skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill, true);
+        }
+        else 
+        {
+            skillImage.color = Color.clear;
+            skillImage.sprite = null;
+            skillInfoTxt.text = null;
+        }
     }
 
     public void ClearSlot()
     {
         skillImage.sprite = null;
-        skillImage.color = Color.white;
+        skillImage.color = Color.clear;
         skillInfoTxt.text = null;
     }
 

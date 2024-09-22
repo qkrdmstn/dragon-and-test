@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum UI
 {
-    Start, Tutorial, Town_1, Battle_1, Dialogue, Inventory, GameExit
+    Start, Town_1, Battle_1, Dialogue, Inventory, GameExit
 }
 
 public class UIManager : MonoBehaviour
@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     public bool isUIOn = false;
 
     public SerializableDictionary<string, GameObject> SceneUI;
-    public UIGroup curUIGroup;
+    //public UIGroup curUIGroup;
     TextMeshProUGUI exitDesc;
 
     private void Awake()

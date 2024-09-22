@@ -15,6 +15,7 @@ public class ActiveSkillSlotUI : MonoBehaviour
     [Header("Skill Info")]
     [SerializeField] private Image skillImage;
     public SeotdaHwatuCombination data;
+    public int activeSkillSlotIndex;
 
     [Header("Transform Info")]
     public Vector3 originPos;
@@ -28,7 +29,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     private void Awake()
     {
-
         skillImage = GetComponent<Image>();
 
         originPos = GetComponent<RectTransform>().position;
@@ -45,11 +45,19 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     public void UpdateSlot(SeotdaHwatuCombination _data)
     {
-        data = _data;
-        skillImage.color = Color.white;
 
-        if (data != SeotdaHwatuCombination.blank)
+        if (_data != SeotdaHwatuCombination.blank)
+        {
+            data = _data;
+            skillImage.color = Color.white;
             skillImage.sprite = SkillManager.instance.skillSpriteDictionary[_data];
+        }
+        else
+        {
+            data = SeotdaHwatuCombination.blank;
+            skillImage.color = Color.clear;
+            skillImage.sprite = null;
+        }
     }
 
     public void ClearSlot()
@@ -76,7 +84,7 @@ public class ActiveSkillSlotUI : MonoBehaviour
         bool isInTrashCan = blanketUI.IsInTrashCan(rectTransform);
         
         if (isInTrashCan) //쓰레기통에 겹치면, 스킬 데이터 삭제
-            SkillManager.instance.DeleteSkill(data);
+            SkillManager.instance.DeleteSkill(activeSkillSlotIndex);
 
         MoveTransform(0.25f, true); //원래 자리로 돌려보내기
     }

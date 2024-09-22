@@ -22,12 +22,7 @@ public class PlayerDashState : PlayerState
         //Dash Setting
         dashDir = new Vector2(xInput, yInput);
         dashDir.Normalize();
-        dashSpeed = player.dashSpeed;
-        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
-        {
-            SkillDB sr46Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46);
-            dashSpeed += dashSpeed * (sr46Data.probability);
-        }
+        dashSpeed = player.ClacSpeed(player.dashSpeed);
 
         stateTimer = player.dashDuration;
         SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Dash);

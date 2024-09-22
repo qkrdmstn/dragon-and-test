@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PuzzleInteraction : Interaction
 {
-    public bool[] isClear;
+    public bool[] isClears;
+    public bool isStageCleared;
     GameObject portal;
     Animator anim;
     /*      
@@ -16,11 +17,15 @@ public class PuzzleInteraction : Interaction
     private void Start()
     {
         portal = GameObject.FindGameObjectWithTag("Portal");
-        isClear = new bool[2];
+        isClears = new bool[2];
     }
 
     public override void LoadEvent(InteractionData data)
     {
+        if (isStageCleared)
+        {
+            isDone = true; return;
+        }
         anim = data.GetComponent<Animator>();
         portal = data.transform.parent.parent.Find("GoToBoss").gameObject;  // ㄹㅇ ㅋㅋ
 
@@ -31,31 +36,42 @@ public class PuzzleInteraction : Interaction
     IEnumerator ClearCheck()
     {
         anim.SetBool("isOn", true);
-        yield return new WaitForSeconds(1); 
+        yield return new WaitForSeconds(0.5f);
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.LeverR);
+        yield return new WaitForSeconds(0.75f);
 
-        if (isClear[(int)StoneTotem.TotemType.Main] & isClear[(int)StoneTotem.TotemType.Sub])
+        if (isClears[(int)StoneTotem.TotemType.Main] & isClears[(int)StoneTotem.TotemType.Sub])
+        {
+            Debug.Log("Clear!!");
+            yield return new WaitForSeconds(1);
+            
             Puzzle1Clear();
-        else Fail();
+        }
+        else
+        {
+            FailAttack();
+            Debug.Log("fail...");
+
+            yield return new WaitForSeconds(0.5f);
+            anim.SetBool("isOn", false);
+            yield return new WaitForSeconds(0.5f);
+            SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.LeverL);
+        }
 
         isDone = true;
     }
 
     void Puzzle1Clear()
     {
+        isStageCleared = true;
         portal.SetActive(true);
-        Debug.Log("Clear!!");
-    }
-
-    void Fail()
-    {
-        anim.SetBool("isOn", false);
-        FailAttack();
-        Debug.Log("fail...");
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Clear);
     }
 
     void FailAttack()
     {
         Player.instance.OnDamamged(1);
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.FailDamage);
         // 레이저라던가 ..시각적 연출...
     }
 

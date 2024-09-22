@@ -90,11 +90,11 @@ public class PlayerInteraction : MonoBehaviour
             }
             interaction = inRangeInteraction[curIdxInteraction].gameObject.GetComponent<InteractionData>();
 
-            if (interaction.type == InteractionData.InteractionType.Blanket)
+            if (interaction?.type == InteractionData.InteractionType.Blanket)
             {
                 if(!IsClearBlanket(interaction)) return;
             }
-            else if(interaction.type == InteractionData.InteractionType.Tutorial && interaction.eventName == "blanket")
+            else if(interaction?.type == InteractionData.InteractionType.Tutorial && interaction.eventName == "blanket")
             {
                 if (!IsClearBlanket(interaction)) return;
             }
@@ -150,15 +150,15 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    TutorialInteraction tuto;
+    TutorialInteraction tutorialInteraction;
     private void TutorialInteraction()
     {
-        if(tuto == null)
-            tuto = GameObject.Find("System").GetComponent<TutorialInteraction>();
+        if(tutorialInteraction == null)
+            tutorialInteraction = GameObject.Find("System").GetComponent<TutorialInteraction>();
 
-        if (interaction.eventName == "족보")
+        if (tutorialInteraction.interactionF && interaction.eventName == "Jokbo")
         {
-            tuto.jokboUIGroup.isPossibleJokbo = true;
+            tutorialInteraction.jokboUIGroup.isPossibleJokbo = true;
             Player.instance.ChangePlayerInteractionState(false);
             return;
         }
@@ -169,14 +169,17 @@ public class PlayerInteraction : MonoBehaviour
             BlanketDoInteraction();
         }
 
-        if (interaction.sequence == 0 && tuto.curIdx >= 2)
+        if (interaction.sequence == 0 && tutorialInteraction.curIdx >= 2)
         {
-            tuto.isInteraction = true;
+            tutorialInteraction.isInteraction = true;
             Player.instance.ChangePlayerInteractionState(false);
         }
-        else if (!tuto.checkSequenceDone[interaction.sequence] &&
-            interaction.sequence > 0 && !tuto.isInteraction && tuto.curIdx == 0)
-                tuto.LoadEvent(interaction);
+        else if((int)tutorialInteraction.curScarescrowState.type == interaction.sequence && tutorialInteraction.curScarescrowState.isSequenceDone)   // 종료된 허수아비
+            Player.instance.ChangePlayerInteractionState(false);
+
+        else if (tutorialInteraction.curScarescrowType == ScareScrowType.None &&
+            interaction.sequence > 0 && !tutorialInteraction.isInteraction && tutorialInteraction.curIdx == 0)
+            tutorialInteraction.LoadEvent(interaction);
 
         else Player.instance.ChangePlayerInteractionState(false);
     }

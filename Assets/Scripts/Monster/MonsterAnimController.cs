@@ -3,11 +3,14 @@ using UnityEngine;
 using Spine;
 using Spine.Unity;
 using Spine.Unity.AttachmentTools;
+using UnityEngine.UIElements;
 
 public enum MonsterAnimState
 {
     Run, Attack, Spawn, Death
 }
+
+// spine animation state : https://ko.esotericsoftware.com/spine-unity-events
 
 public class MonsterAnimController : AnimController
 {
@@ -28,7 +31,7 @@ public class MonsterAnimController : AnimController
     {  
         MonsterAnimState animState = Enum.Parse<MonsterAnimState>(_animState.ToString());
         
-        if(animState == MonsterAnimState.Run) skeletonAnimation.loop = true;
+        if (animState == MonsterAnimState.Run) skeletonAnimation.loop = true;
         else skeletonAnimation.loop = false;
 
         baseSkinName = skins[0].skin[(int)direction];

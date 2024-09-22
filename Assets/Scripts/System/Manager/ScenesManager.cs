@@ -103,9 +103,9 @@ public class ScenesManager : MonoBehaviour
             ManageActiveUI(ui.myUI.ToString(), ui.state);
         }
 
-        string curSceneName = sceneInfos[(int)_sceneInfo].myScene.ToString();
-        if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1") || curSceneName.Contains("Boss_1")) curSceneName = "Battle_1";
-        UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
+        //string curSceneName = sceneInfos[(int)_sceneInfo].myScene.ToString();
+        //if (curSceneName.Contains("Battle_1") || curSceneName.Contains("Puzzle_1") || curSceneName.Contains("Boss_1")) curSceneName = "Battle_1";
+        //UIManager.instance.curUIGroup = UIManager.instance.SceneUI[curSceneName].GetComponent<UIGroup>();
 
         if(_sceneInfo != SceneInfo.Start && GunManager.instance.gunParent == null)
             GunManager.instance.Initialize();

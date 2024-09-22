@@ -19,6 +19,6 @@ public class HwatuUI : MonoBehaviour
     {
         if (SkillManager.instance == null) return;
 
-        txt.text = "X " + SkillManager.instance.materialCardCnt;
+        txt.text = "X " + SkillManager.instance.materialCardCnt +"/10";
     }
 }

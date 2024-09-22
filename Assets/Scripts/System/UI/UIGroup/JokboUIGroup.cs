@@ -72,28 +72,46 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach (JokboHwatuUI obj in hwatuUIs)
+        for(int k =0; k< hwatuUIs.Length; k++)
         {
-            for(int i=0; i<obj.hwatu.Length; i++)
+            for (int i = 0; i < hwatuUIs[k].hwatu.Length; i++)
             {
-                GameObject hwatu = obj.hwatu[i];
-                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
-                childTxts[0].text = skillDB[idx].synergyName;
-                childTxts[1].text = skillDB[idx].info;
-                idx++;
+                if (k == 3)
+                {
+                    idx++; continue;
+                }
 
-                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true);
+                GameObject hwatu = hwatuUIs[k].hwatu[i];
+                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
+
+                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true); // hwatu1+ hwatu2 + skillImg 
                 int synergeType = GetSynergeName(hwatu.name);
 
                 SeotdaHwatuName[] cards = Hwatu.GetHwatuCombination((SeotdaHwatuCombination)synergeType);
+                Hwatu hwatu1 = null, hwatu2 = null;
                 for (int j = 0; j < SkillManager.instance.hwatuData.Length; j++)
                 {
                     if (cards[0] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
-                    // 1번은 plus
+                    {
+                        childImgs[1].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        hwatu1 = SkillManager.instance.hwatuData[j].hwatu;
+                    }
+
                     else if (cards[1] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[2].sprite = SkillManager.instance.hwatuData[j].sprite;
+                    {
+                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
+                        hwatu2 = SkillManager.instance.hwatuData[j].hwatu;
+                    }
                 }
+
+                childTxts[0].text = skillDB[idx].synergyName;
+                if (hwatu1 != null && hwatu2 != null)
+                {
+                    SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatu2);
+                    childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[result];
+                    childTxts[1].text = SkillManager.instance.GetSkillInfo(result, false);
+                }
+                idx++;
             }
         }
     }

@@ -82,8 +82,9 @@ public class PlayerNormalBullet : MonoBehaviour
 
         //알리
         SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        float al12Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AL12);
         float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Prob)
         {
             PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
             playerSkill.AL12Effect(monster.gameObject, damage);
@@ -91,8 +92,9 @@ public class PlayerNormalBullet : MonoBehaviour
 
         //독사
         SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        float ds14Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.DS14);
         randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Prob)
         {
             //지속 데미지 -> duration과 interval이 없음
             monster.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
@@ -100,8 +102,9 @@ public class PlayerNormalBullet : MonoBehaviour
 
         //구삥
         SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
+        float gpp19Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GPP19);
         randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Prob)
         {
             monster.EffectState();
         }
@@ -113,12 +116,18 @@ public class PlayerNormalBullet : MonoBehaviour
 
     public void BossDamaged(Boss boss)
     {
-        boss.OnDamaged(damage);
+        //암행어사
+        SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
+            boss.OnDamaged(damage + (int)ahes74Data.probability);
+        else
+            boss.OnDamaged(damage);
 
         //알리
         SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        float al12Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AL12);
         float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Prob)
         {
             PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
             playerSkill.AL12Effect(boss.gameObject, damage);
@@ -126,8 +135,9 @@ public class PlayerNormalBullet : MonoBehaviour
 
         //독사
         SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        float ds14Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.DS14);
         randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Prob)
         {
             //지속 데미지 -> duration과 interval이 없음
             boss.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);

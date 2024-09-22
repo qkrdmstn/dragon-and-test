@@ -5,7 +5,7 @@ using System;
 
 public enum SoundType
 {
-    Player, Monster, UI
+    Player, Monster, UI, Puzzle
 }
 public enum PlayerSfx
 {
@@ -21,7 +21,12 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-    Snap
+    Snap, mopo, doorOpen, doorClose
+}
+
+public enum PuzzleSfx
+{
+    LeverR, LeverL, Clear, Choose, Select, FailDamage
 }
 
 public class SoundManager : MonoBehaviour
@@ -36,6 +41,7 @@ public class SoundManager : MonoBehaviour
     public class ClipType
     {
         public SoundType myType;
+        public float sfxVolume;
         public AudioClip[] effectClips;
     }
 
@@ -44,7 +50,6 @@ public class SoundManager : MonoBehaviour
 
     [Header("----- AudioState")]
     public float _bgmVolume;
-    public float _effectVolume;
     public float fadeDuration;
     public float fadeTimer;
 
@@ -94,7 +99,7 @@ public class SoundManager : MonoBehaviour
             {
                 effectSources[i][j] = effectSlots[i].AddComponent<AudioSource>();
                 effectSources[i][j].playOnAwake = false;
-                effectSources[i][j].volume = _effectVolume;
+                effectSources[i][j].volume = effects[i].sfxVolume;
             }
         }
 
@@ -103,22 +108,22 @@ public class SoundManager : MonoBehaviour
         {
             walkSources[i] = transform.GetChild(2).gameObject.AddComponent<AudioSource>();
             walkSources[i].playOnAwake = false;
-            walkSources[i].volume = _effectVolume;
+            walkSources[i].volume = effects[(int)SoundType.Player].sfxVolume;
             walkSources[i].clip = effects[(int)SoundType.Player].effectClips[(int)PlayerSfx.Walk];
         }
     }
     // sceneNum과 BGMClips 배열의 순서동일
     // sceneNum : BGM clip
     // 0 : start
-    // 1 : tutorial
-    // 2 : town 아직 없어서 배틀이 2
-    // 2 : battle
+    // 1 : town, tutorial
+    // 2 : battle, puzzle
+    // 3 : boss
 
     public bool SetBGMClip(SceneInfo sceneNum)
     {
         int _sceneNum = (int)sceneNum;
         // BGM
-        if (_sceneNum == 2)
+        if (_sceneNum == 2) // tutorial
             _sceneNum = 1;
         else if (_sceneNum >= 3)
             _sceneNum = 2;

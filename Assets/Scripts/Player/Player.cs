@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System.Diagnostics;
 
 public class Player : MonoBehaviour
 {
@@ -43,6 +44,9 @@ public class Player : MonoBehaviour
     public bool isFall = false;
     public bool isBounded = false;
     public bool isDead = false;
+    public bool isTownStart = false;
+    public bool isSuperman = false;
+
     #region Componets
     public PlayerAnimController animController { get; private set; }
 
@@ -135,6 +139,17 @@ public class Player : MonoBehaviour
         return rb.velocity;
     }
 
+    public float ClacSpeed(float baseSpeed)
+    {
+        float speed = baseSpeed;
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.SR46);
+        if (isSuperman)
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GTT38);
+
+        return speed;
+    }
+
     public void OnDamamged(int damage)
     {
         if(IsDash())
@@ -145,10 +160,8 @@ public class Player : MonoBehaviour
 
         if(!isDamaged)
         {
-            isDamaged = true;
-            // monster에게 맞았을때 쉐이킹
             try
-            {
+            {    // monster에게 맞았을때 쉐이킹
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
             catch (System.NullReferenceException ex)
@@ -156,7 +169,10 @@ public class Player : MonoBehaviour
                 cameraManager = FindObjectOfType<CameraManager>();
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
+            if (isTutorial)
+                return;
 
+            isDamaged = true;
             if (shield > 0)
                 shield -= damage;
             else
@@ -167,8 +183,9 @@ public class Player : MonoBehaviour
                 //장사
                 //4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
+                float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
                 float randomVal = Random.Range(0.0f, 1.0f);
-                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Data.probability)
+                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Prob)
                 {
                     curHP = 1;
                     isDamaged = false;

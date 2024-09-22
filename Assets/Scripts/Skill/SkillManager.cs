@@ -92,6 +92,7 @@ public class SkillManager : MonoBehaviour
 
         //스킬 이미지 로드, Dictionary 구성
         Sprite [] skillImages = Resources.LoadAll<Sprite>("SkillSprite");
+
         for(int i = 0; i < skillImages.Length; i++)
         {
             for (int j = 0; j < 33; j++)
@@ -125,17 +126,15 @@ public class SkillManager : MonoBehaviour
     private void InitializeUI()
     {
         activeSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
-        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>();
+        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>(true);
 
         passiveSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5].GetComponent<BlanketUI>().passiveSkillSlotParent;
-        passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>();
+        passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>(true);
 
-        Transform cooltimeUIParent = activeSkillSlotParent.GetChild(1);
-        coolTimeImg = new SkillCoolTimeImg[2];
+        coolTimeImg = activeSkillSlotParent.GetComponentsInChildren<SkillCoolTimeImg>(true);
         for (int i = 0; i < 2; i++)
         {
             activeSkillSlot[i].ClearSlot();
-            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
             coolTimeImg[i].gameObject.SetActive(false);
         }
     }
@@ -169,14 +168,12 @@ public class SkillManager : MonoBehaviour
 
     public void AddSkill(SeotdaHwatuCombination skill)
     {
-        int skillNum = (int)skill;
         if(skill == SeotdaHwatuCombination.KK0)
         {
             int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
             Player.instance.OnDamamged(damage);
         }
-        //Add Passive Skill
-        else if (skillNum >= 13 && skillNum <= 18)
+        else if (IsPassive(skill)) //Add Passive Skill
         {
             //스킬 보유 X
             if (passiveSkillData.FindIndex(x => x == skill) == -1)
@@ -185,10 +182,8 @@ public class SkillManager : MonoBehaviour
                 passiveSkillCnt.Add(skill, 1);
             }
             else
-            {
                 passiveSkillCnt[skill]++;
-                skillDBDictionary[skill].probability += skillDBDictionary[skill].growCoefficient;
-            }
+
             UpdatePassiveSkillSlot();
         }
         else //Add Active Skill
@@ -205,7 +200,7 @@ public class SkillManager : MonoBehaviour
 
     public void DeleteSkill(SeotdaHwatuCombination skill)
     {
-        for(int i=0; i<2; i++)
+        for (int i = 0; i < 2; i++)
         {
             if (activeSkillData[i] == skill)
             {
@@ -214,6 +209,13 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
+        UpdateActiveSkillSlot();
+    }
+
+    public void DeleteSkill(int index)
+    {
+        activeSkillData[index] = SeotdaHwatuCombination.blank;
+        activeSkillCnt--;
         UpdateActiveSkillSlot();
     }
 
@@ -244,7 +246,10 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < coolTimeImg.Length; i++)
         {
             if (activeSkillData[i] == SeotdaHwatuCombination.blank)
+            {
+                coolTimeImg[i].gameObject.SetActive(false);
                 continue;
+            }
             coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
             
             StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
@@ -259,12 +264,18 @@ public class SkillManager : MonoBehaviour
             return;
 
         SkillDB data = GetSkillDB(activeSkillData[i]);
-        skill.UseSkill(data);
+        float coolTime = skill.UseSkill(data);
 
-        //CoolTime UI setting
-        timer[i] = data.coolTime;
-        coolTimeImg[i].gameObject.SetActive(true);
-        StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+        if (coolTime > 0.0f)
+        {
+            if(!Player.instance.isSuperman || activeSkillData[i] == SeotdaHwatuCombination.GTT38) //초사이언 스킬쿨 초기화, 38 광땡은 예외
+            {
+                //CoolTime UI setting
+                timer[i] = data.coolTime;
+                coolTimeImg[i].gameObject.SetActive(true);
+                StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
+            }
+        }
     }
 
     public void UpdateActiveSkillSlot()
@@ -305,7 +316,16 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public bool PassiveCheck(SeotdaHwatuCombination skillName)
+    public void ClearCoolTimer()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            timer[i] = 0.0f;
+        }
+    }
+
+
+    public bool PassiveCheck(SeotdaHwatuCombination skillName) //패시브 보유 여부 확인
     {
         for(int i=0; i< passiveSkillData.Count; i++)
         {
@@ -314,6 +334,15 @@ public class SkillManager : MonoBehaviour
         }
         return false;
     }
+
+    public bool IsPassive(SeotdaHwatuCombination skillName) //해당 스킬이 패시브 스킬인지 확인
+    {
+        int skillNum = (int)skillName;
+        if (skillNum >= 13 && skillNum <= 21)
+            return true;
+        else 
+            return false;
+    }       
 
     public void ClearSkill()
     {   // hwatu
@@ -330,12 +359,33 @@ public class SkillManager : MonoBehaviour
         return data;
     }
 
-    public string GetSkillInfo(SeotdaHwatuCombination skillName)
+    public float GetSkillProb(SeotdaHwatuCombination skillName)
     {
-        SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
+        SkillDB skillData = GetSkillDB(skillName);
+
+        if (IsPassive(skillName) && passiveSkillCnt.ContainsKey(skillName))
+            return skillData.probability + (passiveSkillCnt[skillName] - 1) * skillData.growCoefficient;
+        else
+            return skillData.probability;
+    }
+
+    public string GetSkillInfo(SeotdaHwatuCombination skillName, bool flag) //true면 성장계수 반영
+    {
+        SkillDB skillData = GetSkillDB(skillName);
         float prob = skillData.probability;
         string skillInfo = skillData.info;
-        skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+        if(flag)
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((GetSkillProb(skillName) * 100), 1).ToString() + "%</color>");
+        else
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+
+        if (skillName == SeotdaHwatuCombination.AHES74)
+        {
+            if (flag)
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + GetSkillProb(skillName).ToString() + "</color>");
+            else
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + skillData.probability.ToString() + "</color>");
+        }
 
         return skillInfo;
     }

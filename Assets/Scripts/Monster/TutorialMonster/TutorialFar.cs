@@ -4,8 +4,9 @@ using UnityEngine;
 public class TutorialFar : MonsterFar
 {
     [Header("Tutorial----------")]
-    public TutorialInteraction.TutorialMonsters myNum;
+    public TutorialMonsters myNum;
     public TutorialInteraction tutorial;
+    public bool isAttackable = false;
 
     public override void Awake()
     {
@@ -22,11 +23,19 @@ public class TutorialFar : MonsterFar
         base.Update();
     }
 
+    public override void Attack()
+    {
+        if (isAttackable)
+            base.Attack();
+    }
+
+    public void SetAttackable() => isAttackable = true;
+
     public override void OnDamaged(int damage)
     {
-        if (myNum == TutorialInteraction.TutorialMonsters.attack)
+        if (myNum == TutorialMonsters.attack)
         {
-            if (!tutorial.isAttacked)
+            if (!tutorial.isAttacked && tutorial.interactionF)
             {
                 tutorial.isAttacked = true;
                 return;
@@ -34,7 +43,7 @@ public class TutorialFar : MonsterFar
             else if (!tutorial.isDashed)
                 return;
         }
-        else if (myNum == TutorialInteraction.TutorialMonsters.skill && !tutorial.useSkill) return;
+        else if (myNum == TutorialMonsters.skill && !tutorial.useSkill) return;
 
         base.OnDamaged(damage);
     }

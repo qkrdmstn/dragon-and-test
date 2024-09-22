@@ -71,7 +71,7 @@ public class StoneTotem : MonoBehaviour
     IEnumerator HwatuChangeCoroutine()
     {
         isChanging = true;
-
+        SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.Choose);
         cardImg.sprite = blankImg;
         yield return new WaitForSeconds(0.5f);
 
@@ -79,9 +79,9 @@ public class StoneTotem : MonoBehaviour
         cardImg.sprite = decks[index];
         if (index == (int)month)
         {
-            puzzleInteraction.isClear[(int)myType] = true;
+            puzzleInteraction.isClears[(int)myType] = true;
         }
-        else puzzleInteraction.isClear[(int)myType] = false;
+        else puzzleInteraction.isClears[(int)myType] = false;
 
         isChanging = false;
     }

@@ -71,7 +71,7 @@ public class BlanketUI : MonoBehaviour
     {
         skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
         skillNameTxt.text = SkillManager.instance.skillDBDictionary[skill].synergyName;
-        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
+        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill, true);
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
 

@@ -146,8 +146,10 @@ MonoBehaviour:
   HP: 10
   damage: 1
   distanceToPlayer: 0
+  deadSec: 0.6
   moneyRange: {x: 10, y: 13}
   moveSpeed: 3
+  tempMoveSpeed: 0
   knockbackForce: 5
   knockbackDuration: 0.1
   knockbackTimer: 0
@@ -161,22 +163,25 @@ MonoBehaviour:
   isDead: 0
   isChase: 1
   isKnockedBack: 0
-  fireInterval: 0.9
+  isSpawned: 0
+  isFirst: 1
+  fireInterval: 1
   monsterReloadDelay: 3
   isReloading: 0
   isAttacking: 0
   monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
   loadedBullet: 1
   magazineSize: 1
-  bulletAngle: 50
-  bulletsOnce: 6
+  bulletAngle: 65
+  bulletSpeed: 6
+  bulletsOnce: 10
   bulletNum: 3
   shootNumTheta:
   - 2.25
   - 1.75
   - 1.25
   chaseRange: 15
-  attackRange: 4
+  attackRange: 10
   escapeRange: 2.6
 --- !u!58 &7402561287738126548
 CircleCollider2D:

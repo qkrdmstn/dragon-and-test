@@ -1,28 +1,36 @@
+using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class MonsterDash : MonsterBase
 {
-    
+    [Header("MonsterDash---------------")]
+    public float chargingSec = 0.7f;
+    public float dashRatio = 2f;
+
     #region MonsterAttack
+    [Header("MonsterAttack")]
     public bool inAttack = false;
-    private bool warning = false;
+    public bool warning = false;
+
     public float cooldown = 8.0f;
     public float attackSpeed = 10.0f;
+    public float attackForce = 5f;
     public float tempcool;
+
     public Vector3 direction;
-    private Vector3 endPosition;
-    public SpriteRenderer spriteRenderer;
-    public GameObject attackWarning;
+
+    public float chaseRange = 10.0f;
+    public float attackRange = 4.0f;
     #endregion
 
     #region States
     public MonsterIdleStateDash idleState { get; private set; }
     public MonsterChaseStateDash chaseState { get; private set; }
     public MonsterAttackStateDash attackState { get; private set; }
-    public float chaseRange = 10.0f;
-    public float attackRange = 4.0f;
+
     #endregion
 
     public override void Awake()
@@ -36,11 +44,9 @@ public class MonsterDash : MonsterBase
     public override void Start()
     {
         base.Start();
-        stateMachine.Initialize(idleState);
 
-        spriteRenderer = attackWarning.GetComponent<SpriteRenderer>();
-
-        SpeedToZero();
+        StartCoroutine(AnimSpawn());
+        stateMachine.Initialize(chaseState);
     }
 
     public override void Update()
@@ -49,24 +55,10 @@ public class MonsterDash : MonsterBase
         stateMachine.currentState.Update();
         distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-        tempcool -= Time.deltaTime;
-
-        //navigate
-        agent.SetDestination(player.transform.position);
-
-        //draw warning sign
         if (inAttack)
-        {   
+        {
             if (warning)
-            {
-                endPosition = player.transform.position;
-                spriteRenderer.transform.localScale = new Vector3(1f, direction.magnitude*1.35f, 1f);
-                spriteRenderer.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-                spriteRenderer.transform.position = transform.position + (direction*1.35f)/2;
-            }
-            direction = endPosition - transform.position;
-            direction.Normalize();
-            direction *= 5f;
+                direction = (player.transform.position - transform.position);               
         }
     }
 
@@ -97,36 +89,28 @@ public class MonsterDash : MonsterBase
     {
         inAttack = true;
         warning = true;
-        attackWarning.SetActive(true);
-
-        Invoke("AttackPoint", 0.9f);
-        Invoke("OutAttack", 1.5f);
-        //anim.SetTrigger("attacking");
+        StartCoroutine(ControlAttack());
     }
-    
-    public void AttackPoint()
+
+    IEnumerator ControlAttack()
     {
+        // 공격 차징중
+        monsterAnimController.SetAnim(MonsterAnimState.Attack, CheckDir());
+        yield return new WaitForSeconds(chargingSec);
+
+        // 공격
         warning = false;
-        attackWarning.SetActive(false);
+        monsterAnimController.SetAnim(MonsterAnimState.Run, CheckDir());
+        monsterAnimController.SetAnimSpeed(dashRatio);
+        
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.dashAttack);
-        rigidBody.AddForce(direction * attackSpeed);
-    }
-
-    public void OutAttack()
-    {
+        
+        rigidBody.AddForce(direction.normalized * attackForce * attackSpeed);
+        yield return new WaitForSeconds(1f);
+        // 공격 종료
         rigidBody.velocity = Vector3.zero;
         inAttack = false;
-    }
 
-    public void SpeedToZero()
-    {
-        agent.speed = 0;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0.0f;
-    }
-
-    public void SpeedReturn()
-    {
-        agent.speed = moveSpeed;
+        monsterAnimController.SetAnimSpeed(1f);
     }
 }
