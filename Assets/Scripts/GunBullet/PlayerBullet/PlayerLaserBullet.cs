@@ -160,7 +160,7 @@ public class PlayerLaserBullet : MonoBehaviour
         //암행어사
         SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
         if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
-            boss.OnDamaged(damage + (int)ahes74Data.probability);
+            boss.OnDamaged(damage + (int)SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AHES74));
         else
             boss.OnDamaged(damage);
 
