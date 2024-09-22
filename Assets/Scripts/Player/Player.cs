@@ -143,9 +143,9 @@ public class Player : MonoBehaviour
     {
         float speed = baseSpeed;
         if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
-            speed += baseSpeed * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46).probability;
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.SR46);
         if (isSuperman)
-            speed += baseSpeed * SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GTT38).probability;
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GTT38);
 
         return speed;
     }
@@ -183,8 +183,9 @@ public class Player : MonoBehaviour
                 //장사
                 //4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
+                float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
                 float randomVal = Random.Range(0.0f, 1.0f);
-                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Data.probability)
+                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Prob)
                 {
                     curHP = 1;
                     isDamaged = false;

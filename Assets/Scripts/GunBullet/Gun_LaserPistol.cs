@@ -26,8 +26,9 @@ public class Gun_LaserPistol : Gun
             //장삥
             //10%로 데미지 1 증가
             SkillDB jpp110Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JPP110);
+            float jpp110Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JPP110);
             float randomVal = Random.Range(0.0f, 1.0f);
-            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110) && randomVal <= jpp110Data.probability)
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JPP110) && randomVal <= jpp110Prob)
             {
                 bulletDamage += jpp110Data.damage;
                 bulletScale = 1.5f;

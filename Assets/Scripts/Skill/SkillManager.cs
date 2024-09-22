@@ -92,6 +92,7 @@ public class SkillManager : MonoBehaviour
 
         //스킬 이미지 로드, Dictionary 구성
         Sprite [] skillImages = Resources.LoadAll<Sprite>("SkillSprite");
+
         for(int i = 0; i < skillImages.Length; i++)
         {
             for (int j = 0; j < 33; j++)
@@ -360,15 +361,26 @@ public class SkillManager : MonoBehaviour
         return data;
     }
 
-    public string GetSkillInfo(SeotdaHwatuCombination skillName)
+    public float GetSkillProb(SeotdaHwatuCombination skillName)
+    {
+        SkillDB skillData = GetSkillDB(skillName);
+
+        if (IsPassive(skillName) && passiveSkillCnt.ContainsKey(skillName))
+            return skillData.probability + (passiveSkillCnt[skillName] - 1) * skillData.growCoefficient;
+        else
+            return skillData.probability;
+    }
+
+    public string GetSkillInfo(SeotdaHwatuCombination skillName, bool flag) //true면 성장계수 반영
     {
         SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
         float prob = skillData.probability;
         string skillInfo = skillData.info;
-        skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+        if(flag)
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((GetSkillProb(skillName) * 100), 1).ToString() + "%</color>");
+        else
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
 
         return skillInfo;
     }
-
-
 }

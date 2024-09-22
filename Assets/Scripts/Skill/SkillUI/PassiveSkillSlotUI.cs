@@ -41,7 +41,7 @@ public class PassiveSkillSlotUI : MonoBehaviour
         {
             skillImage.color = Color.white;
             skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
-            skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
+            skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill, true);
         }
         else 
         {
