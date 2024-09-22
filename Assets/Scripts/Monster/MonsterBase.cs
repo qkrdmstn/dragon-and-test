@@ -286,7 +286,7 @@ public class MonsterBase : MonoBehaviour
         float randomVal = Random.Range(0.0f, 1.0f);
         if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.TTCatch73) && randomVal <= ttCatch73Data.probability)
         {
-            //if (this.name.Contains("BirdTanker") || this.name.Contains("BirdCrossbowman"))
+            if (this.name.Contains("BirdTanker") || this.name.Contains("BirdCrossbowman"))
                 moneyItem.amount *= 2;
             moneyObj.transform.localScale = moneyObj.transform.lossyScale * 1.5f;
         }
