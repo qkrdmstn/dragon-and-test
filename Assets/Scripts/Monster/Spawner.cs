@@ -24,7 +24,6 @@ public class Spawner : MonoBehaviour
     public int curBlockNum;
     public Vector2[] mapHierarchy;
     public MapIndicator mapIndicator;
-    //MapIndicator mapIndicator;
 
     [Header("Wave info")]
     [SerializeField] private int curWave;
@@ -33,7 +32,6 @@ public class Spawner : MonoBehaviour
     [Header("Spawn info")]
     [SerializeField] private float spawnDelay = 1.5f;
 
-    // Start is called before the first frame update
     void Awake()
     {
         InitializeMonsterDictionary();
@@ -50,7 +48,6 @@ public class Spawner : MonoBehaviour
     #region Initialize Func
     private void InitializeBlockInfo()
     {
-        //mapIndicator = FindObjectOfType<MapIndicator>();
         int layer = 1 << LayerMask.NameToLayer("MapSort");
         for(int i=0; i<mapHierarchy.Length; i++)
         {
@@ -61,8 +58,6 @@ public class Spawner : MonoBehaviour
             }
         }
         blocks = blocks.Distinct().ToList();
-        //blocks = FindObjectsOfType<BlockInfo>();
-        //Array.Sort(blocks);
 
         for (int i = 0; i < blocks.Count; i++)
             blocks[i].InitializeBlockInfo(i);
@@ -74,7 +69,6 @@ public class Spawner : MonoBehaviour
         controlSpawnData();
 
         ScenesManager.instance.isLoadedDB++;
-
     }
 
     void StartWave()
@@ -83,8 +77,7 @@ public class Spawner : MonoBehaviour
     }
 
     private void InitializeMonsterDictionary()
-    {
-        //Monster Dictionary Setting
+    {   //Monster Dictionary Setting
         monsterPrefabs = Resources.LoadAll<GameObject>("Prefabs/Monster/Stage" + stage.ToString());
         monsterDictionary = new Dictionary<string, GameObject>();
         for (int i = 0; i < monsterPrefabs.Length; i++)
@@ -95,8 +88,7 @@ public class Spawner : MonoBehaviour
     #endregion
 
     private int ComputeInitialBlockNumber()
-    {
-        //플레이어와 가장 가까운 block이 시작 block
+    {   //플레이어와 가장 가까운 block이 시작 block
         Vector3 playerPos = Player.instance.transform.position; //GameManager.instance.player 초기화는 Awake 이후
         int idx = 0;
         float minDist = Vector3.Magnitude(blocks[0].transform.position - playerPos);
@@ -118,8 +110,7 @@ public class Spawner : MonoBehaviour
     {
         curBlockNum = blockNum;
         if (!blocks[curBlockNum].blockClear)
-        {
-            //Wave Start
+        {   //Wave Start
             newWave();
         }
     }
@@ -191,8 +182,7 @@ public class Spawner : MonoBehaviour
     public void DeathCount()
     {
         numMonster--;
-        //Wave End
-        if (numMonster <= 0)
+        if (numMonster <= 0)    //Wave End
             WaveClear();
     }
 
@@ -207,6 +197,5 @@ public class Spawner : MonoBehaviour
         blocks[curBlockNum].blockClear = true;
         mapIndicator.BlinkBlock(true);
         curWave = 0;
-        //mapIndicator.BlockClear(curBlockNum);
     }
 }

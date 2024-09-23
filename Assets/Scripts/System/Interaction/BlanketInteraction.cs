@@ -46,7 +46,13 @@ public class BlanketInteraction : Interaction
         if (!blanketUI.isSkillInfoUI && isBlanketInteraction && Input.GetKeyDown(KeyCode.Escape))
         {
             if (Player.instance.isTutorial && !TutorialInteraction.isBlanket) return;
-            EndInteraction();
+
+            if (UIManager.instance.curOpenUI.Count == 1)
+            {
+                UIManager.instance.isClose = true;
+                EndInteraction();
+            }
+                
         }
         else if (blanketUI.isSkillInfoUI && Input.GetKeyDown(KeyCode.Escape))
         {
@@ -73,7 +79,8 @@ public class BlanketInteraction : Interaction
 
         //화투 UI 비활성화 및 모포 UI 활성화
         hwatuUI.gameObject.SetActive(false);
-        blanketUI.gameObject.SetActive(true);
+        UIManager.instance.SceneUI["Inventory"].SetActive(false);
+        UIManager.instance.PushPopUI(blanketUI.gameObject);
 
         //화투 생성
         CreateMaterialHwatuUIObject();
@@ -140,8 +147,8 @@ public class BlanketInteraction : Interaction
         isDone = true;
         isBlanketInteraction = false;
 
-        blanketUI.gameObject.SetActive(false);
         hwatuUI.gameObject.SetActive(true);
+        UIManager.instance.SceneUI["Inventory"].SetActive(true);
         Debug.Log("EndInteraction");
     }
 

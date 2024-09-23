@@ -28,6 +28,7 @@ public class ShopInteraction : Interaction
     public bool isFirst = true;
     public bool isSelected = false;
     public int result; // 선택된 답변의 배열 Idx
+    public bool isFirstBuyWeapon = true;
 
     GameObject[] childUI;
     GameObject interaction;
@@ -84,7 +85,12 @@ public class ShopInteraction : Interaction
                 curLine = "가격은 " + itemData.price+"금이다.\r\n구매할 것이냐?";
                 break;
             case StateOfBuy.YesBuy:
-                curLine = "고맙다.";
+                if(itemData.itemType == ItemType.Gun && isFirstBuyWeapon)
+                {
+                    curLine = "구매한 무기는 <b>마우스 휠</b>을 변경하여\n사용할 수 있으니 참고하도록...";
+                    isFirstBuyWeapon = false;
+                }
+                else curLine = "고맙다.";
                 break;
                 case StateOfBuy.NoBuy:
                 curLine = "다른 것도 천천히 둘러보도록...";
@@ -149,7 +155,6 @@ public class ShopInteraction : Interaction
             state = StateOfBuy.YesBuy;
             ManagePurchase();
         }
-
         return state;
     }
 
@@ -180,6 +185,7 @@ public class ShopInteraction : Interaction
         yield return new WaitUntil(() => UpdateDialogue());    // 의사결정완료
 
         SetActiveShopUI(false);
+        isDone = false;
     }
 
     void Init()
@@ -202,10 +208,12 @@ public class ShopInteraction : Interaction
             result = 0;
     }
 
-    public void SetActiveShopUI(bool visible)
+    void SetActiveShopUI(bool visible)
     {   // manage dialog UI
         UIManager.instance.SceneUI["Inventory"].SetActive(!visible);    // inventory UI
-        UIManager.instance.SceneUI["Shop"].SetActive(visible);
+
+        if (visible) UIManager.instance.PushPopUI(shopUIGroup.gameObject);
+        else UIManager.instance.isClose = true;
     }
 
     void SetActiveSelectUI(bool visible)

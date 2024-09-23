@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -15,10 +16,11 @@ public class UIManager : MonoBehaviour
     public Fade fade;
     public bool isEndFade = false;
     public bool isFading = false;
-    public bool isUIOn = false;
 
     public SerializableDictionary<string, GameObject> SceneUI;
-    //public UIGroup curUIGroup;
+    public Stack<GameObject> curOpenUI;
+    public bool isClose = false;
+    GameObject gameExit;
     TextMeshProUGUI exitDesc;
 
     private void Awake()
@@ -36,46 +38,71 @@ public class UIManager : MonoBehaviour
     }
     private void Start()
     {
-        exitDesc = SceneUI["GameExit"].GetComponentsInChildren<TextMeshProUGUI>()[1];
+        curOpenUI = new Stack<GameObject>();
+        gameExit = SceneUI["GameExit"];
+        exitDesc = gameExit.GetComponentsInChildren<TextMeshProUGUI>()[1];
     }
 
     private void Update()
     {
         if (isFading && isEndFade)
-        {
             SetFadeObjState(false);
-        }
 
-        if(isUIOn)
-        {   // jokbo esc 누르고 플레이어 상호작용 상태 `false`로 바뀐 뒤,
-            // 해당 update문으로 들어오기 때문에 바로 gameExit도 활성화되는 문제 해결을 위한 변수 생성
-            // TODO -----  인벤토리도 똑같아서 해당 변수활용을 통해 문제 해결 필요
-            isUIOn = false;
-        }
-        else if (!Player.instance.isInteraction && !Player.instance.isDead && !Player.instance.isTutorial && Input.GetKeyDown(KeyCode.Escape))
+        if (!Player.instance.isDead && !Player.instance.isTutorial && Input.GetKeyDown(KeyCode.Escape)) 
         {
-            int curScene = ScenesManager.instance.GetSceneNum();
-            if (isFading || curScene == 0 || curScene == 3) return;
+            if(curOpenUI.Count == 0)
+            {
+                int curScene = ScenesManager.instance.GetSceneNum();
+                if (isFading || curScene == 0 || curScene == 3) return;
 
-            if (SceneUI["GameExit"].activeSelf)
-            {
+                if (!gameExit.activeSelf)
+                    SetActiveExitUI(true);
+            }
+            else if(gameExit.activeSelf)
                 SetActiveExitUI(false);
-            }
-            else
-            {
-                SetActiveExitUI(true);
-            }
         }
     }
 
+    private void LateUpdate()
+    {
+        if (curOpenUI.Count > 0 && isClose)
+        {
+            PushPopUI();
+            isClose = false;
+        }
+    }
+
+    public void PushPopUI(GameObject ui = null)
+    {
+        if (ui == null)
+        {
+            if (curOpenUI.Count == 1)
+            {   // last ui closed -> player movable
+                Player.instance.ChangePlayerInteractionState(false);
+            }
+            GameObject tmp = curOpenUI.Pop();
+            tmp.SetActive(false);
+        }
+        else
+        {
+            ui.SetActive(true);
+            curOpenUI.Push(ui);
+            if (curOpenUI.Count == 1)
+                Player.instance.ChangePlayerInteractionState(true);
+        }
+    }
     public void SetActiveExitUI(bool visible)
     {
+        if(visible)
+            PushPopUI(gameExit);
+        else
+            isClose = true;
+
         if (ScenesManager.instance.GetSceneNum() != 1)
             exitDesc.text = "저장은 \"마을\" 에서만 가능합니다.\n이외의 장소에서 종료시, 데이터는 저장되지 않습니다.";
         else
             exitDesc.text = "데이터를 저장합니다.";
 
-        SceneUI["GameExit"].SetActive(visible);
         GameManager.instance.SetTimeScale(visible ? 0f : 1f);
     }
 

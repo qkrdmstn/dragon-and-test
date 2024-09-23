@@ -144,8 +144,8 @@ public class TutorialInteraction : Interaction
                 interactionF = true;
                 curDialogUI.SetActive(false);
                 curScarescrowState.scareScrow.SetActive(false);
+                Player.instance.ChangePlayerInteractionState(false);
             }
-            Player.instance.ChangePlayerInteractionState(false);
         }
         else if ((canSpeak && Input.GetKeyDown(KeyCode.F)) || isActiveDone)
         {   // 일반 대화 출력
@@ -211,9 +211,7 @@ public class TutorialInteraction : Interaction
     public override void LoadEvent(InteractionData data)
     {   // player가 상호작용한 허수아비에 맞춰 이벤트가 진행됩니다.
         SetScarescrow(data.sequence);
-
         StartCurStage();
-        jokboUIGroup.isPossibleJokbo = false;   // 족보 대화 중ㅇㅔ는 활성화 불가
     }
 
     void SetScarescrow(int type)
@@ -289,20 +287,22 @@ public class TutorialInteraction : Interaction
                     onTutorials = CheckGetJokbo;
                 }
                 else if (curIdx == 5) {
-                    jokboUIGroup.isPossibleJokbo = true;
                     curScarescrowState.type = DialogType.Right;
                     onTutorials = CheckOpenJokbo;
                 }
                 else if(curIdx == 7)
                     curScarescrowState.type = DialogType.Bubble;
                 else if (curIdx == 8)
+                {
+                    jokboUIGroup.isPossibleJokbo = true;
                     jokboUIGroup.JokboState(false);
+                }
                 break;
             case ScareScrowType.Skill: // skill
+                if(curIdx == 0)
+                    jokboUIGroup.isPossibleJokbo = false;
                 if (curIdx == 2)
-                {
                     onTutorials = CheckGetHwatu;
-                }
                 else if (curIdx == 3)
                 {
                     onTutorials = CheckBlanket;
@@ -310,6 +310,8 @@ public class TutorialInteraction : Interaction
                 }
                 else if(curIdx == 4)
                 {
+                    Player.instance.ChangePlayerInteractionState(true);
+
                     tutorialUIGroup.SwitchAnim("isSkillInfo", true);
                     materialHwatuSlotUIs = UIManager.instance.SceneUI["Battle_1"].GetComponentsInChildren<MaterialHwatuSlotUI>();
                     foreach(MaterialHwatuSlotUI material in materialHwatuSlotUIs)
@@ -340,9 +342,9 @@ public class TutorialInteraction : Interaction
                 else if (curIdx == 10)
                 {
                     tutorialUIGroup.SwitchAnim("isTrash", false);
-                    isBlanket = true;
 
                     Player.instance.isCombatZone = true;
+
                     onTutorials = CheckUseSkill;
                     curScarescrowState.type = DialogType.Bubble;
                 }
@@ -403,7 +405,7 @@ public class TutorialInteraction : Interaction
         if(curScarescrowType != ScareScrowType.Bullet)
             SetDoorState("isOpen");
 
-        if (curSequenceIdx > 3) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
+        if (curSequenceIdx > 4) jokboUIGroup.isPossibleJokbo = true;    // 족보 이용 가능
 
         canSpeak = false;
         isInteraction = false;
@@ -418,9 +420,7 @@ public class TutorialInteraction : Interaction
         if(animName.Equals("isOpen"))
             SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.doorOpen);
         else
-        {
             SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.doorClose);
-        }
 
         doorAnim?.SetTrigger(animName);
     }
@@ -562,7 +562,7 @@ public class TutorialInteraction : Interaction
 
         if (isBlanketInteration)
         {
-            UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[3].SetActive(true);
+            jokboUIGroup.isPossibleJokbo = true;
             return true;
         }
         else return false;
@@ -589,15 +589,26 @@ public class TutorialInteraction : Interaction
         curDialogTxt.text = "튜토리얼 중에는 스킬을 버릴 수 없어.";
     }
 
+    public void OnJokboInBlanket()
+    {
+        curDialogTxt.text = "스킬 조합을 모를 때를 대비해 족보를 잘 활용해봐.\n족보를 닫고 모포로 돌아가보자.";
+    }
+
     public bool useSkill = false;
     bool isLoadSkillMonster = false;
     bool CheckUseSkill()
     {   // 3땡 : 일정 시간동안 브레스영역이 활성화 되고 여기 닿으면 데미지
+        if(UIManager.instance.curOpenUI.Count == 1) isBlanket = true;
+        else if(UIManager.instance.curOpenUI.Count > 1) isBlanket = false;
+
         if (!isLoadSkillMonster && !UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[5].activeSelf)
         {   // 모포가 꺼지면 몬스터 소환
             isLoadSkillMonster = true;
+            
+            jokboUIGroup.isPossibleJokbo = false;
             curDialogUI.SetActive(false);
             monsters[(int)TutorialMonsters.skill].monster.SetActive(true);
+            Player.instance.ChangePlayerInteractionState(false);
         }
         else if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
             useSkill = true;

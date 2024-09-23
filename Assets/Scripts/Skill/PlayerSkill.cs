@@ -82,7 +82,7 @@ public class PlayerSkill : MonoBehaviour
                 cooTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT7:
-                cooTime = cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
+                cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT6:
                 cooTime = GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range, data.coolTime);
@@ -303,6 +303,7 @@ public class PlayerSkill : MonoBehaviour
             yield return null;
         }
         Destroy(flameObject);
+        flameCoroutine = null;
         Player.instance.isAttackable = true;
     }
     #endregion
