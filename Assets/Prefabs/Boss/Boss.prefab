@@ -116,7 +116,7 @@ MonoBehaviour:
   bulletSpeed: 12
   bulletRange: 22
   reloadCnt: 0
-  pattern1Prob: 0.5
+  pattern1Prob: 0.35
   sphereShootNum: 144
   sphereInterval: 1
   spherePathInterval: 1
@@ -128,7 +128,7 @@ MonoBehaviour:
   pathBulletRange: 22
   waveInterval: 3
   waveNum: 2
-  pattern2Prob: 0.3
+  pattern2Prob: 0.25
   displayPrefab: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
   pattern2Delay: 0.5
   pattern2ShootNum: 10
@@ -137,11 +137,15 @@ MonoBehaviour:
   pattern2ShootOffset: 3
   pattern2AttackRange: 1.3
   isPattern2: 0
-  pattern3Prob: 0.2
+  pattern3Prob: 0.15
   pattern3Object: {fileID: 0}
   pattern3Delay: 1
   pattern3RotationTime: 1
   pattern3DisplayTime: 5
+  pattern4Prob: 0.25
+  pattern4StartInterval: 0.2
+  pattern4EndInterval: 0.6
+  pattern4BulletSpeed: 6
   spawnMosnterPrefabs:
   - {fileID: 2032848082544233927, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
   - {fileID: 393577084582284936, guid: 852dd4ca6d4a03c4e8c98782fb25db1c, type: 3}

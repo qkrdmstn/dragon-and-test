@@ -30,7 +30,7 @@ public class BossPattern3State_Jan : BossState_Jan
 
     IEnumerator Pattern3()
     {
-        boss.transform.position = Vector3.zero;
+        boss.transform.position = boss.bossField.GetBlockCenter();
         yield return new WaitForSeconds(boss.pattern3Delay);
 
         //회전
