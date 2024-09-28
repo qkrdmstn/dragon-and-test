@@ -36,7 +36,7 @@ public class Boss_Jan : Boss
     public int reloadCnt = 0;
 
     [Header("Pattern1 Info")]
-    public float pattern1Prob = 0.3f;
+    public float pattern1Prob = 0.35f;
     public float sphereShootNum;
     public float sphereInterval;
     public float spherePathInterval;
@@ -52,7 +52,7 @@ public class Boss_Jan : Boss
     public float waveNum;
 
     [Header("Pattern2 Info")]
-    public float pattern2Prob = 0.3f;
+    public float pattern2Prob = 0.25f;
     public GameObject displayPrefab;
     public float pattern2Delay;
     public int pattern2ShootNum;
@@ -63,7 +63,7 @@ public class Boss_Jan : Boss
     public bool isPattern2;
 
     [Header("Pattern3 Info")]
-    public float pattern3Prob = 0.2f;
+    public float pattern3Prob = 0.1f;
     public Pattern3Object pattern3Object;
     public float pattern3Delay = 1.0f;
     public float pattern3RotationTime = 1.0f;
