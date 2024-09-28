@@ -20,7 +20,7 @@ public class DialogueInteraction : Interaction
     public int result; // 선택된 답변의 배열 Idx
 
     DialogueDBEntity[] dialogues;                           // 전체 대화목록
-    List<DialogData> dialogDatas = new List<DialogData>();              // 현재 eventName과 동일한 대화목록
+    List<DialogData> dialogDatas = new List<DialogData>();  // 현재 eventName과 동일한 대화목록
     List<bool> selections = new List<bool>();
     InteractionData data;
     DialogueUIGroup dialogueUIGroup;
@@ -35,7 +35,7 @@ public class DialogueInteraction : Interaction
     {
         this.data = data;
 
-        UIManager.instance.SceneUI["Dialogue"].SetActive(true);
+        UIManager.instance.PushPopUI(UIManager.instance.SceneUI["Dialogue"]);
         Init();
         LoadDialogData();
 
@@ -83,7 +83,6 @@ public class DialogueInteraction : Interaction
 
     public void SetFalseUI()
     {
-        UIManager.instance.SceneUI["Dialogue"].SetActive(false);
         if (dialogueUIGroup.isExit)
         {
             dialogueUIGroup.isExit = false;
@@ -92,6 +91,7 @@ public class DialogueInteraction : Interaction
         {
             SetActiveSelectUI(false);
         }
+        UIManager.instance.isClose = true;
     }
 
     void SetUPUI() {
@@ -115,7 +115,7 @@ public class DialogueInteraction : Interaction
     
     bool UpdateDialogue()
     {   // manage Dialogue event
-        if (dialogueUIGroup.isExit || Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 대화 도중 나갈 수 있습니다.
+        if (dialogueUIGroup.isExit || Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 버튼으로 대화 도중 나갈 수 있습니다.
         if (isDone)  SetActiveDialogUI(false);
 
         if (keyInput)
@@ -153,7 +153,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   
-            if (/*Input.GetMouseButtonDown(0) ||*/ Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F))
             {   //  일반 대화 출력
                 if (dialogDatas.Count == curIdx) isDone = true;
                 else curIdx = SetNextDialog(curIdx);
@@ -166,7 +166,7 @@ public class DialogueInteraction : Interaction
     public void SetActiveDialogUI(bool visible)
     {   
         dialogueTxt.gameObject.SetActive(visible);
-
+        
         if (isFirst) isFirst = false;
     }
 

@@ -29,10 +29,10 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
-        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone || shopInteraction.isDone)
-        {
+        if (pickupItemInteraction.isDone || puzzleInteraction.isDone)
+        {   // shop blanket dialogue는 uimanger에서 ui 다꺼진 이후 플레이어 상태 조정
             Player.instance.ChangePlayerInteractionState(false);
-            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = shopInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+            pickupItemInteraction.isDone = puzzleInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
@@ -139,8 +139,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         BlanketInteractionData data = interaction as BlanketInteractionData;
         if (data.isActive && data.isClear)
-        {
-            data.isActive = false;
+        {   // possible to try only once by blanket
+            data.isActive = false;  
             blanketInteraction.LoadEvent();
         }
         else

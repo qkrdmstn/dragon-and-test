@@ -14,7 +14,6 @@ public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
     public JokboHwatuUI[] hwatuUIs;
-    SynergyEntity[] skillDB;
     public bool isPossibleJokbo = false;
     bool isFirst = true;
 
@@ -23,31 +22,12 @@ public class JokboUIGroup : UIGroup {
         SetSynergyName();
     }
 
-    private async void Start()
+    void Update()
     {
-        await LoadJokboDBEntity();
-    }
-
-    async Task LoadJokboDBEntity()
-    {
-        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:C");
-        ScenesManager.instance.isLoadedDB++;
-    }
-    private void Update()
-    {
-        if (!isPossibleJokbo) { return; }
-        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {   // close
-            UIManager.instance.isUIOn = true;
-            JokboState(false);
-            return;
-        }
-
-        if (Player.instance.isInteraction) return;
-        else if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
-        {   // open
+        if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K)) // open
             JokboState(true);
-        }
+        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
+            JokboState(false);
     }
 
     void SetUI()
@@ -104,10 +84,10 @@ public class JokboUIGroup : UIGroup {
                     }
                 }
 
-                childTxts[0].text = skillDB[idx].synergyName;
                 if (hwatu1 != null && hwatu2 != null)
                 {
                     SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatu2);
+                    childTxts[0].text = SkillManager.instance.skillDBDictionary[result].synergyName;
                     childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[result];
                     childTxts[1].text = SkillManager.instance.GetSkillInfo(result, false);
                 }
@@ -150,15 +130,27 @@ public class JokboUIGroup : UIGroup {
         {
             if (curSynergy == synergeName[i]) return i;
         }
-
         return -1;
     }
 
     public void JokboState(bool state)
     {   // true : open / false : close
+        if (!isPossibleJokbo) return;
+        
         SetUI();
-        childUI[0].SetActive(state);
-
-        Player.instance.ChangePlayerInteractionState(state);
+        if (state)
+        {
+            if (Player.instance.isTutorial)
+            {
+                TutorialInteraction interaction = FindObjectOfType<TutorialInteraction>();
+                if (interaction.curScarescrowType == ScareScrowType.Skill)
+                {
+                    interaction.OnJokboInBlanket();
+                }
+            }
+            UIManager.instance.PushPopUI(childUI[0]);
+        }
+        else
+            UIManager.instance.isClose = true;
     }
 }
