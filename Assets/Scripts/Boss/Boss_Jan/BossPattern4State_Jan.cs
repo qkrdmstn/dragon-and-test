@@ -90,8 +90,6 @@ public class BossPattern4State_Jan : BossState_Jan
             }
         }
         yield return new WaitForSeconds(2.0f);
-
-        stateMachine.ChangeState(boss.bossIdleState);
     }
 
     private int[,] GetPathTypeMat()

@@ -7,10 +7,9 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public enum PathType
 {
-    straight1,
+    straight,
     yPath,
     invYPath,
-    straight2,
     brokenLinePath,
     brokenLinePath2
 };
@@ -57,15 +56,10 @@ public class BossPattern1State_Jan : BossState_Jan
             yield return new WaitForSeconds(boss.spherePathInterval);
 
             //6등분 Path Shoot 
-            int randomSet = Random.Range(0, 2);
             for (int k = 0; k < 6; k++)
             {
                 Vector3 pivotDir = Quaternion.AngleAxis(k * 60.0f, Vector3.forward) * Vector3.down;
-                int randomPath = 0;
-                if (randomSet == 0)
-                    randomPath = Random.Range(0, 3);
-                else
-                    randomPath = Random.Range(3, 6);
+                int randomPath = Random.Range(0, 5);
                 boss.StartCoroutine(Pattern1PathShoot(pivotDir, (PathType)randomPath));
             }
             yield return new WaitForSeconds(boss.waveInterval);
@@ -102,7 +96,7 @@ public class BossPattern1State_Jan : BossState_Jan
     private int[,] GetPathTypeMat(PathType pathType)
     {
         int[,] bullets = new int[15, 24];
-        if (pathType == PathType.straight1)
+        if (pathType == PathType.straight)
         {
             bullets = new int[15, 24]
             {
@@ -163,27 +157,6 @@ public class BossPattern1State_Jan : BossState_Jan
                 {1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1},
                 {1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1},
                 {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0}
-            };
-        }
-        if (pathType == PathType.straight2)
-        {
-            bullets = new int[15, 24]
-            {
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1}
             };
         }
         else if (pathType == PathType.brokenLinePath)
