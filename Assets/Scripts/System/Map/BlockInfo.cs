@@ -74,6 +74,15 @@ public class BlockInfo : MonoBehaviour, IComparable
         return (min + max) / 2;
     }
 
+    public Vector2 GetBlockMin()
+    {
+        return min;
+    }
+    public Vector2 GetBlockMax()
+    {
+        return max;
+    }
+
     public int CompareTo(object obj)
     {
         Vector2 thisPos = this.transform.position;
