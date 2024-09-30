@@ -69,6 +69,20 @@ public class BlockInfo : MonoBehaviour, IComparable
         return new Vector2Int((int)(blockSize.x / gridSize.x), (int)(blockSize.y / gridSize.y));
     }
 
+    public Vector2 GetBlockCenter()
+    {
+        return (min + max) / 2;
+    }
+
+    public Vector2 GetBlockMin()
+    {
+        return min;
+    }
+    public Vector2 GetBlockMax()
+    {
+        return max;
+    }
+
     public int CompareTo(object obj)
     {
         Vector2 thisPos = this.transform.position;
@@ -85,4 +99,5 @@ public class BlockInfo : MonoBehaviour, IComparable
         else
             return 1;
     }
+
 }

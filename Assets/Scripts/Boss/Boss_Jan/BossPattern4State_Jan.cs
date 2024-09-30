@@ -32,6 +32,8 @@ public class BossPattern4State_Jan : BossState_Jan
 
     IEnumerator Pattern4PathShoot()
     {
+        Vector2Int blockMaxGrid = boss.bossField.GetMaxGridPos();
+        boss.transform.position = boss.bossField.GridToWorldPosition(new Vector2(blockMaxGrid.x / 2, blockMaxGrid.y - 4));
         List<GameObject> bulletObjects = new List<GameObject>();
 
         int[,] bulletsMat = GetPathTypeMat();
@@ -50,9 +52,12 @@ public class BossPattern4State_Jan : BossState_Jan
                 Vector3 bulletPos = new Vector3(bulletXPos, bulletYPos, boss.transform.position.z);
                 GameObject bulletObject = GameObject.Instantiate(boss.bulletPrefab, bulletPos, Quaternion.identity);
                 bulletObjects.Add(bulletObject);
-                BossBullet_Jan bullet = bulletObject.GetComponent<BossBullet_Jan>();
 
-                bullet.BulletInitialize(Vector2.down, 0.0f, 100.0f);
+                if(bulletObject != null)
+                {
+                    BossBullet_Jan bullet = bulletObject.GetComponent<BossBullet_Jan>();
+                    bullet.BulletInitialize(Vector2.down, 0.0f, 100.0f);
+                }
             }
         }
         yield return new WaitForSeconds(2.0f);
@@ -68,7 +73,8 @@ public class BossPattern4State_Jan : BossState_Jan
                 float bulletXPos = boss.transform.position.x + (j - (bulletColNum / 2)) * boss.pattern4EndInterval;
                 float bulletYPos = boss.transform.position.y + ((bulletRowNum / 2) - i) * boss.pattern4EndInterval;
                 Vector3 bulletPos = new Vector3(bulletXPos, bulletYPos, boss.transform.position.z);
-                bulletObjects[bulletIndex].transform.DOMove(bulletPos, 0.5f);
+                if (bulletObjects[bulletIndex] != null)
+                    bulletObjects[bulletIndex].transform.DOMove(bulletPos, 0.5f);
                 bulletIndex++;
             }
         }
@@ -84,12 +90,18 @@ public class BossPattern4State_Jan : BossState_Jan
                 Vector2 shootDir = Vector2.down;
                 shootDir.Normalize();
 
-                BossBullet_Jan bullet = bulletObjects[bulletIndex].GetComponent<BossBullet_Jan>();
-                bullet.BulletInitialize(shootDir, boss.pattern4BulletSpeed, 100.0f);
+                if(bulletObjects[bulletIndex] != null)
+                {
+                    BossBullet_Jan bullet = bulletObjects[bulletIndex].GetComponent<BossBullet_Jan>();
+                    if (bullet != null)
+                        bullet.BulletInitialize(shootDir, boss.pattern4BulletSpeed, 100.0f);
+                }
                 bulletIndex++;
             }
         }
         yield return new WaitForSeconds(2.0f);
+
+        stateMachine.ChangeState(boss.bossIdleState);
     }
 
     private int[,] GetPathTypeMat()

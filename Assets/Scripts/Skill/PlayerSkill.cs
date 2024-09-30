@@ -61,80 +61,82 @@ public class PlayerSkill : MonoBehaviour
     public float UseSkill(SkillDB data)
     {
         SeotdaHwatuCombination code = data.TransStringToEnum();
-        float cooTime = 0.0f;
+        float coolTime = 0.0f;
         //Debug.Log(code + " damage:" + data.damage + " range:" + data.range + " force:" + data.force + " speed:" + data.speed);
         switch (code)
         {
             case SeotdaHwatuCombination.GTT38:
-                cooTime = Superman(data.duration, data.coolTime);
+                coolTime = Superman(data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.GTT18:
+                coolTime = BreathSkill(data.TransStringToEnum(), data.damage, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.GTT13:
+                coolTime = BreathSkill(data.TransStringToEnum(), data.damage, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.JTT:
-                cooTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
+                coolTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT9:
-                cooTime = GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range, data.coolTime);
+                coolTime = GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT8:
-                cooTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
+                coolTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT7:
-                cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
+                coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT6:
-                cooTime = GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range, data.coolTime);
+                coolTime = GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT5:
-                cooTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
+                coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT4:
-                cooTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
+                coolTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT3:
-                cooTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
+                coolTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT2:
-                cooTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
+                coolTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT1:
-                cooTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
+                coolTime = SphereAttack(data.TransStringToEnum(), data.damage, data.speed, data.range, data.period, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK9:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK8:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK7:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK6:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK5:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK4:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK3:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK2:
-                cooTime = DashSkill(data.range, data.speed, data.coolTime);
+                coolTime = DashSkill(data.range, data.speed, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK1:
-                cooTime = ReinforceAttack(data.duration, data.coolTime);
+                coolTime = ReinforceAttack(data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.KK0:
                 break;
             case SeotdaHwatuCombination.blank:
                 break;
         }
-        return cooTime;
+        return coolTime;
     }
 
     #region Active
@@ -406,6 +408,47 @@ public class PlayerSkill : MonoBehaviour
     }
     #endregion
 
+    #region Breath
+    public BlockInfo curBlock;
+    private float BreathSkill(SeotdaHwatuCombination code, int damage, float projectileSpeed, float coolTime)
+    {
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+        dir.Normalize();
+        float theta = Vector2.Angle(Vector2.right, dir);
+        if (dir.y < 0)
+            theta *= -1;
+
+        Debug.Log("asd1");
+        BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            if (blocks[i].IsInBlock(this.transform.position))
+            {
+                curBlock = blocks[i];
+                break;
+            }
+        }
+        if (curBlock == null)
+            return 0.0f;
+        Debug.Log("asd2");
+
+        float diagonalLen = (curBlock.GetBlockMax() - curBlock.GetBlockMin()).magnitude;
+        float dist = 1.5f * diagonalLen;
+        
+        Vector3 initPos = this.transform.position;
+        while(curBlock.IsInBlock(initPos))
+        {
+            initPos -= new Vector3(dir.x, dir.y, 0).normalized * 5;
+        }
+
+        GameObject prefabs = skillObjDictionary[code];
+        GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta));
+        SkillObj_Breath projectile = projectilObj.GetComponent<SkillObj_Breath>();
+        projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+
+        return coolTime;
+    }
+    #endregion
     #endregion
 
     #region Passive
