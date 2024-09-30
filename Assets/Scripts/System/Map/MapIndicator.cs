@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -169,10 +168,6 @@ public class MapIndicator : MonoBehaviour
         playerRect.anchoredPosition = Vector2.zero;
 
         OverlapPlayerUI();
-
-        if (isVisited[goToBlockNum]) return;
-        isVisited[goToBlockNum] = true;
-
         FindNearBlocks(goToBlockNum);
     }
 
@@ -187,9 +182,11 @@ public class MapIndicator : MonoBehaviour
             }
         }
 
-        BlinkBlock(false);
         if (curNearBlocksNum.Count > 0)
+        {
+            BlinkBlock(false);
             curNearBlocksNum.Clear();
+        }
 
         for (int i = 0; i < tmp.Length; i++)
         {   // index 주의할 것
@@ -199,7 +196,9 @@ public class MapIndicator : MonoBehaviour
 
             SetInActiveBlockUI(num, true);
         }
-        transform.parent.gameObject.SetActive(false);   // panel부터 active 관리
+
+        BlinkBlock(isVisited[_curBlock]);   // block의 clear상태에 맞춰 깜빡임 활성화 결정
+        isVisited[_curBlock] = true;        
     }
 
     void SetInActiveAllBlockUIs()
@@ -229,14 +228,11 @@ public class MapIndicator : MonoBehaviour
             }
         }
 
-        // 상점이 아닌 경우,
-        for (int j = 0; j < mapRects[blockNum].mapRect.childCount; j++)
-        {
+        for (int j = 0; j < mapRects[blockNum].mapRect.childCount; j++)     // 상점이 아닌 경우,
             mapRects[blockNum].mapRect.GetChild(j).gameObject.SetActive(state);
-        }
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
                 = inactivePosforMoney;
@@ -247,15 +243,12 @@ public class MapIndicator : MonoBehaviour
         UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
                 = state ? activePosforMoney : inactivePosforMoney;
 
-        if (state)
-        {
-            transform.parent.gameObject.SetActive(state);   // panel부터 active 관리
+        transform.parent.gameObject.SetActive(state);   // panel부터 active 관리
 
-            if(curBlock == endBlock)
-            {
-                Animator anim = bossRect.GetComponentInChildren<Animator>();
-                anim.SetBool("isOn", state);
-            }
+        if (state && curBlock == endBlock)
+        {
+            Animator anim = bossRect.GetComponentInChildren<Animator>();
+            anim.SetBool("isOn", state);
         }
 
         foreach (int num in curNearBlocksNum)
