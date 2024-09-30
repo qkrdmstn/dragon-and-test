@@ -128,6 +128,7 @@ public class MapIndicator : MonoBehaviour
     {
         BlanketInteractionData[] datas = FindObjectsOfType<BlanketInteractionData>();
         curActiveBlanketCnt = datas.Length;
+        SetBlanketUICnt();
 
         foreach (BlanketInteractionData data in datas)
         {   // 추후 각자 모포 isActive == false -> destroy
@@ -266,6 +267,6 @@ public class MapIndicator : MonoBehaviour
 
     public static TextMeshProUGUI curActiveBlanketCntTxt;
     public static int curActiveBlanketCnt;
-    public static void DecreaseActiveBlanketUI() => curActiveBlanketCntTxt.text = "X " + --curActiveBlanketCnt;
+    public static void SetBlanketUICnt() => curActiveBlanketCntTxt.text = "X " + curActiveBlanketCnt;
     #endregion
 }

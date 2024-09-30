@@ -40,7 +40,8 @@ public class BlanketInteractionData : InteractionData
         if (isClear && !isActive)
         {   //모포 사용 후, 제거
             Destroy(mapBlanketUI);  // 미니맵의 모포 UI도 같이 삭제
-            MapIndicator.DecreaseActiveBlanketUI();
+            MapIndicator.curActiveBlanketCnt--;
+            MapIndicator.SetBlanketUICnt();
 
             Destroy(this.gameObject);
         }
