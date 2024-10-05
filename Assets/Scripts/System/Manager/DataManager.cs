@@ -54,7 +54,7 @@ public class DataManager : MonoBehaviour
     }
     const string url = "https://script.google.com/macros/s/AKfycbzgSkf4rZEBujxPT91kBl5XZtod7A_BC3qirBLl-4Fyuw8Fc8fuP-A7uHlQBsyUvEd6Ew/exec";
 
-    public async Task SetValues<T>(SheetType sheetType, T[] datas)
+    public async Task<bool> SetValues<T>(SheetType sheetType, T[] datas)
     {
         WWWForm form = new WWWForm();
         form.AddField("order", "setValue");
@@ -63,7 +63,7 @@ public class DataManager : MonoBehaviour
         string jsonData = JsonHelper.ToJson<T>(datas);
         form.AddField("values", jsonData);
 
-        await PostSetRequestAsync(form);
+        return await PostSetRequestAsync(form);
     }
   
     public async Task<T[]> GetValues<T>(SheetType sheetType, string range)

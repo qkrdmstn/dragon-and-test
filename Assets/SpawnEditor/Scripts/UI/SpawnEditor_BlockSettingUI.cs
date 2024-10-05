@@ -15,9 +15,9 @@ public class SpawnEditor_BlockSettingUI : MonoBehaviour
         loadBtn = transform.GetChild(1).GetComponent<Button>();
     }
 
-    public void SaveBtnEvent()
+    public void SaveBtnEvent(GameObject loadingUI)
     {
-        SpawnEditorManager.instance.SaveSpawnData();
+        SpawnEditorManager.instance.SaveSpawnData(loadingUI);
     }
 
     public void LoadBtnEvent()
