@@ -143,6 +143,7 @@ public class MapIndicator : MonoBehaviour
         mapRects[startBlock].mapRect.GetComponentInChildren<Animator>().SetBool("isOn", false);
 
         SetInActiveAllBlockUIs();
+        MoveBlockPlayer(startBlock);
     }
 
     void OverlapPlayerUI()
@@ -185,6 +186,11 @@ public class MapIndicator : MonoBehaviour
         if (curNearBlocksNum.Count > 0)
         {
             BlinkBlock(false);
+            foreach (int num in curNearBlocksNum)
+            {
+                if (isVisited[num] || num == _curBlock) continue;
+                SetInActiveBlockUI(num, false);
+            }
             curNearBlocksNum.Clear();
         }
 
@@ -208,7 +214,6 @@ public class MapIndicator : MonoBehaviour
             if (i == startBlock) continue;
             SetInActiveBlockUI(i, false);
         }
-        MoveBlockPlayer(startBlock);
     }
 
     void SetInActiveBlockUI(int blockNum, bool state)
