@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class MonsterChaseStateNear : MonsterState
+public class MonsterChaseStateNear : MonsterState2
 {
     private MonsterNear monster;
-    public MonsterChaseStateNear(MonsterStateMachine _stateMachine, GameObject _player, MonsterNear _monster) : base(_stateMachine, _player)
+    public MonsterChaseStateNear(MonsterStateMachine2 _stateMachine, GameObject _player, MonsterNear _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }
@@ -50,7 +50,7 @@ public class MonsterChaseStateNear : MonsterState
             }
         }
 
-        if (monster.distanceToPlayer < monster.attackRange && !monster.inAttack && monster.tempcool<=0.0)
+        if (monster.distanceToPlayer < monster.attackRange && !monster.inAttack && monster.tempcool <= 0.0)
             stateMachine.ChangeState(monster.attackState);
     }
 }

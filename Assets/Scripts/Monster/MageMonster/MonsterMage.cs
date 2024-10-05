@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterMage : MonsterBase
+public class MonsterMage : MonsterBase2
 {
     #region MonsterAttack
     public bool inAttack = false;

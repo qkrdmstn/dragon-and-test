@@ -2,12 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MonsterNear : MonsterBase
+public class MonsterNear : MonsterBase2
 {
     [Header("MonsterNear---------------")]
-    public GameObject sword;
     public GameObject swordAura;
-    BoxCollider2D swordCollider;
 
     #region MonsterAttack
     [Header("MonsterAttack")]
@@ -37,7 +35,6 @@ public class MonsterNear : MonsterBase
     public override void Start()
     {
         base.Start();
-        swordCollider = sword.GetComponent<BoxCollider2D>();
 
         StartCoroutine(AnimSpawn());
         stateMachine.Initialize(chaseState);
@@ -76,81 +73,8 @@ public class MonsterNear : MonsterBase
             }
         }
 
-
-        //switch (closestDirection)
-        //{
-        //    case 0:
-        //    case 45:
-        //    case 180:
-        //        StartCoroutine(RotateOverTime(25, 325, attackDuration));
-        //        break;
-
-        //    case 90:
-        //    case 270:
-        //    case 315:
-        //        StartCoroutine(RotateOverTime(325, 25, attackDuration));
-        //        break;
-        //}
-
-        //if (closestDirection <= 180)
-        //{
-        //    //sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-135));
-        //    StartCoroutine(RotateOverTime(90, attackDuration));
-        //}
-        //else
-        //{
-        //    //sword.transform.rotation = Quaternion.Euler(0, 0, (closestDirection-45));
-        //    StartCoroutine(RotateOverTime(-90, attackDuration));
-        //}
-        
         StartCoroutine(Shoot());
-        //InvokeRepeating("Shoot", 0f, 0.6f);
     }
-
-    IEnumerator RotateOverTime(float startAngle, float endAngle, float duration)
-    {
-        bool isDamagedOnce = false;
-        float startTime = Time.time;
-        Quaternion startRotation = Quaternion.Euler(0, 0, startAngle);
-        Quaternion endRotation = Quaternion.Euler(0, 0, endAngle);
-
-        while (Time.time < startTime + duration)
-        {
-            float t = (Time.time - startTime) / duration;
-            sword.transform.localRotation = Quaternion.Lerp(startRotation, endRotation, t);
-
-            Collider2D[] colliders = Physics2D.OverlapBoxAll(swordCollider.bounds.center, swordCollider.bounds.size, 0);
-            foreach (Collider2D collider in colliders)
-            {
-                if (collider.CompareTag("Player") && !isDamagedOnce)
-                {
-                    isDamagedOnce = true;
-                    playerScript.OnDamamged(1);
-                }
-            }
-            yield return null;
-        }
-
-        //sword.transform.rotation = endRotation;
-    }
-
-    //public void Shoot()
-    //{
-    //    if (shootNumber == 3)
-    //    {
-    //        CancelInvoke("Shoot");
-    //        OutAttack();
-    //        return;
-    //    }
-
-    //    Vector3 dir = player.transform.position-transform.position;
-
-    //    GameObject aura = Instantiate(swordAura, transform.position, Quaternion.identity);
-    //    MonsterBullet auraScript = aura.GetComponent<MonsterBullet>();
-        
-    //    auraScript.BulletInitialize(dir);
-    //    ++shootNumber;
-    //}
 
     IEnumerator Shoot()
     {

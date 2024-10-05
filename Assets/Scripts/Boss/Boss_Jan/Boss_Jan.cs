@@ -104,7 +104,6 @@ public class Boss_Jan : Boss
         base.Awake();
         spawnTimer = spawnPeriod;
         InitComponent();
-
         InitState();
     }
 
