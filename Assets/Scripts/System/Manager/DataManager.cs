@@ -52,7 +52,7 @@ public class DataManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
     }
-    const string url = "https://script.google.com/macros/s/AKfycbzgSkf4rZEBujxPT91kBl5XZtod7A_BC3qirBLl-4Fyuw8Fc8fuP-A7uHlQBsyUvEd6Ew/exec";
+    const string url = "https://script.google.com/macros/s/AKfycbyTN_kyPP8nNxhZ3vX5h5FwRPjEC0YXmWsDrsiyifOmQSI_KmMH2LdZmK_WXS1mOwqJdw/exec";
 
     public async Task<bool> SetValues<T>(SheetType sheetType, T[] datas)
     {
