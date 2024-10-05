@@ -42,7 +42,7 @@ public class SkillObj_Flame : SkillObject
                     if (!inRangeTarget[i].CompareTag("Monster"))
                         continue;
 
-                    MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
+                    MonsterBase2 monster = inRangeTarget[i].GetComponent<MonsterBase2>();
                     Boss boss = inRangeTarget[i].GetComponent<Boss>();
                     Debug.Log("sss");
                     if (monster != null)
@@ -60,7 +60,7 @@ public class SkillObj_Flame : SkillObject
         transform.position = player.transform.position;
     }
 
-    public void MonsterDamaged(MonsterBase monster)
+    public void MonsterDamaged(MonsterBase2 monster)
     {
         monster.OnDamaged(damage);
 

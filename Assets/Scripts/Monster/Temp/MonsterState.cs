@@ -6,28 +6,26 @@ public class MonsterState
 {
     #region Components
     protected MonsterStateMachine stateMachine;
-    protected GameObject player;
-    protected Direction curDir;
     #endregion
 
-    public MonsterState(MonsterStateMachine _stateMachine, GameObject _player)
+    protected Player player;
+    protected MonsterBase monster;
+    public MonsterState(MonsterStateMachine _stateMachine, Player player, MonsterBase monster)
     {
         this.stateMachine = _stateMachine;
-        this.player = _player;
+        this.player = player;
+        this.monster = monster;
     }
 
     public virtual void Enter()
     {
-        return;
     }
 
     public virtual void Update()
     {
-        return;
     }
 
     public virtual void Exit()
     {
-        return;
     }
 }

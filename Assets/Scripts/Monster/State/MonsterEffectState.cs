@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterEffectState : MonsterState
+public class MonsterEffectState : MonsterState2
 {
-    private MonsterBase monster;
+    private MonsterBase2 monster;
     public float effectTime;
-    public MonsterEffectState(MonsterStateMachine _stateMachine, GameObject _player, MonsterBase _monster) : base(_stateMachine, _player)
+    public MonsterEffectState(MonsterStateMachine2 _stateMachine, GameObject _player, MonsterBase2 _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }

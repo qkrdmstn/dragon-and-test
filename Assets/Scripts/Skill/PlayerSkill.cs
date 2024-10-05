@@ -158,7 +158,7 @@ public class PlayerSkill : MonoBehaviour
             }
             else if (target.CompareTag("Monster"))
             {
-                MonsterBase monster = target.GetComponent<MonsterBase>();
+                MonsterBase2 monster = target.GetComponent<MonsterBase2>();
                 Boss boss = target.GetComponent<Boss>();
 
                 if (monster != null)
@@ -462,7 +462,7 @@ public class PlayerSkill : MonoBehaviour
             if (target == pivotMonster)
                 continue;
 
-            MonsterBase monster = target.GetComponent<MonsterBase>();
+            MonsterBase2 monster = target.GetComponent<MonsterBase2>();
             Boss boss = target.GetComponent<Boss>();
             if (monster != null) //몬스터일 경우,
             {

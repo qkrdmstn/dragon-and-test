@@ -25,7 +25,7 @@ public class SkillObject : MonoBehaviour
         statusEffect.status = _statusEffect;
     }
 
-    public virtual void SkillAttack(MonsterBase monster)
+    public virtual void SkillAttack(MonsterBase2 monster)
     {
 
     }

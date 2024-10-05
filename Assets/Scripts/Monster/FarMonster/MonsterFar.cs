@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterFar : MonsterBase
+public class MonsterFar : MonsterBase2
 {
     [Header("MonsterFar---------------")]
     #region MonsterShoot

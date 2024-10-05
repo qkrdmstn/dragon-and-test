@@ -13,7 +13,6 @@ public class BossStateMachine : MonoBehaviour
     public void Initialize(BossState _startState)
     {
         currentState = _startState;
-
         currentState.Enter();
     }
 
