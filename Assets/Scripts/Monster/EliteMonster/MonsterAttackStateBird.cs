@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterAttackStateBird : MonsterState
+public class MonsterAttackStateBird : MonsterState2
 {
     private MonsterEliteBird monster;
-    public MonsterAttackStateBird(MonsterStateMachine _stateMachine, GameObject _player, MonsterEliteBird _monster) : base(_stateMachine, _player)
+    public MonsterAttackStateBird(MonsterStateMachine2 _stateMachine, GameObject _player, MonsterEliteBird _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }

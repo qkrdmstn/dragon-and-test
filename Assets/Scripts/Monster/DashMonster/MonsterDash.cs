@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class MonsterDash : MonsterBase
+public class MonsterDash : MonsterBase2
 {
     [Header("MonsterDash---------------")]
     public float chargingSec = 0.7f;

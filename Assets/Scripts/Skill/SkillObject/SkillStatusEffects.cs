@@ -14,7 +14,7 @@ public class SkillStatusEffects
 {
     public StatusEffect status;
 
-    public void ApplyStatusEffect(MonsterBase monster)
+    public void ApplyStatusEffect(MonsterBase2 monster)
     {
         Debug.Log("StatusEffect");
         monster.EffectState();

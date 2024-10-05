@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterEliteBird : MonsterBase
+public class MonsterEliteBird : MonsterBase2
 {
     #region MonsterShoot
     [Header("MonsterEliteBird ------------------")]

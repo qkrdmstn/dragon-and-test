@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterChaseStateDash : MonsterState
+public class MonsterChaseStateDash : MonsterState2
 {
     private Vector2 direction;
     private MonsterDash monster;
-    public MonsterChaseStateDash(MonsterStateMachine _stateMachine, GameObject _player, MonsterDash _monster) : base(_stateMachine, _player)
+    public MonsterChaseStateDash(MonsterStateMachine2 _stateMachine, GameObject _player, MonsterDash _monster) : base(_stateMachine, _player)
     {
         monster = _monster;
     }

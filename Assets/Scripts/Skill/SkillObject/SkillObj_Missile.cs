@@ -88,7 +88,7 @@ public class SkillObj_Missile : SkillObject
     {
         if (collision.gameObject.CompareTag("Monster"))
         {
-            MonsterBase monster = collision.GetComponent<MonsterBase>();
+            MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
             Boss boss = collision.GetComponent<Boss>();
 
             if (monster != null)
@@ -103,7 +103,7 @@ public class SkillObj_Missile : SkillObject
         }
     }
 
-    public void MonsterDamaged(MonsterBase monster)
+    public void MonsterDamaged(MonsterBase2 monster)
     {
         monster.OnDamaged(damage);
 

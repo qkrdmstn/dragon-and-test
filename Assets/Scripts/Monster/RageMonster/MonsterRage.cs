@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterRage : MonsterBase
+public class MonsterRage : MonsterBase2
 {
     
     #region MonsterAttack

@@ -48,7 +48,7 @@ public class SkillObj_Sphere : SkillObject
                     if (!inRangeTarget[i].CompareTag("Monster"))
                         continue;
 
-                    MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
+                    MonsterBase2 monster = inRangeTarget[i].GetComponent<MonsterBase2>();
                     Boss boss = inRangeTarget[i].GetComponent<Boss>();
                     if (monster != null)
                         MonsterDamaged(monster);
@@ -64,7 +64,7 @@ public class SkillObj_Sphere : SkillObject
         if (!collision.CompareTag("Monster"))
             return;
 
-        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
         Boss boss = collision.GetComponent<Boss>();
         if (monster != null)
             monster.SetSlowSpeed(slowScale);
@@ -79,7 +79,7 @@ public class SkillObj_Sphere : SkillObject
         if (!collision.CompareTag("Monster"))
             return;
 
-        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
         Boss boss = collision.GetComponent<Boss>();
         if (monster != null)
             monster.SetNormalSpeed();
@@ -94,7 +94,7 @@ public class SkillObj_Sphere : SkillObject
         timer -= Time.deltaTime;
     }
 
-    public void MonsterDamaged(MonsterBase monster)
+    public void MonsterDamaged(MonsterBase2 monster)
     {
         monster.OnDamaged(damage);
 

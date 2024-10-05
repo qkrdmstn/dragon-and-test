@@ -82,7 +82,7 @@ public class Boss : MonoBehaviour
             isDead = true;
             StopAllCoroutines();
 
-            MonsterBase[] monsterBases = FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+            MonsterBase2[] monsterBases = FindObjectsByType<MonsterBase2>(FindObjectsSortMode.None);
             BossBullet_Jan[] bossBullets = FindObjectsByType<BossBullet_Jan>(FindObjectsSortMode.None);
             Debug.Log("Dead!!!!!!!");
 

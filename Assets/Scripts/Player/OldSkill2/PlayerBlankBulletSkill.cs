@@ -51,7 +51,7 @@ public class PlayerBlankBulletSkill : MonoBehaviour
             }
             else if(target.CompareTag("Monster"))
             {
-                MonsterBase monster = target.GetComponent<MonsterBase>();
+                MonsterBase2 monster = target.GetComponent<MonsterBase2>();
                 Vector2 impactDir = target.transform.position - this.transform.position;
                 impactDir.Normalize();
 

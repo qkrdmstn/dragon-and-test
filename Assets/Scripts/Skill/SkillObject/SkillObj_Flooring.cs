@@ -59,7 +59,7 @@ public class SkillObj_Flooring : SkillObject
                     if (!inRangeTarget[i].CompareTag("Monster"))
                         continue;
 
-                    MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
+                    MonsterBase2 monster = inRangeTarget[i].GetComponent<MonsterBase2>();
                     SkillAttack(monster);
                 }
             }
@@ -78,7 +78,7 @@ public class SkillObj_Flooring : SkillObject
         rigid.velocity = Vector2.zero;
     }
 
-    public override void SkillAttack(MonsterBase monster)
+    public override void SkillAttack(MonsterBase2 monster)
     {
         monster.OnDamaged(damage);
 
