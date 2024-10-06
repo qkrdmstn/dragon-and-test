@@ -15,44 +15,50 @@ public class MonsterBase : MonoBehaviour
     [Header("Life info")]
     public int curHP = 10;
     public int maxHP = 10;
-    public bool isDead = false;
 
     [Header("Move info")]
     public float moveSpeed;
 
     [Header("Drop Items")]
+    [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
     GameObject[] dropItemPrefabs;
     GameObject moneyPrefab;
-    [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
 
     [Header("Monster Info")]
-    MonsterTypes monsterType;
-    bool haveAnim = false;
+    public MonsterTypes monsterType;
+
+    [Header("Anim Info")]
+    public bool haveAnim = false;
+    [Range(0.0f, 0.7f)] public float deadDuration = 0.6f;
 
     #region Other Components
-    public Player player;
-    private Spawner spawner;
+    [HideInInspector] public Player player {  get; private set; }
+    [HideInInspector] public Spawner spawner { get; private set; }
     #endregion
 
     #region Self Componets
-    private Rigidbody2D rb;
+    public Rigidbody2D rb { get; private set; }
+    public MonsterAnimController monsterAnimController { get; private set; }
     private UnityEngine.AI.NavMeshAgent agent;
-    [HideInInspector] public MonsterAnimController monsterAnimController;
     #endregion
 
     #region States
     public MonsterStateMachine stateMachine;
+
+    //모든 몬스터의 기본 States
+    public MonsterSpawnStateBase spawnState;
+    public MonsterIdleStateBase idleState;
+    public MonsterChaseStateBase chaseState;
+    public MonsterDeadStateBase deadState;
     #endregion
 
     private void Awake()
     {
-
-
         InitComponents();
         InitStates();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Spawn);
 
@@ -119,26 +125,9 @@ public class MonsterBase : MonoBehaviour
         curHP -= damage;
         if (curHP <= 0)
         {
-            Dead();
+            stateMachine.ChangeState(deadState);
         }
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
-    }
-
-    //죽음
-    public virtual void Dead()
-    {
-        if (!isDead)
-        {
-            isDead = true;
-            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
-
-            if (IsEffectSpawner())
-            {
-                spawner.DeathCount();
-                ItemDrop();
-            }
-            Destroy(gameObject);
-        }
     }
 
     //아이템 드랍
@@ -190,7 +179,7 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
-    private bool IsEffectSpawner()
+    public bool IsEffectSpawner()
     {
         if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Boss_1 || SceneManager.GetActiveScene().name == "BossTest" || monsterType == MonsterTypes.boss)
             return false;
