@@ -219,8 +219,10 @@ public class SpawnEditorManager : MonoBehaviour
     #endregion
 
     #region Save & Load & Reset
-    public async void SaveSpawnData()
+    public async void SaveSpawnData(GameObject loadingUI)
     {   // clear는 구글 시트 스크립트에서 처리
+        loadingUI.SetActive(true);
+
         List<SpawnDB> paramLists = new List<SpawnDB>();
         for (int i = 0; i < blocks.Count; i++) //각 blockinfo에 포함된 spawn data 취합
         {
@@ -237,8 +239,13 @@ public class SpawnEditorManager : MonoBehaviour
             sheetType = SheetType.SpawnB;
         else
             sheetType = SheetType.SpawnC;
-        await DataManager.instance.SetValues<SpawnDB>(sheetType, paramLists.ToArray());
+
+        if(await DataManager.instance.SetValues<SpawnDB>(sheetType, paramLists.ToArray()))
+        {   // data save completed
+            loadingUI.SetActive(false);
+        }
     }
+
 
     public async void LoadSpawnData()
     {

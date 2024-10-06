@@ -109,6 +109,8 @@ public class Spawner : MonoBehaviour
     public void UpdateCurBlockNumber(int blockNum)
     {
         curBlockNum = blockNum;
+        mapIndicator.MoveBlockPlayer(curBlockNum);
+
         if (!blocks[curBlockNum].blockClear)
         {   //Wave Start
             newWave();
