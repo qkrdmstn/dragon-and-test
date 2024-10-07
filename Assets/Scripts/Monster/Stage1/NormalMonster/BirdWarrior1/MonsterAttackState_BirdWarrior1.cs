@@ -5,7 +5,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class MonsterAttackState_BirdWarrior1 : MonsterState
 {
-    protected BirdWarrior1 monster;
+    protected new BirdWarrior1 monster;
 
     public MonsterAttackState_BirdWarrior1(MonsterStateMachine _stateMachine, Player _player, BirdWarrior1 _monster) : base(_stateMachine, _player, _monster)
     {
@@ -15,8 +15,8 @@ public class MonsterAttackState_BirdWarrior1 : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SetSpeed(0.0f);
 
+        monster.SetSpeed(0.0f);
         monster.StartCoroutine(Shoot());
     }
 
