@@ -10,8 +10,7 @@ public class HPRecovery_ItemEffect : ItemEffect
     public override void ExcuteEffect()
     {
         base.ExcuteEffect();
-        //if (GameManager.instance.player.curHP == GameManager.instance.player.maxHP) return;
-        Player.instance.curHP += increaseHP;
+        playerPresenter.Heal(increaseHP);
 
         Debug.Log("Health Recovery Effect");
     }

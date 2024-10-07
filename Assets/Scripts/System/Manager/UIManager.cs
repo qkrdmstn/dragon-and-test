@@ -6,7 +6,12 @@ using UnityEngine;
 
 public enum UI
 {
-    Start, Town_1, Battle_1, Dialogue, Inventory, GameExit
+    Battle_1, Dialogue, Inventory, GameExit
+}
+
+public enum PresenterType
+{
+    Player, Skill, 
 }
 
 public class UIManager : MonoBehaviour
@@ -16,6 +21,8 @@ public class UIManager : MonoBehaviour
     public Fade fade;
     public bool isEndFade = false;
     public bool isFading = false;
+
+    public List<PresenterBase> presenters;
 
     public SerializableDictionary<string, GameObject> SceneUI;
     public Stack<GameObject> curOpenUI;

@@ -76,11 +76,18 @@ public class SaveManager : MonoBehaviour
     public void StartLoadData(int index)
     {
         SetSelectSlotIdx(index);
-        if (data[index] != null)
+        if(data[index] == null)
         {
-            Player.instance.curHP = data[index].playerHP;
-            Player.instance.money = data[index].money;
-            Player.instance.shield = data[index].curShieldCnt;
+            Player.instance.RestoreHP();
+            Player.instance.refShield = 0;
+            Player.instance.refMoney = 0;
+        }
+        else if (data[index] != null)
+        {
+            Player.instance.refCurHp = data[index].playerHP;
+            Player.instance.refMoney = data[index].money;
+            Player.instance.refShield = data[index].curShieldCnt;
+
             if (data[index].isClearTutorial)
             {
                 UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>().isPossibleJokbo = true;

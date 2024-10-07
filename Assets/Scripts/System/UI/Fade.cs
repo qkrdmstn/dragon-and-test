@@ -16,20 +16,12 @@ public class Fade : MonoBehaviour
     {
         start = 1f;
         end = 0f;
-        startFadeTime = 2f;
+        startFadeTime = 1.5f;
         endFadeTime = 1f;
     }
 
     public void ManageFade(int _sceneNum)
     {
-        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start && _sceneNum == 1)
-        {
-            TextMeshProUGUI[] texts = UIManager.instance.SceneUI["Start"].GetComponentsInChildren<TextMeshProUGUI>();
-            for (int i = 0; i < texts.Length; i++)
-            {
-                StartCoroutine(TextFadeCoroutine(texts[i]));
-            }
-        }
         StartCoroutine(FadeCoroutine(_sceneNum));
     }
 
@@ -121,27 +113,5 @@ public class Fade : MonoBehaviour
         Time.timeScale = 1f;
         UIManager.instance.isEndFade = true;
         yield return null;
-    }
-
-    IEnumerator TextFadeCoroutine(TextMeshProUGUI text)
-    {   // Text - 어두워집니다
-        time = 0f;
-        while (text.alpha > 0f)
-        {
-            time += Time.deltaTime / startFadeTime;
-
-            text.alpha = Mathf.Lerp(start, end, time); // 1 ~ 0
-            yield return null;
-        }
-
-        // - 밝아집니다
-        time = 0f;
-        while (text.alpha < 1f)
-        {
-            time += Time.deltaTime / endFadeTime;
-
-            text.alpha = Mathf.Lerp(end, start, time); // 0 ~ 1
-            yield return null;
-        }
     }
 }

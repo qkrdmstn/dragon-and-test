@@ -32,15 +32,16 @@ public class PlayerData
         totalPlayTime = originPlayTime + Time.realtimeSinceStartup;   // sec이므로 시분으로 바꿔야함
         chapterName = "Chapter 01. 이무기 마을";
 
-        playerHP = Player.instance.curHP;
+        playerHP = Player.instance.GetCurHP();
+        money = Player.instance.GetCurMoney();
         playerMP = 0; // 아직 미개발
+
         skills = SkillManager.instance.activeSkillData;
         curSkillCnt = SkillManager.instance.activeSkillCnt;
         hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
-        money = Player.instance.money;
 
         curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;
-        curShieldCnt = Player.instance.shield;
+        curShieldCnt = Player.instance.GetCurShield();
 
         isClearTutorial = Player.instance.isClearTutorial;
     }

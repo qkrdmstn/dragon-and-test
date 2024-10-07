@@ -1,18 +1,53 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+
+public enum StatActionType
+{
+    HP, Money, Shield
+}
 
 public class Player : MonoBehaviour
 {
     #region Value
     public static Player instance = null;
+    public Action[] actions;
 
     [Header("Life info")]
-    public int curHP = 10;
-    public int maxHP = 10;
-    public int money = 0;
-    public int shield = 0;
+    int curHP = 10;
+    int maxHP = 10;
+    public int refCurHp
+    {
+        get { return curHP; }
+        set { 
+            curHP = Mathf.Clamp(value, 0, maxHP);
+            actions[(int)StatActionType.HP].Invoke();
+        } 
+    }
+
+    int money = 0;
+    public int refMoney
+    {
+        get { return money; }
+        set { 
+            money = Mathf.Clamp(value, 0, value);
+            actions[(int)StatActionType.Money].Invoke();
+        }
+    }
+
+    int shield = 0;
+    int maxShield = 3;
+    public int refShield
+    {
+        get { return shield; }
+        set
+        {
+            shield = Mathf.Clamp(value, 0, maxShield);
+            actions[(int)StatActionType.Shield].Invoke();
+        }
+    }
     [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]
@@ -49,7 +84,6 @@ public class Player : MonoBehaviour
 
     #region Componets
     public PlayerAnimController animController { get; private set; }
-
     public Rigidbody2D rb { get; private set; }
     public Collider2D col { get; private set; }
     public PlayerHit playerHit { get; private set; }
@@ -62,7 +96,6 @@ public class Player : MonoBehaviour
     public PlayerDashState dashState { get; private set; }
     public PlayerKnockbackState knockbackState { get; private set; }
     public PlayerFallState fallState { get; private set; }
-
     #endregion
 
     [Header("CameraSetting")]
@@ -73,6 +106,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        actions = new Action[Enum.GetValues(typeof(StatActionType)).Length];
+
         stateMachine = new PlayerStateMachine(this);
 
         idleState = new PlayerIdleState(this, stateMachine, PlayerAnimState.Idle);
@@ -124,6 +159,19 @@ public class Player : MonoBehaviour
             PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
     }
 
+    public void IncrementHP(int amount) => refCurHp += amount;
+
+    public void DecrementHP(int amount) => refCurHp -= amount;
+    public void RestoreHP() => refCurHp = maxHP;
+
+    public void IncrementShield(int amount) => refShield += amount;
+
+    public void DecrementShield(int amount) => refShield -= amount;
+
+    public void IncrementMoney(int amount) => refMoney += amount;
+
+    public void DecrementMoney(int amount) => refMoney -= amount;
+
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
@@ -134,10 +182,14 @@ public class Player : MonoBehaviour
         rb.velocity = vel;
     }
 
-    public Vector2 GetVelocity()
-    {
-        return rb.velocity;
-    }
+    #region FUNC_GET
+
+    public Vector2 GetVelocity() => rb.velocity;
+    public int GetCurHP() => refCurHp;
+    public int GetMaxHP() => maxHP ;
+    public int GetCurShield() => refShield;
+    public int GetCurMoney() => refMoney;
+    #endregion
 
     public float ClacSpeed(float baseSpeed)
     {
@@ -173,21 +225,21 @@ public class Player : MonoBehaviour
                 return;
 
             isDamaged = true;
-            if (shield > 0)
-                shield -= damage;
+            if (refShield > 0)
+                DecrementShield(damage);
             else
-                curHP -= damage;
+                DecrementHP(damage);
 
-            if (curHP <= 0) //Dead
+            if (refCurHp <= 0) //Dead
             {
                 //장사
                 //4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
                 float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
-                float randomVal = Random.Range(0.0f, 1.0f);
+                float randomVal = UnityEngine.Random.Range(0.0f, 1.0f);
                 if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Prob)
                 {
-                    curHP = 1;
+                    refCurHp = 1;
                     isDamaged = false;
                 }
                 else
@@ -204,6 +256,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    IEnumerator DamagedProcess(float duration)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
+            yield return new WaitForSeconds(duration / 4.0f);
+
+            animController.SetMaterialColor(new Color(1, 1, 1, 1f));
+            yield return new WaitForSeconds(duration / 4.0f);
+        }
+        ChangePlayerLayer(6);
+        isDamaged = false;
+    }
+
     private void PlayerDead()
     {
         isDead = true;
@@ -217,26 +283,14 @@ public class Player : MonoBehaviour
         isCombatZone = false;
         isDead = false;
         isDamaged = false;
-        curHP = maxHP;
-        money = 0;
+
+        RestoreHP();
+        refMoney = 0;
+        refShield = 0;
 
         SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
         animController.isBreath = false;
         animController.SetAnim(PlayerAnimState.Idle);
-    }
-
-    IEnumerator DamagedProcess(float duration)
-    {
-        for (int i = 0; i < 2; i++) 
-        {
-            animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
-            yield return new WaitForSeconds(duration / 4.0f);
-
-            animController.SetMaterialColor(new Color(1, 1, 1, 1f));
-            yield return new WaitForSeconds(duration / 4.0f);
-        }
-        ChangePlayerLayer(6);
-        isDamaged = false;
     }
 
     public void SetIdleStatePlayer()

@@ -166,7 +166,7 @@ public class TutorialInteraction : Interaction
     void OnDestroy()
     {   // 튜토리얼 종료
         SkillManager.instance.DeleteSkill(SeotdaHwatuCombination.TT3);
-        Player.instance.curHP = Player.instance.maxHP;
+        Player.instance.refCurHp = Player.instance.GetMaxHP();
         Player.instance.isClearTutorial = true;
         Gun gun = GunManager.instance.currentGun.GetComponent<Gun>();
         gun.loadedBullet = gun.magazineSize;

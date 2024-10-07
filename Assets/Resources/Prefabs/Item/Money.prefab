@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4820365139060234721}
   - component: {fileID: 4820365139060234720}
-  - component: {fileID: -8211649631432916365}
   - component: {fileID: 7572572195535768346}
+  - component: {fileID: -8211649631432916365}
   m_Layer: 0
   m_Name: Money
   m_TagString: Untagged
@@ -86,19 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-8211649631432916365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4820365139060234723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 243fda9614443b74898a403d4bf1383e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  amount: 1
 --- !u!70 &7572572195535768346
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -115,3 +102,18 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.51, y: 0.55}
   m_Direction: 0
+--- !u!114 &-8211649631432916365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4820365139060234723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243fda9614443b74898a403d4bf1383e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: a13340998102e6349bc27eeb8d29e8a3, type: 2}
+  dropProb: 0
+  amount: 1

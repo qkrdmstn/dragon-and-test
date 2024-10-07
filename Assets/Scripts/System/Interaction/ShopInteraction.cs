@@ -146,7 +146,7 @@ public class ShopInteraction : Interaction
     {
         if(result == 1) state = StateOfBuy.NoBuy;
 
-        else if(Player.instance.money < itemData.price)
+        else if(Player.instance.refMoney < itemData.price)
         {   // checkMoney
             state = StateOfBuy.CantBuy;
         }
@@ -174,7 +174,7 @@ public class ShopInteraction : Interaction
                 InventoryData.instance.AddArmorItem(itemData);
                 break;
         }
-        Player.instance.money -= itemData.price;
+        Player.instance.refMoney -= itemData.price;
         Destroy(interaction);
     }
 
