@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5485959142979417190}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -187,7 +187,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7065783619711787257}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.1638947, y: 1.9874768, z: 0.00066979975}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -230,8 +230,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.03, y: -0.1}
-  m_Size: {x: 0.5, y: 0.7}
+  m_Offset: {x: -0.04198098, y: 0.3378811}
+  m_Size: {x: 0.71594095, y: 0.71594095}
   m_Direction: 0
 --- !u!114 &7065783619711787258
 MonoBehaviour:
@@ -252,9 +252,10 @@ MonoBehaviour:
   monsterType: 0
   haveAnim: 1
   deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 3
   shootNum: 3
   shootDelay: 0.7
-  attackRange: 3
   swordAura: {fileID: 1692984963978023852, guid: 808ece086415dec4b9d5f798265edb73, type: 3}
 --- !u!195 &7065783619711787256
 NavMeshAgent:
@@ -265,7 +266,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7065783619711787257}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.45
   m_Speed: 7
   m_Acceleration: 100
   avoidancePriority: 50
@@ -274,7 +275,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1
-  m_BaseOffset: 0.5
+  m_Height: 0.8
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
