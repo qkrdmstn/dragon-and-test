@@ -9,7 +9,6 @@ public class BirdWarrior1 : MonsterBase
     [Header("Attack Info")]
     public int shootNum = 3;
     public float shootDelay = 0.7f;
-    public float attackRange = 3.0f;
     public GameObject swordAura;
 
     #region Addtional States

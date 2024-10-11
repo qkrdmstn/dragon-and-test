@@ -45,6 +45,10 @@ public class MonsterAttackState_BirdWarrior1 : MonsterState
             yield return new WaitForSeconds(monster.shootDelay);
         }
 
-        stateMachine.ChangeState(monster.chaseState);
+        float dist = Vector3.Distance(monster.transform.position, player.transform.position);
+        if (dist < monster.chaseDist)
+            stateMachine.ChangeState(monster.chaseState);
+        else
+            stateMachine.ChangeState(monster.idleState);
     }
 }

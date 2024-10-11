@@ -21,8 +21,10 @@ public class MonsterChaseState_BirdWarrior1 : MonsterChaseStateBase
     {
         base.Update();
         float dist =  Vector3.Distance(monster.transform.position, player.transform.position);
-        if (dist < monster.attackRange)
+        if (dist < monster.attackDist)
             stateMachine.ChangeState(monster.attackState);
+        else if (dist > monster.chaseDist)
+            stateMachine.ChangeState(monster.idleState);
     }
 
     public override void Exit()

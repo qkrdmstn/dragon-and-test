@@ -7,12 +7,12 @@ public class BirdWarrior2 : MonsterBase
 {
     [Header("---------------BirdWarrior2---------------")]
     [Header("Attack Info")]
-    public float attackRange = 4.0f;
     public float chargingDelay = 0.7f;
     public float dashDist = 5.0f;
     public float dashSpeed = 8.0f;
     public float dashDelay = 0.35f;
     public float knockbackForce = 10.0f;
+    public bool isDashing = false;
     public GameObject warningObject;
     
     [Header("Anim Info")]
@@ -41,9 +41,10 @@ public class BirdWarrior2 : MonsterBase
         attackState = new MonsterAttackState_BirdWarrior2(stateMachine, player, this);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && stateMachine.currentState == attackState)
+        base.OnTriggerEnter2D(collision);
+        if (collision.gameObject.CompareTag("Player") && isDashing)
         {
             player.PlayerKnockBack(player.transform.position - transform.position, knockbackForce); //Vector2 dir, float mag
         }
