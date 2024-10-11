@@ -21,7 +21,7 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-    Snap, mopo, doorOpen, doorClose
+    Snap, mopo, doorOpen, doorClose, Jokbo
 }
 
 public enum PuzzleSfx
@@ -125,7 +125,9 @@ public class SoundManager : MonoBehaviour
         // BGM
         if (_sceneNum == 2) // tutorial
             _sceneNum = 1;
-        else if (_sceneNum >= 3)
+        else if (_sceneNum == 7) // boss
+            _sceneNum = 3;
+        else if (_sceneNum >= 3) // battle, puzzle
             _sceneNum = 2;
 
         BGMSource.volume = _bgmVolume;

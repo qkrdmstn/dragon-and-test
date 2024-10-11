@@ -148,6 +148,7 @@ public class JokboUIGroup : UIGroup {
                     interaction.OnJokboInBlanket();
                 }
             }
+            SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Jokbo);
             UIManager.instance.PushPopUI(childUI[0]);
         }
         else
