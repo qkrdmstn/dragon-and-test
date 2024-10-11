@@ -149,7 +149,6 @@ public class BlanketInteraction : Interaction
 
         hwatuUI.gameObject.SetActive(true);
         UIManager.instance.SceneUI["Inventory"].SetActive(true);
-        Debug.Log("EndInteraction");
     }
 
     public bool AddSelectedHwatu(MaterialHwatuSlotUI ui)

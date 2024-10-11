@@ -3,16 +3,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class BirdWarrior1 : MonsterBase
+public class BirdRage : MonsterBase
 {
-    [Header("---------------BirdWarrior1---------------")]
+    [Header("---------------BirdRage---------------")]
     [Header("Attack Info")]
-    public int shootNum = 3;
-    public float shootDelay = 0.7f;
-    public GameObject swordAura;
+    public float attackCoolTime = 1.0f;
+    public float rageSpeed = 6.0f;
+    public GameObject attackRangeObject;
 
     #region Addtional States
-    public MonsterAttackState_BirdWarrior1 attackState;
+    public MonsterRageState_BirdRage rageState;
     #endregion
 
     protected override void Start()
@@ -30,7 +30,14 @@ public class BirdWarrior1 : MonsterBase
         idleState = new MonsterIdleStateBase(stateMachine, player, this);
         deadState = new MonsterDeadStateBase(stateMachine, player, this);
 
-        chaseState = new MonsterChaseState_BirdWarrior1(stateMachine, player, this);
-        attackState = new MonsterAttackState_BirdWarrior1(stateMachine, player, this);
+        chaseState = new MonsterChaseState_BirdRage(stateMachine, player, this);
+        rageState = new MonsterRageState_BirdRage(stateMachine, player, this);
+    }
+
+    public override void OnDamaged(int damage)
+    {
+        if(stateMachine.currentState != rageState)
+            stateMachine.ChangeState(rageState);
+        base.OnDamaged(damage);
     }
 }

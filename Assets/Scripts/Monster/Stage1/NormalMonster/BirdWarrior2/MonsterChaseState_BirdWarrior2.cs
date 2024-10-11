@@ -23,8 +23,10 @@ public class MonsterChaseState_BirdWarrior2 : MonsterChaseStateBase
 
         //공격 범위 내에 Player가 존재한다면, 공격 상태로 변경
         float dist =  Vector3.Distance(monster.transform.position, player.transform.position);
-        if (dist < monster.attackRange)
+        if (dist < monster.attackDist)
             stateMachine.ChangeState(monster.attackState);
+        else if(dist > monster.chaseDist)
+            stateMachine.ChangeState(monster.idleState);
     }
 
     public override void Exit()

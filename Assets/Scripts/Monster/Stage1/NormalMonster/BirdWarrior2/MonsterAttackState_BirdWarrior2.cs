@@ -70,13 +70,23 @@ public class MonsterAttackState_BirdWarrior2 : MonsterState
         SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.dashAttack);
 
         //공격 로직
+        monster.isDashing = true;
         monster.rb.velocity = (dir * monster.dashSpeed);
         float dashDuration = monster.dashDist / monster.dashSpeed;
         yield return new WaitForSeconds(dashDuration);
 
+        //공격 끝
         monster.SetSpeed(0.0f);
         monsterAnimController.SetAnimSpeed(1.0f);
+        monster.isDashing = false;
+
+        //딜레이
         yield return new WaitForSeconds(monster.dashDelay);
-        stateMachine.ChangeState(monster.chaseState);
+
+        float dist = Vector3.Distance(monster.transform.position, player.transform.position);
+        if (dist < monster.chaseDist)
+            stateMachine.ChangeState(monster.chaseState);
+        else
+            stateMachine.ChangeState(monster.idleState);
     }
 }

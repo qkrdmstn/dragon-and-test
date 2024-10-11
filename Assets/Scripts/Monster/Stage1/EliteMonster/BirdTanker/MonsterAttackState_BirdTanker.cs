@@ -1,0 +1,63 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
+
+public class MonsterAttackState_BirdTanker : MonsterState
+{
+    protected new BirdTanker monster;
+    private MonsterAnimController monsterAnimController;
+
+    ContactFilter2D filter;
+    public MonsterAttackState_BirdTanker(MonsterStateMachine _stateMachine, Player _player, BirdTanker _monster) : base(_stateMachine, _player, _monster)
+    {
+        this.monster = _monster;
+
+        if(monster.haveAnim)
+            monsterAnimController = monster.monsterAnimController;
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+
+        monster.SetSpeed(0.0f);
+        monster.StartCoroutine(Shoot());
+    }
+
+    public override void Update()
+    {
+        base.Update();
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        monster.SetSpeed(monster.moveSpeed);
+    }
+
+    IEnumerator Shoot()
+    {
+        for (int i = 0; i < monster.waveNum; i++)
+        {
+            for (int j = 0; j < monster.bulletNumPerWave; j++)
+            {
+                var bulletGo = MonsterPool.instance.pool.Get();
+                var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
+                bulletGo.transform.position = monster.transform.position;
+
+                Vector2 shootDir = Quaternion.AngleAxis((360.0f / (float)monster.bulletNumPerWave) * j + (180 / monster.bulletNumPerWave) * (i % 2), Vector3.forward) * Vector3.right;
+                bulletComponent.BulletInitialize(shootDir, monster.bulletSpeed);
+            }
+            yield return new WaitForSeconds(monster.waveInterval);
+        }
+        yield return new WaitForSeconds(monster.reloadDelay);
+
+        float dist = Vector3.Distance(monster.transform.position, player.transform.position);
+        if (dist < monster.chaseDist)
+            stateMachine.ChangeState(monster.chaseState);
+        else
+            stateMachine.ChangeState(monster.idleState);
+    }
+}

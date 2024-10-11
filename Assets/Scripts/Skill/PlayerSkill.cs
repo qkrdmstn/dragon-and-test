@@ -196,12 +196,14 @@ public class PlayerSkill : MonoBehaviour
         Player.instance.isStateChangeable = false;
         Player.instance.isAttackable = false;
 
-        float curDist = 0.0f;
         //Initial Direction Setting
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 dir = mousePos - this.transform.position;
         dir.Normalize();
 
-        while (dist >= curDist)
+        float curDist = 0.0f;
+        float resultDist = Mathf.Min(dist, Vector2.Distance(mousePos, this.transform.position));
+        while (resultDist >= curDist)
         {
             float dv = Time.deltaTime * speed;
             Vector2 dashVel = speed * dir;
