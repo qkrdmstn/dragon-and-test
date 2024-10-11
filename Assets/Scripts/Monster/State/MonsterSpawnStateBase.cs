@@ -31,9 +31,8 @@ public class MonsterSpawnStateBase : MonsterState
         if (monster.haveAnim)
             monster.monsterAnimController.SetAnim();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(monster.spawnDuration);
 
-        monster.SetSpeed(monster.moveSpeed);
-        stateMachine.ChangeState(monster.chaseState);
+        stateMachine.ChangeState(monster.idleState);
     }
 }

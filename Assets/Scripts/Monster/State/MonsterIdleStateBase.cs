@@ -11,10 +11,16 @@ public class MonsterIdleStateBase : MonsterState
     public override void Enter()
     {
         base.Enter();
+        monster.SetSpeed(0.0f);
     }
+
     public override void Update()
     {
         base.Update();
+
+        float dist = Vector3.Distance(monster.transform.position, player.transform.position);
+        if (dist < monster.chaseDist)
+            stateMachine.ChangeState(monster.chaseState);
     }
 
     public override void Exit()

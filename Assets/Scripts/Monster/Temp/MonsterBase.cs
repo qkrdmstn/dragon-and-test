@@ -21,15 +21,20 @@ public class MonsterBase : MonoBehaviour
 
     [Header("Drop Items")]
     [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
-    GameObject[] dropItemPrefabs;
-    GameObject moneyPrefab;
+    private GameObject[] dropItemPrefabs;
+    private GameObject moneyPrefab;
 
     [Header("Monster Info")]
     public MonsterTypes monsterType;
 
     [Header("Anim Info")]
     public bool haveAnim = false;
+    public float spawnDuration = 1.0f;
     [Range(0.0f, 0.7f)] public float deadDuration = 0.6f;
+
+    [Header("BaseState Range Info")]
+    public float chaseDist;
+    public float attackDist;
 
     #region Other Components
     [HideInInspector] public Player player {  get; private set; }
@@ -80,7 +85,8 @@ public class MonsterBase : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
 
-        monsterAnimController = GetComponentInChildren<MonsterAnimController>();
+        if(haveAnim)
+            monsterAnimController = GetComponentInChildren<MonsterAnimController>();
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
@@ -185,5 +191,12 @@ public class MonsterBase : MonoBehaviour
             return false;
         else
             return true;
+    }
+
+    //Temp OnDamaged Func
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+            OnDamaged(1);
     }
 }
