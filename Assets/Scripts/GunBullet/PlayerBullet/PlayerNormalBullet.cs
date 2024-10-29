@@ -48,13 +48,9 @@ public class PlayerNormalBullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Monster"))
         {
-            MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
-            Boss boss = collision.GetComponent<Boss>();
+            MonsterBase monster = collision.GetComponent<MonsterBase>();
+            MonsterDamaged(monster);
 
-            if (monster != null)
-                MonsterDamaged(monster);
-            else if (boss != null)
-                BossDamaged(boss);
             InActiveBullet();
         }
 
@@ -76,9 +72,19 @@ public class PlayerNormalBullet : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public void MonsterDamaged(MonsterBase2 monster)
+    public void MonsterDamaged(MonsterBase monster)
     {
-        monster.OnDamaged(damage);
+        int finalDamage = damage;
+
+        if(monster.monsterType == MonsterTypes.boss)
+        {
+            //암행어사
+            SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
+                finalDamage = damage + (int)SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AHES74);
+        }
+
+        monster.OnDamaged(finalDamage);
 
         //알리
         SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
@@ -100,47 +106,20 @@ public class PlayerNormalBullet : MonoBehaviour
             monster.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
         }
 
-        //구삥
-        SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
-        float gpp19Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GPP19);
-        randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Prob)
+        if(monster.monsterType != MonsterTypes.boss)
         {
-            monster.EffectState();
-        }
+            //구삥
+            SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
+            float gpp19Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GPP19);
+            randomVal = Random.Range(0.0f, 1.0f);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Prob)
+            {
+                //To do. 기절 추가
+            }
 
-        Vector2 dir = this.transform.position - Player.instance.transform.position;
-        dir.Normalize();
-        monster.Knockback(dir, knockbackForce);
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        //암행어사
-        SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
-            boss.OnDamaged(damage + (int)SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AHES74));
-        else
-            boss.OnDamaged(damage);
-
-        //알리
-        SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
-        float al12Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AL12);
-        float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Prob)
-        {
-            PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
-            playerSkill.AL12Effect(boss.gameObject, damage);
-        }
-
-        //독사
-        SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
-        float ds14Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.DS14);
-        randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Prob)
-        {
-            //지속 데미지 -> duration과 interval이 없음
-            boss.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
+            Vector2 dir = this.transform.position - Player.instance.transform.position;
+            dir.Normalize();
+            monster.Knockback(dir, knockbackForce);
         }
     }
 }

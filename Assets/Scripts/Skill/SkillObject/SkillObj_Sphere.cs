@@ -14,12 +14,12 @@ public class SkillObj_Sphere : SkillObject
     private Rigidbody2D rigid;
     private Collider2D collider2d;
 
-    public void Initialize(int _damage, Vector2 _dir, float _projectileSpeed, float _range, StatusEffect _statusEffect, float _period, float _slowScale)
+    public void Initialize(int _damage, Vector2 _dir, float _projectileSpeed, float _range, float _period, float _slowScale)
     {
         rigid = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<Collider2D>();
 
-        base.Initialize(_damage, _dir, _statusEffect);
+        base.Initialize(_damage, _dir);
 
         range = _range;
         projectileSpeed = _projectileSpeed;
@@ -48,12 +48,8 @@ public class SkillObj_Sphere : SkillObject
                     if (!inRangeTarget[i].CompareTag("Monster"))
                         continue;
 
-                    MonsterBase2 monster = inRangeTarget[i].GetComponent<MonsterBase2>();
-                    Boss boss = inRangeTarget[i].GetComponent<Boss>();
-                    if (monster != null)
-                        MonsterDamaged(monster);
-                    else if (boss != null)
-                        BossDamaged(boss);
+                    MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
+                    monster.OnDamaged(damage);
                 }
             }
         }
@@ -64,14 +60,9 @@ public class SkillObj_Sphere : SkillObject
         if (!collision.CompareTag("Monster"))
             return;
 
-        MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
-        Boss boss = collision.GetComponent<Boss>();
-        if (monster != null)
-            monster.SetSlowSpeed(slowScale);
-        else if (boss != null)
-        {
-            boss.moveSpeed = 3.65f - 3.65f * slowScale;
-        }
+        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        monster.SetSlowSpeed(slowScale);
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -79,32 +70,12 @@ public class SkillObj_Sphere : SkillObject
         if (!collision.CompareTag("Monster"))
             return;
 
-        MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
-        Boss boss = collision.GetComponent<Boss>();
-        if (monster != null)
-            monster.SetNormalSpeed();
-        else if (boss != null)
-        {
-            boss.moveSpeed = 3.65f;
-        }
-            
+        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        monster.SetNormalSpeed();
     }
     private void Update()
     {
         timer -= Time.deltaTime;
-    }
-
-    public void MonsterDamaged(MonsterBase2 monster)
-    {
-        monster.OnDamaged(damage);
-
-        if (statusEffect != null && statusEffect.status != StatusEffect.None)
-            statusEffect.ApplyStatusEffect(monster);
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
     }
 
     public void InActiveProjectile()
