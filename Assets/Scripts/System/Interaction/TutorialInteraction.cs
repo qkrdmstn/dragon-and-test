@@ -451,7 +451,7 @@ public class TutorialInteraction : Interaction
     bool CheckDash()
     {
         tutorialUIGroup.SwitchAnim("isDash", true);
-        monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>().SetAttackable();
+        monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialBirdArcher1>().SetAttackable();
 
         if (Player.instance.IsDash())
         {
@@ -468,7 +468,7 @@ public class TutorialInteraction : Interaction
         if (isStartKill)
         {
             isStartKill = false;
-            monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialFar>().ChaseState(true);
+            monsters[(int)TutorialMonsters.attack].monster.GetComponent<TutorialBirdArcher1>().SetAttackable();
         }
 
         if (monsters[(int)TutorialMonsters.attack].isKilled)
@@ -494,13 +494,11 @@ public class TutorialInteraction : Interaction
         if (isStartBattle)
         {
             isStartBattle = false;
-            TutorialFar far1 = monsters[(int)TutorialMonsters.battle1].monster.GetComponent<TutorialFar>();
+            TutorialBirdArcher1 far1 = monsters[(int)TutorialMonsters.battle1].monster.GetComponent<TutorialBirdArcher1>();
             far1.SetAttackable();
-            far1.ChaseState(true);
 
-            TutorialFar far2 = monsters[(int)TutorialMonsters.battle2].monster.GetComponent<TutorialFar>();
+            TutorialBirdArcher1 far2 = monsters[(int)TutorialMonsters.battle2].monster.GetComponent<TutorialBirdArcher1>();
             far2.SetAttackable();
-            far2.ChaseState(true);
         }
 
         if (monsters[(int)TutorialMonsters.battle1].isKilled &
