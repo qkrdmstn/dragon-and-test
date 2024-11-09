@@ -35,7 +35,7 @@ public class BirdWarrior2 : MonsterBase
 
         spawnState = new MonsterSpawnStateBase(stateMachine, player, this);
         idleState = new MonsterIdleStateBase(stateMachine, player, this);
-        deadState = new MonsterDeadStateBase(stateMachine, player, this);
+        deadState = new MonsterDeadState_BirdWarrior2(stateMachine, player, this);
 
         chaseState = new MonsterChaseState_BirdWarrior2(stateMachine, player, this);
         attackState = new MonsterAttackState_BirdWarrior2(stateMachine, player, this);
