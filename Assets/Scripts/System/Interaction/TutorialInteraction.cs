@@ -547,10 +547,8 @@ public class TutorialInteraction : Interaction
             monsters[(int)TutorialMonsters.hwatu12].monster.SetActive(true);
             monsters[(int)TutorialMonsters.hwatu13].monster.SetActive(true);
         }
-        if (SkillManager.instance.materialCardCnt >= 2)
-        {
+        if (SkillManager.instance.refMaterialCardCnt >= 2)
             return true;
-        }
         else return false;
     }
 

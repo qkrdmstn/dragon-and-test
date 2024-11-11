@@ -10,7 +10,6 @@ public class BlanketInteraction : Interaction
     [Header("UI")]
     [SerializeField] private List<GameObject> materialHwatuUIObjectList = new List<GameObject>(); //실제 UI
     [SerializeField] private BlanketUI blanketUI;
-    [SerializeField] private HwatuUI hwatuUI;
 
     [Header("Transform Info")]
     [SerializeField] private RectTransform materialHwatuParent; //화투 이동 위치
@@ -30,8 +29,7 @@ public class BlanketInteraction : Interaction
         materialHwatuUIObject = Resources.LoadAll<GameObject>("Prefabs/MaterialHwatuUI");
 
         //UI Info Init
-        GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4];
-        hwatuUI = hwatuUIObject.GetComponent<HwatuUI>();
+        //GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4];
         GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
         blanketUI = blanketUIObject.GetComponent<BlanketUI>();
 
@@ -78,7 +76,7 @@ public class BlanketInteraction : Interaction
         selectedCnt = 0;
 
         //화투 UI 비활성화 및 모포 UI 활성화
-        hwatuUI.gameObject.SetActive(false);
+        //hwatuUI.gameObject.SetActive(false);
         UIManager.instance.SceneUI["Inventory"].SetActive(false);
         UIManager.instance.PushPopUI(blanketUI.gameObject);
 
@@ -92,10 +90,10 @@ public class BlanketInteraction : Interaction
     private void CreateMaterialHwatuUIObject()
     {
         //화투 생성 위치
-        RectTransform initTransform = hwatuUI.GetComponent<RectTransform>();
+        //RectTransform initTransform = blanketUI.GetComponent<RectTransform>();
 
         //화투 생성
-        for (int i = 0; i < SkillManager.instance.materialCardCnt; i++)
+        for (int i = 0; i < SkillManager.instance.refMaterialCardCnt; i++)
         {
             HwatuData data1 = SkillManager.instance.materialHwatuDataList[i];
             for (int j = 0; j < materialHwatuUIObject.Length; j++)
@@ -104,7 +102,7 @@ public class BlanketInteraction : Interaction
                 if (data1.hwatu.type == data2.hwatu.type)
                 {
                     //Hwatu UI에 카드 생성
-                    Vector3 initPos = initTransform.position;
+                    Vector3 initPos = materialHwatuParent.position;
                     GameObject Obj = Instantiate(materialHwatuUIObject[j], initPos, Quaternion.identity, materialHwatuParent);
                     materialHwatuUIObjectList.Add(Obj);
                     break;
@@ -147,7 +145,7 @@ public class BlanketInteraction : Interaction
         isDone = true;
         isBlanketInteraction = false;
 
-        hwatuUI.gameObject.SetActive(true);
+        //hwatuUI.gameObject.SetActive(true);
         UIManager.instance.SceneUI["Inventory"].SetActive(true);
     }
 
@@ -169,7 +167,7 @@ public class BlanketInteraction : Interaction
 
             if (result == SeotdaHwatuCombination.blank) //섯다에 없는 조합일 경우, 실패
                 return false;
-            else if(SkillManager.instance.activeSkillCnt >= 2 && !SkillManager.instance.IsPassive(result)) //액티브 가득 참 & 현재 조합이 액티브일 경우
+            else if(SkillManager.instance.IsFullActive() && !SkillManager.instance.IsPassive(result)) //액티브 가득 참 & 현재 조합이 액티브일 경우
                 return false;
         }
 

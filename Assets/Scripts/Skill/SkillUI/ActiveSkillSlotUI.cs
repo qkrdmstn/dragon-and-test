@@ -1,11 +1,7 @@
 using DG.Tweening;
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-//using static UnityEditor.Progress;
 
 public class ActiveSkillSlotUI : MonoBehaviour
     , IBeginDragHandler
@@ -13,9 +9,8 @@ public class ActiveSkillSlotUI : MonoBehaviour
     , IDragHandler
 {
     [Header("Skill Info")]
-    [SerializeField] private Image skillImage;
     public SeotdaHwatuCombination data;
-    public int activeSkillSlotIndex;
+    public ActiveSkillSlot type;
 
     [Header("Transform Info")]
     public Vector3 originPos;
@@ -29,8 +24,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
 
     private void Awake()
     {
-        skillImage = GetComponent<Image>();
-
         originPos = GetComponent<RectTransform>().position;
         originRot = Quaternion.identity;
         originScale = new Vector3(1, 1, 1);
@@ -41,29 +34,6 @@ public class ActiveSkillSlotUI : MonoBehaviour
     private void Start()
     {
         blanketInteraction = FindObjectOfType<BlanketInteraction>();
-    }
-
-    public void UpdateSlot(SeotdaHwatuCombination _data)
-    {
-
-        if (_data != SeotdaHwatuCombination.blank)
-        {
-            data = _data;
-            skillImage.color = Color.white;
-            skillImage.sprite = SkillManager.instance.skillSpriteDictionary[_data];
-        }
-        else
-        {
-            data = SeotdaHwatuCombination.blank;
-            skillImage.color = Color.clear;
-            skillImage.sprite = null;
-        }
-    }
-
-    public void ClearSlot()
-    {
-        skillImage.sprite = null;
-        skillImage.color = Color.clear;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -84,7 +54,7 @@ public class ActiveSkillSlotUI : MonoBehaviour
         bool isInTrashCan = blanketUI.IsInTrashCan(rectTransform);
         
         if (isInTrashCan) //쓰레기통에 겹치면, 스킬 데이터 삭제
-            SkillManager.instance.DeleteSkill(activeSkillSlotIndex);
+            SkillManager.instance.DeleteSkill(type);
 
         MoveTransform(0.25f, true); //원래 자리로 돌려보내기
     }

@@ -95,11 +95,16 @@ public class SaveManager : MonoBehaviour
             }
 
             SkillManager.instance.materialHwatuDataList = data[index].hwatus;
-            SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
-            SkillManager.instance.activeSkillCnt = data[index].curSkillCnt;
-            SkillManager.instance.activeSkillData = data[index].skills;
+            SkillManager.instance.refMaterialCardCnt = data[index].hwatus.Count;
+            foreach(var data in data[index].activeSkill)
+            {
+                SkillManager.instance.active[data.Key] = data.Value;
+            }
+            foreach (var data in data[index].passiveSkill)
+            {
+                SkillManager.instance.passive[data.Key] = data.Value;
+            }
         }
-        SkillManager.instance.UpdateActiveSkillSlot();
         StartCoroutine(IsLoadedStartData());
     }
 

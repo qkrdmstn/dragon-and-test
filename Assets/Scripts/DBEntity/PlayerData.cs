@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,9 +12,10 @@ public class PlayerData
 
     public int playerHP;
     public int playerMP;
-    public SeotdaHwatuCombination[] skills;
-    public int curSkillCnt = 0;
+    public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
+    public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
     public List<HwatuData> hwatus;
+
     public int money;
     public GunData curGun;
     public int curShieldCnt;
@@ -36,8 +38,9 @@ public class PlayerData
         money = Player.instance.GetCurMoney();
         playerMP = 0; // 아직 미개발
 
-        skills = SkillManager.instance.activeSkillData;
-        curSkillCnt = SkillManager.instance.activeSkillCnt;
+        activeSkill = SkillManager.instance.active.refSkill;
+        passiveSkill = SkillManager.instance.passive.refSkill;
+
         hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
 
         curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;

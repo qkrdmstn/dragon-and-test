@@ -61,7 +61,7 @@ public class PlayerPresenter : PresenterBase
         }
         else
         {
-            HPImage.sprite = HPSprites[Player.instance.refCurHp];
+            HPImage.sprite = HPSprites[m_Player.refCurHp];
             HPImage.color = Color.white;
         }
     }
