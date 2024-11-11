@@ -153,26 +153,19 @@ public class PlayerSkill : MonoBehaviour
             {
                 //Todo. Change from Monster Bullet Pool to inactive
                 MonsterPool.instance.pool.Release(inRangeTarget[i].gameObject);
-                
-
             }
+
             else if (target.CompareTag("Monster"))
             {
-                MonsterBase2 monster = target.GetComponent<MonsterBase2>();
-                Boss boss = target.GetComponent<Boss>();
+                MonsterBase monster = target.GetComponent<MonsterBase>();
 
-                if (monster != null)
+                if (monster.monsterType != MonsterTypes.boss)
                 {
                     Vector2 impactDir = target.transform.position - this.transform.position;
                     impactDir.Normalize();
-
                     monster.Knockback(impactDir, impactForce);
-                    monster.OnDamaged(damage);
                 }
-                else if (boss != null)
-                {
-                    boss.OnDamaged(damage);
-                }
+                monster.OnDamaged(damage);
             }
         }
 
@@ -237,43 +230,11 @@ public class PlayerSkill : MonoBehaviour
         GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
         SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
         Debug.Log(projectile);
-        projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+        projectile.Initialize(damage, dist, dir, projectileSpeed);
 
         return coolTime;
     }
     #endregion
-
-    //#region Flooring
-    //private void Flooring(SeotdaHwatuName name, int damage, float duration, float speed, float period)
-    //{
-    //    StartCoroutine(FlooringCoroutine(name, damage, duration, speed, period));
-    //}
-
-    //IEnumerator FlooringCoroutine(SeotdaHwatuName name, int damage, float duration, float speed, float period)
-    //{
-    //    //Initial Direction Setting
-    //    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //    Vector2 dir = mousePos - this.transform.position;
-    //    dir.Normalize();
-    //    float theta = Vector2.Angle(Vector2.right, dir);
-    //    if (dir.y < 0)
-    //        theta *= -1;
-
-    //    //Create Object
-    //    GameObject prefabs = skillObjDictionary[name];
-    //    GameObject Obj = Instantiate(prefabs, transform.position, Quaternion.Euler(0,0, theta));
-    //    SkillObj_Flooring flame = Obj.GetComponent<SkillObj_Flooring>();
-    //    flame.Initialize(damage, dir, mousePos, speed, StatusEffect.Slow, period);
-
-    //    float timer = duration;
-    //    while (timer >= 0.0f)
-    //    {
-    //        timer -= Time.deltaTime;
-    //        yield return null;
-    //    }
-    //    Destroy(Obj);
-    //}
-    //#endregion
 
     #region Flame
     Coroutine flameCoroutine;
@@ -299,7 +260,7 @@ public class PlayerSkill : MonoBehaviour
         GameObject prefabs = skillObjDictionary[code];
         flameObject = Instantiate(prefabs, transform.position, Quaternion.identity);
         SkillObj_Flame flame = flameObject.GetComponent<SkillObj_Flame>();
-        flame.Initialize(damage, new Vector2(0,0), StatusEffect.None, period);
+        flame.Initialize(damage, new Vector2(0,0), period);
         while (timer >= 0.0f)
         {
             timer -= Time.deltaTime;
@@ -341,7 +302,7 @@ public class PlayerSkill : MonoBehaviour
             GameObject projectile = Instantiate(prefab, pos, Quaternion.Euler(0,0, theta));
 
             SkillObj_Missile missile = projectile.GetComponent<SkillObj_Missile>();
-            missile.Initialize(damage, direction, StatusEffect.None, speed, range, theta);
+            missile.Initialize(damage, direction,speed, range, theta);
         }
 
         return coolTime;
@@ -370,7 +331,7 @@ public class PlayerSkill : MonoBehaviour
         GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
         SkillObj_Sphere projectile = projectilObj.GetComponent<SkillObj_Sphere>();
         Debug.Log(projectile);
-        projectile.Initialize(damage, dir, speed, range, StatusEffect.None, period, force);
+        projectile.Initialize(damage, dir, speed, range, period, force);
 
         return coolTime;
     }
@@ -446,7 +407,7 @@ public class PlayerSkill : MonoBehaviour
         GameObject prefabs = skillObjDictionary[code];
         GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta));
         SkillObj_Breath projectile = projectilObj.GetComponent<SkillObj_Breath>();
-        projectile.Initialize(damage, dist, dir, projectileSpeed, StatusEffect.Sokbak);
+        projectile.Initialize(damage, dist, dir, projectileSpeed);
 
         return coolTime;
     }
@@ -464,16 +425,8 @@ public class PlayerSkill : MonoBehaviour
             if (target == pivotMonster)
                 continue;
 
-            MonsterBase2 monster = target.GetComponent<MonsterBase2>();
-            Boss boss = target.GetComponent<Boss>();
-            if (monster != null) //몬스터일 경우,
-            {
-                monster.OnDamaged(damage);
-            }
-            else if (boss != null) //보스일 경우.
-            {
-                boss.OnDamaged(damage);
-            }
+            MonsterBase monster = target.GetComponent<MonsterBase>();
+            monster.OnDamaged(damage);
         }
     }
     #endregion

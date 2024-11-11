@@ -1,31 +1,28 @@
 using System.Collections;
 using UnityEngine;
 
-public enum BossStates_Jan
-{
-    idle,
-    chase,
-    basicAttack,
-    pattern1,
-    pattern2,
-    pattern3,
-    pattern4,
-    spawnMonster,
-    hit
-}
-
 public class Boss_Jan : Boss
 {
+    public enum BossStates_Jan
+    {
+        idle,
+        chase,
+        basicAttack,
+        pattern1,
+        pattern2,
+        pattern3,
+        pattern4,
+        spawnMonster,
+        hit
+    }
+
+    [Header("---------------Boss_Jan---------------")]
     //Temp
     public BossStates_Jan initState;
     public BossStates_Jan curState;
 
-    [Header("Chase State Info")]
-    public float chaseRange;
-
     [Header("Basic Attack State Info")]
     public GameObject bulletPrefab;
-    public float attackRange;
     public float shootDelay;
     public float reloadTime;
     public int magazineSize;
@@ -78,110 +75,112 @@ public class Boss_Jan : Boss
     [Header("Spawn Monster State Info")]
     public GameObject[] spawnMosnterPrefabs;
     public BlockInfo bossField;
+    private Vector2Int maxGridPos;
     public float spawnPeriod;
     public float spawnWaveCnt = 0;
     public float spawnDelay = 1.0f;
     public float spawnTimer;
 
-    [Header("Drop Item Info")]
-    public GameObject moneyPrefab;
-    public int moneyValue;
-
     #region States
-    public BossStateMachine stateMachine;
-
-    public BossIdleState_Jan bossIdleState;
-    public BossChaseState_Jan bossChaseState;
-    public BossBasicAttackState_Jan bossBasicAttackState;
-    public BossPattern1State_Jan bossPattern1State;
-    public BossPattern2State_Jan bossPattern2State;
-    public BossPattern3State_Jan bossPattern3State;
-    public BossPattern4State_Jan bossPattern4State;
+    public MonsterBasicAttackState_Jan basicAttackState;
+    public MonsterPattern1State_Jan pattern1State;
+    public MonsterPattern2State_Jan pattern2State;
+    public MonsterPattern3State_Jan pattern3State;
+    public MonsterPattern4State_Jan pattern4State;
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
         spawnTimer = spawnPeriod;
-        InitComponent();
-        InitState();
     }
 
-    private void InitComponent()
+    protected override void Start()
     {
-        bossField = FindObjectOfType<BlockInfo>();
-        bossField.InitializeBlockInfo(0);
-        pattern3Object = FindObjectOfType<Pattern3Object>();
-
-        moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
-    }
-
-    private void InitState()
-    {
-        stateMachine = new BossStateMachine();
-
-        bossIdleState = new BossIdleState_Jan(this, stateMachine, player);
-        bossChaseState = new BossChaseState_Jan(this, stateMachine, player);
-        bossBasicAttackState = new BossBasicAttackState_Jan(this, stateMachine, player);
-        bossPattern1State = new BossPattern1State_Jan(this, stateMachine, player);
-        bossPattern2State = new BossPattern2State_Jan(this, stateMachine, player);
-        bossPattern3State = new BossPattern3State_Jan(this, stateMachine, player);
-        bossPattern4State = new BossPattern4State_Jan(this, stateMachine, player);
-
         switch (initState)
         {
             case BossStates_Jan.idle:
-                stateMachine.Initialize(bossIdleState);
+                stateMachine.Initialize(idleState);
                 break;
             case BossStates_Jan.chase:
-                stateMachine.Initialize(bossChaseState);
+                stateMachine.Initialize(chaseState);
                 break;
             case BossStates_Jan.basicAttack:
-                stateMachine.Initialize(bossBasicAttackState);
+                stateMachine.Initialize(basicAttackState);
                 break;
             case BossStates_Jan.pattern1:
-                stateMachine.Initialize(bossPattern1State);
+                stateMachine.Initialize(pattern1State);
                 break;
             case BossStates_Jan.pattern2:
-                stateMachine.Initialize(bossPattern2State);
+                stateMachine.Initialize(pattern2State);
                 break;
             case BossStates_Jan.pattern3:
-                stateMachine.Initialize(bossPattern3State);
+                stateMachine.Initialize(pattern3State);
                 break;
             case BossStates_Jan.pattern4:
-                stateMachine.Initialize(bossPattern4State);
+                stateMachine.Initialize(pattern4State);
                 break;
             default:
-                stateMachine.Initialize(bossIdleState);
+                stateMachine.Initialize(idleState);
                 break;
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        stateMachine.currentState.Update();
 
-        if (stateMachine.currentState == bossIdleState)
+    public override void InitComponents()
+    {
+        base.InitComponents();
+        bossField = FindObjectOfType<BlockInfo>();
+        bossField.InitializeBlockInfo(0);
+        maxGridPos = bossField.GetMaxGridPos();
+
+        pattern3Object = FindObjectOfType<Pattern3Object>();
+    }
+
+    public override void InitStates()
+    {
+        base.InitStates();
+
+        idleState = new MonsterIdleStateBase(stateMachine, player, this);
+        deadState = new MonsterDeadState_Jan(stateMachine, player, this);
+
+        chaseState = new MonsterChaseState_Jan(stateMachine, player, this);
+        basicAttackState = new MonsterBasicAttackState_Jan(stateMachine, player, this);
+        pattern1State = new MonsterPattern1State_Jan(stateMachine, player, this);
+        pattern2State = new MonsterPattern2State_Jan(stateMachine, player, this);
+        pattern3State = new MonsterPattern3State_Jan(stateMachine, player, this);
+        pattern4State = new MonsterPattern4State_Jan(stateMachine, player, this);
+    }
+
+    // Update is called once per frame
+    protected override void Update()
+    {
+        base.Update();
+
+        spawnTimer -= Time.deltaTime;
+        if (!isDead && spawnTimer < 0.0f)
+            SpawnMonster();
+
+        if (stateMachine.currentState == idleState)
             curState = BossStates_Jan.idle;
-        else if (stateMachine.currentState == bossChaseState)
+        else if (stateMachine.currentState == chaseState)
             curState = BossStates_Jan.chase;
-        else if (stateMachine.currentState == bossBasicAttackState)
+        else if (stateMachine.currentState == basicAttackState)
             curState = BossStates_Jan.basicAttack;
-        else if (stateMachine.currentState == bossPattern1State)
+        else if (stateMachine.currentState == pattern1State)
             curState = BossStates_Jan.pattern1;
-        else if (stateMachine.currentState == bossPattern2State)
+        else if (stateMachine.currentState == pattern2State)
             curState = BossStates_Jan.pattern2;
-        else if (stateMachine.currentState == bossPattern3State)
+        else if (stateMachine.currentState == pattern3State)
             curState = BossStates_Jan.pattern3;
-        else if (stateMachine.currentState == bossPattern4State)
+        else if (stateMachine.currentState == pattern4State)
             curState = BossStates_Jan.pattern4;
     }
 
     public bool IsWithinChaseRange() //플레이어가 추적 범위 내에 있는지 check
     {
         float dist = Vector3.Magnitude(player.transform.position - this.transform.position);
-        if (dist < chaseRange)
+        if (dist < chaseDist)
             return true;
         return false;
     }
@@ -189,7 +188,7 @@ public class Boss_Jan : Boss
     public bool IsWithinAttackRange() //플레이어가 공격 범위 내에 있는지 check
     {
         float dist = Vector3.Magnitude(player.transform.position - this.transform.position);
-        if (dist < attackRange)
+        if (dist < attackDist)
             return true;
         return false;
     }
@@ -201,20 +200,60 @@ public class Boss_Jan : Boss
         base.Dead();
     }
 
-    private void MoneyDrop()
+    private void SpawnMonster()
     {
-        ItemObject item = moneyPrefab.GetComponent<ItemObject>();
-        GameObject moneyObj = Instantiate(moneyPrefab, this.transform.position + Vector3.down * 3, Quaternion.identity);
-        moneyObj.GetComponent<InteractionData>().sequence = moneyValue;
+        spawnTimer = spawnPeriod;
+
+        int spawnNum = 3;
+        //if (boss.spawnWaveCnt == 0)
+        //    spawnNum = 4;
+        //else if (boss.spawnWaveCnt == 1)
+        //    spawnNum = 5;
+
+        Vector2Int[] spawnGridPos = GetSpawnGridPos(spawnNum);
+
+        //몬스터 스폰
+        for (int i = 0; i < spawnNum; i++)
+        {
+            int idx = Random.Range(0, spawnMosnterPrefabs.Length);
+            GameObject.Instantiate(spawnMosnterPrefabs[idx], bossField.GridToWorldPosition(spawnGridPos[i]), Quaternion.identity);
+        }
+    }
+
+    private Vector2Int[] GetSpawnGridPos(int spawnNum)
+    {
+        Vector2Int[] spawnGridPos = new Vector2Int[spawnNum];
+
+        int i = 0;
+        int cnt = 0;
+        while (cnt < spawnNum)
+        {
+            int gridPosX = Random.Range(0, maxGridPos.x);
+            int gridPosY = Random.Range(0, maxGridPos.y);
+
+            for (i = 0; i < cnt; i++)
+            {
+                if (spawnGridPos[i].x == gridPosX && spawnGridPos[i].y == gridPosY)
+                    break;
+            }
+            if (i == cnt)
+            {
+                spawnGridPos[cnt] = new Vector2Int(gridPosX, gridPosY);
+                cnt++;
+            }
+        }
+
+        return spawnGridPos;
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(this.transform.position, chaseRange);
+        Gizmos.DrawWireSphere(this.transform.position, chaseDist);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, attackRange);
+        Gizmos.DrawWireSphere(this.transform.position, attackDist);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(this.transform.position, pattern2AttackRange);
     }
+
 }

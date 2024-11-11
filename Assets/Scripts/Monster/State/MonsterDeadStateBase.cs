@@ -14,7 +14,7 @@ public class MonsterDeadStateBase : MonsterState
         base.Enter();
         monster.SetSpeed(0.0f);
         monster.StopAllCoroutines();
-        monster.StartCoroutine(Dead());
+        Dead();
     }
 
     public override void Update()
@@ -27,7 +27,12 @@ public class MonsterDeadStateBase : MonsterState
         base.Exit();
     }
 
-    IEnumerator Dead()
+    protected virtual void Dead()
+    {
+        monster.StartCoroutine(DeadCoroutine());
+    }
+
+    IEnumerator DeadCoroutine()
     {
         if(monster.haveAnim)
             monster.monsterAnimController.SetAnim(MonsterAnimState.Death, monster.CheckDir());

@@ -4978,38 +4978,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c023927423b70548ad3cbfe7b8ecea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 3
+  maxHP: 3
   moveSpeed: 3
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 0
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  monsterShootTimer: 0
-  monsterShootDelay: 0.3
-  monsterReloadDelay: 2
-  isReloading: 0
-  isAttacking: 0
-  loadedBullet: 0
-  magazineSize: 4
-  monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 0
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 8
+  shootNum: 4
+  shootDelay: 0.3
+  shootOffsetAngle: 15
+  reloadDelay: 2
   bulletSpeed: 9
-  attackRange: 8
   myNum: 0
   tutorial: {fileID: 0}
   isAttackable: 0
@@ -9573,36 +9556,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 4
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 4
+  maxHP: 4
   moveSpeed: 5
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 1
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  sword: {fileID: 9212423106147213071}
-  swordAura: {fileID: 1692984963978023852, guid: 0c2f66270596cec41855271b7d2ac03e, type: 3}
-  inAttack: 0
-  cooldown: 1.5
-  tempcool: 0
-  attackDuration: 0.6
-  attackRange: 3
-  isTanker: 0
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 1
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 3
+  shootNum: 3
+  shootDelay: 0.7
+  swordAura: {fileID: 1692984963978023852, guid: 808ece086415dec4b9d5f798265edb73, type: 3}
   myNum: 3
   myState:
     monster: {fileID: 0}
@@ -11469,36 +11435,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 4
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 4
+  maxHP: 4
   moveSpeed: 5
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 1
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  sword: {fileID: 90414416}
-  swordAura: {fileID: 1692984963978023852, guid: 0c2f66270596cec41855271b7d2ac03e, type: 3}
-  inAttack: 0
-  cooldown: 1.5
-  tempcool: 0
-  attackDuration: 0.6
-  attackRange: 3
-  isTanker: 0
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 1
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 3
+  shootNum: 3
+  shootDelay: 0.7
+  swordAura: {fileID: 1692984963978023852, guid: 808ece086415dec4b9d5f798265edb73, type: 3}
   myNum: 5
   myState:
     monster: {fileID: 0}
@@ -11686,36 +11635,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db549bc28f54914eb5bb6d823cd4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 4
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 4
+  maxHP: 4
   moveSpeed: 5
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 1
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  sword: {fileID: 9212423106474599990}
-  swordAura: {fileID: 1692984963978023852, guid: 0c2f66270596cec41855271b7d2ac03e, type: 3}
-  inAttack: 0
-  cooldown: 1.5
-  tempcool: 0
-  attackDuration: 0.6
-  attackRange: 3
-  isTanker: 0
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 1
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 3
+  shootNum: 3
+  shootDelay: 0.7
+  swordAura: {fileID: 1692984963978023852, guid: 808ece086415dec4b9d5f798265edb73, type: 3}
   myNum: 4
   myState:
     monster: {fileID: 0}
@@ -12729,38 +12661,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c023927423b70548ad3cbfe7b8ecea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 3
+  maxHP: 3
   moveSpeed: 3
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 0
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  monsterShootTimer: 0
-  monsterShootDelay: 0.3
-  monsterReloadDelay: 2
-  isReloading: 0
-  isAttacking: 0
-  loadedBullet: 0
-  magazineSize: 4
-  monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 0
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 8
+  shootNum: 4
+  shootDelay: 0.3
+  shootOffsetAngle: 15
+  reloadDelay: 2
   bulletSpeed: 9
-  attackRange: 8
   myNum: 1
   tutorial: {fileID: 0}
   isAttackable: 0
@@ -13222,38 +13137,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c023927423b70548ad3cbfe7b8ecea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 3
-  damage: 1
-  distanceToPlayer: 0
-  deadSec: 0.6
-  moneyRange: {x: 0, y: 0}
+  curHP: 3
+  maxHP: 3
   moveSpeed: 3
-  tempMoveSpeed: 0
-  knockbackForce: 1
-  knockbackDuration: 0.05
-  knockbackTimer: 0
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  eventManager: {fileID: 0}
-  spawn: {fileID: 0}
-  monsterAnimController: {fileID: 0}
-  agent: {fileID: 0}
-  inEffect: 0
-  isDead: 0
-  isChase: 0
-  isKnockedBack: 0
-  isSpawned: 0
-  isFirst: 1
-  monsterShootTimer: 0
-  monsterShootDelay: 0.3
-  monsterReloadDelay: 2
-  isReloading: 0
-  isAttacking: 0
-  loadedBullet: 0
-  magazineSize: 4
-  monsterBullet: {fileID: 1331701923673328244, guid: 3b56d121e85c57f4cbb67c27d1f1c4a8, type: 3}
+  moneyRange: {x: 0, y: 0}
+  monsterType: 0
+  haveAnim: 0
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 8
+  shootNum: 4
+  shootDelay: 0.3
+  shootOffsetAngle: 15
+  reloadDelay: 2
   bulletSpeed: 9
-  attackRange: 8
   myNum: 2
   tutorial: {fileID: 0}
   isAttackable: 0

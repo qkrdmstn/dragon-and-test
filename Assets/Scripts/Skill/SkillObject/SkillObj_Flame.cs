@@ -15,12 +15,12 @@ public class SkillObj_Flame : SkillObject
     {
     }
 
-    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _period)
+    public void Initialize(int _damage, Vector2 _dir, float _period)
     {
         player = FindObjectOfType<Player>();
         collider2d = GetComponent<Collider2D>();
 
-        base.Initialize(_damage, _dir, _statusEffect);
+        base.Initialize(_damage, _dir);
         timer = 0.0f;
         damagePeriod = _period;
         SetDir();
@@ -42,13 +42,8 @@ public class SkillObj_Flame : SkillObject
                     if (!inRangeTarget[i].CompareTag("Monster"))
                         continue;
 
-                    MonsterBase2 monster = inRangeTarget[i].GetComponent<MonsterBase2>();
-                    Boss boss = inRangeTarget[i].GetComponent<Boss>();
-                    Debug.Log("sss");
-                    if (monster != null)
-                        MonsterDamaged(monster);
-                    else if (boss != null)
-                        BossDamaged(boss);
+                    MonsterBase monster = inRangeTarget[i].GetComponent<MonsterBase>();
+                    monster.OnDamaged(damage);
                 }
             }
         }
@@ -58,19 +53,6 @@ public class SkillObj_Flame : SkillObject
     {
         SetDir();
         transform.position = player.transform.position;
-    }
-
-    public void MonsterDamaged(MonsterBase2 monster)
-    {
-        monster.OnDamaged(damage);
-
-        if (statusEffect != null && statusEffect.status != StatusEffect.None)
-            statusEffect.ApplyStatusEffect(monster);
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
     }
 
     private void SetDir()

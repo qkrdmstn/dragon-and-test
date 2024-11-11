@@ -35,15 +35,14 @@ public class BirdWarrior2 : MonsterBase
 
         spawnState = new MonsterSpawnStateBase(stateMachine, player, this);
         idleState = new MonsterIdleStateBase(stateMachine, player, this);
-        deadState = new MonsterDeadStateBase(stateMachine, player, this);
+        deadState = new MonsterDeadState_BirdWarrior2(stateMachine, player, this);
 
         chaseState = new MonsterChaseState_BirdWarrior2(stateMachine, player, this);
         attackState = new MonsterAttackState_BirdWarrior2(stateMachine, player, this);
     }
 
-    protected override void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        base.OnTriggerEnter2D(collision);
         if (collision.gameObject.CompareTag("Player") && isDashing)
         {
             player.PlayerKnockBack(player.transform.position - transform.position, knockbackForce); //Vector2 dir, float mag

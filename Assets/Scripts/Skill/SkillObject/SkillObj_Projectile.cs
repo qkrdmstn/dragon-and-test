@@ -16,10 +16,10 @@ public class SkillObj_Projectile : SkillObject
     {
     }
 
-    public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed, StatusEffect _statusEffect)
+    public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed)
     {
         rigid = gameObject.GetComponent<Rigidbody2D>();
-        base.Initialize(_damage, _dir, _statusEffect);
+        base.Initialize(_damage, _dir);
         range = _range;
         projectileSpeed = _projectileSpeed;
     }
@@ -37,13 +37,8 @@ public class SkillObj_Projectile : SkillObject
     {
         if (collision.gameObject.CompareTag("Monster"))
         {
-            MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
-            Boss boss = collision.GetComponent<Boss>();
-
-            if (monster != null)
-                MonsterDamaged(monster);
-            else if (boss != null)
-                BossDamaged(boss);
+            MonsterBase monster = collision.GetComponent<MonsterBase>();
+            monster.OnDamaged(damage);
         }
 
         if (collision.gameObject.CompareTag("Ground"))
@@ -55,19 +50,6 @@ public class SkillObj_Projectile : SkillObject
     public void InActiveProjectile()
     {
         Destroy(this.gameObject);
-    }
-
-    public void MonsterDamaged(MonsterBase2 monster)
-    {
-        monster.OnDamaged(damage);
-
-        if (statusEffect != null || statusEffect.status != StatusEffect.None)
-            statusEffect.ApplyStatusEffect(monster);
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
     }
 }
 

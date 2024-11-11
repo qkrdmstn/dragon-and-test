@@ -20,12 +20,12 @@ public class SkillObj_Missile : SkillObject
 
     }
 
-    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _speed, float _range, float _angle)
+    public void Initialize(int _damage, Vector2 _dir, float _speed, float _range, float _angle)
     {
         player = FindObjectOfType<Player>();
         rigid = GetComponent<Rigidbody2D>();
         tf = GetComponent<Transform>();
-        base.Initialize(_damage, _dir, _statusEffect);
+        base.Initialize(_damage, _dir);
 
         speed = _speed;
         range = _range;
@@ -88,35 +88,15 @@ public class SkillObj_Missile : SkillObject
     {
         if (collision.gameObject.CompareTag("Monster"))
         {
-            MonsterBase2 monster = collision.GetComponent<MonsterBase2>();
-            Boss boss = collision.GetComponent<Boss>();
-
-            if (monster != null)
-                MonsterDamaged(monster);
-            else if (boss != null)
-                BossDamaged(boss);
+            MonsterBase monster = collision.GetComponent<MonsterBase>();
+            monster.OnDamaged(damage);
+            InActiveProjectile();
         }
 
         if (collision.gameObject.CompareTag("Ground"))
         {
             InActiveProjectile();
         }
-    }
-
-    public void MonsterDamaged(MonsterBase2 monster)
-    {
-        monster.OnDamaged(damage);
-
-        if (statusEffect != null || statusEffect.status != StatusEffect.None)
-            statusEffect.ApplyStatusEffect(monster);
-
-        InActiveProjectile();
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
-        InActiveProjectile();
     }
 
     public void InActiveProjectile()
