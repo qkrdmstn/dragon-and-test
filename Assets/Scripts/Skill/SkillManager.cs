@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -325,12 +326,22 @@ public class SkillManager : MonoBehaviour
         return false;
     }
 
-    public void RollingAdvantage()
+    public void DashCoolTimeAdvantage()
     {
-        foreach (var data in active.refSkill)
+        List<ActiveSkillSlot> keys = active.refSkill.Keys.ToList();
+        bool isCoolTime = false;
+
+        for(int i=0; i<keys.Count; i++)
         {
-            active[data.Key, curNum:0.5f] -= 0.5f;
+            if (active[keys[i]].coolTimeFlag)
+            {
+                active[keys[i], curNum: 0.5f] -= 0.5f;
+                isCoolTime = true;
+            }
         }
+
+        if (isCoolTime)
+            SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Avoid);
     }
 
     public void ClearCoolTimer(ActiveSkillSlot slot, float originTime)
@@ -340,11 +351,9 @@ public class SkillManager : MonoBehaviour
     }
 
     public void ClearCoolTimer()
-    {   
-        foreach(var data in active.refSkill)
-        {
-            active[data.Key, flag:false] = false;
-        }
+    {
+        active[ActiveSkillSlot.Q, flag:false] = false;
+        active[ActiveSkillSlot.E, flag:false] = false;
     }
 
     public bool PassiveCheck(SeotdaHwatuCombination skillName) //패시브 보유 여부 확인

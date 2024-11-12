@@ -185,13 +185,15 @@ public class SkillPresenter : PresenterBase
     {
         activeUI[slot].coolTimeObj.SetActive(checkCoolTime);
         if (checkCoolTime)
-            StartCoroutine(CoolTimeFunc(slot, m_Skill.active[slot].curCoolTime, m_Skill.skillDBDictionary[m_Skill.active[slot].combination].coolTime));
+            StartCoroutine(CoolTimeFunc(slot, m_Skill.skillDBDictionary[m_Skill.active[slot].combination].coolTime));
     }
 
-    IEnumerator CoolTimeFunc(ActiveSkillSlot slot, float curCoolTime, float originCoolTime)
-    {   
-        while (curCoolTime > 0.0f)
+    IEnumerator CoolTimeFunc(ActiveSkillSlot slot, float originCoolTime)
+    {
+        while (m_Skill.active[slot].curCoolTime > 0.0f)
         {
+            float curCoolTime = m_Skill.active[slot].curCoolTime;
+            
             curCoolTime -= Time.deltaTime;
             activeUI[slot].coolTimeImg.fillAmount = curCoolTime / originCoolTime;
             activeUI[slot].coolTimeTxt.text = Math.Round(curCoolTime, 1).ToString();

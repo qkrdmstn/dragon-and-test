@@ -205,8 +205,8 @@ public class Player : MonoBehaviour
     public void OnDamamged(int damage)
     {
         if(IsDash())
-        {
-            SkillManager.instance.RollingAdvantage();
+        {  
+            SkillManager.instance.DashCoolTimeAdvantage();
             return;
         }    
 
