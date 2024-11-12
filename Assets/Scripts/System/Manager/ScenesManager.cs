@@ -92,7 +92,7 @@ public class ScenesManager : MonoBehaviour
         if (scene.buildIndex == 9)
             _sceneInfo = SceneInfo.Town_1;
 
-        if (scene.buildIndex == 6 || scene.name == "BossTest")
+        if (scene.buildIndex == 7 || scene.name == "BossTest")
             _sceneInfo = SceneInfo.Boss_1;
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));

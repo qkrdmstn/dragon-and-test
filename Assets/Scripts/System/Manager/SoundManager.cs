@@ -9,7 +9,7 @@ public enum SoundType
 }
 public enum PlayerSfx
 {
-    Walk, Breath, Dash
+    Walk, Breath, Dash, Avoid
 }
 
 public enum MonsterSfx
@@ -21,7 +21,7 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-    Snap, mopo, doorOpen, doorClose, Jokbo
+    Snap, mopo, doorOpen, doorClose, Jokbo, Click
 }
 
 public enum PuzzleSfx
