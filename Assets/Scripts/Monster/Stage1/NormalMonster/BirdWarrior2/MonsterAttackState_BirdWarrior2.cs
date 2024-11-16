@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class MonsterAttackState_BirdWarrior2 : MonsterState
+public class MonsterAttackState_BirdWarrior2 : MonsterAttackStateBase
 {
     protected new BirdWarrior2 monster;
     private MonsterAnimController monsterAnimController;
@@ -22,7 +22,7 @@ public class MonsterAttackState_BirdWarrior2 : MonsterState
         base.Enter();
         monster.SetSpeed(0.0f);
 
-        monster.StartCoroutine(Dash());
+        attackCoroutine = monster.StartCoroutine(Dash());
     }
 
     public override void Update()

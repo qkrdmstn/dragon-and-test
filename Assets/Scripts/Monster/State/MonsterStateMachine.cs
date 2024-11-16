@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class MonsterStateMachine
 {
+    private MonsterBase monster;
     public MonsterState currentState { get; private set; }
+
+    public MonsterStateMachine(MonsterBase _monster)
+    {
+        monster = _monster;
+    }
 
     public void Initialize(MonsterState _startState)
     {
@@ -14,9 +20,11 @@ public class MonsterStateMachine
 
     public void ChangeState(MonsterState _newState)
     {
-        //if (currentState == _newState) return;
-        if (currentState != null) currentState.Exit();
-        currentState = _newState;
-        currentState.Enter();
+        if(monster.isStateChangeable)
+        {
+            currentState.Exit();
+            currentState = _newState;
+            currentState.Enter();
+        }
     }
 }

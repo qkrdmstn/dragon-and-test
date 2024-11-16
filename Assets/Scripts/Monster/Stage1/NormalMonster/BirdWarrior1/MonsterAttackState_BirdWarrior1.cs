@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class MonsterAttackState_BirdWarrior1 : MonsterState
+public class MonsterAttackState_BirdWarrior1 : MonsterAttackStateBase
 {
     protected new BirdWarrior1 monster;
 
@@ -17,7 +17,7 @@ public class MonsterAttackState_BirdWarrior1 : MonsterState
         base.Enter();
 
         monster.SetSpeed(0.0f);
-        monster.StartCoroutine(Shoot());
+        attackCoroutine = monster.StartCoroutine(Shoot());
     }
 
     public override void Update()
