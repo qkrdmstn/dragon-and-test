@@ -24,13 +24,6 @@ public class MaterialHwatuSlotUI : MonoBehaviour
     public bool isTweening = false;
     public bool isDrag = false;
 
-    private Image image;
-
-    void Awake()
-    {
-        image = GetComponent<Image>();
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (isSelected || isTweening || isDrag)

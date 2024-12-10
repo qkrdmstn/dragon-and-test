@@ -44,7 +44,7 @@ public class HwatuItemObject : MonoBehaviour
 
             if (distance < 0.1f)
             { //물체가 캐릭터로 이동하면서 거리가 일정 미만되면 습득
-                SkillManager.instance.AddMaterialCardData(hwatuData);
+                ItemManager.instance.AddHwatuCard(hwatuData);
                 Destroy(gameObject);
             }
         //}

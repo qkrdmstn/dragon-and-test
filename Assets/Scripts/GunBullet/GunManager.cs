@@ -9,10 +9,7 @@ public class GunManager : MonoBehaviour
     public static GunManager instance;
 
     [Header("Gun Data")]
-    public HashSet<GunItemData> gunItemDatas;
-
-    public List<GunData> gunDataList;
-    public Dictionary<GunData, GameObject> gunDictionary;
+    public List<GunItemData> gunDataList;
     public int gunNum;
     public Transform gunParent;
 
@@ -32,8 +29,7 @@ public class GunManager : MonoBehaviour
         { //생성 전이면
             instance = this; //생성
             // 처음 생성을 위한 변수 생성 
-            gunDataList = new List<GunData>();
-            gunDictionary = new Dictionary<GunData, GameObject>();
+            gunDataList = new List<GunItemData>();
         }
         else if (instance != this)
         { //이미 생성되어 있으면
@@ -75,32 +71,16 @@ public class GunManager : MonoBehaviour
     }
 
     public void LoadGun()
-    {
+    {   // 처음 로드시, 데이터 저장
         int childCnt = gunParent.childCount;
         for (int i = 0; i < childCnt; i++)
         {
             GameObject gunObj = gunParent.GetChild(i).gameObject;
-            GunData _data = new GunData(gunObj.GetComponent<Gun>().initData);
-            AddGunDataList(_data);
-            LoadGunData(gunObj, _data);
+            //AddGunDataList(_data);
+            InventoryData.instance.AddGunItem(gunObj.GetComponent<Gun>().initItemData);
         }
         
         gunNum = gunDataList.Count;
-    }
-
-    public void LoadGunData(GameObject _gun, GunData _oldData)
-    {
-        _gun.GetComponent<Gun>().InitGunData(_oldData);
-
-        try
-        {
-            gunDictionary.Add(_oldData, _gun);
-            Debug.Log("Data Add Success!");
-        }
-        catch (ArgumentException ex)
-        {
-            Debug.Log(ex+" : 이미 처리된 데이터입니다.");
-        }
     }
 
     private void InitActiveGun() //Initialize Default Gun
@@ -117,7 +97,7 @@ public class GunManager : MonoBehaviour
         currentGun.SetActive(true);
 
         //Gun Inventory Update
-        GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx].gunItemData);
+        GunInventoryData.instance.UpdateGunInventorySlotUI(gunDataList[currentIdx]);
         Gun _gun = gunParent.GetChild(currentIdx).GetComponent<Gun>();
         UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
     }
@@ -142,33 +122,12 @@ public class GunManager : MonoBehaviour
 
     public void AddGun(GunItemData itemData)
     {
-        //Add Gun & Initialize
-        GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
-        Gun _newGun = _newGunObj.GetComponent<Gun>();
-        _newGun.InitGunData(_newGun.initData);
-
-        //Data Save
-        GunData _data = new GunData(_newGun.initData);
-        AddGunDataList(_data);
-        gunDictionary.Add(_data, _newGunObj);
-        gunNum++;
-
-        //Current Use Gun Change
-        currentIdx = gunNum - 1;
-        InitActiveGun();
     }
 
     public void RemoveGun(GameObject gun)
     {
-      
     }
 
-    public void AddGunDataList(GunData _data)
-    {
-        gunDataList.Add(_data);
-        //Inventory Update
-        InventoryData.instance.AddGunItem(_data.gunItemData);
-    }
 
     public void UpdateCurrentGunBulletData(int maxBullet, int loadedBullet)
     {

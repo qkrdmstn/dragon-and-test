@@ -103,8 +103,8 @@ public class ScenesManager : MonoBehaviour
             ManageActiveUI(ui.myUI.ToString(), ui.state);
         }
 
-        if(_sceneInfo != SceneInfo.Start && GunManager.instance.gunParent == null)
-            GunManager.instance.Initialize();
+        //if(_sceneInfo != SceneInfo.Start && GunManager.instance.gunParent == null)
+        //    GunManager.instance.Initialize();
         isLoading = false;
     }
 

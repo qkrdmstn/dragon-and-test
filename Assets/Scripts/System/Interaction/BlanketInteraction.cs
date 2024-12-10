@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class BlanketInteraction : Interaction
 {
-    [Header("Prefabs")]
-    [SerializeField] private GameObject[] materialHwatuUIObject; //로드되는 Prefab
-
     [Header("UI")]
     [SerializeField] private List<GameObject> materialHwatuUIObjectList = new List<GameObject>(); //실제 UI
     [SerializeField] private BlanketUI blanketUI;
@@ -25,11 +22,7 @@ public class BlanketInteraction : Interaction
 
     private void Start()
     {
-        //materialUI Object Load
-        materialHwatuUIObject = Resources.LoadAll<GameObject>("Prefabs/MaterialHwatuUI");
-
         //UI Info Init
-        //GameObject hwatuUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[4];
         GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
         blanketUI = blanketUIObject.GetComponent<BlanketUI>();
 
@@ -92,22 +85,12 @@ public class BlanketInteraction : Interaction
         //화투 생성 위치
         //RectTransform initTransform = blanketUI.GetComponent<RectTransform>();
 
-        //화투 생성
-        for (int i = 0; i < SkillManager.instance.refMaterialCardCnt; i++)
-        {
-            HwatuData data1 = SkillManager.instance.materialHwatuDataList[i];
-            for (int j = 0; j < materialHwatuUIObject.Length; j++)
-            {
-                HwatuData data2 = materialHwatuUIObject[j].GetComponent<MaterialHwatuSlotUI>().hwatuData;
-                if (data1.hwatu.type == data2.hwatu.type)
-                {
-                    //Hwatu UI에 카드 생성
-                    Vector3 initPos = materialHwatuParent.position;
-                    GameObject Obj = Instantiate(materialHwatuUIObject[j], initPos, Quaternion.identity, materialHwatuParent);
-                    materialHwatuUIObjectList.Add(Obj);
-                    break;
-                }
-            }
+        GameObject[] hwatuObjs = ItemManager.instance.GetHoldingHwatuDataUIs();
+        foreach (GameObject obj in hwatuObjs)
+        {   // 보유하고 있는 화투패에 대하여 모포UI에 생성
+            Vector3 initPos = materialHwatuParent.position;
+            GameObject Obj = Instantiate(obj, initPos, Quaternion.identity, materialHwatuParent);
+            materialHwatuUIObjectList.Add(Obj);
         }
     }
 
@@ -209,7 +192,7 @@ public class BlanketInteraction : Interaction
 
     public void DeleteHwatu(MaterialHwatuSlotUI ui)
     {
-        SkillManager.instance.DeleteMaterialCardData(ui.hwatuData);
+        ItemManager.instance.DeleteHwatuCard(ui.hwatuData);
         materialHwatuUIObjectList.Remove(ui.gameObject);
         Destroy(ui.gameObject);
 
@@ -225,7 +208,7 @@ public class BlanketInteraction : Interaction
         //사용된 material hwatu 삭제
         for (int i = 0; i < 2; i++)
         {
-            SkillManager.instance.DeleteMaterialCardData(selectedHwatuUI[i].hwatuData);
+            ItemManager.instance.DeleteHwatuCard(selectedHwatuUI[i].hwatuData);
             materialHwatuUIObjectList.Remove(selectedHwatuUI[i].gameObject);
             Destroy(selectedHwatuUI[i].gameObject);
             selectedHwatuUI[i] = null;

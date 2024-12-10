@@ -27,7 +27,7 @@ public class StoneTotem : MonoBehaviour
         puzzleInteraction = Player.instance.GetComponentInChildren<PuzzleInteraction>();
 
         decks = new List<Sprite>(1);
-        HwatuData[] datas = SkillManager.instance.hwatuData;
+        HwatuData[] datas = ItemManager.instance.hwatuDatas;
         Array.Sort(datas);
 
         for (int i=0; i<datas.Length; i++)

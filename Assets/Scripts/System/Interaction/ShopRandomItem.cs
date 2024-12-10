@@ -5,19 +5,11 @@ using UnityEngine;
 public class ShopRandomItem : MonoBehaviour
 {
     [SerializeField] ItemObject[] itemObjs;
-
-    public ItemData[] gunItemDatas;
-    public ItemData[] armorItemDatas;
-    public ItemData fruitItemData;
-
     int cnt = 0;
 
     private void Awake()
     {
         itemObjs = GetComponentsInChildren<ItemObject>();
-        gunItemDatas = Resources.LoadAll<ItemData>("Gun/ItemData");
-        armorItemDatas = Resources.LoadAll<ItemData>("Armor");
-        fruitItemData = Resources.Load<ItemData>("Material/DragonFruit");
     }
     private void Start()
     {
@@ -43,21 +35,21 @@ public class ShopRandomItem : MonoBehaviour
             gunIdx = Random.Range(0, 4);
         } while (gunIdx == 1);
 
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = gunItemDatas[gunIdx];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.gunItemDatas[gunIdx];
         itemObjs[cnt].SetItemData();
         cnt++;
     }
 
     void SetCountArmor(int _cnt)
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 2)];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.armorItemDatas[Random.Range(0, 2)];
         itemObjs[cnt].SetItemData();
         cnt++;
         if (_cnt == 2)
         {
             do
             {
-                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = armorItemDatas[Random.Range(0, 2)];
+                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance. armorItemDatas[Random.Range(0, 2)];
             } while (itemObjs[cnt-1].itemData == itemObjs[cnt].itemData);
             itemObjs[cnt].SetItemData();
             cnt++;
@@ -66,11 +58,11 @@ public class ShopRandomItem : MonoBehaviour
 
     void SetCountFruit(int _cnt)
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = fruitItemData;
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.fruitItemData;
         itemObjs[cnt].SetItemData();
         cnt++;
         if(_cnt == 2) { 
-            itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = fruitItemData;
+            itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.fruitItemData;
             itemObjs[cnt].SetItemData();
         }
     }

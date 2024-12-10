@@ -1,29 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine;
 
-public class GunPresenter : PresenterBase
+public class ItemPresenter : PresenterBase
 {
     [Header("Model")]
-    public GunManager m_Gun;
+    public GunController m_Gun;
+    public ItemManager m_Item;
 
     [Header("View")]
+    public TextMeshProUGUI hwatuCnt;
+
     public Image gunImg;
     public InventoryItem curGun;
 
     public TextMeshProUGUI bulletCnt;
 
-    private void Start()
+    #region ActionSetting
+    void Start()
     {
-        
+        m_Gun.uiAction += UpdateBulletSlot;
+        m_Item.hwatuAction += HwatuCntChanged; // item presenter로 이전 필요
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
-        
+        m_Gun.uiAction -= UpdateBulletSlot;
+        m_Item.hwatuAction -= HwatuCntChanged;
     }
+    #endregion
 
     #region Bullet
     void UpdateBulletSlot()
@@ -44,7 +51,7 @@ public class GunPresenter : PresenterBase
     #region Gun
     void UpdateGunSlot(InventoryItem _newGun)
     {
-        if(_newGun == null) ClearGunView();
+        if (_newGun == null) ClearGunView();
         else UpdateGunView(_newGun);
     }
 
@@ -60,6 +67,18 @@ public class GunPresenter : PresenterBase
         curGun = null;
         gunImg.sprite = null;
         gunImg.color = Color.red;
+    }
+    #endregion
+
+    #region Hwatu
+    public void HwatuCntChanged()
+    {
+        UpdateHwatuTxtCnt();
+    }
+
+    void UpdateHwatuTxtCnt()
+    {
+        hwatuCnt.text = "X " + m_Item.refHwatuCardCnt.ToString();
     }
     #endregion
 }

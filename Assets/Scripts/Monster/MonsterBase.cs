@@ -29,8 +29,7 @@ public class MonsterBase : MonoBehaviour
 
     [Header("Drop Items")]
     [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
-    private GameObject[] dropItemPrefabs;
-    private GameObject moneyPrefab;
+    
 
     [Header("Monster Info")]
     public MonsterTypes monsterType;
@@ -99,9 +98,6 @@ public class MonsterBase : MonoBehaviour
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-
-        dropItemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
-        moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
     }
 
     protected virtual void Update()
@@ -204,14 +200,11 @@ public class MonsterBase : MonoBehaviour
     }
 
     private void DropItems()
-    {
-        for (int i = 0; i < dropItemPrefabs.Length; i++)
-        {
-            ItemObject item = dropItemPrefabs[i].GetComponent<ItemObject>();
-            float randomVal = Random.Range(0.0f, 1.0f);
-            if (randomVal <= item.dropProb)
-                Instantiate(dropItemPrefabs[i], this.transform.position, Quaternion.identity);
-        }
+    {   // 현재 용과만 드랍되므로 반복문 삭제
+        float randomVal = Random.Range(0.0f, 1.0f);
+        ItemObject item = ItemManager.instance.fruitPrefab.GetComponent<ItemObject>();
+        if (randomVal <= item.dropProb)
+            Instantiate(item.gameObject, this.transform.position, Quaternion.identity);
     }
 
     public virtual void HwatuObjectDrop()
@@ -219,16 +212,16 @@ public class MonsterBase : MonoBehaviour
         float randomVal = Random.Range(0.0f, 1.0f);
         if (randomVal <= 0.2f)
         {
-            GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
-            int index = Random.Range(0, SkillManager.instance.hwatuData.Length);
-            hwatuObj.GetComponent<HwatuItemObject>().hwatuData = SkillManager.instance.hwatuData[index];
+            GameObject hwatuObj = Instantiate(ItemManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
+            int index = Random.Range(0, ItemManager.instance.hwatuDatas.Length);
+            hwatuObj.GetComponent<HwatuItemObject>().hwatuData = ItemManager.instance.hwatuDatas[index];
             Debug.Log("Hwatu Drop");
         }
     }
 
     protected void MoneyDrop()
     {
-        GameObject moneyObj = Instantiate(moneyPrefab, this.transform.position, Quaternion.identity);
+        GameObject moneyObj = Instantiate(ItemManager.instance.moneyPrefab, this.transform.position, Quaternion.identity);
         MoneyItemObject moneyItem = moneyObj.GetComponent<MoneyItemObject>();
 
         moneyItem.amount = Random.Range(moneyRange.x, moneyRange.y);

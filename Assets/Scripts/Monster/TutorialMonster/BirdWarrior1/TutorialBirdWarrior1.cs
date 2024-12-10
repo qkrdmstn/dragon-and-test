@@ -47,7 +47,7 @@ public class TutorialBirdWarrior1 : BirdWarrior1
         if (isInstantiated) return;
 
         isInstantiated = true;
-        GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
-        hwatuObj.GetComponent<HwatuItemObject>().hwatuData = SkillManager.instance.hwatuData[myHwatuNum];
+        GameObject hwatuObj = Instantiate(ItemManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
+        hwatuObj.GetComponent<HwatuItemObject>().hwatuData = ItemManager.instance.hwatuDatas[myHwatuNum];
     }
 }

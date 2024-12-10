@@ -106,24 +106,6 @@ public class Passive
 public class SkillManager : MonoBehaviour
 {
     public static SkillManager instance = null;
-    
-    [Header("Hwatu Data")]
-    public HwatuData[] hwatuData; //전체 카드 데이터
-    public GameObject hwatuItemObj;
-    public List<HwatuData> materialHwatuDataList; //조합 카드 데이터
-
-    int materialCardMaxNum = 10;
-    int materialCardCnt;
-    public int refMaterialCardCnt
-    {
-        get { return materialCardCnt; }
-        set
-        {
-            materialCardCnt = Mathf.Clamp(value, 0, materialCardMaxNum);
-            hwatuAction.Invoke();
-        }
-    }
-    public Action hwatuAction;
 
     [Header("DB")]
     SkillDB[] datas;
@@ -178,9 +160,7 @@ public class SkillManager : MonoBehaviour
 
     #region Initialize Func
     private void InitializeSkillData()
-    {   //화투 데이터 로드
-        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
-
+    {  
         //스킬 이미지 로드, Dictionary 구성
         Sprite [] skillImages = Resources.LoadAll<Sprite>("SkillSprite");
 
@@ -195,10 +175,6 @@ public class SkillManager : MonoBehaviour
                 }
             }
         }
-
-        materialHwatuDataList = new List<HwatuData>();
-        refMaterialCardCnt = 0;
-
         skillpresenter = UIManager.instance.presenters[1] as SkillPresenter;
     }
 
@@ -212,32 +188,6 @@ public class SkillManager : MonoBehaviour
         ScenesManager.instance.isLoadedDB++;
     }
     #endregion
-
-    public void AddMaterialCardData(HwatuData _data)
-    {
-        if(refMaterialCardCnt >= materialCardMaxNum)
-        {
-            Debug.Log("The card data is full");
-            return;
-        }    
-
-        materialHwatuDataList.Add(_data);
-        refMaterialCardCnt = materialHwatuDataList.Count;
-        materialHwatuDataList.Sort();
-    }
-
-    public void DeleteMaterialCardData(HwatuData _data)
-    {
-        materialHwatuDataList.Remove(_data);
-        refMaterialCardCnt = materialHwatuDataList.Count;
-        materialHwatuDataList.Sort();
-    }
-
-    public void DeleteAllCardData()
-    {
-        materialHwatuDataList.Clear();
-        refMaterialCardCnt = materialHwatuDataList.Count;
-    }
 
     public void AddSkill(SeotdaHwatuCombination skill)
     {
@@ -371,8 +321,7 @@ public class SkillManager : MonoBehaviour
     }       
 
     public void ClearSkill()
-    {   // hwatu
-        DeleteAllCardData();
+    {   
         // active
         DeleteAllSkill();
         // passive

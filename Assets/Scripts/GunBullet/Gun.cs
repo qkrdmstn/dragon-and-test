@@ -12,8 +12,37 @@ public class Gun : MonoBehaviour
     [Header("Gun Timer")]
     public float shootTimer;
 
-    [Header("Gun Data")]
-    public GunData initData;
+    GunItemData gunItemData;
+    public GunItemData initItemData
+    {
+        get
+        {
+            return gunItemData;
+        }
+        set
+        {   // 설정과 동시에 초기화
+            gunItemData = value;
+
+            GunData _data = value.gunData;
+            damage = _data.damage;
+            shootDelay = _data.shootDelay;
+            reloadTime = _data.reloadTime;
+            maxBullet = _data.maxBullet;
+            magazineSize = _data.magazineSize;
+            loadedBullet = _data.loadedBullet;
+            maxRecoilDegree = _data.maxRecoilDegree;
+            recoilIncrease = _data.recoilIncrease;
+            bulletSpeed = _data.bulletSpeed;
+            range = _data.range;
+            knockbackForce = _data.knockbackForce;
+            isAutomatic = _data.isAutomatic;
+
+            // Prefab Setting
+            bulletPrefab = value.bulletPrefab;
+        }
+    }
+
+    #region CurGunDataValue
     public int damage = 1;
     public float shootDelay;
     public float reloadTime;
@@ -26,9 +55,9 @@ public class Gun : MonoBehaviour
     public float range;
     public float knockbackForce;
     public bool isAutomatic;
+    #endregion
 
     [Header("Prefabs")]
-    public GameObject gunPrefab;
     public GameObject bulletPrefab;
 
     [Header("Gun State")]
@@ -98,25 +127,6 @@ public class Gun : MonoBehaviour
             renderer.color = new Color(1, 1, 1);
             continuousShootCnt = 0;
         }
-    }
-
-    public void InitGunData(GunData _data)
-    {
-        damage = _data.damage;
-        shootDelay = _data.shootDelay;
-        reloadTime = _data.reloadTime;
-        maxBullet = _data.maxBullet;
-        magazineSize = _data.magazineSize;
-        loadedBullet = _data.loadedBullet;
-        maxRecoilDegree = _data.maxRecoilDegree;
-        recoilIncrease = _data.recoilIncrease;
-        bulletSpeed = _data.bulletSpeed;
-        range = _data.range;
-        knockbackForce = _data.knockbackForce;
-        isAutomatic = _data.isAutomatic;
-
-        //gunPrefab = _data.gunPrefab;
-        //bulletPrefab = _data.bulletPrefab;
     }
 
     protected virtual void Shoot()

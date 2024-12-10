@@ -15,14 +15,14 @@ public class PlayerData
     public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
     public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
     public List<HwatuData> hwatus;
+    public Dictionary<GunItemData, GameObject> gunItems;
 
     public int money;
-    public GunData curGun;
     public int curShieldCnt;
     public bool isClearTutorial;
 
     public PlayerData(float originPlayTime)
-    {
+    {   // 마을에서 저장시,
         date = new Date(
             DateTime.Now.ToString("yyyy"),
             DateTime.Now.ToString("MM"),
@@ -41,9 +41,8 @@ public class PlayerData
         activeSkill = SkillManager.instance.active.refSkill;
         passiveSkill = SkillManager.instance.passive.refSkill;
 
-        hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
-
-        curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;
+        hwatus = ItemManager.instance.curHoldingHwatuDatas;
+        gunItems = ItemManager.instance.gunController.curHoldingGunItems;
         curShieldCnt = Player.instance.GetCurShield();
 
         isClearTutorial = Player.instance.isClearTutorial;

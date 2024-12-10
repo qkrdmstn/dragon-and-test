@@ -36,7 +36,6 @@ public class SkillPresenter : PresenterBase
     public List<PassiveData> passiveUI;
     Dictionary<SeotdaHwatuCombination, int> passiveIdxTable;    // 추가할 때마다 인덱스 조정, 패시브 삭제는 미존재
     int curAddedIdx = 0;    
-    public TextMeshProUGUI hwatuCnt;
 
     void Awake()
     {
@@ -50,8 +49,6 @@ public class SkillPresenter : PresenterBase
         m_Skill.active.action += CoolTimeChanged;
 
         m_Skill.passive.action += PassiveSkillChanged;
-
-        m_Skill.hwatuAction += HwatuCntChanged;
     }
 
     void OnDestroy()
@@ -60,8 +57,6 @@ public class SkillPresenter : PresenterBase
         m_Skill.active.action -= CoolTimeChanged;
 
         m_Skill.passive.action -= PassiveSkillChanged;
-
-        m_Skill.hwatuAction -= HwatuCntChanged;
     }
     #endregion
 
@@ -74,19 +69,6 @@ public class SkillPresenter : PresenterBase
             activeUI[skillSlot].coolTimeObj.SetActive(false);
         }
     }
-
-    #region Hwatu
-    public void HwatuCntChanged()
-    {
-        UpdateHwatuTxtCnt();
-    }
-
-    void UpdateHwatuTxtCnt()
-    {
-        hwatuCnt.text = "X " + m_Skill.refMaterialCardCnt.ToString();
-    }
-    #endregion
-
     #region ActiveSkillSlot
     public void ActiveSkillChanged(ActiveSkillSlot slot, bool checkCoolTime)
     {
