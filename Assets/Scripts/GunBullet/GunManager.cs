@@ -140,10 +140,10 @@ public class GunManager : MonoBehaviour
         InitActiveGun();
     }
 
-    public void AddGun(GameObject _prefab)
+    public void AddGun(GunItemData itemData)
     {
         //Add Gun & Initialize
-        GameObject _newGunObj = Instantiate(_prefab, gunParent.position, gunParent.rotation, gunParent);
+        GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
         Gun _newGun = _newGunObj.GetComponent<Gun>();
         _newGun.InitGunData(_newGun.initData);
 

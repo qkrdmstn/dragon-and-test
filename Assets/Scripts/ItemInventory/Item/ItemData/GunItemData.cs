@@ -6,4 +6,8 @@ using UnityEngine;
 public class GunItemData : ItemData
 {
     public GunData gunData;
+
+    [Header("Prefabs")]
+    public GameObject gunPrefab;
+    public GameObject bulletPrefab;
 }

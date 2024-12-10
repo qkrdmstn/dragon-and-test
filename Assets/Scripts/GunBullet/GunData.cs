@@ -18,12 +18,12 @@ public class GunData : ScriptableObject
     public float knockbackForce;
     public bool isAutomatic;
 
-    [Header("Item Data")]
-    public GunItemData gunItemData;
+    //[Header("Item Data")]
+    //public GunItemData gunItemData;
 
-    [Header("Prefabs")]
-    public GameObject gunPrefab;
-    public GameObject bulletPrefab;
+    //[Header("Prefabs")]
+    //public GameObject gunPrefab;
+    //public GameObject bulletPrefab;
 
     public GunData(GunData _data)
     {
@@ -40,10 +40,10 @@ public class GunData : ScriptableObject
         this.knockbackForce = _data.knockbackForce;
         this.isAutomatic = _data.isAutomatic;
 
-        this.gunItemData = _data.gunItemData;
+        //this.gunItemData = _data.gunItemData;
 
-        this.gunPrefab = _data.gunPrefab;
-        this.bulletPrefab = _data.bulletPrefab;
+        //this.gunPrefab = _data.gunPrefab;
+        //this.bulletPrefab = _data.bulletPrefab;
     }
 
     public void gunDataUpdate(Gun _gun)
@@ -61,7 +61,7 @@ public class GunData : ScriptableObject
         this.knockbackForce = _gun.knockbackForce;
         this.isAutomatic = _gun.isAutomatic;
 
-        this.gunPrefab = _gun.gunPrefab;
-        this.bulletPrefab = _gun.bulletPrefab;
+        //this.gunPrefab = _gun.gunPrefab;
+        //this.bulletPrefab = _gun.bulletPrefab;
     }
 }

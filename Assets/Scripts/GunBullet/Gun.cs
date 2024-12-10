@@ -26,9 +26,9 @@ public class Gun : MonoBehaviour
     public float range;
     public float knockbackForce;
     public bool isAutomatic;
-    public GameObject gunPrefab;
 
-    [Header("Bullet Prefabs")]
+    [Header("Prefabs")]
+    public GameObject gunPrefab;
     public GameObject bulletPrefab;
 
     [Header("Gun State")]
@@ -115,8 +115,8 @@ public class Gun : MonoBehaviour
         knockbackForce = _data.knockbackForce;
         isAutomatic = _data.isAutomatic;
 
-        gunPrefab = _data.gunPrefab;
-        bulletPrefab = _data.bulletPrefab;
+        //gunPrefab = _data.gunPrefab;
+        //bulletPrefab = _data.bulletPrefab;
     }
 
     protected virtual void Shoot()
