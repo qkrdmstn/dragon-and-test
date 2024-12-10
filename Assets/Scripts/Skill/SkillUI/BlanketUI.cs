@@ -23,8 +23,8 @@ public class BlanketUI : MonoBehaviour
     public Button skillInfoExitButton;
     public bool isSkillInfoUI;
 
-    [Header("Passive Skill Slot UI")]
-    public Transform passiveSkillSlotParent;
+    //[Header("Passive Skill Slot UI")]
+    //public Transform passiveSkillSlotParent;
 
     public bool IsInBlanket(RectTransform rectTransform)
     {

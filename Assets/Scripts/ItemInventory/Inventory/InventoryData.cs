@@ -37,11 +37,6 @@ public class InventoryData : MonoBehaviour
         gunItems = new List<InventoryItem>();
     }
 
-    private void Start()
-    {
-        
-    }
-
     public void AddGunItem(ItemData _gunItem)
     {
         //인벤토리에 없는 경우에만 추가. (무기 중복 X)

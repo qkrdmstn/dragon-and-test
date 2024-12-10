@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class Gun : MonoBehaviour
 {
@@ -56,9 +54,6 @@ public class Gun : MonoBehaviour
     {
         if (Player.instance.isCombatZone)
             cameraManager = FindObjectOfType<CameraManager>();
-
-        GameObject reloadUI = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[6];
-        reloadUIImg = reloadUI.GetComponent<Image>();
     }
 
     private void Update()
@@ -210,11 +205,7 @@ public class Gun : MonoBehaviour
     {
         if(loadedBullet != magazineSize && maxBullet > 0)
         {
-            Player.instance.animController.isBreath = false;
-
             isReloading = true;
-
-            //장전 UI 활성화 및 위치 설정
             reloadUIImg.gameObject.SetActive(true);
             Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
             reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
@@ -237,10 +228,10 @@ public class Gun : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         int reloadBulletSize = magazineSize - loadedBullet;
-        if(reloadBulletSize <= maxBullet)
+        if (reloadBulletSize <= maxBullet)
         {
             loadedBullet = magazineSize;
-            if(maxBullet < 10000) //총알 무한대
+            if (maxBullet < 10000) //총알 무한대
                 maxBullet -= reloadBulletSize;
         }
         else

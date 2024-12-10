@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +9,8 @@ public class GunManager : MonoBehaviour
     public static GunManager instance;
 
     [Header("Gun Data")]
+    public HashSet<GunItemData> gunItemDatas;
+
     public List<GunData> gunDataList;
     public Dictionary<GunData, GameObject> gunDictionary;
     public int gunNum;
@@ -23,10 +24,7 @@ public class GunManager : MonoBehaviour
     public float swapDelay = 0.1f;
     public float swapTimer;
 
-    public GameObject tempPrefab;
-    #region Components
     private Player player;
-    #endregion
 
     private void Awake()
     {
@@ -86,6 +84,7 @@ public class GunManager : MonoBehaviour
             AddGunDataList(_data);
             LoadGunData(gunObj, _data);
         }
+        
         gunNum = gunDataList.Count;
     }
 
