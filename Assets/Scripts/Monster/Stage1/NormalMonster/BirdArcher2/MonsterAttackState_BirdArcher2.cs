@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class MonsterAttackState_BirdArcher2 : MonsterState
+public class MonsterAttackState_BirdArcher2 : MonsterAttackStateBase
 {
     protected new BirdArcher2 monster;
     private MonsterAnimController monsterAnimController;
@@ -23,7 +23,7 @@ public class MonsterAttackState_BirdArcher2 : MonsterState
         base.Enter();
 
         monster.SetSpeed(0.0f);
-        monster.StartCoroutine(Shoot());
+        attackCoroutine = monster.StartCoroutine(Shoot());
     }
 
     public override void Update()

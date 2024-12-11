@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class MonsterAttackState_BirdTanker : MonsterState
+public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
 {
     protected new BirdTanker monster;
     private MonsterAnimController monsterAnimController;
@@ -23,7 +23,7 @@ public class MonsterAttackState_BirdTanker : MonsterState
         base.Enter();
 
         monster.SetSpeed(0.0f);
-        monster.StartCoroutine(Shoot());
+        attackCoroutine = monster.StartCoroutine(Shoot());
     }
 
     public override void Update()
