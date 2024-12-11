@@ -14,60 +14,113 @@ public class ItemPresenter : PresenterBase
     public TextMeshProUGUI hwatuCnt;
 
     public Image gunImg;
-    public InventoryItem curGun;
+    public Image reloadUIImg;
 
-    public TextMeshProUGUI bulletCnt;
+    public TextMeshProUGUI loadedBulletCnt;
+    public TextMeshProUGUI maxBulletCnt;
 
     #region ActionSetting
-    void Start()
+    void Awake()
     {
-        m_Gun.uiAction += UpdateBulletSlot;
+        m_Gun.gunAction += UpdateGunSlot;
+        m_Gun.gunAction += UpdateBulletSlot;
+
+        m_Gun.reloadAction += UpdateReloadUI;
+        m_Gun.bulletAction += UpdateBulletSlot;
         m_Item.hwatuAction += HwatuCntChanged; // item presenter로 이전 필요
     }
 
     void OnDestroy()
     {
-        m_Gun.uiAction -= UpdateBulletSlot;
+        m_Gun.gunAction -= UpdateGunSlot;
+        m_Gun.gunAction -= UpdateBulletSlot;
+
+        m_Gun.reloadAction -= UpdateReloadUI;
+        m_Gun.bulletAction -= UpdateBulletSlot;
         m_Item.hwatuAction -= HwatuCntChanged;
     }
     #endregion
 
     #region Bullet
-    void UpdateBulletSlot()
-    {
-
+    void UpdateBulletSlot(GunItemData _gunData)
+    {   
+        UpdateLoadedBulletView(m_Gun.GetCurGunComponent().refLoadedBullet);
+        UpdateMaxBulletView(m_Gun.GetCurGunComponent().refMaxBullet);
     }
 
-    void UpdateBulletView(int _maxBullet, int _loadedBullet)
+    void UpdateBulletSlot(int _maxBullet, int _loadedBullet)
+    {   // -1 is no update data
+        if(_loadedBullet != -1)
+            UpdateLoadedBulletView(_loadedBullet);
+        if(_maxBullet != -1)
+            UpdateMaxBulletView(_maxBullet);
+    }
+
+    void UpdateLoadedBulletView(int _loadedBullet)
+    {
+        loadedBulletCnt.text = "<size=36>" + _loadedBullet.ToString();
+    }
+
+    void UpdateMaxBulletView(int _maxBullet)
     {
         if (_maxBullet >= 10000) //총알 무한대
-            bulletCnt.text = "<size=36>" + _loadedBullet.ToString() + "</size><size=20> / ∞</size>";
+            maxBulletCnt.text = "</size><size=20> / ∞</size>";
         else
-            bulletCnt.text = "<size=36>" + _loadedBullet.ToString() + "</size><size=20> / " + _maxBullet.ToString() + "</size>";
+            maxBulletCnt.text = "</size><size=20> / " + _maxBullet.ToString() + "</size>";
     }
     #endregion
 
 
     #region Gun
-    void UpdateGunSlot(InventoryItem _newGun)
+    void UpdateGunSlot(GunItemData _newGun)
     {
+        StopAllCoroutines(); // 재장전이라면 종료
+        reloadUIImg.gameObject.SetActive(false);
+
         if (_newGun == null) ClearGunView();
         else UpdateGunView(_newGun);
     }
 
-    void UpdateGunView(InventoryItem _newGun)
+    void UpdateGunView(GunItemData _newGun)
     {
-        curGun = _newGun;
         gunImg.color = Color.white;
-        gunImg.sprite = curGun.data.icon;
+        gunImg.sprite = _newGun.icon;
     }
 
     void ClearGunView()
     {
-        curGun = null;
         gunImg.sprite = null;
         gunImg.color = Color.red;
     }
+
+    void UpdateReloadUI(bool on)
+    {
+        reloadUIImg.gameObject.SetActive(on);
+        if (on)
+        {
+            StartCoroutine(ReloadProcess(m_Gun.GetCurGunComponent().reloadTime));
+        }
+    }
+
+    IEnumerator ReloadProcess(float reloadTime)
+    {
+        float timer = 0.0f;
+        while (timer <= reloadTime)
+        {
+            timer += Time.deltaTime;
+            reloadUIImg.fillAmount = timer / reloadTime;
+
+            //장전 UI 위치 설정
+            Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
+            reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
+            yield return new WaitForFixedUpdate();
+        }
+        m_Gun.GetCurGunComponent().DoneReloadUI();
+        reloadUIImg.gameObject.SetActive(false);
+    }
+    #endregion
+
+    #region Inventory
     #endregion
 
     #region Hwatu

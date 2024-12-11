@@ -6,7 +6,7 @@ public class Gun_LaserPistol : Gun
 {
     protected override void Shoot()
     {
-        if (loadedBullet > 0 && shootTimer < 0.0)
+        if (refLoadedBullet > 0 && shootTimer < 0.0)
         {
             Player.instance.animController.isBreath = true;
             if (cameraManager != null)
@@ -16,7 +16,7 @@ public class Gun_LaserPistol : Gun
 
             //Shoot Setting
             shootTimer = CalcShootDelay();
-            loadedBullet--;
+            refLoadedBullet--;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
@@ -44,9 +44,6 @@ public class Gun_LaserPistol : Gun
 
             bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir, bulletScale);
             StartCoroutine(InactiveIsAttacking());
-
-            //Gun Inventory Update
-            GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
         }
     }
 }

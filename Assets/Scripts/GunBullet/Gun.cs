@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
-using UnityEngine.UI;
 
 public class Gun : MonoBehaviour
 {
@@ -13,7 +12,8 @@ public class Gun : MonoBehaviour
     public float shootTimer;
 
     GunItemData gunItemData;
-    public GunItemData initItemData
+    IGun gunInterface;
+     public GunItemData initItemData
     {
         get
         {
@@ -22,14 +22,18 @@ public class Gun : MonoBehaviour
         set
         {   // 설정과 동시에 초기화
             gunItemData = value;
+            gunInterface = ItemManager.instance.gunController;
 
             GunData _data = value.gunData;
             damage = _data.damage;
             shootDelay = _data.shootDelay;
             reloadTime = _data.reloadTime;
-            maxBullet = _data.maxBullet;
+
             magazineSize = _data.magazineSize;
-            loadedBullet = _data.loadedBullet;
+            originMaxBullet = _data.maxBullet;
+            refMaxBullet = _data.maxBullet;
+            refLoadedBullet = _data.loadedBullet;
+
             maxRecoilDegree = _data.maxRecoilDegree;
             recoilIncrease = _data.recoilIncrease;
             bulletSpeed = _data.bulletSpeed;
@@ -42,13 +46,34 @@ public class Gun : MonoBehaviour
         }
     }
 
+    int originMaxBullet;
+
     #region CurGunDataValue
     public int damage = 1;
     public float shootDelay;
     public float reloadTime;
-    public int maxBullet;
-    public int magazineSize;
-    public int loadedBullet;
+
+    public int magazineSize; // 한 번 장전 기준 총알수
+    int maxBullet;
+    public int refMaxBullet
+    {
+        get { return maxBullet; }
+        set {
+            maxBullet = value;
+            gunInterface.OnBulletAction(maxBullet, -1);
+        }
+    }
+
+    int loadedBullet;
+    public int refLoadedBullet
+    {
+        get { return loadedBullet; }
+        set
+        {
+            loadedBullet = value;
+            gunInterface.OnBulletAction(-1, loadedBullet);
+        }
+    }
     public float maxRecoilDegree;
     public float recoilIncrease;
     public float bulletSpeed;
@@ -61,17 +86,22 @@ public class Gun : MonoBehaviour
     public GameObject bulletPrefab;
 
     [Header("Gun State")]
-    [SerializeField] protected bool isReloading = false;
+    bool isReloading;
+    protected bool refReloadState
+    {
+        get { return isReloading; }
+        set
+        {
+            isReloading = value;
+            gunInterface.OnReloadAction(isReloading);
+        }
+    }
     [SerializeField] protected int continuousShootCnt = 0;
 
-    [Header("CameraSetting")]
-    // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
+    [Header("CameraSetting")]   // 플레이어가 총을 쐈을때 필요한 카메라 반동 쉐이킹 
     public CamShakeProfile profile;
     public CameraManager cameraManager;
     protected CinemachineImpulseSource impulseSource;
-
-    [Header("UI")]
-    public Image reloadUIImg;
 
     private void Awake()
     {
@@ -89,9 +119,9 @@ public class Gun : MonoBehaviour
     {
         shootTimer -= Time.deltaTime;
 
-        if (Player.instance.isAttackable && !isReloading)
+        if (Player.instance.isAttackable && !refReloadState)
         {
-            if (loadedBullet == 0 && Input.GetKeyDown(KeyCode.Mouse0))
+            if (refLoadedBullet == 0 && Input.GetKeyDown(KeyCode.Mouse0))
                 Reload();
             else if(isAutomatic && Input.GetKey(KeyCode.Mouse0))
                     Shoot();
@@ -103,7 +133,7 @@ public class Gun : MonoBehaviour
         }
         else if (!Player.instance.isAttackable && Player.instance.stateMachine.currentState == Player.instance.dashState)
         {
-            if (!isReloading)
+            if (!refReloadState)
             {
                 if (Input.GetKeyDown(KeyCode.R))
                     Reload();
@@ -118,10 +148,9 @@ public class Gun : MonoBehaviour
 
     private void OnDisable()
     {
-        if(isReloading)
+        if(refReloadState)
         {
-            isReloading = false;
-            reloadUIImg.gameObject.SetActive(false);
+            refReloadState = false;
 
             //Reload Visulaize
             renderer.color = new Color(1, 1, 1);
@@ -131,7 +160,7 @@ public class Gun : MonoBehaviour
 
     protected virtual void Shoot()
     {
-        if(loadedBullet > 0 && shootTimer < 0.0)
+        if(refLoadedBullet > 0 && shootTimer < 0.0)
         {
             Player.instance.animController.isBreath = true;
             if (cameraManager != null)
@@ -141,7 +170,7 @@ public class Gun : MonoBehaviour
 
             //Shoot Setting
             shootTimer = CalcShootDelay();
-            loadedBullet--;
+            refLoadedBullet--;
             continuousShootCnt++;
             SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Breath);
 
@@ -168,9 +197,6 @@ public class Gun : MonoBehaviour
 
             bullet.BulletInitialize(bulletDamage, range, bulletSpeed, knockbackForce, dir, bulletScale);
             StartCoroutine(InactiveIsAttacking());
-
-            //Gun Inventory Update
-            GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
         }
     }
 
@@ -213,46 +239,32 @@ public class Gun : MonoBehaviour
 
     protected virtual void Reload()
     {
-        if(loadedBullet != magazineSize && maxBullet > 0)
+        if(refLoadedBullet != magazineSize && refMaxBullet > 0)
         {
-            isReloading = true;
-            reloadUIImg.gameObject.SetActive(true);
-            Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
-            reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
-
-            StartCoroutine(ReloadProcess());
+            refReloadState = true;
         }
     }
 
-    IEnumerator ReloadProcess()
+    public void DoneReloadUI()
     {
-        float timer = 0.0f;
-        while (timer <= reloadTime)
+        int reloadBulletSize = magazineSize - refLoadedBullet;
+        if (reloadBulletSize <= refMaxBullet)
         {
-            timer += Time.deltaTime;
-            reloadUIImg.fillAmount = timer / reloadTime;
-
-            //장전 UI 위치 설정
-            Vector3 uiPos = Player.instance.transform.position + Vector3.up * 0.8f;
-            reloadUIImg.rectTransform.position = Camera.main.WorldToScreenPoint(uiPos);
-            yield return new WaitForFixedUpdate();
-        }
-        int reloadBulletSize = magazineSize - loadedBullet;
-        if (reloadBulletSize <= maxBullet)
-        {
-            loadedBullet = magazineSize;
-            if (maxBullet < 10000) //총알 무한대
-                maxBullet -= reloadBulletSize;
+            refLoadedBullet = magazineSize;
+            if (refMaxBullet < 10000) //총알 무한대
+                refMaxBullet -= reloadBulletSize;
         }
         else
         {
-            loadedBullet += maxBullet;
-            maxBullet -= maxBullet;
+            refLoadedBullet += refMaxBullet;
+            refMaxBullet -= refMaxBullet;
         }
-        isReloading = false;
+        refReloadState = false;
+    }
 
-        reloadUIImg.gameObject.SetActive(false);
-        //Gun Inventory Update
-        GunManager.instance.UpdateCurrentGunBulletData(maxBullet, loadedBullet);
+    public void ResetBulletCnt()
+    {
+        refLoadedBullet = magazineSize;
+        refMaxBullet = originMaxBullet;
     }
 }

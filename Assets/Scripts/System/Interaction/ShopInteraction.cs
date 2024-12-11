@@ -167,7 +167,7 @@ public class ShopInteraction : Interaction
                     (itemData as EffectItemData).ItemEffect();
                 break;
             case ItemType.Gun:
-                GunManager.instance.AddGun(itemData as GunItemData);
+                ItemManager.instance.gunController.AddGunData(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();

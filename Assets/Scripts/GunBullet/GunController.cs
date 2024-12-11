@@ -2,25 +2,39 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GunController : MonoBehaviour
+public interface IGun
 {
-    // ItemManager에서는 플레이어가 보유한 모든 총을 저장
-    // 여기는 현재 총에 대한 정보만을 저장하고 행위 정의
+    void OnBulletAction(int maxBullet, int loadedBullet);
+    void OnReloadAction(bool on);
+}
 
+public class GunController : MonoBehaviour, IGun
+{
     public GunItemData baseGunData;
     public Transform gunParent;
+
     public Dictionary<GunItemData, GameObject> curHoldingGunItems;
-    public Action<GunItemData> gunAction;
-    public Action uiAction;
 
-    [Header("Swap info")]
-    public GameObject currentGun;
+    public Action<GunItemData> addGunAction;    // for data
+    public Action<GunItemData> gunAction;       // for UI
+    public Action<int, int> bulletAction;
+    public Action<bool> reloadAction;
 
+    [Header("Gun info")]
+    GameObject currentGun;
+    GunItemData curGunData;
+    public GunItemData refCurGunData
+    {
+        get { return curGunData; }
+        set
+        {
+            curGunData = value;
+            gunAction(value);
+        }
+    }
     public int currentIdx;  // for add, swap index
-    public int currentGunLoadedBullet;
-    public int currentGunMaxBullet;
-
     public float swapDelay = 0.1f;
     public float swapTimer;
 
@@ -35,24 +49,43 @@ public class GunController : MonoBehaviour
         currentIdx = 0;
 
         // 총 데이터 갱신 (gunController & inventory)
-        gunAction += AddGunData;
-        gunAction += InventoryData.instance.AddGunItem; // 수정예정
+        addGunAction += AddGunData;
+        addGunAction += InventoryData.instance.AddGunItem; // 수정예정
+    }
+
+    void Update()
+    {
+        if (SceneManager.GetActiveScene().name == "Start") return;
+
+        if (Player.instance.isCombatZone && !Player.instance.isInteraction)
+        {
+            if (curHoldingGunItems.Count == 1) return;
+
+            swapTimer -= Time.deltaTime;
+            float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+            if (scroll > 0 && swapTimer < 0.0f)
+                SwapGun(true);
+            if (scroll < 0 && swapTimer < 0.0f)
+                SwapGun(false);
+        }
     }
 
     public void AddGunData()
     {   // 최초 총 세팅
-        gunAction(baseGunData);
+        addGunAction(baseGunData);
     }
 
     public void AddGunData(GunItemData itemData)
     {
-        if (!curHoldingGunItems[itemData])
+        if (!curHoldingGunItems.TryGetValue(itemData, out GameObject obj))
         {
             GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
             curHoldingGunItems.Add(itemData, _newGunObj);
 
-            _newGunObj.GetComponent<Gun>().initItemData = itemData;
+            _newGunObj.GetComponent<Gun>().initItemData = itemData; // init될때마다 총알 자동 갱신
             currentIdx = curHoldingGunItems.Count - 1;
+
+            InitActiveGun();    // 추가된 총으로 UI 갱신
         }
     }
 
@@ -81,22 +114,26 @@ public class GunController : MonoBehaviour
 
     void InitActiveGun()
     {   // curGun 갱신하면서 프로퍼티 사용해서 이미지랑 총알 수 바인딩
-        // 호출 정상화... 이것 또한... 은혜이겠지요
-        currentGun.SetActive(false);
+        currentGun?.SetActive(false);
+        
         currentGun = gunParent.GetChild(currentIdx).gameObject;
-        currentGun.SetActive(true);
+        refCurGunData = currentGun.GetComponent<Gun>().initItemData;
 
-        //Gun Inventory Update
-        //GunInventoryData.instance.UpdateGunInventorySlotUI(itemData); // gun image 갱신하는것 -> 이것도 gun presenter 연결
-        //Gun _gun = currentGun.GetComponent<Gun>();
-        //UpdateCurrentGunBulletData(_gun.maxBullet, _gun.loadedBullet);
+        currentGun.SetActive(true);
     }
 
-    //public void UpdateCurrentGunBulletData(int maxBullet, int loadedBullet)
-    //{    // ui property - gun presenter
-    //    currentGunMaxBullet = maxBullet; 
-    //    currentGunLoadedBullet = loadedBullet;
+    public void OnBulletAction(int maxBullet, int loadedBullet)
+    {   // interface function
+        bulletAction(maxBullet, loadedBullet);
+    }
 
-    //    //GunInventoryData.instance.UpdateCurrentBulletUI(currentGunMaxBullet, currentGunLoadedBullet);
-    //}
+    public void OnReloadAction(bool on)
+    {   // interface function
+        reloadAction(on);
+    }
+
+    public Gun GetCurGunComponent()
+    {
+        return currentGun.GetComponent<Gun>();
+    }   
 }

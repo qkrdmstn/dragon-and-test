@@ -9,15 +9,15 @@ public class ItemManager : MonoBehaviour
     [Header("ItemData")]
     [HideInInspector] public ItemData[] gunItemDatas;
     [HideInInspector] public ItemData[] armorItemDatas;
-    [HideInInspector]public ItemData fruitItemData;
+    [HideInInspector] public ItemData fruitItemData;
 
     [Header("ItemPrefabs")]
-    [HideInInspector]public GameObject fruitPrefab;
+    [HideInInspector] public GameObject fruitPrefab;
     [HideInInspector] public GameObject moneyPrefab;
 
     [Header("HwatuData")]
-    [HideInInspector]public HwatuData[] hwatuDatas;      // all hwatu datas
-    [HideInInspector]public GameObject[] hwatuUIObjs;    // all hwatu UI Objs
+    [HideInInspector] public HwatuData[] hwatuDatas;      // all hwatu datas
+    [HideInInspector] public GameObject[] hwatuUIObjs;    // all hwatu UI Objs
     [HideInInspector] public Dictionary<HwatuData, GameObject> hwatuDataUIObjs; // match for hwatuData to Objs
 
     public GameObject hwatuItemObj;
@@ -45,10 +45,6 @@ public class ItemManager : MonoBehaviour
             instance = this;        // 생성
             //curHoldingGunItems = new Dictionary<GunItemData, GameObject>(); // save Data에서 init
             curHoldingHwatuDatas = new List<HwatuData>();
-
-            LoadItemData();
-            LoadItemPrefab();
-            InitHwatus();
         }
         else if (instance != this)
         { //이미 생성되어 있으면
@@ -60,6 +56,9 @@ public class ItemManager : MonoBehaviour
     void Start()
     {
         gunController = GetComponentInChildren<GunController>();
+        LoadItemData();
+        LoadItemPrefab();
+        InitHwatus();
     }
 
     #region Load & Init Datas
@@ -81,6 +80,8 @@ public class ItemManager : MonoBehaviour
     {
         hwatuDatas = Resources.LoadAll<HwatuData>("HwatuData");
         hwatuUIObjs = Resources.LoadAll<GameObject>("Prefabs/MaterialHwatuUI");
+
+        hwatuDataUIObjs = new Dictionary<HwatuData, GameObject>();
         foreach (GameObject item in hwatuUIObjs)
         {
             hwatuDataUIObjs.Add(item.GetComponent<MaterialHwatuSlotUI>().hwatuData, item);
@@ -137,7 +138,7 @@ public class ItemManager : MonoBehaviour
         else
         {
             foreach(var data in saveDatas)
-                gunController.gunAction(data.Key);
+                gunController.addGunAction(data.Key);
         }
     }
     #endregion

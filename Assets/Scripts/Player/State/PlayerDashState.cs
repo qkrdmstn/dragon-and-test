@@ -36,7 +36,7 @@ public class PlayerDashState : PlayerState
         {
             //Attack Able Setting
             player.isAttackable = true;
-            Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
+            Gun curGun = ItemManager.instance.gunController.GetCurGunComponent();
             curGun.shootTimer -= player.dashDuration;
 
             player.SetVelocity(0, 0);

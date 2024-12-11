@@ -39,9 +39,9 @@ public class GunData : ScriptableObject
         this.damage = _gun.damage;
         this.shootDelay = _gun.shootDelay;
         this.reloadTime = _gun.reloadTime;
-        this.maxBullet = _gun.maxBullet;
+        this.maxBullet = _gun.refMaxBullet;
         this.magazineSize = _gun.magazineSize;
-        this.loadedBullet = _gun.loadedBullet;
+        this.loadedBullet = _gun.refLoadedBullet;
         this.maxRecoilDegree = _gun.maxRecoilDegree;
         this.recoilIncrease = _gun.recoilIncrease;
         this.bulletSpeed = _gun.bulletSpeed;
