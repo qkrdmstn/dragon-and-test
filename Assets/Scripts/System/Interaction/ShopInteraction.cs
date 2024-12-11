@@ -92,7 +92,7 @@ public class ShopInteraction : Interaction
                 }
                 else curLine = "고맙다.";
                 break;
-                case StateOfBuy.NoBuy:
+            case StateOfBuy.NoBuy:
                 curLine = "다른 것도 천천히 둘러보도록...";
                 break;
             case StateOfBuy.CantBuy:
@@ -118,7 +118,11 @@ public class ShopInteraction : Interaction
         else if (isSelected && Input.GetKeyDown(KeyCode.F))
             isDone = true;
 
-        if (isDone) SetActiveShopUI(false);
+        if (isDone)
+        {
+            SetActiveShopUI(false);
+            return isDone;
+        }
 
         // 선택 대화 출력
         if (result == -1) Selection(2);  // 처음 선택에 대한 디폴트 선택을 지정합니다. 이후 방향키 입력이 있다면, 발동되지 않습니다
@@ -167,7 +171,7 @@ public class ShopInteraction : Interaction
                     (itemData as EffectItemData).ItemEffect();
                 break;
             case ItemType.Gun:
-                ItemManager.instance.gunController.AddGunData(itemData as GunItemData);
+                ItemManager.instance.gunController.addGunAction(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();

@@ -135,5 +135,5 @@ public class GunController : MonoBehaviour, IGun
     public Gun GetCurGunComponent()
     {
         return currentGun.GetComponent<Gun>();
-    }   
+    }
 }
