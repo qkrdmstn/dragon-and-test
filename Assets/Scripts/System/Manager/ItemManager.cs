@@ -38,6 +38,7 @@ public class ItemManager : MonoBehaviour
 
     [Header("Holding")]
     public List<HwatuData> curHoldingHwatuDatas;
+    public ItemData armorData;
 
     void Awake()
     {

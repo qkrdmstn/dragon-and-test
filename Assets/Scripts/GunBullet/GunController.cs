@@ -40,17 +40,15 @@ public class GunController : MonoBehaviour, IGun
 
     void Awake()
     {
+        currentIdx = 0;
         curHoldingGunItems = new Dictionary<GunItemData, GameObject>();
+        // 총 데이터 갱신 1 (gunData) & 2 (inventory는 presenter에)
+        addGunAction += AddGunData;
     }
 
     void Start()
     {
         gunParent = Player.instance.transform.GetChild(1);
-        currentIdx = 0;
-
-        // 총 데이터 갱신 (gunController & inventory)
-        addGunAction += AddGunData;
-        addGunAction += InventoryData.instance.AddGunItem; // 수정예정
     }
 
     void Update()

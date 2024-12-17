@@ -4,6 +4,13 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 
+[System.Serializable]
+public class InventoryInformation
+{
+    public Image itemImg;
+    public TextMeshProUGUI itemTitle, itemDesc;
+}
+
 public class ItemPresenter : PresenterBase
 {
     [Header("Model")]
@@ -19,6 +26,12 @@ public class ItemPresenter : PresenterBase
     public TextMeshProUGUI loadedBulletCnt;
     public TextMeshProUGUI maxBulletCnt;
 
+    // Inventory Section
+    public Transform[] gunInventory;
+    public Transform armorInventory;
+
+    public InventoryInformation itemInfoUI;
+
     #region ActionSetting
     void Awake()
     {
@@ -28,6 +41,11 @@ public class ItemPresenter : PresenterBase
         m_Gun.reloadAction += UpdateReloadUI;
         m_Gun.bulletAction += UpdateBulletSlot;
         m_Item.hwatuAction += HwatuCntChanged; // item presenter로 이전 필요
+    }
+
+    void Start()
+    {
+        m_Gun.addGunAction += UpdateGunInventory;
     }
 
     void OnDestroy()
@@ -121,6 +139,11 @@ public class ItemPresenter : PresenterBase
     #endregion
 
     #region Inventory
+    // Gun
+    void UpdateGunInventory(GunItemData gunItemData)
+    {
+
+    }
     #endregion
 
     #region Hwatu

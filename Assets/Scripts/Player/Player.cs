@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         {
             shield = Mathf.Clamp(value, 0, maxShield);
             actions[(int)StatActionType.Shield].Invoke();
+            // if value is zero, Update Inventory UI
         }
     }
     [SerializeField] private float hitDuration = 0.6f;

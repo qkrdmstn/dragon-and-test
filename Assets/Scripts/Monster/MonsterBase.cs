@@ -120,9 +120,6 @@ public class MonsterBase : MonoBehaviour
         agent.updateUpAxis = false;
 
         statusEffectsCheck.InitStatusEffect();
-
-        dropItemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
-        moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
     }
 
     protected virtual void Update()
