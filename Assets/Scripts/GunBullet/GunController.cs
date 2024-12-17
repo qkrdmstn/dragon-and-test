@@ -14,8 +14,7 @@ public class GunController : MonoBehaviour, IGun
 {
     public GunItemData baseGunData;
     public Transform gunParent;
-
-    public Dictionary<GunItemData, GameObject> curHoldingGunItems;
+    public HashSet<GunItemData> curGunItems;
 
     public Action<GunItemData> addGunAction;    // for data
     public Action<GunItemData> gunAction;       // for UI
@@ -41,7 +40,7 @@ public class GunController : MonoBehaviour, IGun
     void Awake()
     {
         currentIdx = 0;
-        curHoldingGunItems = new Dictionary<GunItemData, GameObject>();
+        curGunItems = new HashSet<GunItemData>();
         // 총 데이터 갱신 1 (gunData) & 2 (inventory는 presenter에)
         addGunAction += AddGunData;
     }
@@ -57,7 +56,7 @@ public class GunController : MonoBehaviour, IGun
 
         if (Player.instance.isCombatZone && !Player.instance.isInteraction)
         {
-            if (curHoldingGunItems.Count == 1) return;
+            if (curGunItems.Count == 1) return;
 
             swapTimer -= Time.deltaTime;
             float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
@@ -68,23 +67,26 @@ public class GunController : MonoBehaviour, IGun
         }
     }
 
-    public void AddGunData()
-    {   // 최초 총 세팅
-        addGunAction(baseGunData);
+    public void CheckDuplicateGun(GunItemData item)
+    {   // 중복여부 체크 후 총 추가 작업 수행
+        if (!curGunItems.TryGetValue(item, out GunItemData realItem))
+            addGunAction(item);
     }
 
-    public void AddGunData(GunItemData itemData)
+    public void AddGunData()
+    {   // 최초 총 세팅
+        CheckDuplicateGun(baseGunData);
+    }
+
+    void AddGunData(GunItemData itemData)
     {
-        if (!curHoldingGunItems.TryGetValue(itemData, out GameObject obj))
-        {
-            GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
-            curHoldingGunItems.Add(itemData, _newGunObj);
+        GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
+        curGunItems.Add(itemData);
 
-            _newGunObj.GetComponent<Gun>().initItemData = itemData; // init될때마다 총알 자동 갱신
-            currentIdx = curHoldingGunItems.Count - 1;
+        _newGunObj.GetComponent<Gun>().initItemData = itemData; // init될때마다 총알 자동 갱신
+        currentIdx = curGunItems.Count - 1;
 
-            InitActiveGun();    // 추가된 총으로 UI 갱신
-        }
+        InitActiveGun();    // 추가된 총으로 UI 갱신
     }
 
     void SwapGun(bool up)
@@ -93,14 +95,14 @@ public class GunController : MonoBehaviour, IGun
         if (up)
         {
             currentIdx++;
-            currentIdx %= curHoldingGunItems.Count;
+            currentIdx %= curGunItems.Count;
         }
         else
         {
             currentIdx--;
             if (currentIdx < 0)
-                currentIdx = curHoldingGunItems.Count - 1;
-            currentIdx %= curHoldingGunItems.Count;
+                currentIdx = curGunItems.Count - 1;
+            currentIdx %= curGunItems.Count;
         }
 
         InitActiveGun();

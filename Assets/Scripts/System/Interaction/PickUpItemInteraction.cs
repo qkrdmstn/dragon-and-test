@@ -18,8 +18,8 @@ public class PickUpItemInteraction : Interaction
                 (itemData as EffectItemData)?.ItemEffect();
                 // 인터렉션 데이터의 시퀀스 값에 더해질 effect value를 저장해서 넘겨주는 형태
                 break;
-            case ItemType.Gun:
-                ItemManager.instance.gunController.addGunAction(itemData as GunItemData);
+            case ItemType.Gun:  // 총 데이터 중복 선체크 후추가
+                ItemManager.instance.gunController.CheckDuplicateGun(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();

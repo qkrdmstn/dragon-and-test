@@ -130,7 +130,7 @@ public class ItemManager : MonoBehaviour
     #endregion
 
     #region Gun
-    public void LoadSaveGun(Dictionary<GunItemData, GameObject> saveDatas = null)
+    public void LoadSaveGun(HashSet<GunItemData> saveDatas = null)
     {
         if(saveDatas == null)
         {
@@ -139,7 +139,7 @@ public class ItemManager : MonoBehaviour
         else
         {
             foreach(var data in saveDatas)
-                gunController.addGunAction(data.Key);
+                gunController.CheckDuplicateGun(data);
         }
     }
     #endregion

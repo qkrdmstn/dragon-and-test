@@ -3,12 +3,72 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using static UnityEditor.Progress;
+
+public interface IInventory
+{
+    public void SetInfoUI(ItemData itemData);
+}
 
 [System.Serializable]
-public class InventoryInformation
+public class InventoryInformation : IInventory
 {
     public Image itemImg;
     public TextMeshProUGUI itemTitle, itemDesc;
+
+    public void SetInfoUI(ItemData itemData)
+    {
+        itemImg.sprite = itemData.icon;
+        itemTitle.text = itemData.itemName;
+        itemDesc.text = itemData.itemInfo;
+    }
+}
+
+[System.Serializable]
+public class ItemInventory
+{
+    public GameObject itemSlot;
+    ItemData itemData;
+    Image itemImg;
+    TextMeshProUGUI itemCnt;
+    IInventory inventory; // 인터페이스로 OnPointerDown 함수를 통한 인터페이스 함수 호출
+
+    public void SetItemData(ItemData itemData, IInventory inventory)
+    {
+        itemImg = itemSlot.GetComponent<Image>();
+        itemCnt = itemSlot.GetComponentInChildren<TextMeshProUGUI>();
+        SetEventTrigger();
+
+        this.inventory = inventory;
+        this.itemData = itemData;
+
+        itemImg.sprite = itemData.icon;
+        itemCnt.text = "";
+    }
+
+    void SetEventTrigger()
+    {    // 개별 아이템 슬롯 세팅
+        EventTrigger eventTrigger = itemSlot.AddComponent<EventTrigger>();
+
+        EventTrigger.Entry entry_PointerDown = new EventTrigger.Entry();
+        entry_PointerDown.eventID = EventTriggerType.PointerDown;
+        entry_PointerDown.callback.AddListener((data) => { OnPointerDown((PointerEventData)data); });
+        eventTrigger.triggers.Add(entry_PointerDown);
+    }
+
+    void OnPointerDown(PointerEventData evenData)
+    {
+        if(itemData != null)
+        {
+            inventory.SetInfoUI(itemData);
+        }
+    }
+
+    public ItemData GetItemData()
+    {
+        return itemData;
+    }
 }
 
 public class ItemPresenter : PresenterBase
@@ -27,14 +87,18 @@ public class ItemPresenter : PresenterBase
     public TextMeshProUGUI maxBulletCnt;
 
     // Inventory Section
-    public Transform[] gunInventory;
+    public InventoryInformation itemInfoUI;
+    public List<ItemInventory> gunInventory;
+    int curGunIdx = 0;
+
     public Transform armorInventory;
 
-    public InventoryInformation itemInfoUI;
 
     #region ActionSetting
     void Awake()
     {
+        //gunInventory = new List<ItemInventory> ();
+
         m_Gun.gunAction += UpdateGunSlot;
         m_Gun.gunAction += UpdateBulletSlot;
 
@@ -141,8 +205,9 @@ public class ItemPresenter : PresenterBase
     #region Inventory
     // Gun
     void UpdateGunInventory(GunItemData gunItemData)
-    {
-
+    {   // 이미 중복에 대한 체크가 되고 액션 호출
+        if (curGunIdx > 4) return;
+        gunInventory[curGunIdx++].SetItemData(gunItemData, itemInfoUI);
     }
     #endregion
 

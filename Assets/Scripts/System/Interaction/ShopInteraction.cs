@@ -170,8 +170,8 @@ public class ShopInteraction : Interaction
                 if ((itemData as EffectItemData) != null)
                     (itemData as EffectItemData).ItemEffect();
                 break;
-            case ItemType.Gun:
-                ItemManager.instance.gunController.addGunAction(itemData as GunItemData);
+            case ItemType.Gun:  // 총 데이터 중복 선체크 후추가
+                ItemManager.instance.gunController.CheckDuplicateGun(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();

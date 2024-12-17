@@ -15,7 +15,7 @@ public class PlayerData
     public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
     public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
     public List<HwatuData> hwatus;
-    public Dictionary<GunItemData, GameObject> gunItems;
+    public HashSet<GunItemData> gunItems;
 
     public int money;
     public int curShieldCnt;
@@ -42,7 +42,7 @@ public class PlayerData
         passiveSkill = SkillManager.instance.passive.refSkill;
 
         hwatus = ItemManager.instance.curHoldingHwatuDatas;
-        gunItems = ItemManager.instance.gunController.curHoldingGunItems;
+        gunItems = ItemManager.instance.gunController.curGunItems;
         curShieldCnt = Player.instance.GetCurShield();
 
         isClearTutorial = Player.instance.isClearTutorial;
