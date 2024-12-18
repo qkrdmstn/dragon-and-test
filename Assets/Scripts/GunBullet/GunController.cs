@@ -16,8 +16,8 @@ public class GunController : MonoBehaviour, IGun
     public Transform gunParent;
     public HashSet<GunItemData> curGunItems;
 
-    public Action<GunItemData> addGunAction;    // for data
-    public Action<GunItemData> gunAction;       // for UI
+    public Action<GunItemData> addGunAction;    // for data & inventory
+    public Action<GunItemData> gunAction;       // for cur Gun UI
     public Action<int, int> bulletAction;
     public Action<bool> reloadAction;
 
@@ -67,15 +67,24 @@ public class GunController : MonoBehaviour, IGun
         }
     }
 
-    public void CheckDuplicateGun(GunItemData item)
+    public bool CheckDuplicateGun(GunItemData item)
     {   // 중복여부 체크 후 총 추가 작업 수행
         if (!curGunItems.TryGetValue(item, out GunItemData realItem))
-            addGunAction(item);
+            return false;
+        else return true;
+    }
+
+    public void AddGunAction(GunItemData item)
+    {
+        addGunAction(item);
     }
 
     public void AddGunData()
     {   // 최초 총 세팅
-        CheckDuplicateGun(baseGunData);
+        if (!CheckDuplicateGun(baseGunData))
+        {
+            AddGunAction(baseGunData);
+        }
     }
 
     void AddGunData(GunItemData itemData)

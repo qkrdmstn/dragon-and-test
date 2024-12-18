@@ -67,7 +67,7 @@ public class PlayerPresenter : PresenterBase
     #region SHIELD
     public void AddShield(int amount)
     { 
-        m_Player.IncrementShield(amount);
+        m_Player.ReplaceShield(amount);
     }
     public void ShieldChanged()
     {

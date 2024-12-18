@@ -9,7 +9,8 @@ public enum StateOfBuy
     Nothing,
     YesBuy,
     NoBuy,
-    CantBuy
+    CantBuy,
+    Duplicate
 };
 
 public class ShopInteraction : Interaction
@@ -98,6 +99,9 @@ public class ShopInteraction : Interaction
             case StateOfBuy.CantBuy:
                 curLine = "돈이 부족한 것 같군..\n돈을 더 벌어오도록...";
                 break;
+            case StateOfBuy.Duplicate:
+                curLine = "이미 보유하고 있는 상품이군...\n다른 상품은 어떻나?";
+                break;
         }
 
         dialogueTxt.text = curLine;
@@ -154,6 +158,10 @@ public class ShopInteraction : Interaction
         {   // checkMoney
             state = StateOfBuy.CantBuy;
         }
+        else if (ItemManager.instance.gunController.CheckDuplicateGun(itemData as GunItemData))
+        {
+            state = StateOfBuy.Duplicate;
+        }
         else
         {
             state = StateOfBuy.YesBuy;
@@ -170,12 +178,12 @@ public class ShopInteraction : Interaction
                 if ((itemData as EffectItemData) != null)
                     (itemData as EffectItemData).ItemEffect();
                 break;
-            case ItemType.Gun:  // 총 데이터 중복 선체크 후추가
-                ItemManager.instance.gunController.CheckDuplicateGun(itemData as GunItemData);
+            case ItemType.Gun:
+                ItemManager.instance.gunController.AddGunAction(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
-                InventoryData.instance.AddArmorItem(itemData);
+                ItemManager.instance.AddArmorData(itemData);
                 break;
         }
         Player.instance.refMoney -= itemData.price;

@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
             shield = Mathf.Clamp(value, 0, maxShield);
             actions[(int)StatActionType.Shield].Invoke();
             // if value is zero, Update Inventory UI
+            if (shield <= 0) ItemManager.instance.DeleteArmorData();
         }
     }
     [SerializeField] private float hitDuration = 0.6f;
@@ -165,7 +166,7 @@ public class Player : MonoBehaviour
     public void DecrementHP(int amount) => refCurHp -= amount;
     public void RestoreHP() => refCurHp = maxHP;
 
-    public void IncrementShield(int amount) => refShield += amount;
+    public void ReplaceShield(int amount) => refShield = amount;
 
     public void DecrementShield(int amount) => refShield -= amount;
 

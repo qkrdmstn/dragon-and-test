@@ -33,12 +33,10 @@ public class ItemManager : MonoBehaviour
         }
     }
     public Action hwatuAction;
+    public Action<ItemData> armorAction;
 
     [HideInInspector] public GunController gunController;
-
-    [Header("Holding")]
     public List<HwatuData> curHoldingHwatuDatas;
-    public ItemData armorData;
 
     void Awake()
     {
@@ -139,8 +137,23 @@ public class ItemManager : MonoBehaviour
         else
         {
             foreach(var data in saveDatas)
-                gunController.CheckDuplicateGun(data);
+            {
+                if (!gunController.CheckDuplicateGun(data))
+                    gunController.AddGunAction(data);
+            }
+                
         }
+    }
+    #endregion
+
+    #region Armor
+    public void AddArmorData(ItemData itemData)
+    {
+        armorAction.Invoke(itemData);
+    }
+    public void DeleteArmorData()
+    {
+        armorAction.Invoke(null);
     }
     #endregion
 }

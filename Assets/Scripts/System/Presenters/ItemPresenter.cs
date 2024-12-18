@@ -4,11 +4,11 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 public interface IInventory
 {
     public void SetInfoUI(ItemData itemData);
+    public void ResetInfoUI();
 }
 
 [System.Serializable]
@@ -16,6 +16,21 @@ public class InventoryInformation : IInventory
 {
     public Image itemImg;
     public TextMeshProUGUI itemTitle, itemDesc;
+
+    public Sprite originImg;
+    bool isFirst = true;
+
+    public void ResetInfoUI()
+    {
+        if (isFirst)
+        {
+            originImg = itemImg.sprite;
+            isFirst = false;
+        }
+        else itemImg.sprite = originImg;
+        itemTitle.text = "";
+        itemDesc.text = "";
+    }
 
     public void SetInfoUI(ItemData itemData)
     {
@@ -31,18 +46,24 @@ public class ItemInventory
     public GameObject itemSlot;
     ItemData itemData;
     Image itemImg;
+    Sprite noneItemImg;
+
     TextMeshProUGUI itemCnt;
     IInventory inventory; // 인터페이스로 OnPointerDown 함수를 통한 인터페이스 함수 호출
 
-    public void SetItemData(ItemData itemData, IInventory inventory)
+    public void Init(IInventory inventory)
     {
         itemImg = itemSlot.GetComponent<Image>();
+        noneItemImg = itemImg.sprite;
+        this.inventory = inventory;
+
         itemCnt = itemSlot.GetComponentInChildren<TextMeshProUGUI>();
         SetEventTrigger();
+    }
 
-        this.inventory = inventory;
+    public void SetItemData(ItemData itemData)
+    {
         this.itemData = itemData;
-
         itemImg.sprite = itemData.icon;
         itemCnt.text = "";
     }
@@ -65,9 +86,12 @@ public class ItemInventory
         }
     }
 
-    public ItemData GetItemData()
+    public void DeleteItem()
     {
-        return itemData;
+        itemImg.sprite = noneItemImg;
+        itemData = null;
+
+        inventory?.ResetInfoUI();
     }
 }
 
@@ -91,8 +115,7 @@ public class ItemPresenter : PresenterBase
     public List<ItemInventory> gunInventory;
     int curGunIdx = 0;
 
-    public Transform armorInventory;
-
+    public ItemInventory armorInventory;
 
     #region ActionSetting
     void Awake()
@@ -104,12 +127,25 @@ public class ItemPresenter : PresenterBase
 
         m_Gun.reloadAction += UpdateReloadUI;
         m_Gun.bulletAction += UpdateBulletSlot;
-        m_Item.hwatuAction += HwatuCntChanged; // item presenter로 이전 필요
+
+        m_Item.hwatuAction += HwatuCntChanged;
+        m_Item.armorAction += UpdateArmorInventory;
     }
 
     void Start()
     {
         m_Gun.addGunAction += UpdateGunInventory;
+
+        InitInventoryDatas();
+    }
+
+    void InitInventoryDatas()
+    {
+        foreach(ItemInventory data in gunInventory)
+        {
+            data.Init(itemInfoUI);
+        }
+        armorInventory.Init(itemInfoUI);
     }
 
     void OnDestroy()
@@ -119,7 +155,9 @@ public class ItemPresenter : PresenterBase
 
         m_Gun.reloadAction -= UpdateReloadUI;
         m_Gun.bulletAction -= UpdateBulletSlot;
+
         m_Item.hwatuAction -= HwatuCntChanged;
+        m_Item.armorAction -= UpdateArmorInventory;
     }
     #endregion
 
@@ -206,8 +244,17 @@ public class ItemPresenter : PresenterBase
     // Gun
     void UpdateGunInventory(GunItemData gunItemData)
     {   // 이미 중복에 대한 체크가 되고 액션 호출
-        if (curGunIdx > 4) return;
-        gunInventory[curGunIdx++].SetItemData(gunItemData, itemInfoUI);
+        if (curGunIdx > 3) return;
+        gunInventory[curGunIdx++].SetItemData(gunItemData);
+    }
+    // Armor
+    void UpdateArmorInventory(ItemData armorItemData)
+    {   // 방어구가 대체되는 구조 - 하나만 보유 가능
+        if(armorItemData == null)
+        {   // delete armor data
+            armorInventory.DeleteItem();
+        }
+        else armorInventory.SetItemData(armorItemData);
     }
     #endregion
 
