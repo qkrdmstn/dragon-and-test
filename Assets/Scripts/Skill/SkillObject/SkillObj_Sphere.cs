@@ -61,8 +61,18 @@ public class SkillObj_Sphere : SkillObject
             return;
 
         MonsterBase monster = collision.GetComponent<MonsterBase>();
-        monster.SetSlowSpeed(slowScale);
+        if (!monster.statusEffectsFlag.rooted && !monster.statusEffectsFlag.stun)
+            monster.SetSlowSpeed(slowScale);
+    }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("Monster"))
+            return;
+
+        MonsterBase monster = collision.GetComponent<MonsterBase>();
+        if (!monster.statusEffectsFlag.rooted && !monster.statusEffectsFlag.stun)
+            monster.SetSlowSpeed(slowScale);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -71,7 +81,8 @@ public class SkillObj_Sphere : SkillObject
             return;
 
         MonsterBase monster = collision.GetComponent<MonsterBase>();
-        monster.SetNormalSpeed();
+        if (!monster.statusEffectsFlag.rooted && !monster.statusEffectsFlag.stun)
+            monster.SetNormalSpeed();
     }
     private void Update()
     {

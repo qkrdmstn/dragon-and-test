@@ -23,7 +23,7 @@ public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
         base.Enter();
 
         monster.SetSpeed(0.0f);
-        attackCoroutine = monster.StartCoroutine(Shoot());
+        attackCoroutine = monster.StartCoroutine(Attack());
     }
 
     public override void Update()
@@ -37,8 +37,20 @@ public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
         monster.SetSpeed(monster.moveSpeed);
     }
 
-    IEnumerator Shoot()
+    IEnumerator Attack()
     {
+        //Dash Start
+        Vector3 dir = player.transform.position - monster.transform.position;
+        dir.Normalize();
+
+        monster.rb.velocity = (dir * monster.dashSpeed);
+        float dashDuration = monster.dashDist / monster.dashSpeed;
+        yield return new WaitForSeconds(dashDuration);
+
+        //Dash end
+        monster.SetSpeed(0.0f);
+
+        //Shoot
         for (int i = 0; i < monster.waveNum; i++)
         {
             for (int j = 0; j < monster.bulletNumPerWave; j++)

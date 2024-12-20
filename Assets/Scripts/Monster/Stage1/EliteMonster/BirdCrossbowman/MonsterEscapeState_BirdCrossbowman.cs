@@ -18,7 +18,11 @@ public class MonsterEscapeState_BirdCrossbowman : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SetSpeed(monster.escapeSpeed);
+        if (!monster.statusEffectsFlag.rooted) //속박 시 속도 변화 x
+            monster.SetSpeed(monster.escapeSpeed);
+        else
+            monster.SetSpeed(0);
+
         timer = 0.0f;
     }
 

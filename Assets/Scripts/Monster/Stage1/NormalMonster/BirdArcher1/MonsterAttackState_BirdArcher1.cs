@@ -53,6 +53,7 @@ public class MonsterAttackState_BirdArcher1 : MonsterAttackStateBase
 
             yield return new WaitForSeconds(monster.shootDelay);
         }
+
         yield return new WaitForSeconds(monster.reloadDelay);
 
         float dist = Vector3.Distance(monster.transform.position, player.transform.position);

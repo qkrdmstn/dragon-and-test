@@ -208,7 +208,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b1fbd0ad2981dbf4f93e7fd913a91493, type: 3}
-  m_Color: {r: 1, g: 0.28490567, b: 0.28490567, a: 1}
+  m_Color: {r: 1, g: 0.41147527, b: 0.28627455, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -272,11 +272,26 @@ MonoBehaviour:
   moveSpeed: 2
   moneyRange: {x: 3, y: 5}
   monsterType: 0
+  effectiveStatusEffects:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
+  statusEffectsFlag:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
   haveAnim: 0
   spawnDuration: 1
   deadDuration: 0.6
   chaseDist: 20
   attackDist: 5
+  isStateChangeable: 0
   attackCoolTime: 0.5
   rageSpeed: 6
   attackRangeObject: {fileID: 1354757771744244835}

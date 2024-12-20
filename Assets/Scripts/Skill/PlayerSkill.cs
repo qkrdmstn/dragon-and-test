@@ -81,7 +81,7 @@ public class PlayerSkill : MonoBehaviour
                 coolTime = GuidedMissile(data.TransStringToEnum(), data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT8:
-                coolTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
+                coolTime = VineSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT7:
                 coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
@@ -93,7 +93,7 @@ public class PlayerSkill : MonoBehaviour
                 coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT4:
-                coolTime = SokbakSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.coolTime);
+                coolTime = VineSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT3:
                 coolTime = FlameThrower(data.TransStringToEnum(), data.damage, data.duration, data.period, data.coolTime);
@@ -213,7 +213,7 @@ public class PlayerSkill : MonoBehaviour
     #endregion
 
     #region Sokbak
-    private float SokbakSkill(SeotdaHwatuCombination code, int damage, float dist, float projectileSpeed, float coolTime)
+    private float VineSkill(SeotdaHwatuCombination code, int damage, float dist, float projectileSpeed, float rootedDuration, float coolTime)
     {
         //방위
         //int[] dx = { 0, 1, 0, -1, -1, 1, 1, -1 };
@@ -228,9 +228,9 @@ public class PlayerSkill : MonoBehaviour
 
         GameObject prefabs = skillObjDictionary[code];
         GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.Euler(0, 0, theta));
-        SkillObj_Projectile projectile = projectilObj.GetComponent<SkillObj_Projectile>();
+        SkillObj_Vine projectile = projectilObj.GetComponent<SkillObj_Vine>();
         Debug.Log(projectile);
-        projectile.Initialize(damage, dist, dir, projectileSpeed);
+        projectile.Initialize(damage, dist, dir, projectileSpeed, rootedDuration);
 
         return coolTime;
     }
