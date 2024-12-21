@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI.Table;
+using Random = UnityEngine.Random;
 
 public enum MonsterTypes
 {
@@ -10,11 +13,25 @@ public enum MonsterTypes
     boss
 }
 
-public enum StatusEffects
+[Serializable]
+public struct MonsterStatusEffectsFlag
 {
-    slow,
-    sokbak,
-    sturn
+    public bool knockback; //넉백
+    public bool slow; //슬로우
+    public bool dotDamage; //도트
+    public bool rooted; //속박
+    public bool stun; //기절
+    public bool reverse; //이동상태 변경
+
+    public void InitStatusEffect()
+    {
+        knockback = false;
+        slow = false;
+        dotDamage = false;
+        rooted = false;
+        stun = false;
+        reverse = false;
+    }
 }
 
 public class MonsterBase : MonoBehaviour
@@ -34,6 +51,8 @@ public class MonsterBase : MonoBehaviour
 
     [Header("Monster Info")]
     public MonsterTypes monsterType;
+    [SerializeField] public MonsterStatusEffectsFlag effectiveStatusEffects; //이 몬스터에게 효과가 있는 상태이상
+    [SerializeField] public MonsterStatusEffectsFlag statusEffectsFlag; //몬스터가 영향 받는 중인 상태이상 flag
 
     [Header("Anim Info")]
     public bool haveAnim = false;
@@ -63,6 +82,9 @@ public class MonsterBase : MonoBehaviour
     public MonsterIdleStateBase idleState;
     public MonsterChaseStateBase chaseState;
     public MonsterDeadStateBase deadState;
+
+    public bool isStateChangeable; //state 변경 방지
+
     #endregion
 
     protected virtual void Awake()
@@ -85,7 +107,8 @@ public class MonsterBase : MonoBehaviour
 
     public virtual void InitStates()
     {
-        stateMachine = new MonsterStateMachine();
+        stateMachine = new MonsterStateMachine(this);
+        isStateChangeable = true;
     }
 
     public virtual void InitComponents()
@@ -100,6 +123,8 @@ public class MonsterBase : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
+        statusEffectsFlag.InitStatusEffect();
+
         dropItemPrefabs = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
         moneyPrefab = Resources.Load<GameObject>("Prefabs/Item/Money");
     }
@@ -107,6 +132,16 @@ public class MonsterBase : MonoBehaviour
     protected virtual void Update()
     {
         stateMachine.currentState.Update();
+
+        if(Input.GetKeyDown(KeyCode.H) && !statusEffectsFlag.rooted)
+        {
+            Rooted(0.1f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y) && !statusEffectsFlag.stun)
+        {
+            Stun(0.2f);
+        }
     }
 
     public void SetSpeed(float speed)
@@ -129,8 +164,6 @@ public class MonsterBase : MonoBehaviour
     public Direction CheckDir()
     {
         Vector3 dir = player.transform.position - transform.position;
-        Debug.Log(player);
-        Debug.Log(monsterAnimController);
         return monsterAnimController.FindDirToPlayer(dir);
     }
 
@@ -145,28 +178,126 @@ public class MonsterBase : MonoBehaviour
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
     }
 
-    //넉백
-    public virtual void Knockback(Vector2 dir, float vel)
+    #region Status Effect Func
+    #region Knockback
+    Coroutine knockbackVal;
+    public void Knockback(Vector2 dir, float mag)
     {
-        //if (!isKnockedBack)
-        //{
-        //    isKnockedBack = true;
-        //    knockbackTimer = 0.0f;
-        //    dir.Normalize();
-        //    knockbackVel = vel * dir;
-        //    rigidBody.velocity = knockbackVel;
-        //    //rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
-        //    //rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
-        //}
+        if (!effectiveStatusEffects.knockback)
+            return;
+
+        if (knockbackVal != null) //실행 중인 넉백 중단
+            StopCoroutine(knockbackVal);
+
+        knockbackVal = StartCoroutine(KnockbackCoroutine(dir, mag));
     }
 
+    IEnumerator KnockbackCoroutine(Vector2 dir, float mag)
+    {
+        statusEffectsFlag.knockback = true;
+
+        //넉백 도중 Idle State 고정
+        if(!statusEffectsFlag.stun) //이미 기절 상태라면 idle 상태로 변경할 필요 없음
+        {
+            isStateChangeable = true;
+            stateMachine.ChangeState(idleState);
+            isStateChangeable = false;
+        }
+
+        float knockbackTimer = 0.0f;
+        dir.Normalize();
+
+        while (true)
+        {
+            knockbackTimer += Time.deltaTime;
+            yield return null;
+
+            //Rigidbody based knockback
+            //Exponantial
+            mag = mag * Mathf.Exp(-0.1f * knockbackTimer);
+            rb.velocity = mag * dir;
+            if (rb.velocity.magnitude <= 0.1f)
+            {
+                rb.velocity = Vector2.zero;
+                statusEffectsFlag.knockback = false;
+
+                //state 고정 해제
+                if (!statusEffectsFlag.stun) //기절 상태일 경우 state 변환 X
+                {
+                    isStateChangeable = true;
+                    stateMachine.ChangeState(idleState);
+                }
+                break;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Slow
+
+    //속도 변화 몬스터가 있는 경우 사용
+    //public void SetSlowSpeed(float scale)
+    //{
+    //    if (!effectiveStatusEffects.slow)
+    //        return;
+
+    //    if ((agent.speed <= tempMoveSpeed - tempMoveSpeed * scale)) //이미 더 강력한 slow 효과를 받고 있을 경우
+    //        return;
+
+    //    if (!statusEffectsFlag.slow) //Slow 효과가 적용된 속도는 저장 X
+    //        tempMoveSpeed = agent.speed; //원래 속도 저장
+
+    //    agent.speed = moveSpeed - moveSpeed * scale; //slow 효과 적용
+    //    statusEffectsFlag.slow = true;
+    //}
+
+    //public void SetNormalSpeed()
+    //{
+    //    if (!effectiveStatusEffects.slow)
+    //        return;
+
+    //    agent.speed = tempMoveSpeed; //속도 복구
+    //    statusEffectsFlag.slow = false;
+    //}
+
+    //속도 변화 몬스터 X 경우 사용 (광전사는 면역)
+
+    public void SetSlowSpeed(float scale)
+    {
+        if (!effectiveStatusEffects.slow)
+            return;
+
+        if ((agent.speed <= moveSpeed - moveSpeed * scale)) //이미 더 강력한 slow 효과를 받고 있을 경우
+            return;
+
+        SetSpeed(moveSpeed - moveSpeed * scale); //slow 효과 적용
+        statusEffectsFlag.slow = true;
+    }
+
+    public void SetNormalSpeed()
+    {
+        if (!effectiveStatusEffects.slow)
+            return;
+
+        SetSpeed(moveSpeed); //속도 복구
+        statusEffectsFlag.slow = false;
+    }
+    #endregion
+
+    #region Dot Damage
     public void DotDamage(float duration, float interval, int perDamage)
     {
+        if (!effectiveStatusEffects.dotDamage)
+            return;
+
         StartCoroutine(DotDamageCoroutine(duration, interval, perDamage));
     }
 
     IEnumerator DotDamageCoroutine(float duration, float interval, int perDamage)
     {
+        statusEffectsFlag.dotDamage = true;
+
         float timer = interval;
         while (duration >= 0.0f)
         {
@@ -180,21 +311,91 @@ public class MonsterBase : MonoBehaviour
                 SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
             }
         }
-    }
 
-    public void SetNormalSpeed()
-    {
-        agent.speed = tempMoveSpeed;
+        statusEffectsFlag.dotDamage = false;
     }
+    #endregion
 
-    public void SetSlowSpeed(float scale)
+    #region Rooted
+    Coroutine rootedVal;
+    public void Rooted(float duration)
     {
-        if (agent.speed <= tempMoveSpeed - tempMoveSpeed * scale)
+        if (!effectiveStatusEffects.rooted)
             return;
-        tempMoveSpeed = agent.speed;
-        agent.speed = moveSpeed - moveSpeed * scale;
+        if (rootedVal != null) //실행 중인 속박 중단
+            StopCoroutine(rootedVal);
+
+        rootedVal = StartCoroutine(RootedCoroutine(duration));
     }
 
+    IEnumerator RootedCoroutine(float duration)
+    {
+        statusEffectsFlag.rooted = true;
+        SetSpeed(0);
+
+        yield return new WaitForSeconds(duration);
+
+        statusEffectsFlag.rooted = false;
+        if(!statusEffectsFlag.slow && !statusEffectsFlag.stun)
+            SetSpeed(moveSpeed);
+    }
+    #endregion
+
+    #region Stun
+    Coroutine stunVal;
+    public void Stun(float duration)
+    {
+        if (!effectiveStatusEffects.stun)
+            return;
+
+        if (stunVal != null) //실행 중인 기절 중단
+            StopCoroutine(stunVal);
+
+        stunVal = StartCoroutine(StunCoroutine(duration));
+    }
+
+    IEnumerator StunCoroutine(float duration)
+    {
+        statusEffectsFlag.stun = true;
+        if(!statusEffectsFlag.knockback) //이미 넉백 중이라면 굳이 상태를 바꿀 필요 없음
+        {
+            stateMachine.ChangeState(idleState);
+            isStateChangeable = false;
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        statusEffectsFlag.stun = false;
+        if(!statusEffectsFlag.knockback)
+            isStateChangeable = true;
+    }
+    #endregion
+
+    #region Reverse
+    Coroutine reverseVal;
+    public void Reverse(float duration)
+    {
+        if (!effectiveStatusEffects.reverse)
+            return;
+
+        if (reverseVal != null) //실행 중인 reverse 중단
+            StopCoroutine(reverseVal);
+
+        reverseVal = StartCoroutine(ReverserCoroutine(duration));
+    }
+
+    public IEnumerator ReverserCoroutine(float duration)
+    {
+        statusEffectsFlag.reverse = true;
+
+        yield return new WaitForSeconds(duration);
+
+        statusEffectsFlag.reverse = false;
+    }
+    #endregion
+    #endregion
+
+    #region Drop Item
     //아이템 드랍
     public void ItemDrop()
     {
@@ -244,6 +445,8 @@ public class MonsterBase : MonoBehaviour
         }
     }
 
+    #endregion
+
     public bool IsEffectSpawner()
     {
         if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Boss_1 || SceneManager.GetActiveScene().name == "BossTest" || monsterType == MonsterTypes.boss)
@@ -251,11 +454,4 @@ public class MonsterBase : MonoBehaviour
         else
             return true;
     }
-
-    ////Temp OnDamaged Func
-    //protected virtual void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Bullet"))
-    //        OnDamaged(1);
-    //}
 }

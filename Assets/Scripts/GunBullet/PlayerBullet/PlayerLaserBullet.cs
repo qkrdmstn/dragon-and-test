@@ -158,12 +158,21 @@ public class PlayerLaserBullet : MonoBehaviour
             randomVal = Random.Range(0.0f, 1.0f);
             if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Prob)
             {
-                //To do. 기절 추가
+                monster.Stun(gpp19Data.duration);
             }
 
             Vector2 dir = this.transform.position - Player.instance.transform.position;
             dir.Normalize();
             monster.Knockback(dir, knockbackForce);
+        }
+
+        //멍텅구리 구사
+        SkillDB mtgr94Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.MTGR94);
+        float mtgr94Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.MTGR94);
+        randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.MTGR94) && randomVal <= mtgr94Prob)
+        {
+            monster.Reverse(mtgr94Data.duration);
         }
     }
 }

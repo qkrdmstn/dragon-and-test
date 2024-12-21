@@ -126,11 +126,26 @@ MonoBehaviour:
   moveSpeed: 3
   moneyRange: {x: 10, y: 13}
   monsterType: 1
+  effectiveStatusEffects:
+    knockback: 1
+    slow: 1
+    dotDamage: 1
+    rooted: 1
+    stun: 1
+    reverse: 1
+  statusEffectsFlag:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
   haveAnim: 0
   spawnDuration: 1
   deadDuration: 0.6
   chaseDist: 20
   attackDist: 10
+  isStateChangeable: 0
   waveNum: 3
   bulletNumPerWave: 10
   waveInterval: 1
@@ -140,7 +155,7 @@ MonoBehaviour:
   escapeDist: 7
   escapeSpeed: 5
   escapeAngleOffset: 50
-  escapeDirChangePeiord: {x: 0.5, y: 2}
+  escapeDirChangePeriod: {x: 0, y: 0}
 --- !u!195 &6700261608665259595
 NavMeshAgent:
   m_ObjectHideFlags: 0

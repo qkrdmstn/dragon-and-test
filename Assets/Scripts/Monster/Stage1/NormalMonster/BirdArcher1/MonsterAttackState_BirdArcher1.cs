@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class MonsterAttackState_BirdArcher1 : MonsterState
+public class MonsterAttackState_BirdArcher1 : MonsterAttackStateBase
 {
     protected new BirdArcher1 monster;
     private MonsterAnimController monsterAnimController;
@@ -23,7 +23,7 @@ public class MonsterAttackState_BirdArcher1 : MonsterState
         base.Enter();
 
         monster.SetSpeed(0.0f);
-        monster.StartCoroutine(Shoot());
+        attackCoroutine = monster.StartCoroutine(Shoot());
     }
 
     public override void Update()
@@ -53,6 +53,7 @@ public class MonsterAttackState_BirdArcher1 : MonsterState
 
             yield return new WaitForSeconds(monster.shootDelay);
         }
+
         yield return new WaitForSeconds(monster.reloadDelay);
 
         float dist = Vector3.Distance(monster.transform.position, player.transform.position);

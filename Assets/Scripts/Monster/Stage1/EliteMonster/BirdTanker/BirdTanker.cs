@@ -12,6 +12,8 @@ public class BirdTanker : MonsterBase
     public float waveInterval = 1.0f;
     public float bulletSpeed = 6.0f;
     public float reloadDelay = 1.0f;
+    public float dashSpeed = 8.0f;
+    public float dashDist = 1.5f;
 
     #region Addtional States
     public MonsterAttackState_BirdTanker attackState;
