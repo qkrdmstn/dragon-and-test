@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Boss : MonsterBase
 {
-    public bool isDead = false;
     private BossHPUI bossHPUI;
 
     protected override void Awake()
