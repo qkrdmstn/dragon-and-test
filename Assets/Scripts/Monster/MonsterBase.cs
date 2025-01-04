@@ -39,6 +39,7 @@ public class MonsterBase : MonoBehaviour
     [Header("Life info")]
     public int curHP = 10;
     public int maxHP = 10;
+    public bool isDead;
 
     [Header("Move info")]
     public float moveSpeed;
@@ -183,7 +184,7 @@ public class MonsterBase : MonoBehaviour
     Coroutine knockbackVal;
     public void Knockback(Vector2 dir, float mag)
     {
-        if (!effectiveStatusEffects.knockback)
+        if (!effectiveStatusEffects.knockback || isDead)
             return;
 
         if (knockbackVal != null) //실행 중인 넉백 중단
@@ -222,7 +223,7 @@ public class MonsterBase : MonoBehaviour
                 statusEffectsFlag.knockback = false;
 
                 //state 고정 해제
-                if (!statusEffectsFlag.stun) //기절 상태일 경우 state 변환 X
+                if (!statusEffectsFlag.stun || !isDead) //기절 or 사망 상태일 경우 state 변환 X
                 {
                     isStateChangeable = true;
                     stateMachine.ChangeState(idleState);
@@ -320,7 +321,7 @@ public class MonsterBase : MonoBehaviour
     Coroutine rootedVal;
     public void Rooted(float duration)
     {
-        if (!effectiveStatusEffects.rooted)
+        if (!effectiveStatusEffects.rooted || isDead)
             return;
         if (rootedVal != null) //실행 중인 속박 중단
             StopCoroutine(rootedVal);
@@ -345,7 +346,7 @@ public class MonsterBase : MonoBehaviour
     Coroutine stunVal;
     public void Stun(float duration)
     {
-        if (!effectiveStatusEffects.stun)
+        if (!effectiveStatusEffects.stun || isDead)
             return;
 
         if (stunVal != null) //실행 중인 기절 중단
@@ -375,7 +376,7 @@ public class MonsterBase : MonoBehaviour
     Coroutine reverseVal;
     public void Reverse(float duration)
     {
-        if (!effectiveStatusEffects.reverse)
+        if (!effectiveStatusEffects.reverse || isDead)
             return;
 
         if (reverseVal != null) //실행 중인 reverse 중단
