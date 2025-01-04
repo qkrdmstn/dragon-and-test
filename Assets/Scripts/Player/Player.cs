@@ -56,14 +56,16 @@ public class Player : MonoBehaviour
     public float dashDuration = 0.58f;
     public float dashExpCoefficient = -3.5f;
 
+    [Header("Position info")]
+    public Queue<Vector2> positionHistoryQueue = new Queue<Vector2>();
+    public int positionHistoryQueueSize;
+    public float positionSaveInterval;
+    public float positionSaveTimer;
+
     [Header("Knockback info")]
     public Vector2 knockbackDir;
     public float knockbackMagnitude;
     public float knockbackExpCoefficient = -0.1f;
-
-    [Header("Knockback Tempinfo")]
-    public Vector2 knockbackDi2;
-    public float knockbackMagnitude2;
 
     [Header("Gun info")]
     public Gun gun;
@@ -154,9 +156,6 @@ public class Player : MonoBehaviour
             gunParent.gameObject.SetActive(true);
         else if (!isCombatZone && gunParent.gameObject.activeSelf)
             gunParent.gameObject.SetActive(false);
-
-        if (Input.GetKeyDown(KeyCode.L))
-            PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
     }
 
     public void IncrementHP(int amount) => refCurHp += amount;
@@ -362,6 +361,7 @@ public class Player : MonoBehaviour
             case SceneInfo.Boss_1:      // 7
                 isAttackable = true;
                 isCombatZone = true;
+                InitPositionHistoryQueue();
                 break;
         }
 
@@ -380,5 +380,37 @@ public class Player : MonoBehaviour
 
         isStateChangeable = !state;
         isAttackable = !state;
+    }
+
+    public void InitPositionHistoryQueue()
+    {
+        positionHistoryQueue.Clear();
+    }
+
+    public void PositionHistorySave()
+    {
+        if (isCombatZone && !isFall)
+        {
+            if (positionHistoryQueue.Count >= positionHistoryQueueSize) //오래된 위치값 제거
+                positionHistoryQueue.Dequeue();
+
+            //현재 위치 저장(블록 내의 격자 값)
+            positionHistoryQueue.Enqueue(this.transform.position);
+
+            //Queue Draw
+            Vector2[] arr = positionHistoryQueue.ToArray();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Vector2 recoveryPosition = arr[i];
+                Vector3 v1 = recoveryPosition + new Vector2(-1.0f, -1.0f) / 2.0f;
+                Vector3 v2 = recoveryPosition + new Vector2(1.0f, -1.0f) / 2.0f;
+                Vector3 v3 = recoveryPosition + new Vector2(-1.0f, 1.0f) / 2.0f;
+                Vector3 v4 = recoveryPosition + new Vector2(1.0f, 1.0f) / 2.0f;
+                Debug.DrawLine(v1, v2, Color.green, 1.0f);
+                Debug.DrawLine(v1, v3, Color.green, 1.0f);
+                Debug.DrawLine(v2, v4, Color.green, 1.0f);
+                Debug.DrawLine(v3, v4, Color.green, 1.0f);
+            }
+        }
     }
 }
