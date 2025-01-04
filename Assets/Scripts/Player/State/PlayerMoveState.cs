@@ -15,6 +15,7 @@ public class PlayerMoveState : PlayerState
         base.Enter();
 
         moveSpeed = player.ClacSpeed(player.moveSpeed);
+        stateTimer = player.positionSaveInterval;
     }
 
     public override void Exit()
@@ -49,5 +50,12 @@ public class PlayerMoveState : PlayerState
         player.animController.SetAnim(PlayerAnimState.Run, xInput, yInput);
 
         SoundManager.instance.PlayWalkEffect();
+
+        //Position Save
+        if(stateTimer < 0.0f)
+        {
+            stateTimer = player.positionSaveInterval;
+            player.PositionHistorySave();
+        }
     }
 }
