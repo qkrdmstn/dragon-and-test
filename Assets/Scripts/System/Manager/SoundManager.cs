@@ -200,4 +200,9 @@ public class SoundManager : MonoBehaviour
             break;
         }
     }
+
+    public void PlayClickEffect()
+    {
+        SetEffectSound(SoundType.UI, UISfx.Click);
+    }
 }

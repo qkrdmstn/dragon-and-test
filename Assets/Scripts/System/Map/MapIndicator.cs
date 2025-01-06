@@ -181,8 +181,8 @@ public class MapIndicator : MonoBehaviour
 
     public void SwitchMapPanel(bool state) => transform.parent.gameObject.SetActive(state);
     public void UpdateMoneyPos(bool state)
-    {
-        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
+    {   // playerPresenter의 money UI
+        UIManager.instance.presenters[0].objs[1].GetComponent<RectTransform>().anchoredPosition
         = state ? activePosforMoney : inactivePosforMoney;
     }
 
@@ -252,8 +252,8 @@ public class MapIndicator : MonoBehaviour
     }
 
     void OnDestroy()
-    {
-        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
+    {   // playerPresenter의 money UI
+        UIManager.instance.presenters[0].objs[1].GetComponent<RectTransform>().anchoredPosition
                 = inactivePosforMoney;
     }
 

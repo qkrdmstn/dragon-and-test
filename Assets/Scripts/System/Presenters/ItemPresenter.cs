@@ -83,6 +83,7 @@ public class ItemInventory
         if(itemData != null)
         {
             inventory.SetInfoUI(itemData);
+            SoundManager.instance.PlayClickEffect();
         }
     }
 
