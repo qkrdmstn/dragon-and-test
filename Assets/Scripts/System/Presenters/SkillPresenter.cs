@@ -192,4 +192,14 @@ public class SkillPresenter : PresenterBase
         m_Skill.ClearCoolTimer(slot, originTime); // slot에 대한 스킬 현재 쿨타임 초기화
     }
     #endregion
+
+    public override bool ActivateEachUI()
+    {
+        if(!base.ActivateEachUI())
+        {   // UI기 켜져야하는 배틀, 튜토리얼, 보스, 퍼즐씬
+            objs[1].SetActive(true);    // skillslot
+            objs[2].SetActive(true);    // hwatu
+        }
+        return true;
+    }
 }

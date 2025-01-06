@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
     {
         isDead = true;
         GameManager.instance.SetTimeScale(0f);
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
+        UIManager.instance.SceneUI["Dead"].SetActive(true);
     }
 
     public void ReloadPlayer()

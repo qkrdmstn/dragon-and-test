@@ -18,7 +18,7 @@ public enum SceneInfo
 [System.Serializable]
 public struct UIState
 {
-    public UI myUI;
+    public PresenterType myUI;
     public bool state;
 }
 
@@ -26,7 +26,6 @@ public struct UIState
 public class SceneInfos
 {
     public SceneInfo myScene;
-    public UIState[] curSceneUIState;
     public int loadDBcnt;   // 각 씬마다 로드될 DB가 다 불러와지면 ++되고 지정한 숫자가 되면 fadeOut됩니다
 }
 
@@ -98,19 +97,14 @@ public class ScenesManager : MonoBehaviour
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
         Player.instance.InitbySceneLoaded(_sceneInfo);
 
-        foreach(UIState ui in sceneInfos[(int)_sceneInfo].curSceneUIState)
+        foreach(PresenterBase prestner in UIManager.instance.presenters)
         {
-            ManageActiveUI(ui.myUI.ToString(), ui.state);
+            prestner.ActivateEachUI();
         }
 
         //if(_sceneInfo != SceneInfo.Start && GunManager.instance.gunParent == null)
         //    GunManager.instance.Initialize();
         isLoading = false;
-    }
-
-    void ManageActiveUI(string name, bool state)
-    {
-        UIManager.instance.SceneUI[name].SetActive(state);
     }
 
     public bool IsCompletedLoadData(int curScene)

@@ -110,4 +110,14 @@ public class PlayerPresenter : PresenterBase
         moneyText.text = "X " + m_Player.refMoney;
     }
     #endregion
+
+    public override bool ActivateEachUI()
+    {
+        if (!base.ActivateEachUI())
+        {   // UI기 켜져야하는 배틀, 튜토리얼, 보스, 퍼즐씬
+            objs[0].SetActive(true);    // hp & shield
+            objs[1].SetActive(true);    // money
+        }
+        return true;
+    }
 }

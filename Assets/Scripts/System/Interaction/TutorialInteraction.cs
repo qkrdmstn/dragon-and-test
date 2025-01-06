@@ -170,7 +170,7 @@ public class TutorialInteraction : Interaction
         Player.instance.isClearTutorial = true;
         ItemManager.instance.gunController.GetCurGunComponent().ResetBulletCnt();
 
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(true);
+        //UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[1].transform.parent.gameObject.SetActive(true); //?
     }
 
     public GameObject GetCurScarescrowObj() => curScarescrowState.scareScrow;
@@ -312,8 +312,8 @@ public class TutorialInteraction : Interaction
                     Player.instance.ChangePlayerInteractionState(true);
 
                     tutorialUIGroup.SwitchAnim("isSkillInfo", true);
-                    materialHwatuSlotUIs = UIManager.instance.SceneUI["Battle_1"].GetComponentsInChildren<MaterialHwatuSlotUI>();
-                    foreach(MaterialHwatuSlotUI material in materialHwatuSlotUIs)
+                    materialHwatuSlotUIs =   UIManager.instance.presenters[(int)PresenterType.Skill].objs[0].GetComponentsInChildren<MaterialHwatuSlotUI>(); //모포에 생성된 화투패들 소집
+                    foreach (MaterialHwatuSlotUI material in materialHwatuSlotUIs)
                     {
                         material.isSelected = true;
                     }
@@ -524,7 +524,7 @@ public class TutorialInteraction : Interaction
         {
             tutorialUIGroup.SwitchAnim("isOpenJokbo", false);
 
-            UIManager.instance.SceneUI["Battle_1"].SetActive(false);
+            //UIManager.instance.SceneUI["Battle_1"].SetActive(false);
             UIManager.instance.SceneUI["Inventory"].SetActive(false);
             jokboUIGroup.isPossibleJokbo = false; // 족보 관련 대화 종료까지는 족보 닫기 불가
             return true;
@@ -538,7 +538,7 @@ public class TutorialInteraction : Interaction
         if (isHwatuMonster)
         {
             isHwatuMonster = false;
-            UIManager.instance.SceneUI["Battle_1"].SetActive(true);
+            //UIManager.instance.SceneUI["Battle_1"].SetActive(true);
             UIManager.instance.SceneUI["Inventory"].SetActive(true);
 
             monsters[(int)TutorialMonsters.hwatu12].monster.SetActive(true);
@@ -596,7 +596,7 @@ public class TutorialInteraction : Interaction
         if(UIManager.instance.curOpenUI.Count == 1) isBlanket = true;
         else if(UIManager.instance.curOpenUI.Count > 1) isBlanket = false;
 
-        if (!isLoadSkillMonster && !UIManager.instance.SceneUI["Battle_1"].GetComponent<UIGroup>().childUI[5].activeSelf)
+        if (!isLoadSkillMonster && !UIManager.instance.GetPresentersUIState(PresenterType.Skill, 0))
         {   // 모포가 꺼지면 몬스터 소환
             isLoadSkillMonster = true;
             

@@ -23,7 +23,8 @@ public class BlanketInteraction : Interaction
     private void Start()
     {
         //UI Info Init
-        GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
+        //GameObject blanketUIObject = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5];
+        GameObject blanketUIObject = UIManager.instance.presenters[1].objs[0];
         blanketUI = blanketUIObject.GetComponent<BlanketUI>();
 
         //Transform Info Init

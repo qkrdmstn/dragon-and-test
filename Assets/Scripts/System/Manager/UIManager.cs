@@ -6,16 +6,16 @@ using UnityEngine;
 
 public enum UI
 {
-    Battle_1, Dialogue, Inventory, GameExit
+    Dead, Dialogue, Inventory, GameExit
 }
 
 public enum PresenterType
 {
-    Player, Skill, 
+    Player, Skill, Item
 }
 
 public class UIManager : MonoBehaviour
-{ 
+{
     public static UIManager instance = null;
     public GameObject fadeObj;
     public Fade fade;
@@ -23,9 +23,9 @@ public class UIManager : MonoBehaviour
     public bool isFading = false;
 
     public List<PresenterBase> presenters;
-
     public SerializableDictionary<string, GameObject> SceneUI;
     public Stack<GameObject> curOpenUI;
+
     public bool isClose = false;
     GameObject gameExit;
     TextMeshProUGUI exitDesc;
@@ -55,9 +55,9 @@ public class UIManager : MonoBehaviour
         if (isFading && isEndFade)
             SetFadeObjState(false);
 
-        if (!Player.instance.isDead && !Player.instance.isTutorial && Input.GetKeyDown(KeyCode.Escape)) 
+        if (!Player.instance.isDead && !Player.instance.isTutorial && Input.GetKeyDown(KeyCode.Escape))
         {
-            if(curOpenUI.Count == 0)
+            if (curOpenUI.Count == 0)
             {
                 int curScene = ScenesManager.instance.GetSceneNum();
                 if (isFading || curScene == 0 || curScene == 3) return;
@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
                 if (!gameExit.activeSelf)
                     SetActiveExitUI(true);
             }
-            else if(gameExit.activeSelf)
+            else if (gameExit.activeSelf)
                 SetActiveExitUI(false);
         }
     }
@@ -98,6 +98,17 @@ public class UIManager : MonoBehaviour
                 Player.instance.ChangePlayerInteractionState(true);
         }
     }
+
+    public void ActivatePresentersUI(PresenterType presenterType, int idx, bool state)   // 어떤 presenter의 어떤 view?
+    {
+        presenters[(int)presenterType].objs[idx].SetActive(state);
+    }
+
+    public bool GetPresentersUIState(PresenterType presenterType, int idx)
+    {
+        return presenters[(int)presenterType].objs[idx].activeSelf;
+    }
+
     public void SetActiveExitUI(bool visible)
     {
         if(visible)

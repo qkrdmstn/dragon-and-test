@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public enum StateOfBuy
 {   // 0 : 의사결정중 1:구매 2:미구매 3:구매불가
@@ -15,15 +16,20 @@ public enum StateOfBuy
 
 public class ShopInteraction : Interaction
 {
-    #region Item UI
+    #region UI
+    #region Item
     Image itemImg;
     TextMeshProUGUI itemName, itemInfo, itemPrice;
     #endregion
 
-    #region Dialog UI
+    #region Dialog
     TextMeshProUGUI dialogueTxt;
     List<Image> selectionImg;
     #endregion
+
+    TextMeshProUGUI moneyShopTxt;
+    #endregion
+
 
     public StateOfBuy state;
     public bool isFirst = true;
@@ -34,6 +40,9 @@ public class ShopInteraction : Interaction
     GameObject[] childUI;
     GameObject interaction;
     ItemData itemData;
+
+    Canvas canvas;
+    GameObject mapIndicator;
     ShopUIGroup shopUIGroup;
 
     public override void LoadEvent(InteractionData data)
@@ -56,8 +65,13 @@ public class ShopInteraction : Interaction
 
     void SetShopUI()
     {   // 관련 변수 할당
-        shopUIGroup = UIManager.instance.SceneUI["Shop"].GetComponent<ShopUIGroup>();
+        GameObject localCanvas = GameObject.Find("LocalCanvas");
+        canvas = localCanvas.GetComponentInChildren<Canvas>();
+
+        shopUIGroup = localCanvas.GetComponentInChildren<ShopUIGroup>(true);
         childUI = shopUIGroup.childUI;
+
+        mapIndicator = GameObject.Find("MapIndicator");
 
         // item
         itemImg = childUI[0].GetComponent<Image>();
@@ -72,6 +86,9 @@ public class ShopInteraction : Interaction
             childUI[6].GetComponent<Image>(),
             childUI[7].GetComponent<Image>()
         };
+
+        moneyShopTxt = childUI[8].GetComponent<TextMeshProUGUI>();
+        moneyShopTxt.text = Player.instance.refMoney.ToString();
 
         isFirst = false;
     }
@@ -187,6 +204,8 @@ public class ShopInteraction : Interaction
                 break;
         }
         Player.instance.refMoney -= itemData.price;
+        moneyShopTxt.text = Player.instance.refMoney.ToString();    // shop 전용 money UI
+
         Destroy(interaction);
     }
 
@@ -222,10 +241,21 @@ public class ShopInteraction : Interaction
 
     void SetActiveShopUI(bool visible)
     {   // manage dialog UI
-        UIManager.instance.SceneUI["Inventory"].SetActive(!visible);    // inventory UI
-
-        if (visible) UIManager.instance.PushPopUI(shopUIGroup.gameObject);
-        else UIManager.instance.isClose = true;
+        //UIManager.instance.SceneUI["Inventory"].SetActive(!visible);    // inventory UI -> 왜함..과거의 나 ㅋ
+        if (visible)
+        {
+            canvas.sortingOrder = 1;
+            UIManager.instance.PushPopUI(shopUIGroup.gameObject);
+            // 기존 맵의 미니맵이랑 global canvas의 돈 UI 비활성화 -> local canvas 의 전용 money UI가 active
+            mapIndicator.SetActive(false);
+            UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, false);
+        }
+        else {
+            canvas.sortingOrder = -1;
+            UIManager.instance.isClose = true;
+            mapIndicator.SetActive(true);
+            UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, true);
+        }
     }
 
     void SetActiveSelectUI(bool visible)
