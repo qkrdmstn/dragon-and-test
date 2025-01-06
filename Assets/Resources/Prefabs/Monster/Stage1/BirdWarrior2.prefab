@@ -322,10 +322,26 @@ MonoBehaviour:
   moveSpeed: 6
   moneyRange: {x: 1, y: 3}
   monsterType: 0
+  effectiveStatusEffects:
+    knockback: 1
+    slow: 1
+    dotDamage: 1
+    rooted: 1
+    stun: 1
+    reverse: 1
+  statusEffectsFlag:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
   haveAnim: 1
-  deadDuration: 0.6
+  spawnDuration: 1
+  deadDuration: 0.7
   chaseDist: 20
   attackDist: 4
+  isStateChangeable: 0
   chargingDelay: 0.7
   dashDist: 5
   dashSpeed: 8

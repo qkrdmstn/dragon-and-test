@@ -103,19 +103,32 @@ MonoBehaviour:
   curHP: 200
   maxHP: 200
   moveSpeed: 3.9
-  moneyRange: {x: 0, y: 0}
+  moneyRange: {x: 20, y: 20}
   monsterType: 0
+  effectiveStatusEffects:
+    knockback: 0
+    slow: 1
+    dotDamage: 1
+    rooted: 1
+    stun: 1
+    reverse: 1
+  statusEffectsFlag:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
   haveAnim: 0
   spawnDuration: 1
   deadDuration: 0.6
-  chaseDist: 0
-  attackDist: 0
+  chaseDist: 20
+  attackDist: 10
+  isStateChangeable: 0
   isDead: 0
   initState: 0
   curState: 0
-  chaseRange: 22
   bulletPrefab: {fileID: 7667417896392248607, guid: cba835d133bba98459cc81361c794ef0, type: 3}
-  attackRange: 8.4
   shootDelay: 0.2
   reloadTime: 2
   magazineSize: 12
@@ -163,9 +176,6 @@ MonoBehaviour:
   spawnWaveCnt: 0
   spawnDelay: 3
   spawnTimer: 0
-  moneyPrefab: {fileID: 0}
-  moneyValue: 20
-  stateMachine: {fileID: 0}
 --- !u!50 &1795990479263971532
 Rigidbody2D:
   serializedVersion: 4

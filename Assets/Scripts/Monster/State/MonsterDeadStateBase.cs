@@ -12,6 +12,8 @@ public class MonsterDeadStateBase : MonsterState
     public override void Enter()
     {
         base.Enter();
+        monster.isStateChangeable = false;
+        monster.isDead = true;
         monster.SetSpeed(0.0f);
         monster.StopAllCoroutines();
         Dead();

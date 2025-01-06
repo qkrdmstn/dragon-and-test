@@ -19,6 +19,9 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
+        //Position Save
+        player.PositionHistorySave();
+
         //Dash Setting
         dashDir = new Vector2(xInput, yInput);
         dashDir.Normalize();

@@ -3,25 +3,27 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class SkillObj_Projectile : SkillObject
+public class SkillObj_Vine : SkillObject
 {
     [SerializeField] private float range;
     [SerializeField] private float projectileSpeed;
+    [SerializeField] private float rootedDuration;
 
     #region Components
     public Rigidbody2D rigid;
     #endregion
 
-    public SkillObj_Projectile() : base()
+    public SkillObj_Vine() : base()
     {
     }
 
-    public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed)
+    public void Initialize(int _damage, float _range, Vector2 _dir, float _projectileSpeed, float _rootedDuration)
     {
         rigid = gameObject.GetComponent<Rigidbody2D>();
         base.Initialize(_damage, _dir);
         range = _range;
         projectileSpeed = _projectileSpeed;
+        rootedDuration = _rootedDuration;
     }
 
     private void Update()
@@ -39,6 +41,7 @@ public class SkillObj_Projectile : SkillObject
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
             monster.OnDamaged(damage);
+            monster.Rooted(rootedDuration);
         }
 
         if (collision.gameObject.CompareTag("Ground"))

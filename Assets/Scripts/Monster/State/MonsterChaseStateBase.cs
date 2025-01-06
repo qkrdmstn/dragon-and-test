@@ -14,15 +14,25 @@ public class MonsterChaseStateBase : MonsterState
     public override void Enter()
     {
         base.Enter();
-        monster.SetSpeed(monster.moveSpeed);
+        if(!monster.statusEffectsFlag.rooted) //속박 시 속도 변화 x
+            monster.SetSpeed(monster.moveSpeed);
+        else 
+            monster.SetSpeed(0);
     }
 
     public override void Update()
     {
         base.Update();
-        monster.SetDestination(player.transform.position);
+        if (monster.statusEffectsFlag.reverse)
+        {
+            Vector3 dest = monster.transform.position - player.transform.position;
+            dest += monster.transform.position;
+            monster.SetDestination(dest);
+        }
+        else
+            monster.SetDestination(player.transform.position);
 
-        if(monster.haveAnim)
+        if (monster.haveAnim)
         {
             Direction newDir = monster.CheckDir();
             if (curDir != newDir)
@@ -37,6 +47,7 @@ public class MonsterChaseStateBase : MonsterState
     {
         base.Exit();
         monster.SetSpeed(0.0f);
+        monster.SetDestination(monster.transform.position);
     }
 
 

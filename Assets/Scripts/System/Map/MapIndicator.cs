@@ -72,6 +72,7 @@ public class MapIndicator : MonoBehaviour
         onMoveMap += UpdateMoneyPos;
 
         curBlock = startBlock;
+
         InstantiateBattleBlockUI();
     }
 
@@ -170,6 +171,7 @@ public class MapIndicator : MonoBehaviour
             isOverlaped = false;
         }
         curBlock = goToBlockNum;
+        Player.instance.InitPositionHistoryQueue();
 
         playerRect.transform.SetParent(mapRects[goToBlockNum].mapRect.transform);
         playerRect.parent.GetChild(0).gameObject.SetActive(true);       // 자기자신 BG 활성화

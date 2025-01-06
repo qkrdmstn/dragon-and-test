@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerFallState : PlayerState
 {
     private Vector2 currentVel;
-
     public PlayerFallState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
@@ -21,7 +20,7 @@ public class PlayerFallState : PlayerState
         player.SetVelocity(0.0f, 0.0f);
 
         //낙하 데미지
-        player.OnDamamged(1);
+        //player.OnDamamged(1);
     }
 
     public override void Exit()
@@ -29,7 +28,7 @@ public class PlayerFallState : PlayerState
         base.Exit();
 
         player.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        player.transform.position += new Vector3(currentVel.x, currentVel.y, 0.0f) * -1 * 0.1f;
+        LocationRecovery();
         player.isFall = false;
     }
 
@@ -45,6 +44,34 @@ public class PlayerFallState : PlayerState
         if (stateTimer < 0.0f)
         {
             stateMachine.ChangeState(player.idleState);
+        }
+    }
+
+    private void LocationRecovery()
+    {
+        Stack<Vector2> positionStack = new Stack<Vector2>(player.positionHistoryQueue);
+        int count = positionStack.Count;
+        for (int i = 0; i < count; i++)
+        {
+            //recoveryPosition 낭떠러지 check
+            bool isCliff = false;
+            Vector2 recoveryPosition = positionStack.Pop();
+            Collider2D[] inRangeTarget = Physics2D.OverlapBoxAll(recoveryPosition, new Vector2(1.0f, 1.0f), 0.0f);
+            for (int j = 0; j < inRangeTarget.Length; j++)
+            {
+                GameObject target = inRangeTarget[j].gameObject;
+                if (target.CompareTag("Cliff"))
+                {
+                    isCliff = true;
+                    break;
+                }
+            }
+            if (!isCliff)
+            {
+                player.transform.position = recoveryPosition;
+                player.positionSaveTimer = player.positionSaveInterval * 2;
+                break;
+            }
         }
     }
 }
