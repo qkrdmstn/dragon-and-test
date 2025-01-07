@@ -123,7 +123,7 @@ public class MonsterBase : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
-        statusEffectsCheck.InitStatusEffect();
+        statusEffectsFlag.InitStatusEffect();
     }
 
     protected virtual void Update()
