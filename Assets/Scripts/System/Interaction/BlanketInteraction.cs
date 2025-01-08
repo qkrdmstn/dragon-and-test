@@ -71,7 +71,6 @@ public class BlanketInteraction : Interaction
 
         //화투 UI 비활성화 및 모포 UI 활성화
         //hwatuUI.gameObject.SetActive(false);
-        UIManager.instance.SceneUI["Inventory"].SetActive(false);
         UIManager.instance.PushPopUI(blanketUI.gameObject);
 
         //화투 생성
@@ -128,9 +127,6 @@ public class BlanketInteraction : Interaction
     {
         isDone = true;
         isBlanketInteraction = false;
-
-        //hwatuUI.gameObject.SetActive(true);
-        UIManager.instance.SceneUI["Inventory"].SetActive(true);
     }
 
     public bool AddSelectedHwatu(MaterialHwatuSlotUI ui)
