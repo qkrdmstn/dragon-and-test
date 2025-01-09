@@ -22,7 +22,7 @@ public class GunController : MonoBehaviour, IGun
     public Action<bool> reloadAction;
 
     [Header("Gun info")]
-    GameObject currentGun;
+    public GameObject currentGun;
     GunItemData curGunData;
     public GunItemData refCurGunData
     {
@@ -74,11 +74,6 @@ public class GunController : MonoBehaviour, IGun
         else return true;
     }
 
-    public void AddGunAction(GunItemData item)
-    {
-        addGunAction(item);
-    }
-
     public void AddGunData()
     {   // 최초 총 세팅
         if (!CheckDuplicateGun(baseGunData))
@@ -87,12 +82,17 @@ public class GunController : MonoBehaviour, IGun
         }
     }
 
+    public void AddGunAction(GunItemData item)
+    {
+        addGunAction(item);
+    }   // 아래 함수 바인딩
+
     void AddGunData(GunItemData itemData)
     {
-        GameObject _newGunObj = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
+        currentGun = Instantiate(itemData.gunPrefab, gunParent.position, gunParent.rotation, gunParent);
         curGunItems.Add(itemData);
 
-        _newGunObj.GetComponent<Gun>().initItemData = itemData; // init될때마다 총알 자동 갱신
+        currentGun.GetComponent<Gun>().initItemData = itemData; // init될때마다 총알 자동 갱신
         currentIdx = curGunItems.Count - 1;
 
         InitActiveGun();    // 추가된 총으로 UI 갱신
@@ -117,17 +117,24 @@ public class GunController : MonoBehaviour, IGun
         InitActiveGun();
     }
 
-    public void DeleteGunData(GunItemData itemData)
-    {
+    public void ClearGunDatas()
+    {   // 모든 총을 삭제하고 기본 총을 새롭게 생성
+        refCurGunData = null;
+        foreach(Transform curGun in gunParent.GetComponentsInChildren<Transform>(true))
+        {
+            if (curGun == gunParent) continue;
+            else Destroy(curGun.gameObject);
+        }
+
+        curGunItems.Clear();
+        AddGunData();
     }
 
     void InitActiveGun()
     {   // curGun 갱신하면서 프로퍼티 사용해서 이미지랑 총알 수 바인딩
-        currentGun?.SetActive(false);
+        if(currentGun) currentGun.SetActive(false); // 순간적으로 바뀔때 보여서 잠깐 끔
         
-        currentGun = gunParent.GetChild(currentIdx).gameObject;
         refCurGunData = currentGun.GetComponent<Gun>().initItemData;
-
         currentGun.SetActive(true);
     }
 

@@ -291,6 +291,7 @@ public class Player : MonoBehaviour
 
         SkillManager.instance.ClearSkill(); // 모든 스킬 삭제
         ItemManager.instance.DeleteAllHwatuCards(); // 모든 화투 삭제
+        ItemManager.instance.gunController.ClearGunDatas(); // 모든 총 초기화
 
         animController.isBreath = false;
         animController.SetAnim(PlayerAnimState.Idle);

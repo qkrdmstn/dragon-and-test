@@ -165,6 +165,11 @@ public class ItemPresenter : PresenterBase
     #region Bullet
     void UpdateBulletSlot(GunItemData _gunData)
     {   
+        if(_gunData == null)
+        {
+            UpdateLoadedBulletView(0);
+            UpdateLoadedBulletView(0);
+        }
         UpdateLoadedBulletView(m_Gun.GetCurGunComponent().refLoadedBullet);
         UpdateMaxBulletView(m_Gun.GetCurGunComponent().refMaxBullet);
     }
@@ -198,7 +203,11 @@ public class ItemPresenter : PresenterBase
         StopAllCoroutines(); // 재장전이라면 종료
         reloadUIImg.gameObject.SetActive(false);
 
-        if (_newGun == null) ClearGunView();
+        if (_newGun == null)
+        {
+            ClearGunView();
+            ClearInventory();
+        }
         else UpdateGunView(_newGun);
     }
 
@@ -252,10 +261,21 @@ public class ItemPresenter : PresenterBase
     void UpdateArmorInventory(ItemData armorItemData)
     {   // 방어구가 대체되는 구조 - 하나만 보유 가능
         if(armorItemData == null)
-        {   // delete armor data
+        {   // null이라면 삭제의 경우
             armorInventory.DeleteItem();
         }
         else armorInventory.SetItemData(armorItemData);
+    }
+
+    void ClearInventory()
+    {
+        while(curGunIdx >= 0)
+        {
+            gunInventory[curGunIdx--].DeleteItem();
+        }
+        curGunIdx = 0;
+        
+        armorInventory.DeleteItem();
     }
     #endregion
 

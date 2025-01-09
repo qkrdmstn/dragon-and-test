@@ -49,6 +49,7 @@ public class SkillPresenter : PresenterBase
         m_Skill.active.action += CoolTimeChanged;
 
         m_Skill.passive.action += PassiveSkillChanged;
+        m_Skill.passive.clearAction += ClearPassiveSkillSlots;
     }
 
     void OnDestroy()
@@ -57,6 +58,7 @@ public class SkillPresenter : PresenterBase
         m_Skill.active.action -= CoolTimeChanged;
 
         m_Skill.passive.action -= PassiveSkillChanged;
+        m_Skill.passive.clearAction -= ClearPassiveSkillSlots;
     }
     #endregion
 
@@ -72,8 +74,7 @@ public class SkillPresenter : PresenterBase
     #region ActiveSkillSlot
     public void ActiveSkillChanged(ActiveSkillSlot slot, bool checkCoolTime)
     {
-        ActiveSkillSlot skillSlot = (ActiveSkillSlot)Enum.ToObject(typeof(ActiveSkillSlot), slot);
-        UpdateActiveSkillSlot(skillSlot);
+        UpdateActiveSkillSlot(slot);
     }
 
     void UpdateActiveSkillSlot(ActiveSkillSlot skillSlot)
@@ -107,9 +108,8 @@ public class SkillPresenter : PresenterBase
     #endregion
 
     #region PassiveSkillSlot
-    public void PassiveSkillChanged(int combination)
+    public void PassiveSkillChanged(SeotdaHwatuCombination _data)
     {
-        SeotdaHwatuCombination _data = (SeotdaHwatuCombination)Enum.ToObject(typeof(SeotdaHwatuCombination), combination);
         int idx = FindPassiveSkillIdx(_data);
         if (idx == -1)
             idx = AddPassiveIdx(_data);
@@ -128,6 +128,14 @@ public class SkillPresenter : PresenterBase
     {
         passiveIdxTable.Add(_data, curAddedIdx);
         return curAddedIdx++;
+    }
+
+    void ClearPassiveSkillSlots()
+    {
+        for(int i =0; i<passiveIdxTable.Count; i++)
+        {
+            UpdatePassiveSkillSlot(SeotdaHwatuCombination.blank, i);
+        }
     }
 
     void UpdatePassiveSkillSlot(SeotdaHwatuCombination _data, int idx)

@@ -30,7 +30,6 @@ public class ShopInteraction : Interaction
     TextMeshProUGUI moneyShopTxt;
     #endregion
 
-
     public StateOfBuy state;
     public bool isFirst = true;
     public bool isSelected = false;
@@ -222,6 +221,7 @@ public class ShopInteraction : Interaction
     void Init()
     {
         result = -1;
+        isFirst = true;
         isSelected = false;
         state = StateOfBuy.Nothing;
 

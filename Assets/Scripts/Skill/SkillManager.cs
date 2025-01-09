@@ -77,12 +77,19 @@ public class Active
             skill[slot] = data;
         }
     }
+
+    public void DeleteAllActiveSkills()
+    {
+        this[ActiveSkillSlot.Q] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
+        this[ActiveSkillSlot.E] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
+    }
 }
 
 public class Passive
 {
     Dictionary<SeotdaHwatuCombination, int> skill;  // 보유 패시브 스킬, 중첩 횟수
-    public Action<int> action;
+    public Action<SeotdaHwatuCombination> action;
+    public Action clearAction;
 
     public Passive()
     {
@@ -98,8 +105,13 @@ public class Passive
         set
         {
             skill[combination] = value;
-            action.Invoke((int)combination);
+            action.Invoke(combination);
         }
+    }
+    public void DeleteAllPassiveSkills()
+    {
+        skill.Clear();
+        clearAction.Invoke();
     }
 }
 
@@ -231,14 +243,6 @@ public class SkillManager : MonoBehaviour
         active[type] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
     }
 
-    public void DeleteAllSkill()
-    {
-        foreach (var data in active.refSkill)
-        {
-            active[data.Key] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
-        }
-    }
-
     private void SkillSwap()
     {   //Data Swap
         skillpresenter.StopAllCoroutines();
@@ -321,11 +325,9 @@ public class SkillManager : MonoBehaviour
     }       
 
     public void ClearSkill()
-    {   
-        // active
-        DeleteAllSkill();
-        // passive
-        // todo
+    {
+        active.DeleteAllActiveSkills();
+        passive.DeleteAllPassiveSkills();
     }
 
     public SkillDB GetSkillDB(SeotdaHwatuCombination skillName)
