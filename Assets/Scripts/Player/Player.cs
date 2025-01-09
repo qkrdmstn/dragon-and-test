@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
             shield = Mathf.Clamp(value, 0, maxShield);
             actions[(int)StatActionType.Shield].Invoke();
             // if value is zero, Update Inventory UI
-            if (shield <= 0) ItemManager.instance.DeleteArmorData();
+            if (shield <= 0) ItemManager.instance.UpdateArmorData();
         }
     }
     [SerializeField] private float hitDuration = 0.6f;
@@ -287,7 +287,7 @@ public class Player : MonoBehaviour
 
         RestoreHP();
         refMoney = 0;
-        refShield = 0;
+        refShield = 0; // inventory UI도 같이 갱신
 
         SkillManager.instance.ClearSkill(); // 모든 스킬 삭제
         ItemManager.instance.DeleteAllHwatuCards(); // 모든 화투 삭제

@@ -206,7 +206,7 @@ public class ItemPresenter : PresenterBase
         if (_newGun == null)
         {
             ClearGunView();
-            ClearInventory();
+            ClearGunInventory();
         }
         else UpdateGunView(_newGun);
     }
@@ -257,6 +257,15 @@ public class ItemPresenter : PresenterBase
         if (curGunIdx > 3) return;
         gunInventory[curGunIdx++].SetItemData(gunItemData);
     }
+    void ClearGunInventory()
+    {   // 사망에 따른 모든 총 초기화 작업
+        while (curGunIdx >= 0)
+        {
+            gunInventory[curGunIdx--].DeleteItem();
+        }
+        curGunIdx = 0;
+    }
+
     // Armor
     void UpdateArmorInventory(ItemData armorItemData)
     {   // 방어구가 대체되는 구조 - 하나만 보유 가능
@@ -265,17 +274,6 @@ public class ItemPresenter : PresenterBase
             armorInventory.DeleteItem();
         }
         else armorInventory.SetItemData(armorItemData);
-    }
-
-    void ClearInventory()
-    {
-        while(curGunIdx >= 0)
-        {
-            gunInventory[curGunIdx--].DeleteItem();
-        }
-        curGunIdx = 0;
-        
-        armorInventory.DeleteItem();
     }
     #endregion
 

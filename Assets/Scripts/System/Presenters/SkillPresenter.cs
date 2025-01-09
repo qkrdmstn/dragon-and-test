@@ -67,20 +67,14 @@ public class SkillPresenter : PresenterBase
         passiveIdxTable = new Dictionary<SeotdaHwatuCombination, int>();
         foreach (ActiveSkillSlot skillSlot in activeUI.Keys)
         {
-            ClearActiveSlot(skillSlot);
+            UpdateSkillSlotView(skillSlot);
             activeUI[skillSlot].coolTimeObj.SetActive(false);
         }
     }
     #region ActiveSkillSlot
     public void ActiveSkillChanged(ActiveSkillSlot slot, bool checkCoolTime)
     {
-        UpdateActiveSkillSlot(slot);
-    }
-
-    void UpdateActiveSkillSlot(ActiveSkillSlot skillSlot)
-    { // clear -> update
-        ClearActiveSlot(skillSlot);
-        UpdateSkillSlotView(skillSlot);
+        UpdateSkillSlotView(slot);
     }
 
     void UpdateSkillSlotView(ActiveSkillSlot skillSlot)
@@ -99,12 +93,6 @@ public class SkillPresenter : PresenterBase
             activeUI[skillSlot].skillImg.sprite = null;
         }
     }
-
-    void ClearActiveSlot(ActiveSkillSlot skillSlot)
-    {
-        activeUI[skillSlot].skillImg.sprite = null;
-        activeUI[skillSlot].skillImg.color = Color.clear;
-    }
     #endregion
 
     #region PassiveSkillSlot
@@ -114,7 +102,7 @@ public class SkillPresenter : PresenterBase
         if (idx == -1)
             idx = AddPassiveIdx(_data);
 
-        UpdatePassiveSkillSlot(_data, idx);
+        UpdateSkillInventoryView(_data, idx);
     }
 
     int FindPassiveSkillIdx(SeotdaHwatuCombination _data)
@@ -134,14 +122,8 @@ public class SkillPresenter : PresenterBase
     {
         for(int i =0; i<passiveIdxTable.Count; i++)
         {
-            UpdatePassiveSkillSlot(SeotdaHwatuCombination.blank, i);
+            UpdateSkillInventoryView(SeotdaHwatuCombination.blank, i);
         }
-    }
-
-    void UpdatePassiveSkillSlot(SeotdaHwatuCombination _data, int idx)
-    {
-        ClearPassiveSlot(idx);
-        UpdateSkillInventoryView(_data, idx);
     }
 
     void UpdateSkillInventoryView(SeotdaHwatuCombination _data, int idx)
@@ -160,13 +142,6 @@ public class SkillPresenter : PresenterBase
             passiveUI[idx].skillInfoTxt.text = null;
             passiveUI[idx].skillImg.color = Color.clear;
         }
-    }
-
-    void ClearPassiveSlot(int idx)
-    {
-        passiveUI[idx].skillInfoTxt.text = null;
-        passiveUI[idx].skillImg.sprite = null;
-        passiveUI[idx].skillImg.color = Color.clear;
     }
     #endregion
 

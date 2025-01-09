@@ -27,7 +27,7 @@ public class PickUpItemInteraction : Interaction
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
-                ItemManager.instance.AddArmorData(itemData);
+                ItemManager.instance.UpdateArmorData(itemData);
                 break;
         }
         isDone = true;

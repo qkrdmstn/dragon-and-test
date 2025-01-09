@@ -199,7 +199,7 @@ public class ShopInteraction : Interaction
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
-                ItemManager.instance.AddArmorData(itemData);
+                ItemManager.instance.UpdateArmorData(itemData);
                 break;
         }
         Player.instance.refMoney -= itemData.price;
@@ -241,19 +241,18 @@ public class ShopInteraction : Interaction
 
     void SetActiveShopUI(bool visible)
     {   // manage dialog UI
-        //UIManager.instance.SceneUI["Inventory"].SetActive(!visible);    // inventory UI -> 왜함..과거의 나 ㅋ
         if (visible)
         {
             canvas.sortingOrder = 1;
             UIManager.instance.PushPopUI(shopUIGroup.gameObject);
             // 기존 맵의 미니맵이랑 global canvas의 돈 UI 비활성화 -> local canvas 의 전용 money UI가 active
-            mapIndicator.SetActive(false);
+            if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(false);
             UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, false);
         }
         else {
             canvas.sortingOrder = -1;
             UIManager.instance.isClose = true;
-            mapIndicator.SetActive(true);
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(true);
             UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, true);
         }
     }

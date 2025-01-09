@@ -12,14 +12,16 @@ public interface IGun
 
 public class GunController : MonoBehaviour, IGun
 {
-    public GunItemData baseGunData;
-    public Transform gunParent;
-    public HashSet<GunItemData> curGunItems;
+    public GunItemData baseGunData;             // 첫 기본 총 데이터
+    public Transform gunParent;                 // 총 생성 모체
+    public HashSet<GunItemData> curGunItems;    // 현재 보유중인 총
 
+    #region ACTION
     public Action<GunItemData> addGunAction;    // for data & inventory
     public Action<GunItemData> gunAction;       // for cur Gun UI
     public Action<int, int> bulletAction;
     public Action<bool> reloadAction;
+    #endregion
 
     [Header("Gun info")]
     public GameObject currentGun;

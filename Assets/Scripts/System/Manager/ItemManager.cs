@@ -147,13 +147,9 @@ public class ItemManager : MonoBehaviour
     #endregion
 
     #region Armor
-    public void AddArmorData(ItemData itemData)
+    public void UpdateArmorData(ItemData itemData = null)
     {
         armorAction.Invoke(itemData);
-    }
-    public void DeleteArmorData()
-    {
-        armorAction.Invoke(null);
     }
     #endregion
 }
