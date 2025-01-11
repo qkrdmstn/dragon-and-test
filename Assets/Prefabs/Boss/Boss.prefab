@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curHP: 200
   maxHP: 200
+  isDead: 0
   moveSpeed: 3.9
   moneyRange: {x: 20, y: 20}
   monsterType: 0
@@ -125,7 +126,6 @@ MonoBehaviour:
   chaseDist: 20
   attackDist: 10
   isStateChangeable: 0
-  isDead: 0
   initState: 0
   curState: 0
   bulletPrefab: {fileID: 7667417896392248607, guid: cba835d133bba98459cc81361c794ef0, type: 3}
@@ -168,9 +168,9 @@ MonoBehaviour:
   pattern4EndInterval: 0.6
   pattern4BulletSpeed: 6
   spawnMosnterPrefabs:
-  - {fileID: 2032848082544233927, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
-  - {fileID: 393577084582284936, guid: 852dd4ca6d4a03c4e8c98782fb25db1c, type: 3}
-  - {fileID: 5268748210239160313, guid: 5aee6e73a4fcc1447a9af38e5452c818, type: 3}
+  - {fileID: 7065783619711787257, guid: c335b3ca74cb3a8468fb40aa6e4728b1, type: 3}
+  - {fileID: 1534258991647638183, guid: 2704a03c259544d41a110ef14948b6dd, type: 3}
+  - {fileID: 4913214456245318254, guid: 44fc11f9e8a3e394495fccd18026291d, type: 3}
   bossField: {fileID: 0}
   spawnPeriod: 30
   spawnWaveCnt: 0

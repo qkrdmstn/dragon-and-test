@@ -478,20 +478,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e97b312a0f3d8be4f84f13b6ca1d1c59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hwatuData: []
-  hwatuItemObj: {fileID: 6790429676363227867, guid: 2c84d4837f896d349a9e66a40ae5646e, type: 3}
-  materialHwatuDataList: []
-  materialCardCnt: 0
-  materialCardMaxNum: 10
-  activeSkillCnt: 0
-  activeSkillData: 
-  timer: []
-  passiveSkillData: 
-  activeSkillSlotParent: {fileID: 0}
-  activeSkillSlot: []
-  coolTimeImg: []
-  passiveSkillSlotParent: {fileID: 0}
-  passiveSkillSlot: []
 --- !u!4 &34122863
 Transform:
   m_ObjectHideFlags: 0
@@ -2566,22 +2552,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &670246044 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3802470324962803794, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
-  m_PrefabInstance: {fileID: 837108881}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!224 &675065618 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8022291306925302980, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
-  m_PrefabInstance: {fileID: 837108881}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &695830966
 GameObject:
   m_ObjectHideFlags: 0
@@ -6496,8 +6466,8 @@ MonoBehaviour:
     stackSize: 0
   loadedBullet: 0
   maxBullet: 0
-  gunSlotParent: {fileID: 675065618}
-  bulletText: {fileID: 670246044}
+  gunSlotParent: {fileID: 0}
+  bulletText: {fileID: 0}
 --- !u!114 &1743543232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6515,7 +6485,7 @@ MonoBehaviour:
     data: {fileID: 0}
     stackSize: 0
   gunSlotParent: {fileID: 2004355612}
-  amorSlotParent: {fileID: 2011811645}
+  amorSlotParent: {fileID: 0}
 --- !u!4 &1743543233
 Transform:
   m_ObjectHideFlags: 0
@@ -7796,11 +7766,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2262548330607575025, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
   m_PrefabInstance: {fileID: 837108881}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &2011811645 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7627271200700624581, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
-  m_PrefabInstance: {fileID: 837108881}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2023346571
 GameObject:
   m_ObjectHideFlags: 0
@@ -7955,10 +7920,6 @@ PrefabInstance:
     - target: {fileID: 1795990479263971533, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_Name
       value: Boss
-      objectReference: {fileID: 0}
-    - target: {fileID: 1795990479263971533, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971537, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_RootOrder
