@@ -34,6 +34,7 @@ public class MonsterAttackState_BirdWarrior2 : MonsterAttackStateBase
     {
         base.Exit();
         monster.SetSpeed(0.0f);
+        monster.warningObject.SetActive(false);
     }
 
     IEnumerator Dash()
