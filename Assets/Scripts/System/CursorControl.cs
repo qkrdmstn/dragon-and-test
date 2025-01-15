@@ -31,7 +31,7 @@ public class CursorControl : MonoBehaviour
     {
         if (ScenesManager.instance.GetSceneNum() < 1) return;
         if (Player.instance.isInteraction) return;
-
+        Debug.Log("dd");
         player = Player.instance.transform;
 
         worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
