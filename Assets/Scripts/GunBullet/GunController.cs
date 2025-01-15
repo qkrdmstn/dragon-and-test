@@ -50,6 +50,9 @@ public class GunController : MonoBehaviour, IGun
     void Start()
     {
         gunParent = Player.instance.transform.GetChild(1);
+
+        if(SceneManager.GetActiveScene().name == "BossTest") //보스테스트 씬 초기화
+            AddGunAction(baseGunData);
     }
 
     void Update()
