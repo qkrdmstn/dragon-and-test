@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -170,6 +171,7 @@ public class MonsterBase : MonoBehaviour
         curHP -= damage;
         if (curHP <= 0)
         {
+            isDead = true;
             stateMachine.ChangeState(deadState);
         }
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
@@ -194,7 +196,7 @@ public class MonsterBase : MonoBehaviour
         statusEffectsFlag.knockback = true;
 
         //넉백 도중 Idle State 고정
-        if(!statusEffectsFlag.stun) //이미 기절 상태라면 idle 상태로 변경할 필요 없음
+        if(!statusEffectsFlag.stun && !isDead) //이미 기절 상태라면 idle 상태로 변경할 필요 없음
         {
             isStateChangeable = true;
             stateMachine.ChangeState(idleState);
@@ -206,6 +208,14 @@ public class MonsterBase : MonoBehaviour
 
         while (true)
         {
+            if(isDead)
+            {
+                statusEffectsFlag.knockback = false;
+                isStateChangeable = true;
+                stateMachine.ChangeState(deadState);
+                break;
+            }
+            
             knockbackTimer += Time.deltaTime;
             yield return null;
 
@@ -354,7 +364,7 @@ public class MonsterBase : MonoBehaviour
     IEnumerator StunCoroutine(float duration)
     {
         statusEffectsFlag.stun = true;
-        if(!statusEffectsFlag.knockback) //이미 넉백 중이라면 굳이 상태를 바꿀 필요 없음
+        if(!statusEffectsFlag.knockback && !isDead) //이미 넉백 중이라면 굳이 상태를 바꿀 필요 없음
         {
             stateMachine.ChangeState(idleState);
             isStateChangeable = false;
