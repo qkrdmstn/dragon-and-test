@@ -41,10 +41,10 @@ public class SkillObj_Breath : SkillObject
 
         }
 
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            InActiveProjectile();
-        }
+        //if (collision.gameObject.CompareTag("Ground"))
+        //{
+        //    InActiveProjectile();
+        //}
     }
 
     public void InActiveProjectile()
