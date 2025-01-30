@@ -145,6 +145,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         else
         {
+            Player.instance.ChangePlayerInteractionState(false);
             blanketInteraction.isDone = true;
             return;
         }
