@@ -10,6 +10,7 @@ public class SkillObj_Missile : SkillObject
     [SerializeField] private float range;
     [SerializeField] private float angle;
     private Transform target;
+    private bool isTargeting;
 
     private Rigidbody2D rigid;
     private Transform tf;
@@ -52,13 +53,14 @@ public class SkillObj_Missile : SkillObject
             {
                 minDist = dist;
                 target = targets[i].transform;
+                isTargeting = true;
             }
         }
     }
 
     private void ChaseTarget()
     {
-        if(target == null)
+        if(!isTargeting)
         {
             angle += 4;
             Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector2(1, 0);
@@ -93,10 +95,8 @@ public class SkillObj_Missile : SkillObject
             InActiveProjectile();
         }
 
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            InActiveProjectile();
-        }
+        if(isTargeting && collision.gameObject.CompareTag("Ground"))
+                InActiveProjectile();
     }
 
     public void InActiveProjectile()
