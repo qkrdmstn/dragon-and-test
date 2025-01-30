@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerFallState : PlayerState
 {
-    private Vector2 currentVel;
     public PlayerFallState(Player _player, PlayerStateMachine _stateMachine, PlayerAnimState _animStateName) : base(_player, _stateMachine, _animStateName)
     {
     }
@@ -15,12 +14,11 @@ public class PlayerFallState : PlayerState
         //낙하 상태 duration
         stateTimer = 1.0f;
 
-        //현재 이동 방향 저장 및 속도 0 설정
-        currentVel = player.GetVelocity();
+        //속도 0 설정
         player.SetVelocity(0.0f, 0.0f);
 
         //낙하 데미지
-        //player.OnDamamged(1);
+        player.OnDamamged(1);
     }
 
     public override void Exit()
@@ -30,6 +28,9 @@ public class PlayerFallState : PlayerState
         player.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         LocationRecovery();
         player.isFall = false;
+
+        if (player.isCombatZone)
+            player.isAttackable = true;
     }
 
     public override void Update()
