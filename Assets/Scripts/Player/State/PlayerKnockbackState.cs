@@ -16,17 +16,19 @@ public class PlayerKnockbackState : PlayerState
 
         //Attack Disable Setting
         player.isAttackable = false;
-        Debug.Log("enter");
+
+        //Position Save
+        player.PositionHistorySave();
 
         stateTimer = 0;
         knockbackVel = player.knockbackDir * player.knockbackMagnitude;
         player.SetVelocity(knockbackVel);
+
     }
 
     public override void Exit()
     {
         base.Exit();
-        Debug.Log("exit");
 
         //Attack Disable Setting
         player.isAttackable = true;

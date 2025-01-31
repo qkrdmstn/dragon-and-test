@@ -1,174 +1,312 @@
+using System;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI.Table;
+using Random = UnityEngine.Random;
+
+public enum MonsterTypes
+{
+    normal,
+    elite,
+    boss
+}
+
+[Serializable]
+public struct MonsterStatusEffectsFlag
+{
+    public bool knockback; //넉백
+    public bool slow; //슬로우
+    public bool dotDamage; //도트
+    public bool rooted; //속박
+    public bool stun; //기절
+    public bool reverse; //이동상태 변경
+
+    public void InitStatusEffect()
+    {
+        knockback = false;
+        slow = false;
+        dotDamage = false;
+        rooted = false;
+        stun = false;
+        reverse = false;
+    }
+}
 
 public class MonsterBase : MonoBehaviour
 {
-    #region Stats
-    [Header("Stats")]
-    public int HP;
-    public int damage;
-    public float distanceToPlayer;
-    public float deadSec = 0.6f;    // range : 0.0f ~ 0.7f
-    [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
-    #endregion
+    [Header("Life info")]
+    public int curHP = 10;
+    public int maxHP = 10;
+    public bool isDead;
 
-    #region Move
-    [Header("Move & knockBack")]
+    [Header("Move info")]
     public float moveSpeed;
-    public float tempMoveSpeed;
-    public float knockbackForce; // 넉백 힘
-    public float knockbackDuration; // 넉백 지속 시간
-    public float knockbackTimer; // 넉백 지속 시간을 계산하는 타이머
-    protected Vector2 knockbackVel;
+    private float tempMoveSpeed;
+
+    [Header("Drop Items")]
+    [Tooltip("Min(inclusive), Max(exclusive)")] public Vector2Int moneyRange;
+    
+
+    [Header("Monster Info")]
+    public MonsterTypes monsterType;
+    [SerializeField] public MonsterStatusEffectsFlag effectiveStatusEffects; //이 몬스터에게 효과가 있는 상태이상
+    [SerializeField] public MonsterStatusEffectsFlag statusEffectsFlag; //몬스터가 영향 받는 중인 상태이상 flag
+
+    [Header("Anim Info")]
+    public bool haveAnim = false;
+    public float spawnDuration = 1.0f;
+    [Range(0.0f, 0.7f)] public float deadDuration = 0.6f;
+
+    [Header("BaseState Range Info")]
+    public float chaseDist;
+    public float attackDist;
+
+    #region Other Components
+    [HideInInspector] public Player player {  get; private set; }
+    [HideInInspector] public Spawner spawner { get; private set; }
     #endregion
 
-    #region dropItems
-    GameObject [] dropItems;
-    GameObject money;
-    #endregion
-
-    #region Componets
-    [HideInInspector] public Rigidbody2D rigidBody { get; protected set; }
-    [HideInInspector] public SpriteRenderer spriteRenderer { get; private set; }
-    [HideInInspector] public Collider2D col { get; protected set; }
-    [HideInInspector] public GameObject player;
-    [HideInInspector] public Player playerScript;
-    [HideInInspector] public GameObject eventManager;
-    [HideInInspector] public Spawner spawn;
-    [HideInInspector] public MonsterAnimController monsterAnimController;
+    #region Self Componets
+    public Rigidbody2D rb { get; private set; }
+    public MonsterAnimController monsterAnimController { get; private set; }
+    private UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
     #region States
-    public MonsterStateMachine stateMachine { get; protected set; }
-    public MonsterEffectState effectState { get; protected set; }
-    public MonsterState tempState { get; protected set; }
+    public MonsterStateMachine stateMachine;
+
+    //모든 몬스터의 기본 States
+    public MonsterSpawnStateBase spawnState;
+    public MonsterIdleStateBase idleState;
+    public MonsterChaseStateBase chaseState;
+    public MonsterDeadStateBase deadState;
+
+    public bool isStateChangeable; //state 변경 방지
+
     #endregion
 
-    #region Navigate
-    [HideInInspector] public UnityEngine.AI.NavMeshAgent agent;
-    #endregion
-
-    [Header("boolState")]
-    public bool inEffect = false;
-    public bool isDead = false;
-    public bool isChase;
-    public bool isKnockedBack;      // 넉백 상태 여부를 나타내는 변수
-
-    // 애니메이션 작업이 완료된 몬스터에게만 적용되는 변수
-    public bool isSpawned = false;  
-    public bool isFirst = true;
-
-    public virtual void Awake()
+    protected virtual void Awake()
     {
-        stateMachine = new MonsterStateMachine();
-        effectState = new MonsterEffectState(stateMachine, player, this);
-
-        player = GameObject.FindWithTag("Player");
-
-        dropItems = Resources.LoadAll<GameObject>("Prefabs/Item/Item Obj - DragonFruit");
-        money = Resources.Load<GameObject>("Prefabs/Item/Money");
-
-        //if (Player.instance.isTutorial) return;
-        //if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
-        //    eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
+        InitComponents();
+        InitStates();
     }
 
-    public virtual void Start()
+    protected virtual void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        col = GetComponent<Collider2D>();
-        playerScript = player.GetComponent<Player>();
-        monsterAnimController = GetComponentInChildren<MonsterAnimController>();
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Spawn);
+
+        if (Player.instance.isTutorial) return;
+
+        if (!IsEffectSpawner())
+            return;
+
+        spawner = GameObject.FindObjectOfType<Spawner>();
+    }
+
+    public virtual void InitStates()
+    {
+        stateMachine = new MonsterStateMachine(this);
+        isStateChangeable = true;
+    }
+
+    public virtual void InitComponents()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        player = FindObjectOfType<Player>();
+
+        if(haveAnim)
+            monsterAnimController = GetComponentInChildren<MonsterAnimController>();
 
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
-        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Spawn);
+        statusEffectsFlag.InitStatusEffect();
+    }
 
-        if (Player.instance.isTutorial) return;
+    protected virtual void Update()
+    {
+        stateMachine.currentState.Update();
 
-        if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
+        if(Input.GetKeyDown(KeyCode.H) && !statusEffectsFlag.rooted)
         {
-            eventManager = GameObject.FindObjectOfType<Spawner>().gameObject;
-            spawn = eventManager.GetComponent<Spawner>();
+            Rooted(0.1f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y) && !statusEffectsFlag.stun)
+        {
+            Stun(0.2f);
         }
     }
 
-    public virtual void Update()
+    public void SetSpeed(float speed)
     {
-        if (isKnockedBack)
+        if (speed == 0)
         {
-            knockbackTimer += Time.deltaTime;
-            //Exponantial
-            knockbackVel = knockbackVel * Mathf.Exp(-0.1f * knockbackTimer);
-            rigidBody.velocity = knockbackVel;
-            if (rigidBody.velocity.magnitude <= 0.1f)
-            {
-                rigidBody.velocity = Vector2.zero;
-                isKnockedBack = false;
-            }
+            agent.speed = 0;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = 0;
         }
+        else
+            agent.speed = speed;
     }
 
-    //공격
-    public virtual void Attack()
+    public void SetDestination(Vector3 dest)
     {
-        return;
+        agent.SetDestination(dest);
     }
 
-    //피격
-    public virtual void OnTriggerEnter2D(Collider2D collision)
+    public Direction CheckDir()
     {
-        //if (collision.gameObject.CompareTag("Bullet"))
-        //{
-        //    PlayerNormalBullet bullet = collision.GetComponent<PlayerNormalBullet>();
-        //    OnDamaged(bullet.damage);
-
-        //    Vector2 dir = this.transform.position - player.transform.position;
-        //    dir.Normalize();
-        //    Knockback(dir, bullet.knockbackForce);
-        //}
-    }
-
-    //넉백
-    public virtual void Knockback(Vector2 dir, float vel)
-    {
-        if (!isKnockedBack)
-        {
-            isKnockedBack = true;
-            knockbackTimer = 0.0f;
-            dir.Normalize();
-            knockbackVel = vel * dir;
-            rigidBody.velocity = knockbackVel;
-            //rigidBody.velocity = Vector2.zero; // 현재 속도를 초기화
-            //rigidBody.AddForce(dir * force, ForceMode2D.Impulse); // 총알 방향으로 힘을 가함
-        }
+        Vector3 dir = player.transform.position - transform.position;
+        return monsterAnimController.FindDirToPlayer(dir);
     }
 
     //데미지 처리
     public virtual void OnDamaged(int damage)
     {
-        HP -= damage;
-        if (HP <= 0)
+        curHP -= damage;
+        if (curHP <= 0)
         {
-            Dead();
+            isDead = true;
+            stateMachine.ChangeState(deadState);
         }
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
     }
 
+    #region Status Effect Func
+    #region Knockback
+    Coroutine knockbackVal;
+    public void Knockback(Vector2 dir, float mag)
+    {
+        if (!effectiveStatusEffects.knockback || isDead)
+            return;
+
+        if (knockbackVal != null) //실행 중인 넉백 중단
+            StopCoroutine(knockbackVal);
+
+        knockbackVal = StartCoroutine(KnockbackCoroutine(dir, mag));
+    }
+
+    IEnumerator KnockbackCoroutine(Vector2 dir, float mag)
+    {
+        statusEffectsFlag.knockback = true;
+
+        //넉백 도중 Idle State 고정
+        if(!statusEffectsFlag.stun && !isDead) //이미 기절 상태라면 idle 상태로 변경할 필요 없음
+        {
+            isStateChangeable = true;
+            stateMachine.ChangeState(idleState);
+            isStateChangeable = false;
+        }
+
+        float knockbackTimer = 0.0f;
+        dir.Normalize();
+
+        while (true)
+        {
+            if(isDead)
+            {
+                statusEffectsFlag.knockback = false;
+                isStateChangeable = true;
+                stateMachine.ChangeState(deadState);
+                break;
+            }
+            
+            knockbackTimer += Time.deltaTime;
+            yield return null;
+
+            //Rigidbody based knockback
+            //Exponantial
+            mag = mag * Mathf.Exp(-0.1f * knockbackTimer);
+            rb.velocity = mag * dir;
+            if (rb.velocity.magnitude <= 0.1f)
+            {
+                rb.velocity = Vector2.zero;
+                statusEffectsFlag.knockback = false;
+
+                //state 고정 해제
+                if (!statusEffectsFlag.stun || !isDead) //기절 or 사망 상태일 경우 state 변환 X
+                {
+                    isStateChangeable = true;
+                    stateMachine.ChangeState(idleState);
+                }
+                break;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Slow
+
+    //속도 변화 몬스터가 있는 경우 사용
+    //public void SetSlowSpeed(float scale)
+    //{
+    //    if (!effectiveStatusEffects.slow)
+    //        return;
+
+    //    if ((agent.speed <= tempMoveSpeed - tempMoveSpeed * scale)) //이미 더 강력한 slow 효과를 받고 있을 경우
+    //        return;
+
+    //    if (!statusEffectsFlag.slow) //Slow 효과가 적용된 속도는 저장 X
+    //        tempMoveSpeed = agent.speed; //원래 속도 저장
+
+    //    agent.speed = moveSpeed - moveSpeed * scale; //slow 효과 적용
+    //    statusEffectsFlag.slow = true;
+    //}
+
+    //public void SetNormalSpeed()
+    //{
+    //    if (!effectiveStatusEffects.slow)
+    //        return;
+
+    //    agent.speed = tempMoveSpeed; //속도 복구
+    //    statusEffectsFlag.slow = false;
+    //}
+
+    //속도 변화 몬스터 X 경우 사용 (광전사는 면역)
+
+    public void SetSlowSpeed(float scale)
+    {
+        if (!effectiveStatusEffects.slow)
+            return;
+
+        if ((agent.speed <= moveSpeed - moveSpeed * scale)) //이미 더 강력한 slow 효과를 받고 있을 경우
+            return;
+
+        SetSpeed(moveSpeed - moveSpeed * scale); //slow 효과 적용
+        statusEffectsFlag.slow = true;
+    }
+
+    public void SetNormalSpeed()
+    {
+        if (!effectiveStatusEffects.slow)
+            return;
+
+        SetSpeed(moveSpeed); //속도 복구
+        statusEffectsFlag.slow = false;
+    }
+    #endregion
+
+    #region Dot Damage
     public void DotDamage(float duration, float interval, int perDamage)
     {
+        if (!effectiveStatusEffects.dotDamage)
+            return;
+
         StartCoroutine(DotDamageCoroutine(duration, interval, perDamage));
     }
 
     IEnumerator DotDamageCoroutine(float duration, float interval, int perDamage)
     {
+        statusEffectsFlag.dotDamage = true;
+
         float timer = interval;
-        while(duration >= 0.0f)
+        while (duration >= 0.0f)
         {
             yield return null;
             timer -= Time.deltaTime;
@@ -176,74 +314,95 @@ public class MonsterBase : MonoBehaviour
             if (timer < 0.0f)
             {
                 timer = interval;
-                HP -= perDamage;
+                OnDamaged(perDamage);
                 SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);
             }
         }
+
+        statusEffectsFlag.dotDamage = false;
+    }
+    #endregion
+
+    #region Rooted
+    Coroutine rootedVal;
+    public void Rooted(float duration)
+    {
+        if (!effectiveStatusEffects.rooted || isDead)
+            return;
+        if (rootedVal != null) //실행 중인 속박 중단
+            StopCoroutine(rootedVal);
+
+        rootedVal = StartCoroutine(RootedCoroutine(duration));
     }
 
-    //상태이상
-    public void EffectState()
+    IEnumerator RootedCoroutine(float duration)
     {
-        if (!inEffect) tempState = stateMachine.currentState;
-        stateMachine.ChangeState(effectState);
+        statusEffectsFlag.rooted = true;
+        SetSpeed(0);
+
+        yield return new WaitForSeconds(duration);
+
+        statusEffectsFlag.rooted = false;
+        if(!statusEffectsFlag.slow && !statusEffectsFlag.stun)
+            SetSpeed(moveSpeed);
+    }
+    #endregion
+
+    #region Stun
+    Coroutine stunVal;
+    public void Stun(float duration)
+    {
+        if (!effectiveStatusEffects.stun || isDead)
+            return;
+
+        if (stunVal != null) //실행 중인 기절 중단
+            StopCoroutine(stunVal);
+
+        stunVal = StartCoroutine(StunCoroutine(duration));
     }
 
-    //죽음
-    public virtual void Dead()
+    IEnumerator StunCoroutine(float duration)
     {
-        if(!isDead)
+        statusEffectsFlag.stun = true;
+        if(!statusEffectsFlag.knockback && !isDead) //이미 넉백 중이라면 굳이 상태를 바꿀 필요 없음
         {
-            isDead = true;
-            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Dead);
-
-            Destroy(gameObject);
-            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
-            {
-                spawn.DeathCount();
-                ItemDrop();
-            }
+            stateMachine.ChangeState(idleState);
+            isStateChangeable = false;
         }
-    }
 
-    protected virtual IEnumerator AnimSpawn()
+        yield return new WaitForSeconds(duration);
+
+        statusEffectsFlag.stun = false;
+        if(!statusEffectsFlag.knockback)
+            isStateChangeable = true;
+    }
+    #endregion
+
+    #region Reverse
+    Coroutine reverseVal;
+    public void Reverse(float duration)
     {
-        SpeedToZero();
-        monsterAnimController.SetAnim();
-        yield return new WaitForSeconds(1f);
+        if (!effectiveStatusEffects.reverse || isDead)
+            return;
 
-        isSpawned = true;
-        SpeedReturn();
+        if (reverseVal != null) //실행 중인 reverse 중단
+            StopCoroutine(reverseVal);
+
+        reverseVal = StartCoroutine(ReverserCoroutine(duration));
     }
 
-    protected virtual IEnumerator AnimDead()
+    public IEnumerator ReverserCoroutine(float duration)
     {
-        monsterAnimController.SetAnim(MonsterAnimState.Death, CheckDir());
-        float sec = Mathf.Clamp(deadSec, 0f, 0.7f);
-        yield return new WaitForSeconds(sec);
+        statusEffectsFlag.reverse = true;
 
-        if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1 && SceneManager.GetActiveScene().name != "BossTest")
-        {
-            spawn.DeathCount();
-            ItemDrop();
-        }
-        yield return new WaitForSeconds(0.7f - sec);
+        yield return new WaitForSeconds(duration);
 
-        Destroy(gameObject);
+        statusEffectsFlag.reverse = false;
     }
+    #endregion
+    #endregion
 
-    public virtual void SpeedToZero()
-    {
-        agent.speed = 0;
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = 0;
-    }
-
-    public virtual void SpeedReturn()
-    {
-        agent.speed = moveSpeed;
-    }
-
+    #region Drop Item
     //아이템 드랍
     public void ItemDrop()
     {
@@ -253,14 +412,11 @@ public class MonsterBase : MonoBehaviour
     }
 
     private void DropItems()
-    {
-        for (int i = 0; i < dropItems.Length; i++)
-        {
-            ItemObject item = dropItems[i].GetComponent<ItemObject>();
-            float randomVal = Random.Range(0.0f, 1.0f);
-            if (randomVal <= item.dropProb)
-                Instantiate(dropItems[i], this.transform.position, Quaternion.identity);
-        }
+    {   // 현재 용과만 드랍되므로 반복문 삭제
+        float randomVal = Random.Range(0.0f, 1.0f);
+        ItemObject item = ItemManager.instance.fruitPrefab.GetComponent<ItemObject>();
+        if (randomVal <= item.dropProb)
+            Instantiate(item.gameObject, this.transform.position, Quaternion.identity);
     }
 
     public virtual void HwatuObjectDrop()
@@ -268,38 +424,38 @@ public class MonsterBase : MonoBehaviour
         float randomVal = Random.Range(0.0f, 1.0f);
         if (randomVal <= 0.2f)
         {
-            GameObject hwatuObj = Instantiate(SkillManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
-            int index = Random.Range(0, SkillManager.instance.hwatuData.Length);
-            hwatuObj.GetComponent<HwatuItemObject>().hwatuData = SkillManager.instance.hwatuData[index];
+            GameObject hwatuObj = Instantiate(ItemManager.instance.hwatuItemObj, this.transform.position, Quaternion.identity);
+            int index = Random.Range(0, ItemManager.instance.hwatuDatas.Length);
+            hwatuObj.GetComponent<HwatuItemObject>().hwatuData = ItemManager.instance.hwatuDatas[index];
             Debug.Log("Hwatu Drop");
         }
     }
 
     protected void MoneyDrop()
     {
-        GameObject moneyObj = Instantiate(money, this.transform.position, Quaternion.identity);
+        GameObject moneyObj = Instantiate(ItemManager.instance.moneyPrefab, this.transform.position, Quaternion.identity);
         MoneyItemObject moneyItem = moneyObj.GetComponent<MoneyItemObject>();
+
         moneyItem.amount = Random.Range(moneyRange.x, moneyRange.y);
+
+        SkillDB ttCatch73Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.TTCatch73);
+        float ttCatch73Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.TTCatch73);
+        float randomVal = Random.Range(0.0f, 1.0f);
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.TTCatch73) && randomVal <= ttCatch73Prob)
+        {
+            if (this.name.Contains("BirdTanker") || this.name.Contains("BirdCrossbowman"))
+                moneyItem.amount *= 2;
+            moneyObj.transform.localScale = moneyObj.transform.lossyScale * 1.5f;
+        }
     }
 
-    public Direction CheckDir()
-    {
-        Vector3 dir = player.transform.position - transform.position;
-        return monsterAnimController.FindDirToPlayer(dir);
-    }
+    #endregion
 
-    public void SetNormalSpeed()
+    public bool IsEffectSpawner()
     {
-        Debug.Log("normal");
-        agent.speed = tempMoveSpeed;
-    }
-
-    public void SetSlowSpeed(float scale)
-    {
-        Debug.Log("slow");
-        if (agent.speed <= tempMoveSpeed - tempMoveSpeed * scale)
-            return;
-        tempMoveSpeed = agent.speed;
-        agent.speed = moveSpeed - moveSpeed * scale;
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Boss_1 || SceneManager.GetActiveScene().name == "BossTest" || monsterType == MonsterTypes.boss)
+            return false;
+        else
+            return true;
     }
 }

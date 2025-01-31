@@ -3,35 +3,45 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public enum StateOfBuy
 {   // 0 : 의사결정중 1:구매 2:미구매 3:구매불가
     Nothing,
     YesBuy,
     NoBuy,
-    CantBuy
+    CantBuy,
+    Duplicate
 };
 
 public class ShopInteraction : Interaction
 {
-    #region Item UI
+    #region UI
+    #region Item
     Image itemImg;
     TextMeshProUGUI itemName, itemInfo, itemPrice;
     #endregion
 
-    #region Dialog UI
+    #region Dialog
     TextMeshProUGUI dialogueTxt;
     List<Image> selectionImg;
+    #endregion
+
+    TextMeshProUGUI moneyShopTxt;
     #endregion
 
     public StateOfBuy state;
     public bool isFirst = true;
     public bool isSelected = false;
     public int result; // 선택된 답변의 배열 Idx
+    public bool isFirstBuyWeapon = true;
 
     GameObject[] childUI;
     GameObject interaction;
     ItemData itemData;
+
+    Canvas canvas;
+    GameObject mapIndicator;
     ShopUIGroup shopUIGroup;
 
     public override void LoadEvent(InteractionData data)
@@ -54,8 +64,13 @@ public class ShopInteraction : Interaction
 
     void SetShopUI()
     {   // 관련 변수 할당
-        shopUIGroup = UIManager.instance.SceneUI["Shop"].GetComponent<ShopUIGroup>();
+        GameObject localCanvas = GameObject.Find("LocalCanvas");
+        canvas = localCanvas.GetComponentInChildren<Canvas>();
+
+        shopUIGroup = localCanvas.GetComponentInChildren<ShopUIGroup>(true);
         childUI = shopUIGroup.childUI;
+
+        mapIndicator = GameObject.Find("MapIndicator");
 
         // item
         itemImg = childUI[0].GetComponent<Image>();
@@ -71,6 +86,9 @@ public class ShopInteraction : Interaction
             childUI[7].GetComponent<Image>()
         };
 
+        moneyShopTxt = childUI[8].GetComponent<TextMeshProUGUI>();
+        moneyShopTxt.text = Player.instance.refMoney.ToString();
+
         isFirst = false;
     }
 
@@ -84,13 +102,21 @@ public class ShopInteraction : Interaction
                 curLine = "가격은 " + itemData.price+"금이다.\r\n구매할 것이냐?";
                 break;
             case StateOfBuy.YesBuy:
-                curLine = "고맙다.";
+                if(itemData.itemType == ItemType.Gun && isFirstBuyWeapon)
+                {
+                    curLine = "구매한 무기는 <b>마우스 휠</b>을 변경하여\n사용할 수 있으니 참고하도록...";
+                    isFirstBuyWeapon = false;
+                }
+                else curLine = "고맙다.";
                 break;
-                case StateOfBuy.NoBuy:
+            case StateOfBuy.NoBuy:
                 curLine = "다른 것도 천천히 둘러보도록...";
                 break;
             case StateOfBuy.CantBuy:
                 curLine = "돈이 부족한 것 같군..\n돈을 더 벌어오도록...";
+                break;
+            case StateOfBuy.Duplicate:
+                curLine = "이미 보유하고 있는 상품이군...\n다른 상품은 어떻나?";
                 break;
         }
 
@@ -112,7 +138,11 @@ public class ShopInteraction : Interaction
         else if (isSelected && Input.GetKeyDown(KeyCode.F))
             isDone = true;
 
-        if (isDone) SetActiveShopUI(false);
+        if (isDone)
+        {
+            SetActiveShopUI(false);
+            return isDone;
+        }
 
         // 선택 대화 출력
         if (result == -1) Selection(2);  // 처음 선택에 대한 디폴트 선택을 지정합니다. 이후 방향키 입력이 있다면, 발동되지 않습니다
@@ -140,16 +170,19 @@ public class ShopInteraction : Interaction
     {
         if(result == 1) state = StateOfBuy.NoBuy;
 
-        else if(Player.instance.money < itemData.price)
+        else if(Player.instance.refMoney < itemData.price)
         {   // checkMoney
             state = StateOfBuy.CantBuy;
+        }
+        else if (ItemManager.instance.gunController.CheckDuplicateGun(itemData as GunItemData))
+        {
+            state = StateOfBuy.Duplicate;
         }
         else
         {
             state = StateOfBuy.YesBuy;
             ManagePurchase();
         }
-
         return state;
     }
 
@@ -162,14 +195,16 @@ public class ShopInteraction : Interaction
                     (itemData as EffectItemData).ItemEffect();
                 break;
             case ItemType.Gun:
-                GunManager.instance.AddGun((itemData as GunItemData).gunData.gunPrefab);
+                ItemManager.instance.gunController.AddGunAction(itemData as GunItemData);
                 break;
             case ItemType.Armor:
                 (itemData as EffectItemData).ItemEffect();
-                InventoryData.instance.AddArmorItem(itemData);
+                ItemManager.instance.UpdateArmorData(itemData);
                 break;
         }
-        Player.instance.money -= itemData.price;
+        Player.instance.refMoney -= itemData.price;
+        moneyShopTxt.text = Player.instance.refMoney.ToString();    // shop 전용 money UI
+
         Destroy(interaction);
     }
 
@@ -180,11 +215,13 @@ public class ShopInteraction : Interaction
         yield return new WaitUntil(() => UpdateDialogue());    // 의사결정완료
 
         SetActiveShopUI(false);
+        isDone = false;
     }
 
     void Init()
     {
         result = -1;
+        isFirst = true;
         isSelected = false;
         state = StateOfBuy.Nothing;
 
@@ -202,9 +239,22 @@ public class ShopInteraction : Interaction
             result = 0;
     }
 
-    public void SetActiveShopUI(bool visible)
+    void SetActiveShopUI(bool visible)
     {   // manage dialog UI
-        UIManager.instance.SceneUI["Shop"].SetActive(visible);
+        if (visible)
+        {
+            canvas.sortingOrder = 1;
+            UIManager.instance.PushPopUI(shopUIGroup.gameObject);
+            // 기존 맵의 미니맵이랑 global canvas의 돈 UI 비활성화 -> local canvas 의 전용 money UI가 active
+            if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(false);
+            UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, false);
+        }
+        else {
+            canvas.sortingOrder = -1;
+            UIManager.instance.isClose = true;
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(true);
+            UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, true);
+        }
     }
 
     void SetActiveSelectUI(bool visible)

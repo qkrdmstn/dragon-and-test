@@ -27,7 +27,7 @@ public class StoneTotem : MonoBehaviour
         puzzleInteraction = Player.instance.GetComponentInChildren<PuzzleInteraction>();
 
         decks = new List<Sprite>(1);
-        HwatuData[] datas = SkillManager.instance.hwatuData;
+        HwatuData[] datas = ItemManager.instance.hwatuDatas;
         Array.Sort(datas);
 
         for (int i=0; i<datas.Length; i++)
@@ -79,9 +79,9 @@ public class StoneTotem : MonoBehaviour
         cardImg.sprite = decks[index];
         if (index == (int)month)
         {
-            puzzleInteraction.isClear[(int)myType] = true;
+            puzzleInteraction.isClears[(int)myType] = true;
         }
-        else puzzleInteraction.isClear[(int)myType] = false;
+        else puzzleInteraction.isClears[(int)myType] = false;
 
         isChanging = false;
     }

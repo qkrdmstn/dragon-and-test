@@ -76,22 +76,37 @@ public class SaveManager : MonoBehaviour
     public void StartLoadData(int index)
     {
         SetSelectSlotIdx(index);
-        if (data[index] != null)
+        if(data[index] == null)
         {
-            Player.instance.curHP = data[index].playerHP;
-            Player.instance.money = data[index].money;
-            Player.instance.shield = data[index].curShieldCnt;
+            Player.instance.RestoreHP();
+            Player.instance.refShield = 0;
+            Player.instance.refMoney = 0;
+
+            ItemManager.instance.LoadSaveGun();
+        }
+        else if (data[index] != null)
+        {
+            Player.instance.refCurHp = data[index].playerHP;
+            Player.instance.refMoney = data[index].money;
+            Player.instance.refShield = data[index].curShieldCnt;
+
             if (data[index].isClearTutorial)
             {
                 UIManager.instance.SceneUI["Jokbo"].GetComponent<JokboUIGroup>().isPossibleJokbo = true;
                 Player.instance.isClearTutorial = true;
             }
 
-            SkillManager.instance.materialHwatuDataList = data[index].hwatus;
-            SkillManager.instance.materialCardCnt = data[index].hwatus.Count;
-            SkillManager.instance.activeSkillCnt = data[index].curSkillCnt;
-            SkillManager.instance.activeSkillData = data[index].skills;
-            SkillManager.instance.UpdateActiveSkillSlot();
+            ItemManager.instance.LoadSaveGun(data[index].gunItems); // 보유중인 총 로드
+            ItemManager.instance.curHoldingHwatuDatas = data[index].hwatus;
+            ItemManager.instance.refHwatuCardCnt = data[index].hwatus.Count;
+            foreach(var data in data[index].activeSkill)
+            {
+                SkillManager.instance.active[data.Key] = data.Value;
+            }
+            foreach (var data in data[index].passiveSkill)
+            {
+                SkillManager.instance.passive[data.Key] = data.Value;
+            }
         }
         StartCoroutine(IsLoadedStartData());
     }

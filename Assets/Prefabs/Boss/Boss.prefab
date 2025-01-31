@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1795990479263971539}
   - component: {fileID: 1795990479263971532}
   - component: {fileID: 1795990479263971536}
+  - component: {fileID: 5192901698656504962}
   m_Layer: 8
   m_Name: Boss
   m_TagString: Monster
@@ -103,11 +104,31 @@ MonoBehaviour:
   maxHP: 200
   isDead: 0
   moveSpeed: 3.9
+  moneyRange: {x: 20, y: 20}
+  monsterType: 0
+  effectiveStatusEffects:
+    knockback: 0
+    slow: 1
+    dotDamage: 1
+    rooted: 1
+    stun: 1
+    reverse: 1
+  statusEffectsFlag:
+    knockback: 0
+    slow: 0
+    dotDamage: 0
+    rooted: 0
+    stun: 0
+    reverse: 0
+  haveAnim: 0
+  spawnDuration: 1
+  deadDuration: 0.6
+  chaseDist: 20
+  attackDist: 10
+  isStateChangeable: 0
   initState: 0
   curState: 0
-  chaseRange: 22
   bulletPrefab: {fileID: 7667417896392248607, guid: cba835d133bba98459cc81361c794ef0, type: 3}
-  attackRange: 8.4
   shootDelay: 0.2
   reloadTime: 2
   magazineSize: 12
@@ -116,7 +137,7 @@ MonoBehaviour:
   bulletSpeed: 12
   bulletRange: 22
   reloadCnt: 0
-  pattern1Prob: 0.5
+  pattern1Prob: 0.35
   sphereShootNum: 144
   sphereInterval: 1
   spherePathInterval: 1
@@ -128,7 +149,7 @@ MonoBehaviour:
   pathBulletRange: 22
   waveInterval: 3
   waveNum: 2
-  pattern2Prob: 0.3
+  pattern2Prob: 0.25
   displayPrefab: {fileID: 6639289216230156328, guid: fa087fe644a2dcf4999b290d9e0290f6, type: 3}
   pattern2Delay: 0.5
   pattern2ShootNum: 10
@@ -137,23 +158,24 @@ MonoBehaviour:
   pattern2ShootOffset: 3
   pattern2AttackRange: 1.3
   isPattern2: 0
-  pattern3Prob: 0.2
+  pattern3Prob: 0.15
   pattern3Object: {fileID: 0}
   pattern3Delay: 1
   pattern3RotationTime: 1
   pattern3DisplayTime: 5
+  pattern4Prob: 0.25
+  pattern4StartInterval: 0.2
+  pattern4EndInterval: 0.6
+  pattern4BulletSpeed: 6
   spawnMosnterPrefabs:
-  - {fileID: 2032848082544233927, guid: 86b0f4e139863a644aa7b6498a1d7c8e, type: 3}
-  - {fileID: 393577084582284936, guid: 852dd4ca6d4a03c4e8c98782fb25db1c, type: 3}
-  - {fileID: 5268748210239160313, guid: 5aee6e73a4fcc1447a9af38e5452c818, type: 3}
+  - {fileID: 7065783619711787257, guid: c335b3ca74cb3a8468fb40aa6e4728b1, type: 3}
+  - {fileID: 1534258991647638183, guid: 2704a03c259544d41a110ef14948b6dd, type: 3}
+  - {fileID: 4913214456245318254, guid: 44fc11f9e8a3e394495fccd18026291d, type: 3}
   bossField: {fileID: 0}
   spawnPeriod: 30
   spawnWaveCnt: 0
   spawnDelay: 3
   spawnTimer: 0
-  moneyPrefab: {fileID: 0}
-  moneyValue: 20
-  stateMachine: {fileID: 0}
 --- !u!50 &1795990479263971532
 Rigidbody2D:
   serializedVersion: 4
@@ -191,3 +213,25 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0027094118, y: 0.23472777}
   m_Size: {x: 0.578618, y: 0.578618}
   m_Direction: 0
+--- !u!195 &5192901698656504962
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795990479263971533}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 100
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 3
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

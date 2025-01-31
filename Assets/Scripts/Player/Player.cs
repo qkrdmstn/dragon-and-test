@@ -1,17 +1,55 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System;
+using System.Collections.Generic;
+
+public enum StatActionType
+{
+    HP, Money, Shield
+}
 
 public class Player : MonoBehaviour
 {
     #region Value
     public static Player instance = null;
+    public Action[] actions;
 
     [Header("Life info")]
-    public int curHP = 10;
-    public int maxHP = 10;
-    public int money = 0;
-    public int shield = 0;
+    int curHP = 10;
+    int maxHP = 10;
+    public int refCurHp
+    {
+        get { return curHP; }
+        set { 
+            curHP = Mathf.Clamp(value, 0, maxHP);
+            actions[(int)StatActionType.HP].Invoke();
+        } 
+    }
+
+    int money = 0;
+    public int refMoney
+    {
+        get { return money; }
+        set { 
+            money = Mathf.Clamp(value, 0, value);
+            actions[(int)StatActionType.Money].Invoke();
+        }
+    }
+
+    int shield = 0;
+    int maxShield = 3;
+    public int refShield
+    {
+        get { return shield; }
+        set
+        {
+            shield = Mathf.Clamp(value, 0, maxShield);
+            actions[(int)StatActionType.Shield].Invoke();
+            // if value is zero, Update Inventory UI
+            if (shield <= 0) ItemManager.instance.UpdateArmorData();
+        }
+    }
     [SerializeField] private float hitDuration = 0.6f;
 
     [Header("Move info")]
@@ -20,14 +58,16 @@ public class Player : MonoBehaviour
     public float dashDuration = 0.58f;
     public float dashExpCoefficient = -3.5f;
 
+    [Header("Position info")]
+    public Queue<Vector2> positionHistoryQueue = new Queue<Vector2>();
+    public int positionHistoryQueueSize;
+    public float positionSaveInterval;
+    public float positionSaveTimer;
+
     [Header("Knockback info")]
     public Vector2 knockbackDir;
     public float knockbackMagnitude;
     public float knockbackExpCoefficient = -0.1f;
-
-    [Header("Knockback Tempinfo")]
-    public Vector2 knockbackDi2;
-    public float knockbackMagnitude2;
 
     [Header("Gun info")]
     public Gun gun;
@@ -44,9 +84,10 @@ public class Player : MonoBehaviour
     public bool isBounded = false;
     public bool isDead = false;
     public bool isTownStart = false;
+    public bool isSuperman = false;
+
     #region Componets
     public PlayerAnimController animController { get; private set; }
-
     public Rigidbody2D rb { get; private set; }
     public Collider2D col { get; private set; }
     public PlayerHit playerHit { get; private set; }
@@ -59,7 +100,6 @@ public class Player : MonoBehaviour
     public PlayerDashState dashState { get; private set; }
     public PlayerKnockbackState knockbackState { get; private set; }
     public PlayerFallState fallState { get; private set; }
-
     #endregion
 
     [Header("CameraSetting")]
@@ -70,6 +110,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        actions = new Action[Enum.GetValues(typeof(StatActionType)).Length];
+
         stateMachine = new PlayerStateMachine(this);
 
         idleState = new PlayerIdleState(this, stateMachine, PlayerAnimState.Idle);
@@ -116,10 +158,20 @@ public class Player : MonoBehaviour
             gunParent.gameObject.SetActive(true);
         else if (!isCombatZone && gunParent.gameObject.activeSelf)
             gunParent.gameObject.SetActive(false);
-
-        if (Input.GetKeyDown(KeyCode.L))
-            PlayerKnockBack(knockbackDi2, knockbackMagnitude2);
     }
+
+    public void IncrementHP(int amount) => refCurHp += amount;
+
+    public void DecrementHP(int amount) => refCurHp -= amount;
+    public void RestoreHP() => refCurHp = maxHP;
+
+    public void ReplaceShield(int amount) => refShield = amount;
+
+    public void DecrementShield(int amount) => refShield -= amount;
+
+    public void IncrementMoney(int amount) => refMoney += amount;
+
+    public void DecrementMoney(int amount) => refMoney -= amount;
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
@@ -131,25 +183,38 @@ public class Player : MonoBehaviour
         rb.velocity = vel;
     }
 
-    public Vector2 GetVelocity()
+    #region FUNC_GET
+
+    public Vector2 GetVelocity() => rb.velocity;
+    public int GetCurHP() => refCurHp;
+    public int GetMaxHP() => maxHP ;
+    public int GetCurShield() => refShield;
+    public int GetCurMoney() => refMoney;
+    #endregion
+
+    public float ClacSpeed(float baseSpeed)
     {
-        return rb.velocity;
+        float speed = baseSpeed;
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.SR46);
+        if (isSuperman)
+            speed += baseSpeed * SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GTT38);
+
+        return speed;
     }
 
     public void OnDamamged(int damage)
     {
         if(IsDash())
-        {
-            SkillManager.instance.RollingAdvantage();
+        {  
+            SkillManager.instance.DashCoolTimeAdvantage();
             return;
         }    
 
         if(!isDamaged)
         {
-            isDamaged = true;
-            // monster에게 맞았을때 쉐이킹
             try
-            {
+            {    // monster에게 맞았을때 쉐이킹
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
             catch (System.NullReferenceException ex)
@@ -157,21 +222,25 @@ public class Player : MonoBehaviour
                 cameraManager = FindObjectOfType<CameraManager>();
                 cameraManager.CameraShakeFromProfile(profile, impulseSource);
             }
+            if (isTutorial)
+                return;
 
-            if (shield > 0)
-                shield -= damage;
+            isDamaged = true;
+            if (refShield > 0)
+                DecrementShield(damage);
             else
-                curHP -= damage;
+                DecrementHP(damage);
 
-            if (curHP <= 0) //Dead
+            if (refCurHp <= 0) //Dead
             {
                 //장사
                 //4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
-                float randomVal = Random.Range(0.0f, 1.0f);
-                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Data.probability)
+                float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
+                float randomVal = UnityEngine.Random.Range(0.0f, 1.0f);
+                if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.JS410) && randomVal <= js410Prob)
                 {
-                    curHP = 1;
+                    refCurHp = 1;
                     isDamaged = false;
                 }
                 else
@@ -188,30 +257,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void PlayerDead()
-    {
-        isDead = true;
-        GameManager.instance.SetTimeScale(0f);
-        UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[0].SetActive(true);
-    }
-
-    public void ReloadPlayer()
-    {   
-        isAttackable = false;
-        isCombatZone = false;
-        isDead = false;
-        isDamaged = false;
-        curHP = maxHP;
-        money = 0;
-
-        SkillManager.instance.ClearSkill(); // 모든 화투, 스킬 삭제
-        animController.isBreath = false;
-        animController.SetAnim(PlayerAnimState.Idle);
-    }
-
     IEnumerator DamagedProcess(float duration)
     {
-        for (int i = 0; i < 2; i++) 
+        for (int i = 0; i < 2; i++)
         {
             animController.SetMaterialColor(new Color(1, 1, 1, 0.4f));
             yield return new WaitForSeconds(duration / 4.0f);
@@ -221,6 +269,32 @@ public class Player : MonoBehaviour
         }
         ChangePlayerLayer(6);
         isDamaged = false;
+    }
+
+    private void PlayerDead()
+    {
+        isDead = true;
+        GameManager.instance.SetTimeScale(0f);
+        UIManager.instance.SceneUI["Dead"].SetActive(true);
+    }
+
+    public void ReloadPlayer()
+    {   
+        isAttackable = false;
+        isCombatZone = false;
+        isDead = false;
+        isDamaged = false;
+
+        RestoreHP();
+        refMoney = 0;
+        refShield = 0; // inventory UI도 같이 갱신
+
+        SkillManager.instance.ClearSkill(); // 모든 스킬 삭제
+        ItemManager.instance.DeleteAllHwatuCards(); // 모든 화투 삭제
+        ItemManager.instance.gunController.ClearGunDatas(); // 모든 총 초기화
+
+        animController.isBreath = false;
+        animController.SetAnim(PlayerAnimState.Idle);
     }
 
     public void SetIdleStatePlayer()
@@ -292,6 +366,7 @@ public class Player : MonoBehaviour
             case SceneInfo.Boss_1:      // 7
                 isAttackable = true;
                 isCombatZone = true;
+                InitPositionHistoryQueue();
                 break;
         }
 
@@ -310,5 +385,37 @@ public class Player : MonoBehaviour
 
         isStateChangeable = !state;
         isAttackable = !state;
+    }
+
+    public void InitPositionHistoryQueue()
+    {
+        positionHistoryQueue.Clear();
+    }
+
+    public void PositionHistorySave()
+    {
+        if (isCombatZone && !isFall)
+        {
+            if (positionHistoryQueue.Count >= positionHistoryQueueSize) //오래된 위치값 제거
+                positionHistoryQueue.Dequeue();
+
+            //현재 위치 저장(블록 내의 격자 값)
+            positionHistoryQueue.Enqueue(this.transform.position);
+
+            //Queue Draw
+            Vector2[] arr = positionHistoryQueue.ToArray();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Vector2 recoveryPosition = arr[i];
+                Vector3 v1 = recoveryPosition + new Vector2(-1.0f, -1.0f) / 2.0f;
+                Vector3 v2 = recoveryPosition + new Vector2(1.0f, -1.0f) / 2.0f;
+                Vector3 v3 = recoveryPosition + new Vector2(-1.0f, 1.0f) / 2.0f;
+                Vector3 v4 = recoveryPosition + new Vector2(1.0f, 1.0f) / 2.0f;
+                Debug.DrawLine(v1, v2, Color.green, 1.0f);
+                Debug.DrawLine(v1, v3, Color.green, 1.0f);
+                Debug.DrawLine(v2, v4, Color.green, 1.0f);
+                Debug.DrawLine(v3, v4, Color.green, 1.0f);
+            }
+        }
     }
 }

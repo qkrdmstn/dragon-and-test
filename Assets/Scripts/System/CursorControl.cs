@@ -18,6 +18,7 @@ public class CursorControl : MonoBehaviour
     [SerializeField] float player_threshold;
 
     Vector3 worldPos, targetPos;
+    static bool isStart = false;
 
     private void Start()
     {
@@ -29,12 +30,13 @@ public class CursorControl : MonoBehaviour
     private void Update()
     {
         if (ScenesManager.instance.GetSceneNum() < 1) return;
+        if (Player.instance.isInteraction) return;
         player = Player.instance.transform;
 
         worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         targetPos = (player.position + worldPos) / 2f;
 
-        if (Diff_FromPlayerToCursor(player.position, worldPos))
+        if (isStart && Diff_FromPlayerToCursor(player.position, worldPos))
         {
             targetPos.x = Mathf.Clamp(targetPos.x, -cursor_threshold + player.position.x, cursor_threshold + player.position.x);
             targetPos.y = Mathf.Clamp(targetPos.y, -cursor_threshold + player.position.y, cursor_threshold + player.position.y);
@@ -42,6 +44,11 @@ public class CursorControl : MonoBehaviour
             transform.position = targetPos;
         }
         else transform.position = player.position;
+    }
+
+    public void SetStartCursor()
+    {
+        isStart = true;
     }
 
     public void SetCursor(Sprite _cursorImg)

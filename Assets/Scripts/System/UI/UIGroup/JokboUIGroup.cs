@@ -14,7 +14,6 @@ public class JokboUIGroup : UIGroup {
 
     public GameObject[] hwatuInfoPages;
     public JokboHwatuUI[] hwatuUIs;
-    SynergyEntity[] skillDB;
     public bool isPossibleJokbo = false;
     bool isFirst = true;
 
@@ -23,31 +22,12 @@ public class JokboUIGroup : UIGroup {
         SetSynergyName();
     }
 
-    private async void Start()
+    void Update()
     {
-        await LoadJokboDBEntity();
-    }
-
-    async Task LoadJokboDBEntity()
-    {
-        skillDB = await DataManager.instance.GetValues<SynergyEntity>(SheetType.SkillDB, "A:C");
-        ScenesManager.instance.isLoadedDB++;
-    }
-    private void Update()
-    {
-        if (!isPossibleJokbo) { return; }
-        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
-        {   // close
-            UIManager.instance.isUIOn = true;
-            JokboState(false);
-            return;
-        }
-
-        if (Player.instance.isInteraction) return;
-        else if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K))
-        {   // open
+        if (!childUI[0].activeSelf && Input.GetKeyDown(KeyCode.K)) // open
             JokboState(true);
-        }
+        else if (childUI[0].activeSelf && Input.GetKeyDown(KeyCode.Escape))
+            JokboState(false);
     }
 
     void SetUI()
@@ -72,28 +52,47 @@ public class JokboUIGroup : UIGroup {
     public void InitDesc()
     {
         int idx = 0;
-        foreach (JokboHwatuUI obj in hwatuUIs)
+        for(int k =0; k< hwatuUIs.Length; k++)
         {
-            for(int i=0; i<obj.hwatu.Length; i++)
+            for (int i = 0; i < hwatuUIs[k].hwatu.Length; i++)
             {
-                GameObject hwatu = obj.hwatu[i];
-                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
-                childTxts[0].text = skillDB[idx].synergyName;
-                childTxts[1].text = skillDB[idx].info;
-                idx++;
+                if (k == 3)
+                {
+                    idx++; continue;
+                }
 
-                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true);
+                GameObject hwatu = hwatuUIs[k].hwatu[i];
+                TextMeshProUGUI[] childTxts = hwatu.GetComponentsInChildren<TextMeshProUGUI>(true);
+
+                Image[] childImgs = hwatu.GetComponentsInChildren<Image>(true); // hwatu1+ hwatu2 + skillImg 
                 int synergeType = GetSynergeName(hwatu.name);
 
                 SeotdaHwatuName[] cards = Hwatu.GetHwatuCombination((SeotdaHwatuCombination)synergeType);
-                for (int j = 0; j < SkillManager.instance.hwatuData.Length; j++)
+                Hwatu hwatu1 = null, hwatu2 = null;
+                for (int j = 0; j < ItemManager.instance.hwatuDatas.Length; j++)
                 {
-                    if (cards[0] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[0].sprite = SkillManager.instance.hwatuData[j].sprite;
-                    // 1번은 plus
-                    else if (cards[1] == SkillManager.instance.hwatuData[j].hwatu.type)
-                        childImgs[2].sprite = SkillManager.instance.hwatuData[j].sprite;
+                    HwatuData hwatuData = ItemManager.instance.hwatuDatas[j];
+                    if (cards[0] == hwatuData.hwatu.type)
+                    {
+                        childImgs[1].sprite = hwatuData.sprite;
+                        hwatu1 = hwatuData.hwatu;
+                    }
+
+                    else if (cards[1] == hwatuData.hwatu.type)
+                    {
+                        childImgs[0].sprite = hwatuData.sprite;
+                        hwatu2 = hwatuData.hwatu;
+                    }
                 }
+
+                if (hwatu1 != null && hwatu2 != null)
+                {
+                    SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(hwatu1, hwatu2);
+                    childTxts[0].text = SkillManager.instance.skillDBDictionary[result].synergyName;
+                    childImgs[4].sprite = SkillManager.instance.skillSpriteDictionary[result];
+                    childTxts[1].text = SkillManager.instance.GetSkillInfo(result, false);
+                }
+                idx++;
             }
         }
     }
@@ -132,15 +131,28 @@ public class JokboUIGroup : UIGroup {
         {
             if (curSynergy == synergeName[i]) return i;
         }
-
         return -1;
     }
 
     public void JokboState(bool state)
     {   // true : open / false : close
+        if (!isPossibleJokbo) return;
+        
         SetUI();
-        childUI[0].SetActive(state);
-
-        Player.instance.ChangePlayerInteractionState(state);
+        if (state)
+        {
+            if (Player.instance.isTutorial)
+            {
+                TutorialInteraction interaction = FindObjectOfType<TutorialInteraction>();
+                if (interaction.curScarescrowType == ScareScrowType.Skill)
+                {
+                    interaction.OnJokboInBlanket();
+                }
+            }
+            SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Jokbo);
+            UIManager.instance.PushPopUI(childUI[0]);
+        }
+        else
+            UIManager.instance.isClose = true;
     }
 }

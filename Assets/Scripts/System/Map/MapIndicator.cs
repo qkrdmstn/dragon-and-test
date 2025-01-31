@@ -1,17 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
-public enum MapType
-{
-    Battle, Puzzle 
-}
 public class MapIndicator : MonoBehaviour
 {
-    public MapType type;
-
     public GameObject playerUI;
     public GameObject mapUI;
     public GameObject shopUI;
@@ -33,13 +27,17 @@ public class MapIndicator : MonoBehaviour
     public int startBlock;
     public int curBlock;
     public int endBlock;
-    public int[] blanketBlockNum;
     public int[] shopBlockNum;
 
     public Vector3 bossUIPos, puzzleUIPos;
     [Range(25, 50f)] public int defaultSize;
     [Range(1, 2f)] public float size;
     Vector2 activePosforMoney, inactivePosforMoney;
+
+    #region DELEGATE_MOVE
+    public delegate void MoveMap(bool state);
+    public MoveMap onMoveMap;
+    #endregion
 
     public class MapInfo
     {
@@ -49,10 +47,10 @@ public class MapIndicator : MonoBehaviour
         {
             this.mapRect = mapRect;
             this.gotoMaps = gotoMaps;
-        }  
+        }
     }
 
-    private void Awake()
+    void Awake()
     {
         panel = transform.parent.GetComponent<RectTransform>();
         activePosforMoney = new Vector2(panel.anchoredPosition.x, -panel.rect.height - 10f);
@@ -60,29 +58,22 @@ public class MapIndicator : MonoBehaviour
 
         mapRects = new List<MapInfo>();
         curNearBlocksNum = new List<int>();
+
+        curActiveBlanketCntTxt = GetComponentInChildren<TextMeshProUGUI>();
         mapRect = mapUI.GetComponent<RectTransform>();
-
-        if(type == MapType.Battle)
-            spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
-        //else
-        //{   // boss scene까지 연계 -> 보스 완료 후 다음 넘어갈 때 destory 예정
-        //    DontDestroyOnLoad(transform.root.gameObject);
-        //}
+        spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
     }
-    private void Start()
+    void Start()
     {
-        if (type == MapType.Battle)
-        {
-            blocks = spanwner.blocks;
-            isVisited = new bool[blocks.Count];
+        blocks = spanwner.blocks;
+        isVisited = new bool[blocks.Count];
 
-            curBlock = startBlock;
-            InstantiateBattleBlockUI();
-        }
-        //else
-        //{
-        //    InitializePuzzleBlock();
-        //}
+        onMoveMap = SwitchMapPanel;
+        onMoveMap += UpdateMoneyPos;
+
+        curBlock = startBlock;
+
+        InstantiateBattleBlockUI();
     }
 
     #region Puzzle
@@ -143,13 +134,18 @@ public class MapIndicator : MonoBehaviour
 
     void InitailizeUI()
     {
-        for (int i = 0; i < blanketBlockNum.Length; i++)
-        {
-            Instantiate(blanketUI, mapRects[blanketBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[blanketBlockNum[i]].mapRect.transform);
+        BlanketInteractionData[] datas = FindObjectsOfType<BlanketInteractionData>();
+        curActiveBlanketCnt = datas.Length;
+        SetBlanketUICnt();
+
+        foreach (BlanketInteractionData data in datas)
+        {   // 추후 각자 모포 isActive == false -> destroy
+            data.mapBlanketUI = Instantiate(blanketUI, mapRects[data.curBlock.blockNumber].mapRect.transform.position, Quaternion.identity, mapRects[data.curBlock.blockNumber].mapRect.transform);
         }
-        for (int i=0; i<shopBlockNum.Length; i++)
+
+        for (int i = 0; i < shopBlockNum.Length; i++)
         {
-            GameObject shopObj= Instantiate(shopUI, mapRects[shopBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[shopBlockNum[i]].mapRect.transform);
+            GameObject shopObj = Instantiate(shopUI, mapRects[shopBlockNum[i]].mapRect.transform.position, Quaternion.identity, mapRects[shopBlockNum[i]].mapRect.transform);
             shopObj.SetActive(false);
         }
         playerRect = Instantiate(playerUI, mapRects[startBlock].mapRect.transform.position, Quaternion.identity, mapRects[startBlock].mapRect.transform).GetComponent<RectTransform>();
@@ -175,17 +171,21 @@ public class MapIndicator : MonoBehaviour
             isOverlaped = false;
         }
         curBlock = goToBlockNum;
+        Player.instance.InitPositionHistoryQueue();
 
         playerRect.transform.SetParent(mapRects[goToBlockNum].mapRect.transform);
         playerRect.parent.GetChild(0).gameObject.SetActive(true);       // 자기자신 BG 활성화
         playerRect.anchoredPosition = Vector2.zero;
 
         OverlapPlayerUI();
-
-        if (isVisited[goToBlockNum]) return;
-        isVisited[goToBlockNum] = true;
-
         FindNearBlocks(goToBlockNum);
+    }
+
+    public void SwitchMapPanel(bool state) => transform.parent.gameObject.SetActive(state);
+    public void UpdateMoneyPos(bool state)
+    {   // playerPresenter의 money UI
+        UIManager.instance.presenters[0].objs[1].GetComponent<RectTransform>().anchoredPosition
+        = state ? activePosforMoney : inactivePosforMoney;
     }
 
     void FindNearBlocks(int _curBlock)
@@ -199,9 +199,16 @@ public class MapIndicator : MonoBehaviour
             }
         }
 
-        BlinkBlock(false);
         if (curNearBlocksNum.Count > 0)
+        {
+            BlinkBlock(false);
+            foreach (int num in curNearBlocksNum)
+            {
+                if (isVisited[num] || num == _curBlock) continue;
+                SetInActiveBlockUI(num, false);
+            }
             curNearBlocksNum.Clear();
+        }
 
         for (int i = 0; i < tmp.Length; i++)
         {   // index 주의할 것
@@ -211,7 +218,9 @@ public class MapIndicator : MonoBehaviour
 
             SetInActiveBlockUI(num, true);
         }
-        transform.parent.gameObject.SetActive(false);   // panel부터 active 관리
+
+        BlinkBlock(isVisited[_curBlock]);   // block의 clear상태에 맞춰 깜빡임 활성화 결정
+        isVisited[_curBlock] = true;        
     }
 
     void SetInActiveAllBlockUIs()
@@ -221,7 +230,6 @@ public class MapIndicator : MonoBehaviour
             if (i == startBlock) continue;
             SetInActiveBlockUI(i, false);
         }
-        MoveBlockPlayer(startBlock);
     }
 
     void SetInActiveBlockUI(int blockNum, bool state)
@@ -241,27 +249,23 @@ public class MapIndicator : MonoBehaviour
             }
         }
 
-        // 상점이 아닌 경우,
-        for (int j = 0; j < mapRects[blockNum].mapRect.childCount; j++)
-        {
+        for (int j = 0; j < mapRects[blockNum].mapRect.childCount; j++)     // 상점이 아닌 경우,
             mapRects[blockNum].mapRect.GetChild(j).gameObject.SetActive(state);
-        }
+    }
+
+    void OnDestroy()
+    {   // playerPresenter의 money UI
+        UIManager.instance.presenters[0].objs[1].GetComponent<RectTransform>().anchoredPosition
+                = inactivePosforMoney;
     }
 
     public void BlinkBlock(bool state)
     {
-        UIManager.instance.SceneUI["Inventory"].GetComponent<InventoryUIGroup>().childUI[2].GetComponent<RectTransform>().anchoredPosition
-                = state ? activePosforMoney : inactivePosforMoney;
-
-        if (state)
+        onMoveMap(state);
+        if (state && curBlock == endBlock)
         {
-            transform.parent.gameObject.SetActive(state);   // panel부터 active 관리
-
-            if(curBlock == endBlock)
-            {
-                Animator anim = bossRect.GetComponentInChildren<Animator>();
-                anim.SetBool("isOn", state);
-            }
+            Animator anim = bossRect.GetComponentInChildren<Animator>();
+            anim.SetBool("isOn", state);
         }
 
         foreach (int num in curNearBlocksNum)
@@ -270,5 +274,9 @@ public class MapIndicator : MonoBehaviour
             anim.SetBool("isOn", state);
         }
     }
+
+    public static TextMeshProUGUI curActiveBlanketCntTxt;
+    public static int curActiveBlanketCnt;
+    public static void SetBlanketUICnt() => curActiveBlanketCntTxt.text = "X " + curActiveBlanketCnt;
     #endregion
 }

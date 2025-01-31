@@ -23,8 +23,8 @@ public class BlanketUI : MonoBehaviour
     public Button skillInfoExitButton;
     public bool isSkillInfoUI;
 
-    [Header("Passive Skill Slot UI")]
-    public Transform passiveSkillSlotParent;
+    //[Header("Passive Skill Slot UI")]
+    //public Transform passiveSkillSlotParent;
 
     public bool IsInBlanket(RectTransform rectTransform)
     {
@@ -71,7 +71,7 @@ public class BlanketUI : MonoBehaviour
     {
         skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
         skillNameTxt.text = SkillManager.instance.skillDBDictionary[skill].synergyName;
-        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill);
+        skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill, true);
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
 

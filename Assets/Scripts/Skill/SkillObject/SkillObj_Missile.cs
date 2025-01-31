@@ -10,6 +10,7 @@ public class SkillObj_Missile : SkillObject
     [SerializeField] private float range;
     [SerializeField] private float angle;
     private Transform target;
+    private bool isTargeting;
 
     private Rigidbody2D rigid;
     private Transform tf;
@@ -20,12 +21,12 @@ public class SkillObj_Missile : SkillObject
 
     }
 
-    public void Initialize(int _damage, Vector2 _dir, StatusEffect _statusEffect, float _speed, float _range, float _angle)
+    public void Initialize(int _damage, Vector2 _dir, float _speed, float _range, float _angle)
     {
         player = FindObjectOfType<Player>();
         rigid = GetComponent<Rigidbody2D>();
         tf = GetComponent<Transform>();
-        base.Initialize(_damage, _dir, _statusEffect);
+        base.Initialize(_damage, _dir);
 
         speed = _speed;
         range = _range;
@@ -52,13 +53,14 @@ public class SkillObj_Missile : SkillObject
             {
                 minDist = dist;
                 target = targets[i].transform;
+                isTargeting = true;
             }
         }
     }
 
     private void ChaseTarget()
     {
-        if(target == null)
+        if(!isTargeting)
         {
             angle += 4;
             Vector2 direction = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector2(1, 0);
@@ -89,34 +91,12 @@ public class SkillObj_Missile : SkillObject
         if (collision.gameObject.CompareTag("Monster"))
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
-            Boss boss = collision.GetComponent<Boss>();
-
-            if (monster != null)
-                MonsterDamaged(monster);
-            else if (boss != null)
-                BossDamaged(boss);
-        }
-
-        if (collision.gameObject.CompareTag("Ground"))
-        {
+            monster.OnDamaged(damage);
             InActiveProjectile();
         }
-    }
 
-    public void MonsterDamaged(MonsterBase monster)
-    {
-        monster.OnDamaged(damage);
-
-        if (statusEffect != null || statusEffect.status != StatusEffect.None)
-            statusEffect.ApplyStatusEffect(monster);
-
-        InActiveProjectile();
-    }
-
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
-        InActiveProjectile();
+        if(isTargeting && collision.gameObject.CompareTag("Ground"))
+                InActiveProjectile();
     }
 
     public void InActiveProjectile()

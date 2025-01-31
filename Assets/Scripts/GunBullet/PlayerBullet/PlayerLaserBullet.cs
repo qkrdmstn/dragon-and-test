@@ -76,12 +76,7 @@ public class PlayerLaserBullet : MonoBehaviour
         if (collision.gameObject.CompareTag("Monster"))
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
-            Boss boss = collision.GetComponent<Boss>();
-
-            if (monster != null)
-                MonsterDamaged(monster);
-            else if (boss != null)
-                BossDamaged(boss);
+            MonsterDamaged(monster);
             InActiveBullet();
         }
 
@@ -123,12 +118,23 @@ public class PlayerLaserBullet : MonoBehaviour
 
     public void MonsterDamaged(MonsterBase monster)
     {
-        monster.OnDamaged(damage);
+        int finalDamage = damage;
+
+        if (monster.monsterType == MonsterTypes.boss)
+        {
+            //암행어사
+            SkillDB ahes74Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AHES74);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AHES74))
+                finalDamage = damage + (int)SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AHES74);
+        }
+
+        monster.OnDamaged(finalDamage);
 
         //알리
         SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+        float al12Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.AL12);
         float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Prob)
         {
             PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
             playerSkill.AL12Effect(monster.gameObject, damage);
@@ -136,42 +142,37 @@ public class PlayerLaserBullet : MonoBehaviour
 
         //독사
         SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        float ds14Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.DS14);
         randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Prob)
         {
             //지속 데미지 -> duration과 interval이 없음
             monster.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
         }
 
-        //구삥
-        SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
-        randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Data.probability)
+        if (monster.monsterType != MonsterTypes.boss)
         {
-            monster.EffectState();
-        }
-    }
+            //구삥
+            SkillDB gpp19Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.GPP19);
+            float gpp19Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.GPP19);
+            randomVal = Random.Range(0.0f, 1.0f);
+            if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.GPP19) && randomVal <= gpp19Prob)
+            {
+                monster.Stun(gpp19Data.duration);
+            }
 
-    public void BossDamaged(Boss boss)
-    {
-        boss.OnDamaged(damage);
-
-        //알리
-        SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
-        float randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.AL12) && randomVal <= al12Data.probability)
-        {
-            PlayerSkill playerSkill = Player.instance.GetComponent<PlayerSkill>();
-            playerSkill.AL12Effect(boss.gameObject, damage);
+            Vector2 dir = this.transform.position - Player.instance.transform.position;
+            dir.Normalize();
+            monster.Knockback(dir, knockbackForce);
         }
 
-        //독사
-        SkillDB ds14Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.DS14);
+        //멍텅구리 구사
+        SkillDB mtgr94Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.MTGR94);
+        float mtgr94Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.MTGR94);
         randomVal = Random.Range(0.0f, 1.0f);
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.DS14) && randomVal <= ds14Data.probability)
+        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.MTGR94) && randomVal <= mtgr94Prob)
         {
-            //지속 데미지 -> duration과 interval이 없음
-            boss.DotDamage(ds14Data.duration, ds14Data.period, ds14Data.damage);
+            monster.Reverse(mtgr94Data.duration);
         }
     }
 }

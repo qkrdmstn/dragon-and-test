@@ -29,10 +29,10 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         if (Player.instance.isBounded && Input.GetKeyDown(KeyCode.F)) DoInteraction();
-        if (dialogueInteraction.isDone || blanketInteraction.isDone || pickupItemInteraction.isDone || puzzleInteraction.isDone || shopInteraction.isDone)
-        {
+        if (pickupItemInteraction.isDone || puzzleInteraction.isDone)
+        {   // shop blanket dialogue는 uimanger에서 ui 다꺼진 이후 플레이어 상태 조정
             Player.instance.ChangePlayerInteractionState(false);
-            pickupItemInteraction.isDone = dialogueInteraction.isDone = blanketInteraction.isDone = puzzleInteraction.isDone = shopInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
+            pickupItemInteraction.isDone = puzzleInteraction.isDone = false; // 바꿔주지 않으면 해당 조건문 계속 호출...
         }
     }
 
@@ -139,26 +139,27 @@ public class PlayerInteraction : MonoBehaviour
     {
         BlanketInteractionData data = interaction as BlanketInteractionData;
         if (data.isActive && data.isClear)
-        {
-            data.isActive = false;
+        {   // possible to try only once by blanket
+            data.isActive = false;  
             blanketInteraction.LoadEvent();
         }
         else
         {
+            Player.instance.ChangePlayerInteractionState(false);
             blanketInteraction.isDone = true;
             return;
         }
     }
 
-    TutorialInteraction tuto;
+    TutorialInteraction tutorialInteraction;
     private void TutorialInteraction()
     {
-        if(tuto == null)
-            tuto = GameObject.Find("System").GetComponent<TutorialInteraction>();
+        if(tutorialInteraction == null)
+            tutorialInteraction = GameObject.Find("System").GetComponent<TutorialInteraction>();
 
-        if (interaction.eventName == "족보")
+        if (tutorialInteraction.interactionF && interaction.eventName == "Jokbo")
         {
-            tuto.jokboUIGroup.isPossibleJokbo = true;
+            tutorialInteraction.jokboUIGroup.isPossibleJokbo = true;
             Player.instance.ChangePlayerInteractionState(false);
             return;
         }
@@ -169,14 +170,17 @@ public class PlayerInteraction : MonoBehaviour
             BlanketDoInteraction();
         }
 
-        if (interaction.sequence == 0 && tuto.curIdx >= 2)
+        if (interaction.sequence == 0 && tutorialInteraction.curIdx >= 2)
         {
-            tuto.isInteraction = true;
+            tutorialInteraction.isInteraction = true;
             Player.instance.ChangePlayerInteractionState(false);
         }
-        else if (!tuto.checkSequenceDone[interaction.sequence] &&
-            interaction.sequence > 0 && !tuto.isInteraction && tuto.curIdx == 0)
-                tuto.LoadEvent(interaction);
+        else if((int)tutorialInteraction.curScarescrowState.type == interaction.sequence && tutorialInteraction.curScarescrowState.isSequenceDone)   // 종료된 허수아비
+            Player.instance.ChangePlayerInteractionState(false);
+
+        else if (tutorialInteraction.curScarescrowType == ScareScrowType.None &&
+            interaction.sequence > 0 && !tutorialInteraction.isInteraction && tutorialInteraction.curIdx == 0)
+            tutorialInteraction.LoadEvent(interaction);
 
         else Player.instance.ChangePlayerInteractionState(false);
     }

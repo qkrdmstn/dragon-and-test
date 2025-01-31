@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BlanketInteractionData : InteractionData
 {
-    public Spawner spawner;
     public BlockInfo curBlock;
+    public GameObject mapBlanketUI; 
+
     public bool isClear;
     public bool isActive;
     public bool isTutorial;
@@ -16,7 +18,6 @@ public class BlanketInteractionData : InteractionData
         isClear = false;
         isActive = true;
         
-        spawner = GameObject.FindObjectOfType<Spawner>();
         BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
         for(int i=0; i<blocks.Length; i++)
         {
@@ -34,11 +35,21 @@ public class BlanketInteractionData : InteractionData
 
         if (curBlock == null)
             isClear = true;
-        else if(isClear != curBlock.blockClear)
+        else if (isClear != curBlock.blockClear)
             isClear = curBlock.blockClear;
 
-        //모포 사용 후, 제거
         if (isClear && !isActive)
+        {   //모포 사용 후, 제거
+            Destroy(mapBlanketUI);  // 미니맵의 모포 UI도 같이 삭제
+
+
+            if (SceneManager.GetActiveScene().name != "BossTest") //보스테스트 예외처리
+            {
+                MapIndicator.curActiveBlanketCnt--;
+                MapIndicator.SetBlanketUICnt();
+            }
+
             Destroy(this.gameObject);
+        }
     }
 }

@@ -19,15 +19,13 @@ public class PlayerDashState : PlayerState
         //Attack Disable Setting
         player.isAttackable = false;
 
+        //Position Save
+        player.PositionHistorySave();
+
         //Dash Setting
         dashDir = new Vector2(xInput, yInput);
         dashDir.Normalize();
-        dashSpeed = player.dashSpeed;
-        if(SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
-        {
-            SkillDB sr46Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46);
-            dashSpeed += dashSpeed * (sr46Data.probability);
-        }
+        dashSpeed = player.ClacSpeed(player.dashSpeed);
 
         stateTimer = player.dashDuration;
         SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Dash);
@@ -41,7 +39,7 @@ public class PlayerDashState : PlayerState
         {
             //Attack Able Setting
             player.isAttackable = true;
-            Gun curGun = GunManager.instance.currentGun.GetComponent<Gun>();
+            Gun curGun = ItemManager.instance.gunController.GetCurGunComponent();
             curGun.shootTimer -= player.dashDuration;
 
             player.SetVelocity(0, 0);

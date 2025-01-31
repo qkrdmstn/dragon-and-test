@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,16 +12,17 @@ public class PlayerData
 
     public int playerHP;
     public int playerMP;
-    public SeotdaHwatuCombination[] skills;
-    public int curSkillCnt = 0;
+    public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
+    public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
     public List<HwatuData> hwatus;
+    public HashSet<GunItemData> gunItems;
+
     public int money;
-    public GunData curGun;
     public int curShieldCnt;
     public bool isClearTutorial;
 
     public PlayerData(float originPlayTime)
-    {
+    {   // 마을에서 저장시,
         date = new Date(
             DateTime.Now.ToString("yyyy"),
             DateTime.Now.ToString("MM"),
@@ -32,15 +34,16 @@ public class PlayerData
         totalPlayTime = originPlayTime + Time.realtimeSinceStartup;   // sec이므로 시분으로 바꿔야함
         chapterName = "Chapter 01. 이무기 마을";
 
-        playerHP = Player.instance.curHP;
+        playerHP = Player.instance.GetCurHP();
+        money = Player.instance.GetCurMoney();
         playerMP = 0; // 아직 미개발
-        skills = SkillManager.instance.activeSkillData;
-        curSkillCnt = SkillManager.instance.activeSkillCnt;
-        hwatus = SkillManager.instance.materialHwatuDataList == null ? new List<HwatuData>() : SkillManager.instance.materialHwatuDataList;
-        money = Player.instance.money;
 
-        curGun = GunManager.instance.currentGun.GetComponent<Gun>().initData;
-        curShieldCnt = Player.instance.shield;
+        activeSkill = SkillManager.instance.active.refSkill;
+        passiveSkill = SkillManager.instance.passive.refSkill;
+
+        hwatus = ItemManager.instance.curHoldingHwatuDatas;
+        gunItems = ItemManager.instance.gunController.curGunItems;
+        curShieldCnt = Player.instance.GetCurShield();
 
         isClearTutorial = Player.instance.isClearTutorial;
     }

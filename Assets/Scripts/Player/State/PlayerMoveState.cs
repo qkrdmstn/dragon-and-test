@@ -14,12 +14,8 @@ public class PlayerMoveState : PlayerState
     {
         base.Enter();
 
-        moveSpeed = player.moveSpeed;
-        if (SkillManager.instance.PassiveCheck(SeotdaHwatuCombination.SR46))
-        {
-            SkillDB sr46Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.SR46);
-            moveSpeed += moveSpeed * (sr46Data.probability);
-        }
+        moveSpeed = player.ClacSpeed(player.moveSpeed);
+        stateTimer = player.positionSaveInterval;
     }
 
     public override void Exit()
@@ -48,10 +44,18 @@ public class PlayerMoveState : PlayerState
         Vector2 dir = new Vector2(xInput, yInput);
         dir.Normalize();
 
+        moveSpeed = player.ClacSpeed(player.moveSpeed);
         Vector2 move = dir * moveSpeed;
         player.SetVelocity(move.x, move.y);
         player.animController.SetAnim(PlayerAnimState.Run, xInput, yInput);
 
         SoundManager.instance.PlayWalkEffect();
+
+        //Position Save
+        if(stateTimer < 0.0f)
+        {
+            stateTimer = player.positionSaveInterval;
+            player.PositionHistorySave();
+        }
     }
 }

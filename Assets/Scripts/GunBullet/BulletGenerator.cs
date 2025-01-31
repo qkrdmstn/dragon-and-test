@@ -5,7 +5,7 @@ public class BulletGenerator : MonoBehaviour
 {
     [SerializeField] GameObject bullets;
     [SerializeField] float bulletSpeed;
-    [SerializeField] float spawnSpeed;
+    [SerializeField] float spawnPeriod;
     [SerializeField] int spawnCnt;
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -14,7 +14,6 @@ public class BulletGenerator : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             TutorialInteraction.generateBullet = false;
-            GetComponentInParent<TutorialInteraction>().isActiveDone = true;
             StartCoroutine(InstantiateBullets());
         }
     }
@@ -29,7 +28,7 @@ public class BulletGenerator : MonoBehaviour
                 rigid.velocity = Vector2.left * bulletSpeed;
             }
             
-            yield return new WaitForSeconds(spawnSpeed);
+            yield return new WaitForSeconds(spawnPeriod);
         }
     }
 }

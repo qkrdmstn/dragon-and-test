@@ -1,20 +1,123 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
+enum SkillActionType
+{
+    Active, Passive
+}
+
+public struct ActiveSlotData
+{
+    public SeotdaHwatuCombination combination;
+    public float curCoolTime;
+    public bool coolTimeFlag;
+
+    public ActiveSlotData(SeotdaHwatuCombination c, float time)
+    {
+        combination = c;
+        curCoolTime = time;
+        coolTimeFlag = false;
+    }
+    public ActiveSlotData(SeotdaHwatuCombination c, float time, bool flag)
+    {
+        combination = c;
+        curCoolTime = time;
+        coolTimeFlag = flag;
+    }
+}
+
+public class Active
+{
+    Dictionary<ActiveSkillSlot, ActiveSlotData> skill; // 실제 데이터
+    public Action<ActiveSkillSlot, bool> action;
+
+    public Active()
+    {   // 생성자
+        skill = new Dictionary<ActiveSkillSlot, ActiveSlotData>()
+        {   // 스킬슬롯, 보유 액티브 스킬
+            { ActiveSkillSlot.Q, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f) }, { ActiveSkillSlot.E, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f)}
+        };
+    }
+
+    public Dictionary<ActiveSkillSlot, ActiveSlotData> refSkill
+    {   // read only
+        get { return skill; }
+    }
+    public ActiveSlotData this[ActiveSkillSlot slot]
+    {   // indexer
+        get { return skill[slot]; }
+        set
+        {
+            skill[slot] = value;
+            action.Invoke(slot, skill[slot].coolTimeFlag);
+        }
+    }
+    public bool this[ActiveSkillSlot slot, bool flag]
+    {   // indexer - cooltime flag
+        get { return skill[slot].coolTimeFlag; }
+        set
+        {
+            ActiveSlotData data = skill[slot];
+            data.coolTimeFlag = value;
+            skill[slot] = data;
+
+            action.Invoke(slot, skill[slot].coolTimeFlag);
+        }
+    }
+    public float this[ActiveSkillSlot slot, float curNum]
+    {   // indexer - cooltime
+        get { return skill[slot].curCoolTime; }
+        set
+        {
+            ActiveSlotData data = skill[slot];
+            data.curCoolTime = value;
+            skill[slot] = data;
+        }
+    }
+
+    public void DeleteAllActiveSkills()
+    {
+        this[ActiveSkillSlot.Q] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
+        this[ActiveSkillSlot.E] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
+    }
+}
+
+public class Passive
+{
+    Dictionary<SeotdaHwatuCombination, int> skill;  // 보유 패시브 스킬, 중첩 횟수
+    public Action<SeotdaHwatuCombination> action;
+    public Action clearAction;
+
+    public Passive()
+    {
+        skill = new Dictionary<SeotdaHwatuCombination, int>();
+    }
+    public Dictionary<SeotdaHwatuCombination, int> refSkill
+    {   // read-only
+        get { return skill; }
+    }
+    public int this[SeotdaHwatuCombination combination]
+    {   // indexer
+        get { return skill[combination]; }
+        set
+        {
+            skill[combination] = value;
+            action.Invoke(combination);
+        }
+    }
+    public void DeleteAllPassiveSkills()
+    {
+        skill.Clear();
+        clearAction.Invoke();
+    }
+}
+
 public class SkillManager : MonoBehaviour
 {
     public static SkillManager instance = null;
-    
-    [Header("Hwatu Data")]
-    public HwatuData[] hwatuData; //전체 카드 데이터
-    public GameObject hwatuItemObj;
-    public List<HwatuData> materialHwatuDataList; //조합 카드 데이터
-    public int materialCardCnt = 0;
-    public int materialCardMaxNum = 10;
 
     [Header("DB")]
     SkillDB[] datas;
@@ -22,23 +125,11 @@ public class SkillManager : MonoBehaviour
     public Dictionary<SeotdaHwatuCombination, Sprite> skillSpriteDictionary = new Dictionary<SeotdaHwatuCombination, Sprite>();
 
     [Header("Skill Data")]
-    //Active Skill
-    public int activeSkillCnt;
-    public SeotdaHwatuCombination[] activeSkillData;
-    public float[] timer;
+    public Active active = new Active();
+    public Passive passive = new Passive();
+    SkillPresenter skillpresenter;
 
-    //Passive Skill
-    public Dictionary<SeotdaHwatuCombination, int> passiveSkillCnt = new Dictionary<SeotdaHwatuCombination, int>();
-    public List<SeotdaHwatuCombination> passiveSkillData;
-
-    [Header("Skill UI info")]
-    [SerializeField] private Transform activeSkillSlotParent;
-    public ActiveSkillSlotUI[] activeSkillSlot;
-    [SerializeField] private SkillCoolTimeImg[] coolTimeImg;
-    [SerializeField] private Transform passiveSkillSlotParent;
-    public PassiveSkillSlotUI[] passiveSkillSlot;
-
-    private void Awake()
+    void Awake()
     {
         if (instance == null)
         { //생성 전이면
@@ -46,52 +137,45 @@ public class SkillManager : MonoBehaviour
         }
         else if (instance != this)
         { //이미 생성되어 있으면
-
             Destroy(this.gameObject); //새로만든거 삭제
         }
-
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
     async void Start()
     {   //Initialize
         InitializeSkillData();
-        InitializeUI(); 
         await LoadSkillDB();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab) && !Player.instance.isInteraction) //Skill Slot Swap
-        {
             SkillSwap();
-        }
 
         if (Input.GetKeyDown(KeyCode.Q) && !Player.instance.isInteraction)
         {
-            if (timer[0] > 0.0f)
+            if (active[ActiveSkillSlot.Q].coolTimeFlag)
                 Debug.Log("Q Skill is cooldown time");
             else
-                Skill(0);
+                Skill(ActiveSkillSlot.Q);
         }
 
         if (Input.GetKeyDown(KeyCode.E) && !Player.instance.isInteraction)
         {
-            if (timer[1] > 0.0f)
+            if (active[ActiveSkillSlot.E].coolTimeFlag)
                 Debug.Log("E Skill is cooldown time");
             else
-                Skill(1);
+                Skill(ActiveSkillSlot.E);
         }
     }
 
     #region Initialize Func
     private void InitializeSkillData()
-    {
-        //화투 데이터 로드
-        hwatuData = Resources.LoadAll<HwatuData>("HwatuData");
-
+    {  
         //스킬 이미지 로드, Dictionary 구성
         Sprite [] skillImages = Resources.LoadAll<Sprite>("SkillSprite");
+
         for(int i = 0; i < skillImages.Length; i++)
         {
             for (int j = 0; j < 33; j++)
@@ -103,17 +187,11 @@ public class SkillManager : MonoBehaviour
                 }
             }
         }
-
-        materialHwatuDataList = new List<HwatuData>();
-        passiveSkillData = new List<SeotdaHwatuCombination>();
-        activeSkillData = new SeotdaHwatuCombination[]{ SeotdaHwatuCombination.blank, SeotdaHwatuCombination.blank };
-        activeSkillCnt = 0;
-        timer = new float[2];
+        skillpresenter = UIManager.instance.presenters[1] as SkillPresenter;
     }
 
     private async Task LoadSkillDB()
-    {
-        //스킬 DataBase 로드
+    {   //스킬 DataBase 로드
         datas = await DataManager.instance.GetValues<SkillDB>(SheetType.SkillDB, "A1:L33");
         for (int i = 0; i < datas.Length; i++)
         {
@@ -121,207 +199,135 @@ public class SkillManager : MonoBehaviour
         }
         ScenesManager.instance.isLoadedDB++;
     }
-
-    private void InitializeUI()
-    {
-        activeSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[3].transform;
-        activeSkillSlot = activeSkillSlotParent.GetComponentsInChildren<ActiveSkillSlotUI>();
-
-        passiveSkillSlotParent = UIManager.instance.SceneUI["Battle_1"].GetComponent<BattleUIGroup>().childUI[5].GetComponent<BlanketUI>().passiveSkillSlotParent;
-        passiveSkillSlot = passiveSkillSlotParent.GetComponentsInChildren<PassiveSkillSlotUI>();
-
-        Transform cooltimeUIParent = activeSkillSlotParent.GetChild(1);
-        coolTimeImg = new SkillCoolTimeImg[2];
-        for (int i = 0; i < 2; i++)
-        {
-            activeSkillSlot[i].ClearSlot();
-            coolTimeImg[i] = cooltimeUIParent.GetChild(i).GetComponent<SkillCoolTimeImg>();
-            coolTimeImg[i].gameObject.SetActive(false);
-        }
-    }
     #endregion
-
-    public void AddMaterialCardData(HwatuData _data)
-    {
-        if(materialCardCnt >= materialCardMaxNum)
-        {
-            Debug.Log("The card data is full");
-            return;
-        }    
-
-        materialHwatuDataList.Add(_data);
-        materialCardCnt = materialHwatuDataList.Count;
-        materialHwatuDataList.Sort();
-    }
-
-    public void DeleteMaterialCardData(HwatuData _data)
-    {
-        materialHwatuDataList.Remove(_data);
-        materialCardCnt = materialHwatuDataList.Count;
-        materialHwatuDataList.Sort();
-    }
-
-    public void DeleteAllCardData()
-    {
-        materialHwatuDataList.Clear();
-        materialCardCnt = materialHwatuDataList.Count;
-    }
 
     public void AddSkill(SeotdaHwatuCombination skill)
     {
-        int skillNum = (int)skill;
         if(skill == SeotdaHwatuCombination.KK0)
         {
-            int damage = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.KK0).damage;
+            int damage = GetSkillDB(SeotdaHwatuCombination.KK0).damage;
             Player.instance.OnDamamged(damage);
         }
-        //Add Passive Skill
-        else if (skillNum >= 13 && skillNum <= 18)
+        else if (IsPassive(skill)) //Add Passive Skill
         {
-            //스킬 보유 X
-            if (passiveSkillData.FindIndex(x => x == skill) == -1)
-            {
-                passiveSkillData.Add(skill);
-                passiveSkillCnt.Add(skill, 1);
-            }
-            else
-            {
-                passiveSkillCnt[skill]++;
-                skillDBDictionary[skill].probability += skillDBDictionary[skill].growCoefficient;
-            }
-            UpdatePassiveSkillSlot();
+            if (passive.refSkill.ContainsKey(skill)) passive[skill]++;
+            else passive[skill] = 1;
         }
         else //Add Active Skill
         {
-            if (activeSkillData[0] == SeotdaHwatuCombination.blank)
-                activeSkillData[0] = skill;
-            else if (activeSkillData[1] == SeotdaHwatuCombination.blank)
-                activeSkillData[1] = skill;
-            activeSkillCnt++;
-
-            UpdateActiveSkillSlot();
+            if (active[ActiveSkillSlot.Q].combination == SeotdaHwatuCombination.blank)
+            {
+                active[ActiveSkillSlot.Q] = new ActiveSlotData(skill, skillDBDictionary[skill].coolTime);
+            }
+            else if (active[ActiveSkillSlot.E].combination == SeotdaHwatuCombination.blank)
+            {
+                active[ActiveSkillSlot.E] = new ActiveSlotData(skill, skillDBDictionary[skill].coolTime);
+            }
         }
     }
 
     public void DeleteSkill(SeotdaHwatuCombination skill)
     {
-        for(int i=0; i<2; i++)
+        foreach (var data in active.refSkill)
         {
-            if (activeSkillData[i] == skill)
+            if(data.Value.combination == skill)
             {
-                activeSkillData[i] = SeotdaHwatuCombination.blank;
-                activeSkillCnt--;
+                active[data.Key] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
                 break;
             }
         }
-        UpdateActiveSkillSlot();
     }
 
-    public void DeleteAllSkill()
+    public void DeleteSkill(ActiveSkillSlot type)
     {
-        for (int i = 0; i < 2; i++)
-        {
-            activeSkillData[i] = SeotdaHwatuCombination.blank;
-            activeSkillCnt--;
-        }
-        UpdateActiveSkillSlot();
+        active[type] = new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f);
     }
 
     private void SkillSwap()
-    {
-        //Data Swap
-        SeotdaHwatuCombination temp = activeSkillData[0];
-        activeSkillData[0] = activeSkillData[1];
-        activeSkillData[1] = temp;
-        UpdateActiveSkillSlot();
+    {   //Data Swap
+        skillpresenter.StopAllCoroutines();
 
-        //CoolTime UI Swap
-        float tempTimer = timer[0];
-        timer[0] = timer[1];
-        timer[1] = tempTimer;
-
-        StopAllCoroutines();
-        for (int i = 0; i < coolTimeImg.Length; i++)
-        {
-            if (activeSkillData[i] == SeotdaHwatuCombination.blank)
-                continue;
-            coolTimeImg[i].gameObject.SetActive(timer[i] > 0.0f);
-            
-            StartCoroutine(CoolTimeFunc(skillDBDictionary[activeSkillData[i]].coolTime, i, false));
-        }
+        ActiveSlotData temp = active[ActiveSkillSlot.Q];
+        active[ActiveSkillSlot.Q] = active[ActiveSkillSlot.E];
+        active[ActiveSkillSlot.E] = temp;
     }
 
     //Use Skill
-    private void Skill(int i)
+    private void Skill(ActiveSkillSlot type)
     {
         PlayerSkill skill = Player.instance.GetComponent<PlayerSkill>();
-        if (activeSkillData[i] == SeotdaHwatuCombination.blank)
+        if (active[type].combination == SeotdaHwatuCombination.blank)
             return;
 
-        SkillDB data = GetSkillDB(activeSkillData[i]);
-        skill.UseSkill(data);
+        SkillDB data = GetSkillDB(active[type].combination);
+        float coolTime = skill.UseSkill(data);
 
-        //CoolTime UI setting
-        timer[i] = data.coolTime;
-        coolTimeImg[i].gameObject.SetActive(true);
-        StartCoroutine(CoolTimeFunc(data.coolTime, i, true));
-    }
-
-    public void UpdateActiveSkillSlot()
-    {
-        for (int i = 0; i < 2; i++)
-            activeSkillSlot[i].ClearSlot();
-        for (int i = 0; i < 2; i++)
-            activeSkillSlot[i].UpdateSlot(activeSkillData[i]);
-    }
-
-    public void UpdatePassiveSkillSlot()
-    {
-        for(int i=0; i<passiveSkillSlot.Length; i++)
-            passiveSkillSlot[i].ClearSlot();
-        for (int i = 0; i < passiveSkillData.Count; i++)
-            passiveSkillSlot[i].UpdateSlot(passiveSkillData[i]);
-    }
-
-    IEnumerator CoolTimeFunc(float coolTime, int i, bool flag)
-    {
-        if (flag)
-            timer[i] = coolTime;
-        while (timer[i] > 0.0f)
+        if (coolTime > 0.0f)
         {
-            timer[i] -= Time.deltaTime;
-            coolTimeImg[i].img.fillAmount = timer[i] / coolTime;
-            coolTimeImg[i].text.text = Math.Round(timer[i], 1).ToString();
-            yield return new WaitForFixedUpdate();
-        }
-        coolTimeImg[i].gameObject.SetActive(false);
-    }
-
-    public void RollingAdvantage()
-    {
-        for(int i=0; i<2; i++)
-        {
-            timer[i] -= 0.5f;
+            if(!Player.instance.isSuperman || active[type].combination == SeotdaHwatuCombination.GTT38) //초사이언 스킬쿨 초기화, 38 광땡은 예외
+            {   //CoolTime UI setting
+                active[type, flag:true] = true;
+            }
         }
     }
 
-    public bool PassiveCheck(SeotdaHwatuCombination skillName)
+    public bool IsFullActive()
     {
-        for(int i=0; i< passiveSkillData.Count; i++)
+        if(active[ActiveSkillSlot.Q].combination != SeotdaHwatuCombination.blank && active[ActiveSkillSlot.E].combination != SeotdaHwatuCombination.blank)
         {
-            if (passiveSkillData[i] == skillName)
-                return true;
+            return true;
         }
         return false;
     }
 
+    public void DashCoolTimeAdvantage()
+    {
+        List<ActiveSkillSlot> keys = active.refSkill.Keys.ToList();
+        bool isCoolTime = false;
+
+        for(int i=0; i<keys.Count; i++)
+        {
+            if (active[keys[i]].coolTimeFlag)
+            {
+                active[keys[i], curNum: 0.5f] -= 0.5f;
+                isCoolTime = true;
+            }
+        }
+
+        if (isCoolTime)
+            SoundManager.instance.SetEffectSound(SoundType.Player, PlayerSfx.Avoid);
+    }
+
+    public void ClearCoolTimer(ActiveSkillSlot slot, float originTime)
+    {
+        active[slot, flag:false] = false;
+        active[slot, curNum:originTime] = originTime;
+    }
+
+    public void ClearCoolTimer()
+    {
+        active[ActiveSkillSlot.Q, flag:false] = false;
+        active[ActiveSkillSlot.E, flag:false] = false;
+    }
+
+    public bool PassiveCheck(SeotdaHwatuCombination skillName) //패시브 보유 여부 확인
+    {
+        return passive.refSkill.ContainsKey(skillName) ? true : false;
+    }
+
+    public bool IsPassive(SeotdaHwatuCombination skillName) //해당 스킬이 패시브 스킬인지 확인
+    {
+        int skillNum = (int)skillName;
+        if (skillNum >= 13 && skillNum <= 21)
+            return true;
+        else 
+            return false;
+    }       
+
     public void ClearSkill()
-    {   // hwatu
-        DeleteAllCardData();
-        // active
-        DeleteAllSkill();
-        // passive
-        // todo
+    {
+        active.DeleteAllActiveSkills();
+        passive.DeleteAllPassiveSkills();
     }
 
     public SkillDB GetSkillDB(SeotdaHwatuCombination skillName)
@@ -330,12 +336,33 @@ public class SkillManager : MonoBehaviour
         return data;
     }
 
-    public string GetSkillInfo(SeotdaHwatuCombination skillName)
+    public float GetSkillProb(SeotdaHwatuCombination skillName)
     {
-        SkillDB skillData = SkillManager.instance.GetSkillDB(skillName);
+        SkillDB skillData = GetSkillDB(skillName);
+
+        if (IsPassive(skillName) && passive.refSkill.ContainsKey(skillName))
+            return skillData.probability + (passive.refSkill[skillName] - 1) * skillData.growCoefficient;
+        else
+            return skillData.probability;
+    }
+
+    public string GetSkillInfo(SeotdaHwatuCombination skillName, bool flag) //true면 성장계수 반영
+    {
+        SkillDB skillData = GetSkillDB(skillName);
         float prob = skillData.probability;
         string skillInfo = skillData.info;
-        skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+        if(flag)
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((GetSkillProb(skillName) * 100), 1).ToString() + "%</color>");
+        else
+            skillInfo = skillInfo.Replace("probability", "<color=red>" + Math.Round((skillData.probability * 100), 1).ToString() + "%</color>");
+
+        if (skillName == SeotdaHwatuCombination.AHES74)
+        {
+            if (flag)
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + GetSkillProb(skillName).ToString() + "</color>");
+            else
+                skillInfo = skillInfo.Replace("probability", "<color=red>" + skillData.probability.ToString() + "</color>");
+        }
 
         return skillInfo;
     }
