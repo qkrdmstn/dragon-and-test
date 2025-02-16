@@ -1,17 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class HwatuItemObject : MonoBehaviour
 {
     public HwatuData hwatuData;
-    //public BlockInfo curBlock;
     private float speed = 10;
 
     SpriteRenderer spriteRenderer;
 
-    // Start is called before the first frame update
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -19,21 +14,9 @@ public class HwatuItemObject : MonoBehaviour
 
     private void Start()
     {
-        ////어떤 block 내부에 있는지 확인
-        //BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
-        //for (int i = 0; i < blocks.Length; i++)
-        //{
-        //    if (blocks[i].IsInBlock(this.transform.position))
-        //    {
-        //        curBlock = blocks[i];
-        //        break;
-        //    }
-        //}
-
         spriteRenderer.sprite = hwatuData.sprite;
     }
 
-    // Update is called once per frame
     void Update()
     {
         //if (curBlock.blockClear)
@@ -45,6 +28,7 @@ public class HwatuItemObject : MonoBehaviour
             if (distance < 0.1f)
             { //물체가 캐릭터로 이동하면서 거리가 일정 미만되면 습득
                 ItemManager.instance.AddHwatuCard(hwatuData);
+                SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.GetHwatu);
                 Destroy(gameObject);
             }
         //}

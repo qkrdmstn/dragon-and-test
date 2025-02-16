@@ -5,19 +5,39 @@ using UnityEngine;
 public class PresenterBase : MonoBehaviour
 {
     public GameObject[] objs;
-    public virtual bool ActivateEachUI()
+    //public virtual bool ActivateEachUI()
+    //{
+    //    if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start || ScenesManager.instance.GetSceneEnum() == SceneInfo.Town_1)
+    //    {
+    //        foreach (GameObject ui in objs)
+    //        {
+    //            ui.SetActive(false);
+    //        }
+    //        return true;
+    //    }
+    //    else
+    //    {   // tutorial, battle, puzzle, boss
+    //        return false;
+    //    }
+    //}
+
+    public virtual SceneInfo ActivateEachUI()
     {
-        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start || ScenesManager.instance.GetSceneEnum() == SceneInfo.Town_1)
+        if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Start)
         {
             foreach (GameObject ui in objs)
             {
                 ui.SetActive(false);
             }
-            return true;
+            return SceneInfo.Start;
+        }
+        else if (ScenesManager.instance.GetSceneEnum() == SceneInfo.Town_1)
+        {   // for inventory 
+            return SceneInfo.Town_1;
         }
         else
         {   // tutorial, battle, puzzle, boss
-            return false;
+            return SceneInfo.Battle_1_A;
         }
     }
 }

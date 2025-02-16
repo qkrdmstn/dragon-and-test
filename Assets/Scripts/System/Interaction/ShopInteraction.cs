@@ -182,6 +182,7 @@ public class ShopInteraction : Interaction
         {
             state = StateOfBuy.YesBuy;
             ManagePurchase();
+            SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.BuyShop);
         }
         return state;
     }
@@ -232,6 +233,7 @@ public class ShopInteraction : Interaction
     Color selectedColor = new Color(0.75f, 0.92f, 0.88f);
     void Selection(int idx)
     {   // input = 선택한 분기의 인덱스 : w - 0 / s - 1
+        SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Select);
         selectionImg[(idx + 1) % 2].color = Color.white;    // 반투명
         selectionImg[idx % 2].color = selectedColor;
 
@@ -246,7 +248,9 @@ public class ShopInteraction : Interaction
             canvas.sortingOrder = 1;
             UIManager.instance.PushPopUI(shopUIGroup.gameObject);
             // 기존 맵의 미니맵이랑 global canvas의 돈 UI 비활성화 -> local canvas 의 전용 money UI가 active
-            if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(false);
+            if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1
+                || ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1
+                || ScenesManager.instance.GetSceneNum() != 7) mapIndicator.SetActive(false);
             UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, false);
         }
         else {

@@ -21,7 +21,9 @@ public enum MonsterSfx
 }
 public enum UISfx
 {
-    Snap, mopo, doorOpen, doorClose, Jokbo, Click
+    Snap, mopo, doorOpen, doorClose, Jokbo, Click,
+    BuyShop, GetCoin, GetDragonFruit, GetHwatu, Dialogue, Select,
+
 }
 
 public enum PuzzleSfx
@@ -201,8 +203,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    // for inspector setting
     public void PlayClickEffect()
     {
         SetEffectSound(SoundType.UI, UISfx.Click);
+    }
+
+    public void PlayUIEffeect(int uISfx)
+    {   // click : 5, select : 11
+        SetEffectSound(SoundType.UI, (UISfx)uISfx);
     }
 }

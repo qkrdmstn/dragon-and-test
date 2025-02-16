@@ -10,6 +10,7 @@ public class HPRecovery_ItemEffect : ItemEffect
     public override void ExcuteEffect()
     {
         base.ExcuteEffect();
+        SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.GetDragonFruit);
         playerPresenter.Heal(increaseHP);
 
         Debug.Log("Health Recovery Effect");

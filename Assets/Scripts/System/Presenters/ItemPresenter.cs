@@ -83,7 +83,7 @@ public class ItemInventory
         if(itemData != null)
         {
             inventory.SetInfoUI(itemData);
-            SoundManager.instance.PlayClickEffect();
+            SoundManager.instance.PlayUIEffeect(5); // click
         }
     }
 
@@ -289,13 +289,18 @@ public class ItemPresenter : PresenterBase
     }
     #endregion
 
-    public override bool ActivateEachUI()
+    public override SceneInfo ActivateEachUI()
     {
-        if (!base.ActivateEachUI())
+        if (base.ActivateEachUI() == SceneInfo.Battle_1_A)
         {   // UI기 켜져야하는 배틀, 튜토리얼, 보스, 퍼즐씬
             objs[1].SetActive(true);    // gun
             objs[2].SetActive(true);    // bullet
+            objs[3].SetActive(true);    // inventory
         }
-        return true;
+        else if(base.ActivateEachUI() == SceneInfo.Town_1)
+        {
+            objs[3].SetActive(true);    // inventory
+        }
+        return SceneInfo.Battle_1_A;
     }
 }

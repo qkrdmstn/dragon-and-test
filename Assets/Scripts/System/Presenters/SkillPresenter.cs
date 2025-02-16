@@ -176,13 +176,13 @@ public class SkillPresenter : PresenterBase
     }
     #endregion
 
-    public override bool ActivateEachUI()
+    public override SceneInfo ActivateEachUI()
     {
-        if(!base.ActivateEachUI())
+        if(base.ActivateEachUI() == SceneInfo.Battle_1_A)  // battle
         {   // UI기 켜져야하는 배틀, 튜토리얼, 보스, 퍼즐씬
             objs[1].SetActive(true);    // skillslot
             objs[2].SetActive(true);    // hwatu
         }
-        return true;
+        return SceneInfo.Battle_1_A;
     }
 }

@@ -155,6 +155,7 @@ public class DialogueInteraction : Interaction
         {   
             if (Input.GetKeyDown(KeyCode.F))
             {   //  일반 대화 출력
+                SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Dialogue);
                 if (dialogDatas.Count == curIdx) isDone = true;
                 else curIdx = SetNextDialog(curIdx);
             }
@@ -236,9 +237,10 @@ public class DialogueInteraction : Interaction
 
         selectionTxt[(idx+1) % 2].color = color;    // 반투명
         color.a = 1f;
-        selectionTxt[idx % 2].color = color;        
+        selectionTxt[idx % 2].color = color;
+        SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Select);
 
-        if(idx == 2)
+        if (idx == 2)
         {
             result = 0;
         }
