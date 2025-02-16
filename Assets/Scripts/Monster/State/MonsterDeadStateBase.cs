@@ -13,7 +13,6 @@ public class MonsterDeadStateBase : MonsterState
     {
         base.Enter();
         monster.isStateChangeable = false;
-        monster.isDead = true;
         monster.SetSpeed(0.0f);
         monster.StopAllCoroutines();
         Dead();

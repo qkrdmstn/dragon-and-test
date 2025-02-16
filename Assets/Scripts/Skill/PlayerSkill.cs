@@ -381,7 +381,6 @@ public class PlayerSkill : MonoBehaviour
         if (dir.y < 0)
             theta *= -1;
 
-        Debug.Log("asd1");
         BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
         for (int i = 0; i < blocks.Length; i++)
         {
@@ -393,10 +392,9 @@ public class PlayerSkill : MonoBehaviour
         }
         if (curBlock == null)
             return 0.0f;
-        Debug.Log("asd2");
 
         float diagonalLen = (curBlock.GetBlockMax() - curBlock.GetBlockMin()).magnitude;
-        float dist = 1.5f * diagonalLen;
+        float dist = 1.25f * diagonalLen;
         
         Vector3 initPos = this.transform.position;
         while(curBlock.IsInBlock(initPos))
