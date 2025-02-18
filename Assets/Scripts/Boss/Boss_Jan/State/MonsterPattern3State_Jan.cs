@@ -44,6 +44,7 @@ public class MonsterPattern3State_Jan : MonsterState
         pattern3Object.ObjectSetActive(true);
         yield return new WaitForSeconds(monster.pattern3DisplayTime);
 
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanFootStep);
         //플레이어 데미지
         if (pattern3Object.IsInSafeZone())
             Debug.Log("is Safe");

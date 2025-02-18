@@ -97,6 +97,7 @@ Transform:
   - {fileID: 3583909176370244200}
   - {fileID: 797422781645413662}
   - {fileID: 7878998537519074438}
+  - {fileID: 2659534669537310083}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -160,6 +161,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 970d6c4d9ed1af042be15d1a17a8d783, type: 3}
     - {fileID: 8300000, guid: 2f51b5a88234f1548a24bc9e486d10ca, type: 3}
     - {fileID: 8300000, guid: 59bac8091507a704eb0b3ea15a77211f, type: 3}
+  - myType: 4
+    sfxVolume: 1
+    effectClips:
+    - {fileID: 8300000, guid: 79f3a45b31d830141baebfcc92de5681, type: 3}
+    - {fileID: 8300000, guid: 5a496abb5f67e1940bc8a67b44c504e6, type: 3}
+    - {fileID: 8300000, guid: c80958db8b9ea0e438c787a7d83a11a9, type: 3}
+    - {fileID: 8300000, guid: b217280947721664dbaacffa450d6826, type: 3}
   _bgmVolume: 0.25
   fadeDuration: 1.5
   fadeTimer: 0
@@ -168,6 +176,7 @@ MonoBehaviour:
   - {fileID: 4950994714391672499}
   - {fileID: 4742957363217854997}
   - {fileID: 4837166159662747332}
+  - {fileID: 6881982209700795474}
   channels: 25
   isFadeOut: 0
 --- !u!1 &4742957363217854997
@@ -293,4 +302,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 462036006682061991}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6881982209700795474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2659534669537310083}
+  m_Layer: 0
+  m_Name: BossEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2659534669537310083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881982209700795474}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 462036006682061991}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

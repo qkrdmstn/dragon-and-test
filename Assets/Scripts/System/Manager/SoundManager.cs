@@ -5,7 +5,7 @@ using System;
 
 public enum SoundType
 {
-    Player, Monster, UI, Puzzle
+    Player, Monster, UI, Puzzle, Boss
 }
 public enum PlayerSfx
 {
@@ -24,6 +24,11 @@ public enum UISfx
     Snap, mopo, doorOpen, doorClose, Jokbo, Click,
     BuyShop, GetCoin, GetDragonFruit, GetHwatu, Dialogue, Select,
 
+}
+
+public enum BossSfx
+{
+    JanBasicAttack, JanFootStep, JanWingBomb, JanWings
 }
 
 public enum PuzzleSfx

@@ -61,7 +61,9 @@ public class MonsterPattern4State_Jan : MonsterState
                 }
             }
         }
-        yield return new WaitForSeconds(2.0f);
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanWings);
+
+        yield return new WaitForSeconds(monster.pattern4BulletSpreadDelay);
 
         int bulletIndex = 0;
         for (int i = 0; i < bulletRowNum; i++)
@@ -79,7 +81,7 @@ public class MonsterPattern4State_Jan : MonsterState
                 bulletIndex++;
             }
         }
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(monster.pattern4BulletMoveDelay);
 
         bulletIndex = 0;
         for (int i = 0; i < bulletRowNum; i++)

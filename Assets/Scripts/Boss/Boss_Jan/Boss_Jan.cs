@@ -71,6 +71,8 @@ public class Boss_Jan : Boss
     public float pattern4StartInterval = 1.1f;
     public float pattern4EndInterval = 0.5f;
     public float pattern4BulletSpeed = 0.6f;
+    public float pattern4BulletSpreadDelay = 2.0f;
+    public float pattern4BulletMoveDelay = 2.0f;
 
     [Header("Spawn Monster State Info")]
     public GameObject[] spawnMosnterPrefabs;

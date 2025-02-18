@@ -74,7 +74,7 @@ public class MonsterPattern2State_Jan : MonsterState
             yield return null;
         }
         GameObject.Destroy(displayObj);
-
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanWingBomb);
 
         Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(shootPos, monster.pattern2AttackRange, impactLayerMask);
         for (int i = 0; i < inRangeTarget.Length; i++)

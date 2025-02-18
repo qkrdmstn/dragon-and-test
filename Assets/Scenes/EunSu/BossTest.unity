@@ -380,6 +380,10 @@ PrefabInstance:
       propertyPath: m_Player
       value: 
       objectReference: {fileID: 1646492780}
+    - target: {fileID: 2584711046367389845, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3263377852241448129, guid: c8bcb98a6201f2949855a997c29f3848, type: 3}
       propertyPath: m_RootOrder
       value: 15
@@ -1935,6 +1939,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 462036006682061988, guid: d08093b05275a45b7b1352ffc9fcc9fb, type: 3}
+      propertyPath: effects.Array.data[4].sfxVolume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 462036006682061990, guid: d08093b05275a45b7b1352ffc9fcc9fb, type: 3}
       propertyPath: m_Name
       value: SoundManager
@@ -2671,7 +2679,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1770643196
 Transform:
   m_ObjectHideFlags: 0
@@ -2705,7 +2713,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1855009988
 Transform:
   m_ObjectHideFlags: 0
@@ -3481,7 +3489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971533, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971537, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_RootOrder
@@ -3526,6 +3534,14 @@ PrefabInstance:
     - target: {fileID: 1795990479263971537, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1795990479263971539, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
+      propertyPath: initState
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1795990479263971539, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
+      propertyPath: pattern2ShootNum
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
