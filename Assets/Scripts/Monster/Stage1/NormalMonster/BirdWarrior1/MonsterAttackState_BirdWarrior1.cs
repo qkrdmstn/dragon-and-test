@@ -33,9 +33,9 @@ public class MonsterAttackState_BirdWarrior1 : MonsterAttackStateBase
 
     IEnumerator Shoot()
     {
-        monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, monster.CheckDir());
         for (int i = 0; i < monster.shootNum; i++)
         {
+            monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, monster.CheckDir());
             Vector3 dir = player.transform.position - monster.transform.position;
 
             GameObject aura = GameObject.Instantiate(monster.swordAura, monster.transform.position, Quaternion.identity);

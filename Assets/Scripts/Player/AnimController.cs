@@ -85,6 +85,11 @@ public class AnimController : MonoBehaviour
     {   
         skeletonAnimation.timeScale = speed;
     }
+
+    public void SetAnimLoop(bool _loop)
+    {
+        skeletonAnimation.loop = _loop;
+    }
 }
 
 

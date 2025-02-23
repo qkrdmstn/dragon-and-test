@@ -42,6 +42,7 @@ public class MonsterAttackState_BirdArcher1 : MonsterAttackStateBase
         for (int i = 0; i < monster.shootNum; i++)
         {
             SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.farAttack);
+            monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, monster.CheckDir());
 
             Vector3 dir = player.transform.position - monster.transform.position;
             

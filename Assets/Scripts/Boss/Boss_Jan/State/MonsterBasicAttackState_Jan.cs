@@ -64,7 +64,7 @@ public class MonsterBasicAttackState_Jan : MonsterState
         shootDir = Quaternion.AngleAxis(degree, Vector3.forward) * shootDir;
 
         bullet.BulletInitialize(shootDir, monster.bulletSpeed, monster.bulletRange);
-       // SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanBasicAttack);
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanBasicAttack);
     }
 
     IEnumerator ReloadCoroutine()
