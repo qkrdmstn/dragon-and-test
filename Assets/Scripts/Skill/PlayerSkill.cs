@@ -1,3 +1,4 @@
+using Cinemachine;
 using DG.Tweening.Plugins;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +16,17 @@ public class PlayerSkill : MonoBehaviour
 
     public GameObject[] skillPrefabs;
     Dictionary<SeotdaHwatuCombination, GameObject> skillObjDictionary = new Dictionary<SeotdaHwatuCombination, GameObject>();
+
+    [Header("Camera Setting")]
+    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+
+    [Header("Blank Bullet Info")]
+    public ShockWaveEffect shockWaveEffectManager;
+    public CamShakeProfile shockWaveEffectProfile;
+    public float shockWaveTime = 0.3f;
+    public float shockWaveTimeScale = 0.3f;
+    public float shockWaveSlowDuration = 0.3f;
 
     // Start is called before the first frame update
     void Start()
@@ -35,29 +47,16 @@ public class PlayerSkill : MonoBehaviour
         }
 
         impactLayerMask = LayerMask.GetMask("Monster", "MonsterBullet");
+        shockWaveEffectManager = GetComponentInChildren<ShockWaveEffect>();
+        cameraManager = FindObjectOfType<CameraManager>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            //SokbakSkill(SeotdaHwatuName.AprCuckoo, 5, 6, 15);
-            //FlameThrower(SeotdaHwatuName.FebBird, 1, 5, 0.3f);
-            //Flooring(SeotdaHwatuName.JanCrane, 1, 10, 15f, 1.5f);
-            //GuidedMissile(SeotdaHwatuCombination.TT9, 1, 10, 10, 2.5f);
-
-        }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            //Flooring(SeotdaHwatuName.MayBridge, 1, 10, 15f, 1.5f);
-            //FlameThrower(SeotdaHwatuCombination.TT3, 1, 5, 0.3f);
-            //GuidedMissile(SeotdaHwatuName.JulBoar, 1, 10, 10, 2.5f);
-        }
-        //if(Input.GetKeyDown(KeyCode.J))
-        //{
-        //    BlankBullet(2, 6, 30);
-        //}
+        if (cameraManager == null) cameraManager = FindObjectOfType<CameraManager>();
     }
+
     public float UseSkill(SkillDB data)
     {
         SeotdaHwatuCombination code = data.TransStringToEnum();
@@ -143,8 +142,18 @@ public class PlayerSkill : MonoBehaviour
     #region BlankBullet
     private float BlankBullet(int damage, float impactRadius, float impactForce, float coolTime)
     {
-        _impactRadius = impactRadius;
+        StartCoroutine(BlankBulletCoroutine(damage, impactRadius, impactForce));
 
+        return coolTime;
+    }
+
+    private IEnumerator BlankBulletCoroutine(int damage, float impactRadius, float impactForce)
+    {
+        _impactRadius = impactRadius;
+        shockWaveEffectManager.CallShockWave(shockWaveTime);
+        cameraManager.CameraShakeFromProfile(shockWaveEffectProfile, impulseSource);
+        Time.timeScale = shockWaveTimeScale;
+        
         Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(this.transform.position, impactRadius, impactLayerMask);
         for (int i = 0; i < inRangeTarget.Length; i++)
         {
@@ -169,7 +178,8 @@ public class PlayerSkill : MonoBehaviour
             }
         }
 
-        return coolTime;
+        yield return new WaitForSecondsRealtime(shockWaveSlowDuration);
+        Time.timeScale = 1.0f;
     }
     #endregion
 

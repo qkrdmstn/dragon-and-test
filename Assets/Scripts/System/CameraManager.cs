@@ -32,6 +32,7 @@ public class CameraManager : MonoBehaviour
         impulseSource.GenerateImpulseWithForce(profile.impactForce);
     }
 
+
     void SetCameraShakeProfile(CamShakeProfile profile, CinemachineImpulseSource impulseSource)
     {
         impulseDefinition = impulseSource.m_ImpulseDefinition;
@@ -41,6 +42,27 @@ public class CameraManager : MonoBehaviour
         impulseDefinition.m_CustomImpulseShape = profile.impulseCurve;
 
         impulseSource.m_DefaultVelocity = profile.defaultVelocity;
+
+        // Custom Impulse Listener Setting
+        impulseListener.m_ReactionSettings.m_AmplitudeGain = profile.listenerAmplitude;
+        impulseListener.m_ReactionSettings.m_FrequencyGain = profile.listenerFrequency;
+        impulseListener.m_ReactionSettings.m_Duration = profile.listenerDuration;
+    }
+    public void CameraShakeFromProfile(CamShakeProfile profile, CinemachineImpulseSource impulseSource, Vector3 velocity)
+    {   // custom type by object
+        SetCameraShakeProfile(profile, impulseSource, velocity);
+        impulseSource.GenerateImpulseWithForce(profile.impactForce);
+    }
+
+    void SetCameraShakeProfile(CamShakeProfile profile, CinemachineImpulseSource impulseSource, Vector3 velocity)
+    {
+        impulseDefinition = impulseSource.m_ImpulseDefinition;
+
+        // Custom Impulse Source Setting
+        impulseDefinition.m_ImpulseDuration = profile.impactDuration;
+        impulseDefinition.m_CustomImpulseShape = profile.impulseCurve;
+
+        impulseSource.m_DefaultVelocity = velocity;
 
         // Custom Impulse Listener Setting
         impulseListener.m_ReactionSettings.m_AmplitudeGain = profile.listenerAmplitude;

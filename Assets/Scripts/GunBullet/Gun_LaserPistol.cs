@@ -8,10 +8,11 @@ public class Gun_LaserPistol : Gun
     {
         if (refLoadedBullet > 0 && shootTimer < 0.0)
         {
+            Vector2 dir = GetShootingDirection();
             Player.instance.animController.isBreath = true;
             if (cameraManager != null)
             {   // player 카메라 총 반동
-                cameraManager.CameraShakeFromProfile(profile, impulseSource);
+                cameraManager.CameraShakeFromProfile(profile, impulseSource, -dir);
             }
 
             //Shoot Setting
@@ -35,7 +36,6 @@ public class Gun_LaserPistol : Gun
             }
 
             //Create Bullet
-            Vector2 dir = GetShootingDirection();
             float theta = Vector2.Angle(Vector2.right, dir);
             if (dir.y < 0)
                 theta *= -1;
