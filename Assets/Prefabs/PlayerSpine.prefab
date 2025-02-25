@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1870441410}
   - component: {fileID: 1870441409}
-  - component: {fileID: 1870441408}
+  - component: {fileID: 660231700089177600}
+  - component: {fileID: 679099128}
   m_Layer: 0
   m_Name: ShockWave
   m_TagString: Untagged
@@ -85,7 +86,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1870441408
+--- !u!114 &660231700089177600
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +95,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1870441407}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d800094e1e59cf14781277eb9454d4f8, type: 3}
+  m_Script: {fileID: 11500000, guid: ed299fea98e99bb48a44b22b1fcea64a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &679099128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870441407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed299fea98e99bb48a44b22b1fcea64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4814466180091493086
@@ -584,10 +597,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillPrefabs: []
+  cameraManager: {fileID: 0}
+  impulseSource: {fileID: 0}
   shockWaveEffectManager: {fileID: 0}
-  shockWaveTime: 0.5
+  shockWaveEffectProfile: {fileID: 11400000, guid: 29716d5a57ae5884e993da93759b7e76, type: 2}
+  shockWaveTime: 0.3
   shockWaveTimeScale: 0.3
-  shockWaveSlowDuration: 0.15
+  shockWaveSlowDuration: 0.3
   curBlock: {fileID: 0}
 --- !u!114 &6682311880270656075
 MonoBehaviour:
