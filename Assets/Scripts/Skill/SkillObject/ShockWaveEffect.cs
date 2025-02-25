@@ -7,6 +7,7 @@ public class ShockWaveEffect : MonoBehaviour
     private Coroutine shockWaveCoroutine;
     private Material material;
     private static int waveDistanceFromCenter = Shader.PropertyToID("_WaveDistanceFromCenter");
+    public bool isScale = true;
 
     private void Awake()
     {
@@ -26,7 +27,10 @@ public class ShockWaveEffect : MonoBehaviour
         float elapsedTime = 0f;
         while (elapsedTime < shockWaveTime)
         {
-            elapsedTime += Time.deltaTime;
+            if(isScale)
+                elapsedTime += Time.deltaTime;
+            else
+                elapsedTime += Time.unscaledDeltaTime;
 
             lerpedAmount = Mathf.Lerp(startPos, endPos, (elapsedTime/shockWaveTime));
             material.SetFloat(waveDistanceFromCenter, lerpedAmount);

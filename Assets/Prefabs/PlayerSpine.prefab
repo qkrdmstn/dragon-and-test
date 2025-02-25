@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1870441410}
   - component: {fileID: 1870441409}
   - component: {fileID: 660231700089177600}
-  - component: {fileID: 679099128}
   m_Layer: 0
   m_Name: ShockWave
   m_TagString: Untagged
@@ -98,18 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed299fea98e99bb48a44b22b1fcea64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &679099128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870441407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed299fea98e99bb48a44b22b1fcea64a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  isScale: 0
 --- !u!1 &4814466180091493086
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,8 +589,8 @@ MonoBehaviour:
   impulseSource: {fileID: 0}
   shockWaveEffectManager: {fileID: 0}
   shockWaveEffectProfile: {fileID: 11400000, guid: 29716d5a57ae5884e993da93759b7e76, type: 2}
-  shockWaveTime: 0.3
-  shockWaveTimeScale: 0.3
+  shockWaveTime: 0.65
+  shockWaveTimeScale: 0
   shockWaveSlowDuration: 0.3
   curBlock: {fileID: 0}
 --- !u!114 &6682311880270656075
