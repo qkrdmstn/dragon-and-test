@@ -150,7 +150,7 @@ public class PlayerSkill : MonoBehaviour
     private IEnumerator BlankBulletCoroutine(int damage, float impactRadius, float impactForce)
     {
         _impactRadius = impactRadius;
-        shockWaveEffectManager.CallShockWave(shockWaveTime);
+        shockWaveEffectManager.CallShockWave(shockWaveTime, impactRadius);
         cameraManager.CameraShakeFromProfile(shockWaveEffectProfile, impulseSource);
         Time.timeScale = shockWaveTimeScale;
         
@@ -441,9 +441,11 @@ public class PlayerSkill : MonoBehaviour
 
     //private void OnDrawGizmos()
     //{
-    //    SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
+    //    //SkillDB al12Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.AL12);
 
     //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(this.transform.position, al12Data.range);
+    //    Gizmos.DrawWireSphere(this.transform.position, 10.0f);
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawWireSphere(this.transform.position, 8.0f);
     //}
 }

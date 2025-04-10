@@ -3731,17 +3731,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 660231700089177600, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
-      propertyPath: isScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4290355959736416717, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
-      propertyPath: shockWaveTimeScale
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4290355959736416717, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
-      propertyPath: shockWaveSlowDuration
-      value: 0.2
+    - target: {fileID: 326454976, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
+      propertyPath: m_Name
+      value: ShockWaveParticle
       objectReference: {fileID: 0}
     - target: {fileID: 7143744298466207675, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
       propertyPath: m_Mesh
@@ -3757,11 +3749,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7143744298484960327, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.31
+      value: -0.7
       objectReference: {fileID: 0}
     - target: {fileID: 7143744298484960327, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.84
+      value: -0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7143744298484960327, guid: 5f7415df75ca44f0f8d47b305ffc3e42, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6539,7 +6531,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2112834229}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1379429419
 MonoBehaviour:
@@ -7103,7 +7095,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 128d13421c237ac48907cadeeb832b5d, type: 2}
+  - {fileID: 2100000, guid: f862852c6e3165a47bf5ea8a820151ac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8412,7 +8404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1855009988
 Transform:
   m_ObjectHideFlags: 0
@@ -10484,7 +10476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971533, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1795990479263971537, guid: 76d0ece0285d44949afa9bf299368fc8, type: 3}
       propertyPath: m_RootOrder
