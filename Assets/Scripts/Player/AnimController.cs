@@ -56,7 +56,10 @@ public class AnimController : MonoBehaviour
 
     public virtual void SetAnim()
     {
-        skeletonAnimation.skeleton.SetSkin(baseSkinName);
+		if(!GetAnimLoop())
+			skeletonAnimation.state.GetCurrent(0).TrackTime = 0;
+
+		skeletonAnimation.skeleton.SetSkin(baseSkinName);
         skeletonAnimation.Skeleton.SetSlotsToSetupPose();
 
         skeletonAnimation.AnimationName = curAnim;
@@ -86,9 +89,9 @@ public class AnimController : MonoBehaviour
         skeletonAnimation.timeScale = speed;
     }
 
-    public void SetAnimLoop(bool _loop)
+    public bool GetAnimLoop()
     {
-        skeletonAnimation.loop = _loop;
+		return skeletonAnimation.loop;
     }
 }
 

@@ -18,28 +18,17 @@ public class InventoryUIGroup : UIGroup
         }
     }
 
-    public override void ToggleUI(GameObject _ui)
-    {
-        base.ToggleUI(_ui);
-    }
-
     private void OpenInventory()
     {
+        UIManager.instance.PushPopUI(childUI[0]);
         Time.timeScale = 0.0f;
-        Player.instance.isStateChangeable = false;
-        Player.instance.isAttackable = false;
-        childUI[0].SetActive(true);
-
     }
 
     public void CloseInventory()
     {
         Time.timeScale = 1.0f;
-        Player.instance.isStateChangeable = true;
-        Player.instance.isAttackable = true;
-        childUI[0].SetActive(false);
-
         ChangePage(0);
+        UIManager.instance.PushPopUI();
     }
 
     public void ChangePage(int idx)

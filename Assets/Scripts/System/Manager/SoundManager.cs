@@ -5,7 +5,7 @@ using System;
 
 public enum SoundType
 {
-    Player, Monster, UI, Puzzle, Boss
+    Player, Monster, UI, Puzzle, Boss, NPC
 }
 public enum PlayerSfx
 {
@@ -34,6 +34,14 @@ public enum BossSfx
 public enum PuzzleSfx
 {
     LeverR, LeverL, Clear, Choose, Select, FailDamage
+}
+
+public enum NPCSfx
+{   // InteractioData의 Sequence int로 사용
+    FriendHi, FriendBye,    // 0 : 친구 1
+    HunjangHi, HunjangBye,  // 1 : 훈장님 
+    TwinAHi, TwinABye,      // 2 : 마을주민(집근처)
+    TwinBHi, TwinBBye       // 3 : 마을주민(포탈)
 }
 
 public class SoundManager : MonoBehaviour
