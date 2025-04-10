@@ -28,7 +28,7 @@ public enum UISfx
 
 public enum BossSfx
 {
-    JanBasicAttack, JanFootStep, JanWingBomb, JanWings
+    JanBasicAttack, JanFootStep, JanWingBomb, JanWingsCharge, JanWingsAttack
 }
 
 public enum PuzzleSfx

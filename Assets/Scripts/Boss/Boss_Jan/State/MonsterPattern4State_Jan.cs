@@ -61,10 +61,11 @@ public class MonsterPattern4State_Jan : MonsterState
                 }
             }
         }
-        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanWings);
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanWingsCharge);
 
         yield return new WaitForSeconds(monster.pattern4BulletSpreadDelay);
 
+        SoundManager.instance.SetEffectSound(SoundType.Boss, BossSfx.JanWingsAttack);
         int bulletIndex = 0;
         for (int i = 0; i < bulletRowNum; i++)
         {
