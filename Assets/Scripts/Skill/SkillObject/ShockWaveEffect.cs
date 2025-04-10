@@ -16,7 +16,7 @@ public class ShockWaveEffect : MonoBehaviour
 
     public void CallShockWave(float shockWaveTime)
     {
-        shockWaveCoroutine = StartCoroutine(ShockWaveAction(-0.1f, 1f, shockWaveTime));
+        shockWaveCoroutine = StartCoroutine(ShockWaveAction(-0.1f, 0.12f, shockWaveTime));
     }
 
     private IEnumerator ShockWaveAction(float startPos, float endPos, float shockWaveTime)
@@ -37,5 +37,6 @@ public class ShockWaveEffect : MonoBehaviour
 
             yield return null;
         }
+        material.SetFloat(waveDistanceFromCenter, 1.0f);
     }
 }
