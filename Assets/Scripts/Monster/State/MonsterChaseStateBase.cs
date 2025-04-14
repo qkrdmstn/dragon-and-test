@@ -32,7 +32,16 @@ public class MonsterChaseStateBase : MonsterState
         else
             monster.SetDestination(player.transform.position);
 
-        if (monster.haveAnim)
+        if(monster.haveAnim && monster.monsterName == MonsterName.BirdTanker)
+        {
+            Direction newDir = monster.CheckDir();
+            if (curDir != newDir)
+            {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+                curDir = newDir;
+                monster.monsterAnimController.SetAnim(TankerAnimState.Run, curDir);
+            }
+        }
+        else if (monster.haveAnim)
         {
             Direction newDir = monster.CheckDir();
             if (curDir != newDir)

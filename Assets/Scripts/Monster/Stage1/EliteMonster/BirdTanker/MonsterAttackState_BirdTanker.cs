@@ -40,15 +40,20 @@ public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
     IEnumerator Attack()
     {
         //Dash Start
+        monster.monsterAnimController.SetAnim(TankerAnimState.Attack1, monster.CheckDir());
+        yield return new WaitForSeconds(monster.dashReadyDuration);
+
+
         Vector3 dir = player.transform.position - monster.transform.position;
         dir.Normalize();
-
+        monster.monsterAnimController.SetAnim(TankerAnimState.Attack2, monster.CheckDir());
         monster.rb.velocity = (dir * monster.dashSpeed);
         float dashDuration = monster.dashDist / monster.dashSpeed;
         yield return new WaitForSeconds(dashDuration);
 
         //Dash end
         monster.SetSpeed(0.0f);
+        monster.monsterAnimController.SetAnim(TankerAnimState.Attack3, monster.CheckDir());
 
         //Shoot
         for (int i = 0; i < monster.waveNum; i++)

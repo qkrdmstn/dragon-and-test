@@ -36,7 +36,10 @@ public class MonsterDeadStateBase : MonsterState
     IEnumerator DeadCoroutine()
     {
         if(monster.haveAnim)
-            monster.monsterAnimController.SetAnim(MonsterAnimState.Death, monster.CheckDir());
+        if (monster.haveAnim && monster.monsterName == MonsterName.BirdTanker)
+                monster.monsterAnimController.SetAnim(TankerAnimState.Death, monster.CheckDir());
+        else if (monster.haveAnim)
+                monster.monsterAnimController.SetAnim(MonsterAnimState.Death, monster.CheckDir());
 
         float sec = Mathf.Clamp(monster.deadDuration, 0f, 0.7f);
         yield return new WaitForSeconds(sec);

@@ -1,3 +1,4 @@
+using Spine;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ public class BirdTanker : MonsterBase
     public float waveInterval = 1.0f;
     public float bulletSpeed = 6.0f;
     public float reloadDelay = 1.0f;
+    public float dashReadyDuration = 0.6f;
     public float dashSpeed = 8.0f;
     public float dashDist = 1.5f;
 
@@ -36,5 +38,13 @@ public class BirdTanker : MonsterBase
 
         chaseState = new MonsterChaseState_BirdTanker(stateMachine, player, this);
         attackState = new MonsterAttackState_BirdTanker(stateMachine, player, this);
+    }
+
+    public override void InitAnimController()
+    {
+        if (haveAnim)
+            monsterAnimController = GetComponentInChildren<TankerAnimationController>();
+
+        Debug.Log(monsterAnimController);
     }
 }

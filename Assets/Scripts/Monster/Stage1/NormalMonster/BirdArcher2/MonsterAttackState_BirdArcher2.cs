@@ -39,6 +39,9 @@ public class MonsterAttackState_BirdArcher2 : MonsterAttackStateBase
 
     IEnumerator Shoot()
     {
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.farAttack);
+        monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, monster.CheckDir());
+
         Vector3 dir = player.transform.position - monster.transform.position;
         for (int i = 0; i < monster.shootNum; i++)
         {

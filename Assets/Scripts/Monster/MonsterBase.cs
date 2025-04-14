@@ -14,6 +14,13 @@ public enum MonsterTypes
     boss
 }
 
+public enum MonsterName
+{
+    BirdWarrior1, BirdWarrior2, BirdRage,
+    BirdArcher1, BirdArcher2,
+    BirdTanker, BirdCrossbowman
+}
+
 [Serializable]
 public struct MonsterStatusEffectsFlag
 {
@@ -52,6 +59,7 @@ public class MonsterBase : MonoBehaviour
 
     [Header("Monster Info")]
     public MonsterTypes monsterType;
+    public MonsterName monsterName;
     [SerializeField] public MonsterStatusEffectsFlag effectiveStatusEffects; //이 몬스터에게 효과가 있는 상태이상
     [SerializeField] public MonsterStatusEffectsFlag statusEffectsFlag; //몬스터가 영향 받는 중인 상태이상 flag
 
@@ -71,7 +79,7 @@ public class MonsterBase : MonoBehaviour
 
     #region Self Componets
     public Rigidbody2D rb { get; private set; }
-    public MonsterAnimController monsterAnimController { get; private set; }
+    public MonsterAnimController monsterAnimController { get; set; }
     private UnityEngine.AI.NavMeshAgent agent;
     #endregion
 
@@ -117,14 +125,18 @@ public class MonsterBase : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
 
-        if(haveAnim)
-            monsterAnimController = GetComponentInChildren<MonsterAnimController>();
-
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
         statusEffectsFlag.InitStatusEffect();
+        InitAnimController();
+    }
+
+    public virtual void InitAnimController()
+    {
+        if (haveAnim)
+            monsterAnimController = GetComponentInChildren<MonsterAnimController>();
     }
 
     protected virtual void Update()
