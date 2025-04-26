@@ -23,7 +23,6 @@ public enum UISfx
 {
     Snap, mopo, doorOpen, doorClose, Jokbo, Click,
     BuyShop, GetCoin, GetDragonFruit, GetHwatu, Dialogue, Select,
-
 }
 
 public enum BossSfx
@@ -38,10 +37,10 @@ public enum PuzzleSfx
 
 public enum NPCSfx
 {   // InteractioData의 Sequence int로 사용
-    FriendHi, FriendBye,    // 0 : 친구 1
-    HunjangHi, HunjangBye,  // 1 : 훈장님 
-    TwinAHi, TwinABye,      // 2 : 마을주민(집근처)
-    TwinBHi, TwinBBye       // 3 : 마을주민(포탈)
+    FriendHi, FriendBye,    // 0-1 : 친구 1
+    HunjangHi, HunjangBye,  // 2-3  : 훈장님 
+    TwinAHi, TwinABye,      // 4-5 : 마을주민(집근처)
+    TwinBHi, TwinBBye       // 6-7 : 마을주민(포탈)
 }
 
 public class SoundManager : MonoBehaviour
@@ -179,6 +178,11 @@ public class SoundManager : MonoBehaviour
         //    BGMSource.volume = Mathf.Lerp(0, _bgmVolume, fadeTimer);
         //    yield return null;
         //}
+    }
+
+    public void SetEffectSound(SoundType _type, int clipIdx)
+    {
+        PlayEffectSound((int)_type, effects[(int)_type].effectClips[clipIdx]);
     }
 
     public void SetEffectSound<T>(SoundType _type, T clip) where T : Enum

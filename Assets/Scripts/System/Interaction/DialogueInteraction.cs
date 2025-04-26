@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using System.Threading.Tasks;
 using TMPro;
 
@@ -156,7 +157,11 @@ public class DialogueInteraction : Interaction
             if (Input.GetKeyDown(KeyCode.F))
             {   //  일반 대화 출력
                 SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Dialogue);
-                if (dialogDatas.Count == curIdx) isDone = true;
+                if (dialogDatas.Count == curIdx)
+                {
+                    SoundManager.instance.SetEffectSound(SoundType.NPC, data.sequence+1);
+                    isDone = true;
+                }
                 else curIdx = SetNextDialog(curIdx);
             }
         }
@@ -191,6 +196,7 @@ public class DialogueInteraction : Interaction
             if (isFirst)
             {   // 첫 대화 출력
                 dialogueTxt.text = dialogDatas[idx]._dialogue;
+                SoundManager.instance.SetEffectSound(SoundType.NPC, data.sequence);
                 if (!dialogDatas[idx]._isSelect) idx++;
             }
             else if (result > -1)
@@ -204,7 +210,6 @@ public class DialogueInteraction : Interaction
                         isNegative = true;   
                         break;
                 }
-
                 result = -1;
                 dialogueTxt.text = dialogDatas[idx]._dialogue;
                 idx++;  // 다음 대화 idx 준비
