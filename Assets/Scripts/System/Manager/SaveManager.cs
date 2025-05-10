@@ -99,11 +99,11 @@ public class SaveManager : MonoBehaviour
             ItemManager.instance.LoadSaveGun(data[index].gunItems); // 보유중인 총 로드
             ItemManager.instance.curHoldingHwatuDatas = data[index].hwatus;
             ItemManager.instance.refHwatuCardCnt = data[index].hwatus.Count;
-            foreach(var data in data[index].activeSkill)
+            foreach(var data in data[index].save_activeSkill)
             {
                 SkillManager.instance.active[data.Key] = data.Value;
             }
-            foreach (var data in data[index].passiveSkill)
+            foreach (var data in data[index].save_passiveSkill)
             {
                 SkillManager.instance.passive[data.Key] = data.Value;
             }
@@ -137,13 +137,13 @@ public class SaveManager : MonoBehaviour
         }
 
         if(isNotNull)
-        {
+        {   // 불러오기
             startBtns[0].SetActive(false);
             startBtns[1].SetActive(true);
             SetDataUI();
         }
         else
-        {
+        {   // 새로운 시작
             startBtns[0].SetActive(true);
             startBtns[1].SetActive(false);
         }

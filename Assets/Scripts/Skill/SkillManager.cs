@@ -31,18 +31,18 @@ public struct ActiveSlotData
 
 public class Active
 {
-    Dictionary<ActiveSkillSlot, ActiveSlotData> skill; // 실제 데이터
+    SerializableDictionary<ActiveSkillSlot, ActiveSlotData> skill; // 실제 데이터
     public Action<ActiveSkillSlot, bool> action;
 
     public Active()
     {   // 생성자
-        skill = new Dictionary<ActiveSkillSlot, ActiveSlotData>()
-        {   // 스킬슬롯, 보유 액티브 스킬
-            { ActiveSkillSlot.Q, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f) }, { ActiveSkillSlot.E, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f)}
-        };
+        skill = new SerializableDictionary<ActiveSkillSlot, ActiveSlotData>();
+
+        skill.Add(new SerializableDictionary<ActiveSkillSlot, ActiveSlotData>.Pair(ActiveSkillSlot.Q, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f)));
+        skill.Add(new SerializableDictionary<ActiveSkillSlot, ActiveSlotData>.Pair(ActiveSkillSlot.E, new ActiveSlotData(SeotdaHwatuCombination.blank, 0.0f)));
     }
 
-    public Dictionary<ActiveSkillSlot, ActiveSlotData> refSkill
+    public SerializableDictionary<ActiveSkillSlot, ActiveSlotData> refSkill
     {   // read only
         get { return skill; }
     }
@@ -87,15 +87,15 @@ public class Active
 
 public class Passive
 {
-    Dictionary<SeotdaHwatuCombination, int> skill;  // 보유 패시브 스킬, 중첩 횟수
+    SerializableDictionary<SeotdaHwatuCombination, int> skill;  // 보유 패시브 스킬, 중첩 횟수
     public Action<SeotdaHwatuCombination> action;
     public Action clearAction;
 
     public Passive()
     {
-        skill = new Dictionary<SeotdaHwatuCombination, int>();
+        skill = new SerializableDictionary<SeotdaHwatuCombination, int>();
     }
-    public Dictionary<SeotdaHwatuCombination, int> refSkill
+    public SerializableDictionary<SeotdaHwatuCombination, int> refSkill
     {   // read-only
         get { return skill; }
     }

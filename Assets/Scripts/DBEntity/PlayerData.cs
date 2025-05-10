@@ -12,8 +12,12 @@ public class PlayerData
 
     public int playerHP;
     public int playerMP;
-    public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
-    public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
+    //public Dictionary<ActiveSkillSlot, ActiveSlotData> activeSkill;
+    //public Dictionary<SeotdaHwatuCombination, int> passiveSkill;
+
+    public SerializableDictionary<ActiveSkillSlot, ActiveSlotData> save_activeSkill;
+    public SerializableDictionary<SeotdaHwatuCombination, int> save_passiveSkill;
+
     public List<HwatuData> hwatus;
     public HashSet<GunItemData> gunItems;
 
@@ -38,8 +42,8 @@ public class PlayerData
         money = Player.instance.GetCurMoney();
         playerMP = 0; // 아직 미개발
 
-        activeSkill = SkillManager.instance.active.refSkill;
-        passiveSkill = SkillManager.instance.passive.refSkill;
+        save_activeSkill = SkillManager.instance.active.refSkill;
+        save_passiveSkill = SkillManager.instance.passive.refSkill;
 
         hwatus = ItemManager.instance.curHoldingHwatuDatas;
         gunItems = ItemManager.instance.gunController.curGunItems;
