@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
-using static UnityEngine.Rendering.DebugUI.Table;
 using Random = UnityEngine.Random;
 
 public enum MonsterTypes
@@ -136,7 +133,7 @@ public class MonsterBase : MonoBehaviour
     public virtual void InitAnimController()
     {
         if (haveAnim)
-            monsterAnimController = GetComponentInChildren<MonsterAnimController>();
+            monsterAnimController = GetComponentInChildren<MonsterAnimController>(true);
     }
 
     protected virtual void Update()

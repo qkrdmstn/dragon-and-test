@@ -32,7 +32,6 @@ public class BlanketInteractionData : InteractionData
     private void Update()
     {
         if (isTutorial) return;
-
         if (curBlock == null)
             isClear = true;
         else if (isClear != curBlock.blockClear)
@@ -41,8 +40,6 @@ public class BlanketInteractionData : InteractionData
         if (isClear && !isActive)
         {   //모포 사용 후, 제거
             Destroy(mapBlanketUI);  // 미니맵의 모포 UI도 같이 삭제
-
-
             if (SceneManager.GetActiveScene().name != "BossTest") //보스테스트 예외처리
             {
                 MapIndicator.curActiveBlanketCnt--;
