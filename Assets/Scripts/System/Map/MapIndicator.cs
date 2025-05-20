@@ -63,6 +63,7 @@ public class MapIndicator : MonoBehaviour
         mapRect = mapUI.GetComponent<RectTransform>();
         spanwner = GameObject.Find("Spawner").GetComponent<Spawner>();
     }
+
     void Start()
     {
         blocks = spanwner.blocks;
@@ -140,6 +141,7 @@ public class MapIndicator : MonoBehaviour
 
         foreach (BlanketInteractionData data in datas)
         {   // 추후 각자 모포 isActive == false -> destroy
+            data.InitCurBlock();
             data.mapBlanketUI = Instantiate(blanketUI, mapRects[data.curBlock.blockNumber].mapRect.transform.position, Quaternion.identity, mapRects[data.curBlock.blockNumber].mapRect.transform);
         }
 

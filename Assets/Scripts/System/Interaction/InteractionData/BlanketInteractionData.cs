@@ -17,9 +17,14 @@ public class BlanketInteractionData : InteractionData
         if (isTutorial) return;
         isClear = false;
         isActive = true;
-        
+
+        InitCurBlock();
+    }
+
+    public void InitCurBlock()
+    {
         BlockInfo[] blocks = FindObjectsOfType<BlockInfo>();
-        for(int i=0; i<blocks.Length; i++)
+        for (int i = 0; i < blocks.Length; i++)
         {
             if (blocks[i].IsInBlock(this.transform.position))
             {
