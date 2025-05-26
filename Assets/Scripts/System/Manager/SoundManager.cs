@@ -17,7 +17,8 @@ public enum MonsterSfx
     Damage, Spawn, Dead,            // 공통
     nearChase, nearAttack,          // 참새 1
     dashAttack,                     // 참새 2
-    farChase, farAttack             // 매 1
+    farChase, farAttack,            // 매 1
+    owlWing, owlAttack, owlDash             // 부엉이 (대쉬는 아직 미등록)
 }
 public enum UISfx
 {

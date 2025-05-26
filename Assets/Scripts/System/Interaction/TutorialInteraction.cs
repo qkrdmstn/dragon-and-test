@@ -523,9 +523,6 @@ public class TutorialInteraction : Interaction
         if (Input.GetKeyDown(KeyCode.K))
         {
             tutorialUIGroup.SwitchAnim("isOpenJokbo", false);
-
-            //UIManager.instance.SceneUI["Battle_1"].SetActive(false);
-            UIManager.instance.SceneUI["Inventory"].SetActive(false);
             jokboUIGroup.isPossibleJokbo = false; // 족보 관련 대화 종료까지는 족보 닫기 불가
             return true;
         }
@@ -538,8 +535,6 @@ public class TutorialInteraction : Interaction
         if (isHwatuMonster)
         {
             isHwatuMonster = false;
-            //UIManager.instance.SceneUI["Battle_1"].SetActive(true);
-            UIManager.instance.SceneUI["Inventory"].SetActive(true);
 
             monsters[(int)TutorialMonsters.hwatu12].monster.SetActive(true);
             monsters[(int)TutorialMonsters.hwatu13].monster.SetActive(true);
@@ -569,6 +564,7 @@ public class TutorialInteraction : Interaction
     {
         if (blanketInteraction.selectedCnt == 2)
         { // 화투패 2장 획득 완료
+            blanket.isActive = true;
             tutorialUIGroup.SwitchAnim("isHwatuCombination", false);
             return true;
         }
