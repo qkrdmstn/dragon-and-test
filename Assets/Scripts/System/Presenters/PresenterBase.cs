@@ -35,6 +35,10 @@ public class PresenterBase : MonoBehaviour
         {   // for inventory 
             return SceneInfo.Town_1;
         }
+        else if (ScenesManager.instance.GetSceneEnum() == SceneInfo.StartCutScene)
+        {
+            return SceneInfo.StartCutScene;
+        }
         else
         {   // tutorial, battle, puzzle, boss
             return SceneInfo.Battle_1_A;

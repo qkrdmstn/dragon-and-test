@@ -81,8 +81,8 @@ public class SaveManager : MonoBehaviour
             Player.instance.RestoreHP();
             Player.instance.refShield = 0;
             Player.instance.refMoney = 0;
-
             ItemManager.instance.LoadSaveGun();
+            UIManager.instance.StartFade((int)SceneInfo.StartCutScene);
         }
         else if (data[index] != null)
         {
@@ -107,8 +107,8 @@ public class SaveManager : MonoBehaviour
             {
                 SkillManager.instance.passive[data.Key] = data.Value;
             }
+            StartCoroutine(IsLoadedStartData());
         }
-        StartCoroutine(IsLoadedStartData());
     }
 
     IEnumerator IsLoadedStartData()

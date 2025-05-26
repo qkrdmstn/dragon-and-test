@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public enum SceneInfo
 {
     Start,
+    StartCutScene,
     Town_1,
     Tutorial,
     Puzzle_1,

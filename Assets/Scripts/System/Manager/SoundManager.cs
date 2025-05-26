@@ -130,20 +130,21 @@ public class SoundManager : MonoBehaviour
     // sceneNum과 BGMClips 배열의 순서동일
     // sceneNum : BGM clip
     // 0 : start
-    // 1 : town, tutorial
-    // 2 : battle, puzzle
-    // 3 : boss
+    // 1 : startCutScene
+    // 2 : town, tutorial
+    // 3 : battle, puzzle
+    // 4 : boss
 
     public bool SetBGMClip(SceneInfo sceneNum)
     {
         int _sceneNum = (int)sceneNum;
         // BGM
         if (_sceneNum == 2) // tutorial
-            _sceneNum = 1;
-        else if (_sceneNum == 7) // boss
-            _sceneNum = 3;
-        else if (_sceneNum >= 3) // battle, puzzle
             _sceneNum = 2;
+        else if (_sceneNum == 7) // boss
+            _sceneNum = 4;
+        else if (_sceneNum >= 3) // battle, puzzle
+            _sceneNum = 3;
 
         BGMSource.volume = _bgmVolume;
         BGMSource.clip = BGMClips[_sceneNum];
