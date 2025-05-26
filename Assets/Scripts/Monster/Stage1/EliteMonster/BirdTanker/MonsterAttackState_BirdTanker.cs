@@ -40,10 +40,12 @@ public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
     IEnumerator Attack()
     {
         //Dash Start
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.owlWing);
         monster.monsterAnimController.SetAnim(TankerAnimState.Attack1, monster.CheckDir());
         yield return new WaitForSeconds(monster.dashReadyDuration);
 
 
+        SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.owlDash);
         Vector3 dir = player.transform.position - monster.transform.position;
         dir.Normalize();
         monster.monsterAnimController.SetAnim(TankerAnimState.Attack2, monster.CheckDir());
@@ -58,6 +60,7 @@ public class MonsterAttackState_BirdTanker : MonsterAttackStateBase
         //Shoot
         for (int i = 0; i < monster.waveNum; i++)
         {
+            SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.owlAttack);
             for (int j = 0; j < monster.bulletNumPerWave; j++)
             {
                 var bulletGo = MonsterPool.instance.pool.Get();
