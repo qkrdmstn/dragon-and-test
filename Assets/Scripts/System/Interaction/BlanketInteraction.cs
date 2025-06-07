@@ -202,6 +202,9 @@ public class BlanketInteraction : Interaction
         SeotdaHwatuCombination result = Hwatu.GetHwatuCombination(selectedHwatuUI[0].hwatuData.hwatu, selectedHwatuUI[1].hwatuData.hwatu);
         SkillManager.instance.AddSkill(result);
 
+        Sprite hwatuImg1 = selectedHwatuUI[0].hwatuData.sprite;
+        Sprite hwatuImg2 = selectedHwatuUI[1].hwatuData.sprite;
+
         //사용된 material hwatu 삭제
         for (int i = 0; i < 2; i++)
         {
@@ -211,7 +214,6 @@ public class BlanketInteraction : Interaction
             selectedHwatuUI[i] = null;
         }
         selectedCnt = 0;
-
-        blanketUI.SetSkillInfoUIActive(result);
+        blanketUI.SetSkillInfoUIActive(result, hwatuImg1, hwatuImg2);
     }
 }
