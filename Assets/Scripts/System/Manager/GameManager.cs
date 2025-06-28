@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -22,6 +20,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject); //씬이 넘어가도 오브젝트 유지
     }
 
+    [VisibleEnum(typeof(SceneInfo))]
     public void GoToScene(int _sceneInfo)
     {
         UIManager.instance.StartFade(_sceneInfo);

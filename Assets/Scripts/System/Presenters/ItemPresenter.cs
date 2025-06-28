@@ -299,6 +299,8 @@ public class ItemPresenter : PresenterBase
         }
         else if(base.ActivateEachUI() == SceneInfo.Town_1)
         {
+            objs[1].SetActive(false);   // gun
+            objs[2].SetActive(false);   // bullet
             objs[3].SetActive(true);    // inventory
         }
         return SceneInfo.Battle_1_A;

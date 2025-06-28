@@ -3992,7 +3992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTrigger: 0
-  _goToScene: 1
+  _goToScene: 2
 --- !u!1 &513908713
 GameObject:
   m_ObjectHideFlags: 0
@@ -5465,7 +5465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTrigger: 0
-  _goToScene: 1
+  _goToScene: 2
 --- !u!1001 &705577353
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6219,6 +6219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 802942036}
   - component: {fileID: 802942037}
+  - component: {fileID: 802942038}
   m_Layer: 0
   m_Name: Jokbo_L
   m_TagString: Untagged
@@ -6293,6 +6294,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &802942038
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802942035}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -1.1}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 2.5, z: 0, w: 2.5}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.25, y: 9.39}
+    newSize: {x: 0.25, y: 3.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 1
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.25, y: 3.45}
+  m_EdgeRadius: 0
 --- !u!1 &803384543
 GameObject:
   m_ObjectHideFlags: 0
@@ -13602,7 +13629,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1815146416}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.022177696, y: 4.314089, z: -10}
+  m_LocalPosition: {x: -0.022176743, y: 4.314089, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14700,6 +14727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1936128409}
   - component: {fileID: 1936128410}
+  - component: {fileID: 1936128411}
   m_Layer: 0
   m_Name: Jokbo_R
   m_TagString: Untagged
@@ -14774,6 +14802,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &1936128411
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936128408}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -1.1}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 2.5, z: 0, w: 2.5}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.25, y: 9.39}
+    newSize: {x: 0.25, y: 3.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 1
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.25, y: 3.45}
+  m_EdgeRadius: 0
 --- !u!1 &1942281021
 GameObject:
   m_ObjectHideFlags: 0
