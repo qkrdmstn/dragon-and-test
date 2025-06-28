@@ -106,7 +106,7 @@ MonoBehaviour:
     rooted: 0
     stun: 0
     reverse: 0
-  haveAnim: 0
+  haveAnim: 1
   spawnDuration: 1
   deadDuration: 0.6
   chaseDist: 20
@@ -117,6 +117,7 @@ MonoBehaviour:
   waveInterval: 1
   bulletSpeed: 6
   reloadDelay: 1
+  dashReadyDuration: 0.6
   dashSpeed: 8
   dashDist: 1.5
 --- !u!195 &6550852554071988697
@@ -238,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88425a715eb80a845965d0a96027dd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSkinName: 
+  baseSkinName: front
   anims:
   - 00_run
   - 01_attack_01
