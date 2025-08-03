@@ -548,6 +548,7 @@ public class TutorialInteraction : Interaction
     bool CheckBlanket()
     {
         blanket.isClear = true;
+        blanket.isActive = true;
         blanket.sequence = 1;
 
         if (isBlanketInteration)
@@ -564,7 +565,6 @@ public class TutorialInteraction : Interaction
     {
         if (blanketInteraction.selectedCnt == 2)
         { // 화투패 2장 획득 완료
-            blanket.isActive = true;
             tutorialUIGroup.SwitchAnim("isHwatuCombination", false);
             return true;
         }
@@ -607,6 +607,8 @@ public class TutorialInteraction : Interaction
         if(useSkill && monsters[(int)TutorialMonsters.skill].isKilled)
         {
             curDialogUI.SetActive(true);
+            blanket.isActive = false;
+            blanket.isClear = false;
             return true;
         }
         return false;
