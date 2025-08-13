@@ -70,7 +70,7 @@ public class AnimController : MonoBehaviour
 	{
     }
 
-    public virtual void SetAnim<T>(T _animState, Direction direction) where T : Enum
+    public virtual void SetAnim<T>(T _animState, Direction direction, bool isLoop = false) where T : Enum
     {
     }
 

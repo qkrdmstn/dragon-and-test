@@ -63,7 +63,7 @@ public class MonsterBase : MonoBehaviour
     [Header("Anim Info")]
     public bool haveAnim = false;
     public float spawnDuration = 1.0f;
-    [Range(0.0f, 0.7f)] public float deadDuration = 0.6f;
+    [Range(0.0f, 1.2f)] public float deadDuration = 0.6f;
 
     [Header("BaseState Range Info")]
     public float chaseDist;

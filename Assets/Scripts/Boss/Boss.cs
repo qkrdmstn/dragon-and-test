@@ -29,6 +29,11 @@ public class Boss : MonsterBase
         base.InitStates();
     }
 
+    public void StateChangableFlag(bool flag)
+    {
+        isStateChangeable = flag;
+    }
+
     //죽음
     public virtual void Dead()
     {

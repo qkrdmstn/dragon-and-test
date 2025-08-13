@@ -41,7 +41,7 @@ public class MonsterDeadStateBase : MonsterState
         else if (monster.haveAnim)
                 monster.monsterAnimController.SetAnim(MonsterAnimState.Death, monster.CheckDir());
 
-        float sec = Mathf.Clamp(monster.deadDuration, 0f, 0.7f);
+        float sec = Mathf.Clamp(monster.deadDuration, 0f, 1.2f);
         yield return new WaitForSeconds(sec);
 
         if (monster.IsEffectSpawner())
@@ -49,7 +49,7 @@ public class MonsterDeadStateBase : MonsterState
             monster.spawner.DeathCount();
             monster.ItemDrop();
         }
-        yield return new WaitForSeconds(0.7f - sec);
+        yield return new WaitForSeconds(1.2f - sec);
 
         GameObject.Destroy(monster.gameObject);
     }

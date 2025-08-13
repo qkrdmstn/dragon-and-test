@@ -160,7 +160,9 @@ public class Boss_Jan : Boss
     {
         base.Update();
 
-        spawnTimer -= Time.deltaTime;
+        if (stateMachine.currentState != idleState)
+            spawnTimer -= Time.deltaTime;
+
         if (!isDead && spawnTimer < 0.0f)
             SpawnMonster();
 

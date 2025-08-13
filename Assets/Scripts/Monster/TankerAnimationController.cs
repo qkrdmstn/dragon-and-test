@@ -30,7 +30,7 @@ public class TankerAnimationController : MonsterAnimController
         skeletonAnimation.ApplyAnimation();
     }
 
-    public override void SetAnim<T>(T _animState, Direction direction)
+    public override void SetAnim<T>(T _animState, Direction direction, bool isLoop = false)
     {
         TankerAnimState animState = Enum.Parse<TankerAnimState>(_animState.ToString());
 

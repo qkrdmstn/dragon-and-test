@@ -77,8 +77,10 @@ public class PlayerInteraction : MonoBehaviour
         if (collision.CompareTag("Interaction"))
         {
             interaction = collision.gameObject.GetComponent<InteractionData>();
-            if(interaction.type == InteractionData.InteractionType.Boss)
+            BossInteractionData bossInteractionData = interaction as BossInteractionData;
+            if (interaction.type == InteractionData.InteractionType.Boss && bossInteractionData != null && bossInteractionData.isActive)
             {
+                bossInteractionData.IsDone();
                 DoInteraction();
             }
         }
