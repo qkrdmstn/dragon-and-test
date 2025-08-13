@@ -141,7 +141,8 @@ public class Boss_Jan : Boss
 
     public override void InitStates()
     {
-        base.InitStates();
+        stateMachine = new MonsterStateMachine(this);
+        isStateChangeable = false;
 
         idleState = new MonsterIdleStateBase(stateMachine, player, this);
         deadState = new MonsterDeadState_Jan(stateMachine, player, this);

@@ -11,7 +11,7 @@ public class DialogueInteraction : Interaction
     public bool isFirst = true;
     public bool isSelectFirst = true;
 
-    UnityEngine.UI.Image npcImg;
+    public UnityEngine.UI.Image [] npcImg = new UnityEngine.UI.Image[2];
     TextMeshProUGUI npcName;
     TextMeshProUGUI[] contentTxt;
     public TextMeshProUGUI dialogueTxt;
@@ -46,7 +46,7 @@ public class DialogueInteraction : Interaction
 
     async Task LoadDialogueDBEntity()
     {
-        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:F");
+        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:G");
         ScenesManager.instance.isLoadedDB++;
     }
 
@@ -63,9 +63,11 @@ public class DialogueInteraction : Interaction
                         dialogues[i].npcName,
                         dialogues[i].dialogue,
                         dialogues[i].isSelect,
-                        dialogues[i].selectType
+                        dialogues[i].selectType,
+                        dialogues[i].imageIdx
                     )
                 );
+                Debug.Log(i + "/eventorder: " + dialogues[i].eventOrder +  "imageIdx: " + dialogues[i].imageIdx + "/end");
                 selections.Add(false);
             }
         }
@@ -97,14 +99,18 @@ public class DialogueInteraction : Interaction
 
     void SetUPUI() {
         // 선택지가 2개라는 상황 종속
-        npcImg = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+        npcImg[0] = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
             .childUI[0].GetComponent<UnityEngine.UI.Image>();
+        npcImg[1] = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[1].GetComponent<UnityEngine.UI.Image>();
         npcName = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
-            .childUI[1].GetComponent<TextMeshProUGUI>();
+            .childUI[2].GetComponent<TextMeshProUGUI>();
         contentTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
-            .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
+            .childUI[3].GetComponentsInChildren<TextMeshProUGUI>(true);
 
-        npcImg.sprite = data.npcImg;
+        //Todo. 여기부터 코딩하기, 이미지 교체 활성화 비활성화 / 그리고 boss interaction 한 번만 뜨게 하기
+        npcImg[0].sprite = data.npcImg[0];
+        npcImg[1].sprite = data.npcImg[1];
         dialogueTxt = contentTxt[0];
  
         selectionTxt[0] = contentTxt[1];
@@ -192,6 +198,8 @@ public class DialogueInteraction : Interaction
         else if (dialogDatas.Count > idx)
         {
             npcName.text = dialogDatas[idx]._npcName;
+            npcImg[dialogDatas[idx]._imageIdx].gameObject.SetActive(true);
+            npcImg[1 - dialogDatas[idx]._imageIdx].gameObject.SetActive(false);
 
             if (isFirst)
             {   // 첫 대화 출력
