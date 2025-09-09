@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
         return speed;
     }
 
-    public void OnDamamged(int damage)
+    public void OnDamaged(int damage)
     {
         if(IsDash())
         {  

@@ -52,7 +52,7 @@ public class DialogueInteraction : Interaction
 
     async Task LoadDialogueDBEntity()
     {
-        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:G");
+        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:H");
         ScenesManager.instance.isLoadedDB++;
     }
 
@@ -70,7 +70,8 @@ public class DialogueInteraction : Interaction
                         dialogues[i].dialogue,
                         dialogues[i].isSelect,
                         dialogues[i].selectType,
-                        dialogues[i].imageIdx
+                        dialogues[i].imageIdx,
+                        dialogues[i].cameraEffectNum
                     )
                 );
                 selections.Add(false);
@@ -215,12 +216,9 @@ public class DialogueInteraction : Interaction
             npcNameTxt.text = dialogDatas[idx]._npcName;
 
             //이미지 swap
-            int imageIdx = dialogDatas[idx]._imageIdx;
-            npcImg[imageIdx].gameObject.SetActive(true);
-            npcImg[1 - imageIdx].gameObject.SetActive(false);
-            dialogueBox.localScale = new Vector3(dialogueBoxScale[imageIdx], dialogueBox.localScale.y, dialogueBox.localScale.z);
-            npcNameUI.anchoredPosition = new Vector3(npcNamePosition[imageIdx], npcNameUI.anchoredPosition.y);
-
+            ImageSetting(dialogDatas[idx]._imageIdx);
+            //보스 상호작용일 경우, 카메라 연출 함수 호출
+            Debug.Log(dialogDatas[idx]._cameraEffectNum);
 
             if (isFirst)
             {   // 첫 대화 출력
@@ -277,6 +275,23 @@ public class DialogueInteraction : Interaction
         if (idx == 2)
         {
             result = 0;
+        }
+    }
+
+    void ImageSetting(int idx)
+    {
+        //음수면 npc 이미지 X
+        if (idx < 0)
+        {
+            npcImg[0].gameObject.SetActive(false);
+            npcImg[1].gameObject.SetActive(false);
+        }
+        else
+        {
+            npcImg[idx].gameObject.SetActive(true);
+            npcImg[1 - idx].gameObject.SetActive(false);
+            dialogueBox.localScale = new Vector3(dialogueBoxScale[idx], dialogueBox.localScale.y, dialogueBox.localScale.z);
+            npcNameUI.anchoredPosition = new Vector3(npcNamePosition[idx], npcNameUI.anchoredPosition.y);
         }
     }
 

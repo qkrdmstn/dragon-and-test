@@ -12,9 +12,10 @@ public struct DialogData
 
     public bool _isSelect;
     public int _imageIdx;
+    public int _cameraEffectNum;
     public string[] _selectType;
 
-    public DialogData(int eventOrder, string eventName, string npcName, string dialogue, bool isSelect, string selectType, int imageIdx)
+    public DialogData(int eventOrder, string eventName, string npcName, string dialogue, bool isSelect, string selectType, int imageIdx, int cameraEffectNum)
     {
         _eventOrder = eventOrder;
         _eventName = eventName;
@@ -22,6 +23,7 @@ public struct DialogData
         _dialogue = dialogue;
         _isSelect = isSelect;
         _imageIdx = imageIdx;
+        _cameraEffectNum = cameraEffectNum;
 
         if (selectType != null)
             _selectType = selectType.Split(',');

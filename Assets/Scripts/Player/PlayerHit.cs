@@ -17,7 +17,7 @@ public class PlayerHit : MonoBehaviour
         {
             Boss boss = collision.GetComponent<Boss>();
             if(boss == null || !boss.isDead)
-                player.OnDamamged(1);
+                player.OnDamaged(1);
         }
 
         if(collision.CompareTag("Cliff"))

@@ -11,8 +11,9 @@ public class DialogueDBEntity
     public bool isSelect;
     public string selectType;
     public int imageIdx;
+    public int cameraEffectNum;
 
-    public DialogueDBEntity(int _eventOrder, string _eventName, string _npcName, string _dialogue, bool _isSelect, string _selectType, int _imageIdx)
+    public DialogueDBEntity(int _eventOrder, string _eventName, string _npcName, string _dialogue, bool _isSelect, string _selectType, int _imageIdx, int _cameraEffectNum)
     {
         eventOrder = _eventOrder;
         eventName = _eventName;
@@ -21,9 +22,10 @@ public class DialogueDBEntity
         isSelect = _isSelect;
         selectType = _selectType;
         imageIdx = _imageIdx;
+        cameraEffectNum = _cameraEffectNum;
     }
 
-    public DialogueDBEntity(int _eventOrder, string _eventName, string _npcName, string _dialogue, bool _isSelect, int _imageIdx)
+    public DialogueDBEntity(int _eventOrder, string _eventName, string _npcName, string _dialogue, bool _isSelect, int _imageIdx, int _cameraEffectNum)
     {
         eventOrder = _eventOrder;
         eventName = _eventName;
@@ -31,5 +33,6 @@ public class DialogueDBEntity
         dialogue = _dialogue;
         isSelect = _isSelect;
         imageIdx = _imageIdx;
+        cameraEffectNum = _cameraEffectNum;
     }
 }

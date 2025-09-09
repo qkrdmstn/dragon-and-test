@@ -65,6 +65,10 @@ public class Boss_Jan : Boss
     public float pattern3Delay = 1.0f;
     public float pattern3RotationTime = 1.0f;
     public float pattern3DisplayTime = 1.0f;
+    public float pattern3ObstacleDisplayTime = 1.5f;
+    public GameObject pattern3ObstacleDisplayPrefab;
+    public GameObject pattern3ObstaclePrefab;
+    public int pattern3ObstacleNum;
 
     [Header("Pattern4 Info")]
     public float pattern4Prob = 0.25f;
@@ -215,7 +219,7 @@ public class Boss_Jan : Boss
         //else if (boss.spawnWaveCnt == 1)
         //    spawnNum = 5;
 
-        Vector2Int[] spawnGridPos = GetSpawnGridPos(spawnNum);
+        Vector2Int[] spawnGridPos = GetRandomGridPos(spawnNum);
 
         //몬스터 스폰
         for (int i = 0; i < spawnNum; i++)
@@ -225,7 +229,7 @@ public class Boss_Jan : Boss
         }
     }
 
-    private Vector2Int[] GetSpawnGridPos(int spawnNum)
+    public Vector2Int[] GetRandomGridPos(int spawnNum)
     {
         Vector2Int[] spawnGridPos = new Vector2Int[spawnNum];
 

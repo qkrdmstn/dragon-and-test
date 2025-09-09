@@ -67,7 +67,7 @@ public class MonsterRageState_BirdRage : MonsterState
                 if (!inRangeTarget[i].CompareTag("Player"))
                     continue;
                 attackCoolTimer = monster.attackCoolTime;
-                player.OnDamamged(1);
+                player.OnDamaged(1);
             }
         }
 

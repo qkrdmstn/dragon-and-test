@@ -18,7 +18,7 @@ public class PlayerFallState : PlayerState
         player.SetVelocity(0.0f, 0.0f);
 
         //낙하 데미지
-        player.OnDamamged(1);
+        player.OnDamaged(1);
     }
 
     public override void Exit()
