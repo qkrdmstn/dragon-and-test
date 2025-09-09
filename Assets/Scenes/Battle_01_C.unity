@@ -25415,7 +25415,6 @@ GameObject:
   m_Component:
   - component: {fileID: 584514591}
   - component: {fileID: 584514594}
-  - component: {fileID: 584514593}
   - component: {fileID: 584514592}
   m_Layer: 16
   m_Name: 00_BG (16)
@@ -25455,35 +25454,6 @@ MonoBehaviour:
   m_Area: 0
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
---- !u!60 &584514593
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 584514590}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 25, y: 25}
-    newSize: {x: 25, y: 25}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -12.5, y: 25}
-      - {x: -12.5, y: 0}
-      - {x: 12.5, y: 0}
-      - {x: 12.5, y: 25}
 --- !u!212 &584514594
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26662,7 +26632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6240968525245519644, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
       propertyPath: m_Name
-      value: Blanket (3)
+      value: Blanket
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
@@ -28860,7 +28830,7 @@ GameObject:
   - component: {fileID: 639685858}
   m_Layer: 16
   m_Name: BG
-  m_TagString: Untagged
+  m_TagString: BlanketMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45600,7 +45570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1984393074007535303, guid: 0ec202657a52a4467964e3af792deb20, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 69.08
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7650260642267250594, guid: 0ec202657a52a4467964e3af792deb20, type: 3}
       propertyPath: m_SizeDelta.x
@@ -45764,7 +45734,7 @@ GameObject:
   - component: {fileID: 985909197}
   m_Layer: 16
   m_Name: BG
-  m_TagString: Untagged
+  m_TagString: BlanketMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52467,7 +52437,7 @@ GameObject:
   - component: {fileID: 1122477016}
   m_Layer: 16
   m_Name: BG
-  m_TagString: Untagged
+  m_TagString: BlanketMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59931,7 +59901,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6240968525245519644, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
       propertyPath: m_Name
-      value: Blanket (2)
+      value: Blanket
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
@@ -60501,9 +60471,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1275276537}
-  m_Layer: 0
+  - component: {fileID: 1275276538}
+  m_Layer: 16
   m_Name: BG
-  m_TagString: Untagged
+  m_TagString: BlanketMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60524,6 +60495,35 @@ Transform:
   m_Father: {fileID: 250618354}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!60 &1275276538
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275276536}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -12.27, y: -12.13}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 25, y: 25}
+    newSize: {x: 25, y: 25}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -12.5, y: 25}
+      - {x: -12.5, y: 0}
+      - {x: 12.5, y: 0}
+      - {x: 12.5, y: 25}
 --- !u!1 &1283001019
 GameObject:
   m_ObjectHideFlags: 0
@@ -84493,7 +84493,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6240968525245519644, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
       propertyPath: m_Name
-      value: Blanket (1)
+      value: Blanket
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10ca4e1d4d3989d42b80ba3e5731a1e9, type: 3}
