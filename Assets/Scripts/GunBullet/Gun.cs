@@ -164,9 +164,9 @@ public class Gun : MonoBehaviour
         {
             Vector2 dir = GetShootingDirection();
             Player.instance.animController.isBreath = true;
-            if (cameraManager != null)
+            if (Player.instance.cameraManager != null)
             {   // player 카메라 총 반동
-                cameraManager.CameraShakeFromProfile(profile, impulseSource, -dir);
+                Player.instance.cameraManager.CameraShakeFromProfile(profile, impulseSource, -dir);
             }
 
             //Shoot Setting
