@@ -80,7 +80,7 @@ public class BlanketUI : MonoBehaviour
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
 
-        Invoke("SetSkillInfoUIInActive", 3f);
+        Invoke("SetSkillInfoUIInActive", 3f); // 3s뒤에 조합 UI가 종료됨
     }
 
     public void SetSkillInfoUIInActive()

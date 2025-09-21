@@ -247,16 +247,19 @@ public class ShopInteraction : Interaction
         {
             canvas.sortingOrder = 1;
             UIManager.instance.PushPopUI(shopUIGroup.gameObject);
-            // 기존 맵의 미니맵이랑 global canvas의 돈 UI 비활성화 -> local canvas 의 전용 money UI가 active
+
+            // 퍼즐과 보스냅이 아니면 == 배틀 존이기에 맵 UI가 있어 비활성화 처리
             if(ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1
-                || ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1
-                || ScenesManager.instance.GetSceneNum() != 7) mapIndicator.SetActive(false);
+                && ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1) mapIndicator.SetActive(false);
+
             UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, false);
         }
         else {
             canvas.sortingOrder = -1;
             UIManager.instance.isClose = true;
-            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1) mapIndicator.SetActive(true);
+            if (ScenesManager.instance.GetSceneEnum() != SceneInfo.Puzzle_1
+                && ScenesManager.instance.GetSceneEnum() != SceneInfo.Boss_1) mapIndicator.SetActive(true);
+
             UIManager.instance.ActivatePresentersUI(PresenterType.Player, 1, true);
         }
     }
