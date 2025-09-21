@@ -60,7 +60,7 @@ public class GunController : MonoBehaviour, IGun
         if (SceneManager.GetActiveScene().name == "Start") return;
 
         if (Player.instance.isCombatZone && !Player.instance.isInteraction)
-        {
+        {   // 전투 
             if (curGunItems.Count == 1) return;
 
             swapTimer -= Time.deltaTime;
@@ -137,8 +137,16 @@ public class GunController : MonoBehaviour, IGun
 
     void InitActiveGun()
     {   // curGun 갱신하면서 프로퍼티 사용해서 이미지랑 총알 수 바인딩
-        if(currentGun) currentGun.SetActive(false); // 순간적으로 바뀔때 보여서 잠깐 끔
-        
+
+        for (int i = 0; i < gunParent.childCount; i++)
+        {
+            gunParent.GetChild(i).gameObject.SetActive(false);
+        }
+
+        if (gunParent.childCount == 1)
+            currentIdx = 0;
+
+        currentGun = gunParent.GetChild(currentIdx).gameObject;
         refCurGunData = currentGun.GetComponent<Gun>().initItemData;
         currentGun.SetActive(true);
     }
