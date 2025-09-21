@@ -44,4 +44,12 @@ public class BirdCrossbowman : MonsterBase
         attackState = new MonsterAttackState_BirdCrossbowman(stateMachine, player, this);
         escapeState = new MonsterEscapeState_BirdCrossbowman(stateMachine, player, this);
     }
+
+    public override void InitAnimController()
+    {
+        if (haveAnim)
+            monsterAnimController = GetComponentInChildren<CrossbowmanAnimationController>();
+
+        Debug.Log(monsterAnimController);
+    }
 }

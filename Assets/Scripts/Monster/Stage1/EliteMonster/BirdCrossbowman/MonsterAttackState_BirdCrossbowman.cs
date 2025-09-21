@@ -47,6 +47,7 @@ public class MonsterAttackState_BirdCrossbowman : MonsterAttackStateBase
             Vector3 dir = player.transform.position - monster.transform.position;
             for (int i = 0; i < curbulletsOnce; i++)
             {
+                monster.monsterAnimController.SetAnim(CrossbowmanAnimState.Attack, monster.CheckDir());
                 var bulletGo = MonsterPool.instance.pool.Get();
                 var bulletComponent = bulletGo.GetComponent<MonsterBullet>();
                 bulletGo.transform.position = monster.transform.position;
