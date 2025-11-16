@@ -18,6 +18,8 @@ public class BlanketUI : MonoBehaviour
     [Header("Skill Info UI")]
     public GameObject skillInfoUI;
     public Image skillImage;
+    public Image[] hwatuImgs;
+
     public TextMeshProUGUI skillNameTxt;
     public TextMeshProUGUI skillInfoTxt;
     public Button skillInfoExitButton;
@@ -67,15 +69,18 @@ public class BlanketUI : MonoBehaviour
             return false;
     }
 
-    public void SetSkillInfoUIActive(SeotdaHwatuCombination skill) //스킬 조합 시, 호출되는 스킬 정보 UI 설정
+    public void SetSkillInfoUIActive(SeotdaHwatuCombination skill, Sprite hwatuImg1, Sprite hwatuImg2) //스킬 조합 시, 호출되는 스킬 정보 UI 설정
     {
+        hwatuImgs[0].sprite = hwatuImg1;
+        hwatuImgs[1].sprite = hwatuImg2;
+
         skillImage.sprite = SkillManager.instance.skillSpriteDictionary[skill];
         skillNameTxt.text = SkillManager.instance.skillDBDictionary[skill].synergyName;
         skillInfoTxt.text = SkillManager.instance.GetSkillInfo(skill, true);
         isSkillInfoUI = true;
         skillInfoUI.SetActive(true);
 
-        Invoke("SetSkillInfoUIInActive", 3f);
+        Invoke("SetSkillInfoUIInActive", 3f); // 3s뒤에 조합 UI가 종료됨
     }
 
     public void SetSkillInfoUIInActive()

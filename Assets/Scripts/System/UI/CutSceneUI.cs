@@ -13,8 +13,8 @@ public class CutSceneUI : MonoBehaviour
     [Header("UI")]
     public Image cutSceneUI;
     public Button nextBtn;
-    public Button prevBtn;
-    public Button skipBtn;
+    //public Button prevBtn;
+    //public Button skipBtn;
     
     // Start is called before the first frame update
     void Awake()
@@ -23,18 +23,10 @@ public class CutSceneUI : MonoBehaviour
         curIdx = 0;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void NextCutScene(bool isNxt)
     {
         if (isNxt)
             curIdx++;
-        else
-            curIdx--;
         UIUpdate();
     }
 
@@ -47,16 +39,10 @@ public class CutSceneUI : MonoBehaviour
     {
         if(curIdx < numOfImages)
             cutSceneUI.sprite = curSceneImages[curIdx];
-        if(curIdx == 0)
-            prevBtn.gameObject.SetActive(false);
         else if(curIdx == numOfImages)
             UIManager.instance.StartFade((int)SceneInfo.Town_1);
-
         else
-        {
-            prevBtn.gameObject.SetActive(true);
             nextBtn.gameObject.SetActive(true);
-        }
     }
     IEnumerator IsLoadedStartData()
     {

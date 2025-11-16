@@ -118,6 +118,11 @@ public class PlayerPresenter : PresenterBase
             objs[0].SetActive(true);    // hp & shield
             objs[1].SetActive(true);    // money
         }
+        else if (base.ActivateEachUI() == SceneInfo.Town_1)
+        {
+            objs[0].SetActive(false);
+            objs[1].SetActive(false);
+        }
         return SceneInfo.Battle_1_A;
     }
 }

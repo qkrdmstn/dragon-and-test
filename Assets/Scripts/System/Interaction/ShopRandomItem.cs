@@ -49,7 +49,7 @@ public class ShopRandomItem : MonoBehaviour
         {
             do
             {
-                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance. armorItemDatas[Random.Range(0, 2)];
+                itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.armorItemDatas[Random.Range(0, 2)];
             } while (itemObjs[cnt-1].itemData == itemObjs[cnt].itemData);
             itemObjs[cnt].SetItemData();
             cnt++;

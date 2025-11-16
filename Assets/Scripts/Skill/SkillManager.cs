@@ -181,7 +181,7 @@ public class SkillManager : MonoBehaviour
             for (int j = 0; j < 33; j++)
             {
                 if(((SeotdaHwatuCombination)j).ToString() == skillImages[i].name)
-                {
+                {   // 스킬 이미지의 이름과 스킬이름이 동일하면, 스킬 딕셔너리에 이름에 맞춰 이미지 저장
                     skillSpriteDictionary.Add((SeotdaHwatuCombination)j, skillImages[i]);
                     break;
                 }
@@ -206,7 +206,7 @@ public class SkillManager : MonoBehaviour
         if(skill == SeotdaHwatuCombination.KK0)
         {
             int damage = GetSkillDB(SeotdaHwatuCombination.KK0).damage;
-            Player.instance.OnDamamged(damage);
+            Player.instance.OnDamaged(damage);
         }
         else if (IsPassive(skill)) //Add Passive Skill
         {

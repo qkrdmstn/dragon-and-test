@@ -183,6 +183,11 @@ public class SkillPresenter : PresenterBase
             objs[1].SetActive(true);    // skillslot
             objs[2].SetActive(true);    // hwatu
         }
+        else if (base.ActivateEachUI() == SceneInfo.Town_1)
+        {
+            objs[1].SetActive(false);
+            objs[2].SetActive(false);
+        }
         return SceneInfo.Battle_1_A;
     }
 }

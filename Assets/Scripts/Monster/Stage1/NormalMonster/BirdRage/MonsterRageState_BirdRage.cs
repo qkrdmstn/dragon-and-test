@@ -7,6 +7,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class MonsterRageState_BirdRage : MonsterState
 {
     protected new BirdRage monster;
+    protected Direction curDir;
     private MonsterAnimController monsterAnimController;
     private GameObject attackRangeObj;
     private Collider2D attackRangeCol;
@@ -24,6 +25,8 @@ public class MonsterRageState_BirdRage : MonsterState
 
         filter = new ContactFilter2D();
         filter.SetLayerMask(LayerMask.GetMask("Player"));
+
+        curDir = Direction.FRONT;
     }
 
     public override void Enter()
@@ -37,6 +40,14 @@ public class MonsterRageState_BirdRage : MonsterState
     {
         base.Update();
         monster.SetDestination(player.transform.position);
+
+        //애니메이션 설정
+        Direction newDir = monster.CheckDir();
+        if (curDir != newDir)
+        {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+            curDir = newDir;
+            monster.monsterAnimController.SetAnim(MonsterAnimState.Attack, curDir, true);
+        }
 
         //Attack Range Object 방향 설정
         Vector3 dir = player.transform.position - monster.transform.position;
@@ -56,7 +67,7 @@ public class MonsterRageState_BirdRage : MonsterState
                 if (!inRangeTarget[i].CompareTag("Player"))
                     continue;
                 attackCoolTimer = monster.attackCoolTime;
-                player.OnDamamged(1);
+                player.OnDamaged(1);
             }
         }
 

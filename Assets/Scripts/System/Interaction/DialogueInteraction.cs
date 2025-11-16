@@ -11,11 +11,17 @@ public class DialogueInteraction : Interaction
     public bool isFirst = true;
     public bool isSelectFirst = true;
 
-    UnityEngine.UI.Image npcImg;
-    TextMeshProUGUI npcName;
+    public UnityEngine.UI.Image[] npcImg = new UnityEngine.UI.Image[2];
+    TextMeshProUGUI npcNameTxt;
     TextMeshProUGUI[] contentTxt;
     public TextMeshProUGUI dialogueTxt;
     public TextMeshProUGUI[] selectionTxt;
+
+    //이미지 swap 관련 변수
+    public RectTransform dialogueBox;
+    public RectTransform npcNameUI;
+    public float[] dialogueBoxScale = new float[2] { 1.0f, -1.0f };
+    public float[] npcNamePosition = new float[2] { 70.0f, 1215.0f};
 
     bool keyInput, isNegative;
     public int result; // 선택된 답변의 배열 Idx
@@ -46,7 +52,7 @@ public class DialogueInteraction : Interaction
 
     async Task LoadDialogueDBEntity()
     {
-        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:F");
+        dialogues = await DataManager.instance.GetValues<DialogueDBEntity>(SheetType.Dialog, "A1:H");
         ScenesManager.instance.isLoadedDB++;
     }
 
@@ -63,7 +69,9 @@ public class DialogueInteraction : Interaction
                         dialogues[i].npcName,
                         dialogues[i].dialogue,
                         dialogues[i].isSelect,
-                        dialogues[i].selectType
+                        dialogues[i].selectType,
+                        dialogues[i].imageIdx,
+                        dialogues[i].cameraEffectNum
                     )
                 );
                 selections.Add(false);
@@ -79,6 +87,9 @@ public class DialogueInteraction : Interaction
 
         yield return new WaitUntil(() => UpdateDialogue());
 
+        Boss boss = FindObjectOfType<Boss>();
+        if (data.type == InteractionData.InteractionType.Boss && boss != null)
+            FindObjectOfType<Boss>().StateChangableFlag(true);
         SetFalseUI();
     }
 
@@ -97,14 +108,21 @@ public class DialogueInteraction : Interaction
 
     void SetUPUI() {
         // 선택지가 2개라는 상황 종속
-        npcImg = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+        npcImg[0] = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
             .childUI[0].GetComponent<UnityEngine.UI.Image>();
-        npcName = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
-            .childUI[1].GetComponent<TextMeshProUGUI>();
+        npcImg[1] = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[1].GetComponent<UnityEngine.UI.Image>();
+        npcNameTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[2].GetComponent<TextMeshProUGUI>();
         contentTxt = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
-            .childUI[2].GetComponentsInChildren<TextMeshProUGUI>(true);
+            .childUI[3].GetComponentsInChildren<TextMeshProUGUI>(true);
+        dialogueBox = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[4].GetComponent<RectTransform>();
+        npcNameUI = UIManager.instance.SceneUI["Dialogue"].GetComponent<DialogueUIGroup>()
+            .childUI[5].GetComponent<RectTransform>();
 
-        npcImg.sprite = data.npcImg;
+        npcImg[0].sprite = data.npcImg[0];
+        npcImg[1].sprite = data.npcImg[1];
         dialogueTxt = contentTxt[0];
  
         selectionTxt[0] = contentTxt[1];
@@ -117,7 +135,8 @@ public class DialogueInteraction : Interaction
     bool UpdateDialogue()
     {   // manage Dialogue event
         if (dialogueUIGroup.isExit || Input.GetKeyDown(KeyCode.Escape)) isDone = true;     // 버튼으로 대화 도중 나갈 수 있습니다.
-        if (isDone)  SetActiveDialogUI(false);
+        if (isDone) SetActiveDialogUI(false);
+
 
         if (keyInput)
         {   // 선택 대화 출력
@@ -188,10 +207,18 @@ public class DialogueInteraction : Interaction
 
     int SetNextDialog(int idx)
     {
-        if (isNegative) isDone = true;
+        if (isNegative)
+        {
+            isDone = true;
+        }
         else if (dialogDatas.Count > idx)
         {
-            npcName.text = dialogDatas[idx]._npcName;
+            npcNameTxt.text = dialogDatas[idx]._npcName;
+
+            //이미지 swap
+            ImageSetting(dialogDatas[idx]._imageIdx);
+            //보스 상호작용일 경우, 카메라 연출 함수 호출
+            Debug.Log(dialogDatas[idx]._cameraEffectNum);
 
             if (isFirst)
             {   // 첫 대화 출력
@@ -204,10 +231,10 @@ public class DialogueInteraction : Interaction
                 switch (result)
                 {
                     case 0:     // [예] ---- 선택에 따른 대화 지속    
-                        idx++; 
+                        idx++;
                         break;
                     case 1:     // [아니오] - 선택에 따른 대화 종료
-                        isNegative = true;   
+                        isNegative = true;
                         break;
                 }
                 result = -1;
@@ -248,6 +275,23 @@ public class DialogueInteraction : Interaction
         if (idx == 2)
         {
             result = 0;
+        }
+    }
+
+    void ImageSetting(int idx)
+    {
+        //음수면 npc 이미지 X
+        if (idx < 0)
+        {
+            npcImg[0].gameObject.SetActive(false);
+            npcImg[1].gameObject.SetActive(false);
+        }
+        else
+        {
+            npcImg[idx].gameObject.SetActive(true);
+            npcImg[1 - idx].gameObject.SetActive(false);
+            dialogueBox.localScale = new Vector3(dialogueBoxScale[idx], dialogueBox.localScale.y, dialogueBox.localScale.z);
+            npcNameUI.anchoredPosition = new Vector3(npcNamePosition[idx], npcNameUI.anchoredPosition.y);
         }
     }
 

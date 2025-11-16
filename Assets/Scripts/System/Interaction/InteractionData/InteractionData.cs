@@ -11,13 +11,14 @@ public class InteractionData : MonoBehaviour
         Shop,
         Blanket,
         Tutorial,
-        Puzzle
+        Puzzle,
+        Boss
     };
 
     public InteractionType type;
     public string eventName;
     public int sequence;
-    public Sprite npcImg;
+    public Sprite [] npcImg;
     public ItemData itemData;
     
     private void OnValidate()

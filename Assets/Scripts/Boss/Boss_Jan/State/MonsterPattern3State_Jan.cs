@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class MonsterPattern3State_Jan : MonsterState
@@ -49,7 +50,21 @@ public class MonsterPattern3State_Jan : MonsterState
         if (pattern3Object.IsInSafeZone())
             Debug.Log("is Safe");
         else
-            player.OnDamamged(1);
+            player.OnDamaged(1);
+
+        //카메라 쉐이킹 연출 넣기
+        //엄폐물 낙하지점 표시
+        Vector2Int[] spawnGridPos = monster.GetRandomGridPos(monster.pattern3ObstacleNum);
+        GameObject[] displayObjects = new GameObject[monster.pattern3ObstacleNum];
+        for (int i = 0; i < monster.pattern3ObstacleNum; i++)
+            displayObjects[i] = GameObject.Instantiate(monster.pattern3ObstacleDisplayPrefab, monster.bossField.GridToWorldPosition(spawnGridPos[i]), Quaternion.identity);
+        yield return new WaitForSeconds(monster.pattern3ObstacleDisplayTime);
+        for (int i = 0; i < monster.pattern3ObstacleNum; i++)
+            GameObject.Destroy(displayObjects[i]);
+
+        //엄폐물 생성
+        for (int i = 0; i < monster.pattern3ObstacleNum; i++)
+            GameObject.Instantiate(monster.pattern3ObstaclePrefab, monster.bossField.GridToWorldPosition(spawnGridPos[i]), Quaternion.identity);
 
         //Physics2D.
         pattern3Object.ObjectSetActive(false);

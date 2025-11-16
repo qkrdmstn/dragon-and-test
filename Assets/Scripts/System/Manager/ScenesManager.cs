@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,7 @@ public class ScenesManager : MonoBehaviour
     public bool isLoading = false;
     public int isLoadedDB = 0;
     public List<SceneInfos> sceneInfos = new List<SceneInfos>();
+
     private void Awake()
     {
         if (instance == null)
@@ -93,7 +95,9 @@ public class ScenesManager : MonoBehaviour
             _sceneInfo = SceneInfo.Town_1;
 
         if (scene.buildIndex == 7 || scene.name == "BossTest")
+        {
             _sceneInfo = SceneInfo.Boss_1;
+        }
 
         StartCoroutine(SoundManager.instance.FadeInSound(_sceneInfo));
         Player.instance.InitbySceneLoaded(_sceneInfo);

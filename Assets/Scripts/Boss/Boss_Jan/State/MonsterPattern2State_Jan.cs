@@ -82,7 +82,7 @@ public class MonsterPattern2State_Jan : MonsterState
             GameObject target = inRangeTarget[i].gameObject;
             if (target.CompareTag("Player"))
             {
-                Player.instance.OnDamamged(1);
+                Player.instance.OnDamaged(1);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
@@ -63,10 +64,29 @@ public class PlayerInteraction : MonoBehaviour
                 case InteractionData.InteractionType.Puzzle:
                     PuzzleInteraction();
                     break;
+                case InteractionData.InteractionType.Boss:
+                    BossInteraction();
+                    break;
             }
         }
     }
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Interaction"))
+        {
+            interaction = collision.gameObject.GetComponent<InteractionData>();
+            BossInteractionData bossInteractionData = interaction as BossInteractionData;
+            if (interaction.type == InteractionData.InteractionType.Boss && bossInteractionData != null && bossInteractionData.isActive)
+            {
+                bossInteractionData.IsDone();
+                DoInteraction();
+            }
+        }
+    }
+
+    //상점 때문에 stay로 함.
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Interaction"))
@@ -107,6 +127,7 @@ public class PlayerInteraction : MonoBehaviour
                 }
                 else OnOutline(inRangeInteraction[curIdxInteraction].gameObject, 0);
             }
+
         }
     }
 
@@ -132,6 +153,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnOutline(GameObject obj, float isOn)
     {
+        //호버 효과 필요 없는 object 예외처리
+        if (inRangeInteraction[curIdxInteraction].gameObject.GetComponent<Renderer>() == null) return;
         obj.GetComponent<Renderer>().material.SetFloat("_isInteraction", isOn);
     }
 
@@ -188,5 +211,11 @@ public class PlayerInteraction : MonoBehaviour
     void PuzzleInteraction()
     {    // lever 가동 모션
         puzzleInteraction.LoadEvent(interaction);
+    }
+
+    //보스 방 입장 시 호출
+    public void BossInteraction()
+    {
+        dialogueInteraction.LoadEvent(interaction);
     }
 }

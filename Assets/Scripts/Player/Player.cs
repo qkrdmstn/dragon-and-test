@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
         return speed;
     }
 
-    public void OnDamamged(int damage)
+    public void OnDamaged(int damage)
     {
         if(IsDash())
         {  
@@ -416,6 +416,17 @@ public class Player : MonoBehaviour
                 Debug.DrawLine(v2, v4, Color.green, 1.0f);
                 Debug.DrawLine(v3, v4, Color.green, 1.0f);
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("BlanketMap"))
+        {   // player가 모포가 있는 맵에 들어왔으며, 그 맵의 모포가 아직 유효하다면(destroy되지 않음) 신비로운 효과음 플레이
+            BlockInfo mapBlock = collision.GetComponentInParent<BlockInfo>();
+            BlanketInteractionData data = mapBlock.GetComponentInChildren<BlanketInteractionData>();
+            if (data!=null) 
+                SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.GoBlanketMap);
         }
     }
 }

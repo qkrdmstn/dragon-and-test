@@ -27,11 +27,11 @@ public class MonsterAnimController : AnimController
         base.SetAnim();
     }
 
-    public override void SetAnim<T>(T _animState, Direction direction)
+    public override void SetAnim<T>(T _animState, Direction direction, bool isLoop = false)
     {  
         MonsterAnimState animState = Enum.Parse<MonsterAnimState>(_animState.ToString());
         
-        if (animState == MonsterAnimState.Run) skeletonAnimation.loop = true;
+        if (animState == MonsterAnimState.Run || isLoop) skeletonAnimation.loop = true;
         else skeletonAnimation.loop = false;
 
         baseSkinName = skins[0].skin[(int)direction];

@@ -70,7 +70,7 @@ public class PuzzleInteraction : Interaction
 
     void FailAttack()
     {
-        Player.instance.OnDamamged(1);
+        Player.instance.OnDamaged(1);
         SoundManager.instance.SetEffectSound(SoundType.Puzzle, PuzzleSfx.FailDamage);
         // 레이저라던가 ..시각적 연출...
     }
