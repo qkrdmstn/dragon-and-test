@@ -188,11 +188,16 @@ public class DialogueInteraction : Interaction
         return isDone;
     }
 
-    public void SetActiveDialogUI(bool visible)
+    public void SetActiveDialogUI(bool visible) //텍스트만 Setting.
     {   
         dialogueTxt.gameObject.SetActive(visible);
         
         if (isFirst) isFirst = false;
+    }
+
+    public void SetActiveDialogUI2(bool visible) //대화 UI 전체 Setting.
+    {
+        UIManager.instance.SceneUI["Dialogue"].SetActive(visible);
     }
 
     void SetActiveSelectUI(bool visible)
@@ -218,7 +223,12 @@ public class DialogueInteraction : Interaction
             //이미지 swap
             ImageSetting(dialogDatas[idx]._imageIdx);
             //보스 상호작용일 경우, 카메라 연출 함수 호출
-            Debug.Log(dialogDatas[idx]._cameraEffectNum);
+            if(data.type == InteractionData.InteractionType.Boss)
+            {
+                BossInteractionData bossInteraction = FindAnyObjectByType<BossInteractionData>();
+                bossInteraction.DoBossDirection(dialogDatas[idx]._cameraEffectNum);
+                Debug.Log(dialogDatas[idx]._cameraEffectNum + "!!!!!");
+            }
 
             if (isFirst)
             {   // 첫 대화 출력
