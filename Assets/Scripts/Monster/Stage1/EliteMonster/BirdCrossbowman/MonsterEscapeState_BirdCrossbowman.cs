@@ -7,12 +7,14 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class MonsterEscapeState_BirdCrossbowman : MonsterState
 {
     protected new BirdCrossbowman monster;
+    protected Direction curDir;
     private Vector3 dest;
     private float timer;
 
     public MonsterEscapeState_BirdCrossbowman(MonsterStateMachine _stateMachine, Player _player, BirdCrossbowman _monster) : base(_stateMachine, _player, _monster)
     {
         monster = _monster;
+        curDir = Direction.FRONT;
     }
 
     public override void Enter()
@@ -40,6 +42,13 @@ public class MonsterEscapeState_BirdCrossbowman : MonsterState
             dest = dir * monster.escapeDist;
         }
         monster.SetDestination(dest);
+
+        Direction newDir = monster.CheckDirReverse();
+        if (curDir != newDir)
+        {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+            curDir = newDir;
+            monster.monsterAnimController.SetAnim(TankerAnimState.Run, curDir);
+        }
 
         //다음 상태 변경 확인
         float dist = Vector3.Distance(monster.transform.position, player.transform.position);

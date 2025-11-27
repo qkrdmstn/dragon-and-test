@@ -17,6 +17,7 @@ public class MonsterIdleState_BirdCrossbowman : MonsterIdleStateBase
     {
         base.Enter();
         monster.SetSpeed(0.0f);
+        monster.monsterAnimController.SetAnim(CrossbowmanAnimState.Idle2, monster.CheckDir());
     }
 
     public override void Update()

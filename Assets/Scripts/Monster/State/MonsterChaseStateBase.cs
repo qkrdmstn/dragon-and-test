@@ -41,6 +41,15 @@ public class MonsterChaseStateBase : MonsterState
                 monster.monsterAnimController.SetAnim(TankerAnimState.Run, curDir);
             }
         }
+        else if (monster.haveAnim && monster.monsterName == MonsterName.BirdCrossbowman)
+        {
+            Direction newDir = monster.CheckDir();
+            if (curDir != newDir)
+            {   // 플레이어를 쫓아가는 방향이 달라지면 새로운 애니메이션 호출
+                curDir = newDir;
+                monster.monsterAnimController.SetAnim(CrossbowmanAnimState.Run, curDir);
+            }
+        }
         else if (monster.haveAnim)
         {
             Direction newDir = monster.CheckDir();
