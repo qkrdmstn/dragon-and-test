@@ -1,3 +1,4 @@
+using Spine;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -171,6 +172,13 @@ public class MonsterBase : MonoBehaviour
     public Direction CheckDir()
     {
         Vector3 dir = player.transform.position - transform.position;
+        return monsterAnimController.FindDirToPlayer(dir);
+    }
+    
+    public Direction CheckDirReverse()
+    {
+        
+        Vector3 dir = transform.position - player.transform.position;
         return monsterAnimController.FindDirToPlayer(dir);
     }
 

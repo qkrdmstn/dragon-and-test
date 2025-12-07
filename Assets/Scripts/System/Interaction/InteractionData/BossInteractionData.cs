@@ -9,10 +9,8 @@ public class BossInteractionData : InteractionData
 {
     public bool isActive;
     [SerializeField] CameraManager cameraManager;
-    [SerializeField] CinemachineImpulseSource impulseSource;
-    [SerializeField] CinemachineImpulseListener impulseListener;
     [SerializeField] CinemachineVirtualCamera virtualPlayerCamera;
-    [SerializeField] CamShakeProfile quakeProfile;
+    [SerializeField] CursorControl cursorControl;
     public int bossDirectionNum;
 
     public Action[] bossDirectionFuncArray = new Action[4]; // 3개의 함수를 저장할 배열
@@ -27,6 +25,7 @@ public class BossInteractionData : InteractionData
         bossDirectionFuncArray[3] = BossDirection3;
     }
 
+
     public void IsDone()
     {
         isActive=false;
@@ -34,24 +33,63 @@ public class BossInteractionData : InteractionData
 
     public void DoBossDirection(int num)
     {
+        if (num < 0) return;
         bossDirectionFuncArray[num]();
+    }
+
+    void SetCamNoise(float amplitude, float freq)
+    {
+        CinemachineBasicMultiChannelPerlin perlin = virtualPlayerCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        perlin.m_AmplitudeGain = amplitude;
+        perlin.m_FrequencyGain = freq;
     }
 
     void BossDirection0()
     {
-
+        CursorStop();
     }
 
     void BossDirection1()
     {
-
+        DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
+        dialogueInteraction.SetActiveDialogUI2(true);
+        SetCamNoise(0.0f, 0.0f);
     }
+
     void BossDirection2()
     {
-
+        DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
+        dialogueInteraction.SetActiveDialogUI2(false);
+        SetCamNoise(1.0f, 1.0f);
     }
+
     void BossDirection3()
     {
+        DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
+        dialogueInteraction.SetActiveDialogUI2(false);
+        SetCamNoise(2.0f, 1.5f);
+    }
 
+    void BossDirection4()
+    {
+
+    }
+    void BossDirection5()
+    {
+
+    }
+
+    void CursorStop()
+    {
+        cursorControl.SetStopCursor();
+    }
+    void CursorStart()
+    {
+        cursorControl.SetStartCursor();
+    }
+
+    void CamShakeStop()
+    {
+        SetCamNoise(0.0f, 0.0f);
     }
 }

@@ -48,7 +48,14 @@ public class CursorControl : MonoBehaviour
 
     public void SetStartCursor()
     {
+        Player.instance.isCursorStart = true;
         isStart = true;
+    }
+
+    public void SetStopCursor()
+    {
+        Player.instance.isCursorStart = false;
+        isStart = false;
     }
 
     public void SetCursor(Sprite _cursorImg)

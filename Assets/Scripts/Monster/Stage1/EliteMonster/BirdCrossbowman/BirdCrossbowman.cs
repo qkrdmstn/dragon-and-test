@@ -37,9 +37,9 @@ public class BirdCrossbowman : MonsterBase
         base.InitStates();
 
         spawnState = new MonsterSpawnStateBase(stateMachine, player, this);
-        idleState = new MonsterIdleStateBase(stateMachine, player, this);
         deadState = new MonsterDeadStateBase(stateMachine, player, this);
 
+        idleState = new MonsterIdleState_BirdCrossbowman(stateMachine, player, this);
         chaseState = new MonsterChaseState_BirdCrossbowman(stateMachine, player, this);
         attackState = new MonsterAttackState_BirdCrossbowman(stateMachine, player, this);
         escapeState = new MonsterEscapeState_BirdCrossbowman(stateMachine, player, this);
@@ -51,5 +51,12 @@ public class BirdCrossbowman : MonsterBase
             monsterAnimController = GetComponentInChildren<CrossbowmanAnimationController>();
 
         Debug.Log(monsterAnimController);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        Debug.Log(stateMachine.currentState);
     }
 }
