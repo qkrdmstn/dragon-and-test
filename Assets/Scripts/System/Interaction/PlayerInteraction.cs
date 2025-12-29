@@ -37,7 +37,7 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    void DoInteraction()
+    public void DoInteraction()
     {
         if (!Player.instance.isInteraction)
         {
@@ -76,11 +76,13 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (collision.CompareTag("Interaction"))
         {
-            interaction = collision.gameObject.GetComponent<InteractionData>();
-            BossInteractionData bossInteractionData = interaction as BossInteractionData;
-            if (interaction.type == InteractionData.InteractionType.Boss && bossInteractionData != null && bossInteractionData.isActive)
+            BossInteractionController bossCtrl = collision.gameObject.GetComponent<BossInteractionController>();
+            if (bossCtrl == null)
+                return;
+            interaction = bossCtrl.bossStageStartInteraction;
+            if (interaction != null && interaction.type == InteractionData.InteractionType.Boss && bossCtrl.isActive)
             {
-                bossInteractionData.IsDone();
+                bossCtrl.IsDone();
                 DoInteraction();
             }
         }

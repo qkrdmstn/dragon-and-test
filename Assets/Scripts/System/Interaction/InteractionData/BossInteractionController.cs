@@ -5,8 +5,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
-public class BossInteractionData : InteractionData
+public class BossInteractionController : MonoBehaviour
 {
+    public InteractionData bossStageStartInteraction;
+    public InteractionData bossStageClearInteraction;
+    public InteractionData bossStageFailInteraction;
     public bool isActive;
     [SerializeField] CameraManager cameraManager;
     [SerializeField] CinemachineVirtualCamera virtualPlayerCamera;
@@ -32,6 +35,30 @@ public class BossInteractionData : InteractionData
         bossDirectionFuncArray[9] = BossDirection9;
     }
 
+    public void BossFail()
+    {
+        Debug.Log("!");
+        PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
+        playerInteraction.interaction = bossStageFailInteraction;
+        FindObjectOfType<Boss_Jan>().BossPause();
+        playerInteraction.DoInteraction();
+        StartCoroutine(BossFailCoroutine());
+    }
+
+    //패배 대사 출력 완료까지 기다린 뒤, 사망 UI 출력
+    public IEnumerator BossFailCoroutine()
+    {
+        yield return new WaitUntil(() => UIManager.instance.isClose);
+        UIManager.instance.SceneUI["Dead"].SetActive(true);
+    }
+
+    public void BossClear()
+    {
+        Debug.Log("!");
+        PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
+        playerInteraction.interaction = bossStageClearInteraction;
+        playerInteraction.DoInteraction();
+    }
 
     public void IsDone()
     {
@@ -102,6 +129,7 @@ public class BossInteractionData : InteractionData
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(true);
         SetBossCamNoise(0.0f, 0.0f);
+        SetPlayerCamNoise(0.0f, 0.0f);
     }
 
     void BossDirection8()

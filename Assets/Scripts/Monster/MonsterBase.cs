@@ -188,7 +188,6 @@ public class MonsterBase : MonoBehaviour
         curHP -= damage;
         if (curHP <= 0)
         {
-            isDead = true;
             stateMachine.ChangeState(deadState);
         }
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);

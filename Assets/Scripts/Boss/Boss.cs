@@ -44,7 +44,6 @@ public class Boss : MonsterBase
 
             MonsterBase[] monsterBases = FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
             BossBullet_Jan[] bossBullets = FindObjectsByType<BossBullet_Jan>(FindObjectsSortMode.None);
-            Debug.Log("Dead!!!!!!!");
 
             for (int i = 0; i < monsterBases.Length; i++)
                 monsterBases[i].stateMachine.ChangeState(monsterBases[i].deadState);
