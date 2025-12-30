@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
         return speed;
     }
 
-    public void OnDamaged(int damage)
+    public void OnDamaged(int damage, bool isDeadbykk0 = false)
     {
         if(IsDash())
         {  
@@ -233,10 +233,9 @@ public class Player : MonoBehaviour
             else
                 DecrementHP(damage);
 
-            if (refCurHp <= 0) //Dead
-            {
-                //장사
-                //4% 확률로 죽음 회피 & 체력 회복
+            if (refCurHp <= 0)
+            {   //Dead
+                //장사 - 4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
                 float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
                 float randomVal = UnityEngine.Random.Range(0.0f, 1.0f);
@@ -245,17 +244,31 @@ public class Player : MonoBehaviour
                     refCurHp = 1;
                     isDamaged = false;
                 }
-                else
-                {
-                    PlayerDead();
+                else {
+                    if (isDeadbykk0)
+                    {   // KK0으로 죽는 경우,
+                        Invoke("CheckDeadBykk0", 3f);
+                    }
+                    else PlayerDead();
                 }
             }
-            else
-            {
+            else {
                 //Change Layer & Change Color
                 ChangePlayerLayer(7);
                 StartCoroutine(DamagedProcess(hitDuration));
             }
+        }
+    }
+
+    void CheckDeadBykk0()
+    {   
+        BlanketInteraction blanketInteraction = (BlanketInteraction)GetComponentInChildren<PlayerInteraction>().blanketInteraction;
+        if (blanketInteraction.isBlanketInteraction)
+        {
+            UIManager.instance.isClose = true;
+            Debug.Log("ddd");
+            blanketInteraction.EndInteraction();
+            PlayerDead();
         }
     }
 

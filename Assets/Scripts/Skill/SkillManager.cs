@@ -206,7 +206,7 @@ public class SkillManager : MonoBehaviour
         if(skill == SeotdaHwatuCombination.KK0)
         {
             int damage = GetSkillDB(SeotdaHwatuCombination.KK0).damage;
-            Player.instance.OnDamaged(damage);
+            Player.instance.OnDamaged(damage, true);    //kk0으로 죽는경우 체크
         }
         else if (IsPassive(skill)) //Add Passive Skill
         {
