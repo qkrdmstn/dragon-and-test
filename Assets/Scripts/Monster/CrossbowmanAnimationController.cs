@@ -34,10 +34,18 @@ public class CrossbowmanAnimationController : MonsterAnimController
     {
         CrossbowmanAnimState animState = Enum.Parse<CrossbowmanAnimState>(_animState.ToString());
 
-        if (animState == CrossbowmanAnimState.Run) skeletonAnimation.loop = true;
-        else skeletonAnimation.loop = false;
+        if (animState == CrossbowmanAnimState.Run)
+        {
+            skeletonAnimation.loop = true;
+            skeletonAnimation.timeScale = 2.5f;
+        }
+        else
+        {
+            skeletonAnimation.loop = false;
+            skeletonAnimation.timeScale = 1.0f;
+        }
 
-        baseSkinName = skins[0].skin[(int)direction];
+            baseSkinName = skins[0].skin[(int)direction];
         curAnim = anims[(int)animState];
 
         if (!GetAnimLoop())

@@ -205,8 +205,30 @@ public class Boss_Jan : Boss
     public override void Dead()
     {
         if (!isDead)
+        {
+            Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!?");
             MoneyDrop();
+            FindObjectOfType<BossInteractionController>().BossClear();
+        }
         base.Dead();
+    }
+
+    public void BossPause()
+    {
+        StopAllCoroutines();
+
+        //idle로 고정
+        stateMachine.ChangeState(idleState);
+        isStateChangeable = false;
+        MonsterBase[] monsterBases = FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        BossBullet_Jan[] bossBullets = FindObjectsByType<BossBullet_Jan>(FindObjectsSortMode.None);
+        Debug.Log("Pause!!!!!!!");
+
+        for (int i = 0; i < monsterBases.Length; i++)
+            monsterBases[i].stateMachine.ChangeState(monsterBases[i].deadState);
+
+        for (int i = 0; i < bossBullets.Length; i++)
+            Destroy(bossBullets[i].gameObject);
     }
 
     private void SpawnMonster()
