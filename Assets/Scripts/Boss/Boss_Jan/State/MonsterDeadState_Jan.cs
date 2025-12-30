@@ -15,6 +15,7 @@ public class MonsterDeadState_Jan : MonsterDeadStateBase
 
     public override void Enter()
     {
+        monster.Dead();
         base.Enter();
     }
 

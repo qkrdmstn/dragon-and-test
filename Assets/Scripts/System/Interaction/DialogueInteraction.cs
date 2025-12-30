@@ -225,7 +225,7 @@ public class DialogueInteraction : Interaction
             //보스 상호작용일 경우, 카메라 연출 함수 호출
             if(data.type == InteractionData.InteractionType.Boss)
             {
-                BossInteractionData bossInteraction = FindAnyObjectByType<BossInteractionData>();
+                BossInteractionController bossInteraction = FindAnyObjectByType<BossInteractionController>();
                 bossInteraction.DoBossDirection(dialogDatas[idx]._cameraEffectNum);
                 Debug.Log(dialogDatas[idx]._cameraEffectNum + "!!!!!");
             }

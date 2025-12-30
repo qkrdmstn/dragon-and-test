@@ -86,6 +86,7 @@ public class Player : MonoBehaviour
     public bool isTownStart = false;
     public bool isSuperman = false;
     public bool isCursorStart = true;
+    public bool isBoss = false;
 
     #region Componets
     public PlayerAnimController animController { get; private set; }
@@ -275,8 +276,15 @@ public class Player : MonoBehaviour
     private void PlayerDead()
     {
         isDead = true;
-        GameManager.instance.SetTimeScale(0f);
-        UIManager.instance.SceneUI["Dead"].SetActive(true);
+        if (isBoss)
+        {
+            FindObjectOfType<BossInteractionController>().BossFail();
+        }
+        else
+        {
+            GameManager.instance.SetTimeScale(0f);
+            UIManager.instance.SceneUI["Dead"].SetActive(true);
+        }
     }
 
     public void ReloadPlayer()
@@ -371,6 +379,10 @@ public class Player : MonoBehaviour
                 break;
         }
 
+        if (curScene == SceneInfo.Boss_1)
+            isBoss = true;
+        else
+            isBoss = false;
         ControlPlayerPos(pos);
     }
 
