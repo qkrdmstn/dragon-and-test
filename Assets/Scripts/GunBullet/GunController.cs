@@ -126,9 +126,9 @@ public class GunController : MonoBehaviour, IGun
     {   // 모든 총을 삭제하고 기본 총을 새롭게 생성
         refCurGunData = null;
 
-        for(int i=0; i< gunParent.childCount; i++)
-        {
-            DestroyImmediate(gunParent.GetChild(i).gameObject);
+        while(gunParent.childCount > 0)
+        {   // 바로 삭제하기때문에 실시간으로 gunParent.childCount 깎임 -> 없을 때까지 destory
+            DestroyImmediate(gunParent.GetChild(0).gameObject);
         }
 
         curGunItems.Clear();
