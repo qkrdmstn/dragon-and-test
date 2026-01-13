@@ -357,10 +357,14 @@ public class PlayerSkill : MonoBehaviour
 
     IEnumerator SupermanCoroutine(float duration)
     {
+        GameObject effect = transform.Find("GTT38_Effect").gameObject;
+        effect.SetActive(true);
+
         SkillManager.instance.ClearCoolTimer();
         Player.instance.isSuperman = true;
         yield return new WaitForSeconds(duration);
         Player.instance.isSuperman = false;
+        effect.SetActive(false);
     }
 
     #endregion
