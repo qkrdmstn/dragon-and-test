@@ -3,6 +3,7 @@ using UnityEngine;
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public enum StatActionType
 {
@@ -289,7 +290,7 @@ public class Player : MonoBehaviour
     private void PlayerDead()
     {
         isDead = true;
-        if (isBoss)
+        if (isBoss && SceneManager.GetActiveScene().buildIndex == (int)SceneInfo.Boss_1)
         {
             FindObjectOfType<BossInteractionController>().BossFail();
         }
@@ -378,14 +379,14 @@ public class Player : MonoBehaviour
                     pos = new Vector3(-2.5f, 22.5f, 0);
                 }
                 break;
-            case SceneInfo.Tutorial:    // 2
+            case SceneInfo.Tutorial:    
                 isTutorial = true;
                 break;
-            case SceneInfo.Puzzle_1:    // 3
-            case SceneInfo.Battle_1_A:  // 4
-            case SceneInfo.Battle_1_B:  // 5
-            case SceneInfo.Battle_1_C:  // 6
-            case SceneInfo.Boss_1:      // 7
+            case SceneInfo.Puzzle_1:    
+            case SceneInfo.Battle_1_A:  
+            case SceneInfo.Battle_1_B:  
+            case SceneInfo.Battle_1_C:  
+            case SceneInfo.Boss_1:      
                 isAttackable = true;
                 isCombatZone = true;
                 InitPositionHistoryQueue();
@@ -393,7 +394,10 @@ public class Player : MonoBehaviour
         }
 
         if (curScene == SceneInfo.Boss_1)
+        {
             isBoss = true;
+            Debug.Log("isBoss: "+isBoss);
+        }
         else
             isBoss = false;
         ControlPlayerPos(pos);
