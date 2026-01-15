@@ -56,7 +56,5 @@ public class BirdCrossbowman : MonsterBase
     protected override void Update()
     {
         base.Update();
-
-        Debug.Log(stateMachine.currentState);
     }
 }

@@ -19,9 +19,9 @@ public class ShopRandomItem : MonoBehaviour
     // case 1) 체력 2, 방어구 1
     // case 2) 체력 1, 방어구 2
     void SetCountType()
-    {
-        int armorCnt = Random.Range(1,3);
-        int fruitCnt = 3 - armorCnt;
+    {   // 26/01/15기준 case1만 진행
+        int armorCnt = 1; //Random.Range(1,3);
+        int fruitCnt = 2; //3 - armorCnt;
         SetCountGun();
         SetCountArmor(armorCnt);
         SetCountFruit(fruitCnt);
@@ -42,7 +42,7 @@ public class ShopRandomItem : MonoBehaviour
 
     void SetCountArmor(int _cnt)
     {
-        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.armorItemDatas[Random.Range(0, 2)];
+        itemObjs[cnt].GetComponent<InteractionData>().itemData = itemObjs[cnt].itemData = ItemManager.instance.armorItemDatas[Random.Range(0, 1)]; // 1월 방어구만 나오게 변경
         itemObjs[cnt].SetItemData();
         cnt++;
         if (_cnt == 2)
