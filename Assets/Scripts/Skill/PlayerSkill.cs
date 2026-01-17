@@ -417,7 +417,7 @@ public class PlayerSkill : MonoBehaviour
         }
 
         GameObject prefabs = skillObjDictionary[code];
-        GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta));
+        GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta+90));
         SkillObj_Breath projectile = projectilObj.GetComponent<SkillObj_Breath>();
         projectile.Initialize(damage, dist, dir, projectileSpeed);
 
