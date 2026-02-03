@@ -32,10 +32,21 @@ public class DialogueInteraction : Interaction
     InteractionData data;
     DialogueUIGroup dialogueUIGroup;
 
+    [SerializeField]
+    private float maxDuration;
+    [SerializeField]
+    private bool haveTimeLimit;
+
     private async void Start()
     {
         dialogueUIGroup = UIManager.instance.GetComponentInChildren<DialogueUIGroup>(true);
         await LoadDialogueDBEntity();
+    }
+
+    private void Update()
+    {
+        if (haveTimeLimit)
+            maxDuration -= Time.deltaTime;
     }
 
     public override void LoadEvent(InteractionData data)
@@ -173,7 +184,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F) || (haveTimeLimit && maxDuration < 0.0f ))
             {   //  일반 대화 출력
                 SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Dialogue);
                 if (dialogDatas.Count == curIdx)
@@ -226,8 +237,12 @@ public class DialogueInteraction : Interaction
             if(data.type == InteractionData.InteractionType.Boss)
             {
                 BossInteractionController bossInteraction = FindAnyObjectByType<BossInteractionController>();
-                bossInteraction.DoBossDirection(dialogDatas[idx]._cameraEffectNum);
-                Debug.Log(dialogDatas[idx]._cameraEffectNum + "!!!!!");
+                maxDuration = bossInteraction.DoBossDirection(dialogDatas[idx]._cameraEffectNum);
+                if (maxDuration > 0.0f)
+                    haveTimeLimit = true;
+                else
+                    haveTimeLimit = false;
+                //Debug.Log(dialogDatas[idx]._cameraEffectNum + "cam effect");
             }
 
             if (isFirst)

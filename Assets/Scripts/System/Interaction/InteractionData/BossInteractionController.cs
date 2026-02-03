@@ -17,7 +17,7 @@ public class BossInteractionController : MonoBehaviour
     [SerializeField] CursorControl cursorControl;
     public int bossDirectionNum;
 
-    public Action[] bossDirectionFuncArray = new Action[10]; // 3개의 함수를 저장할 배열
+    public Func<float>[] bossDirectionFuncArray = new Func<float>[10]; // 3개의 함수를 저장할 배열
 
     private void Start()
     {
@@ -54,7 +54,6 @@ public class BossInteractionController : MonoBehaviour
 
     public void BossClear()
     {
-        Debug.Log("!");
         PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
         playerInteraction.interaction = bossStageClearInteraction;
         playerInteraction.DoInteraction();
@@ -65,80 +64,93 @@ public class BossInteractionController : MonoBehaviour
         isActive=false;
     }
 
-    public void DoBossDirection(int num)
+    //최대 유지 시간을 반환, 음수일 경우 시간 X
+    public float DoBossDirection(int num)
     {
-        if (num < 0) return;
-        bossDirectionFuncArray[num]();
+        if (num < 0) return -10.0f;
+        return bossDirectionFuncArray[num]();
     }
 
-    void BossDirection0()
+    float BossDirection0()
     {
         CursorStop();
+        return -10.0f;
     }
 
     //플레이어 카메라 흔들림 없애기
-    void BossDirection1()
+    float BossDirection1()
     {
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(true);
         SetPlayerCamNoise(0.0f, 0.0f);
+        return -10.0f;
     }
 
     //플레이어 카메라 흔들림 추가 && 대화 UI Inactive
-    void BossDirection2()
+    float BossDirection2()
     {
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(false);
         SetPlayerCamNoise(1.0f, 1.0f);
+        return 2.0f;
     }
 
     //플레이어 카메라 -> 보스 카메라 && 보스 카메라 흔들림 추가
-    void BossDirection3()
+    float BossDirection3()
     {
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(false);
         SetPlayerCamPriority(-5);
         SetBossCamNoise(1.0f, 1.0f);
         SetPlayerCamNoise(1.0f, 1.0f);
+        return 5.0f;
     }
 
     //보스 카메라 심하게 흔들림 && 대화 UI Inactive
-    void BossDirection4()
+    float BossDirection4()
     {
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(false);
         SetBossCamNoise(2.0f, 1.5f);
+        return 2.0f;
     }
 
-
-    void BossDirection5()
+    //보스 카메라 -> 플레이어 카메라 && 보스 카메라 흔들림 없애기
+    float BossDirection5()
     {
         SetPlayerCamPriority(10);
         CursorStart();
+        SetBossCamNoise(0.0f, 0.0f);
+        SetPlayerCamNoise(0.0f, 0.0f);
+        return -10.0f;
     }
 
-    void BossDirection6()
+    float BossDirection6()
     {
+        SetBossCamNoise(0.0f, 0.0f);
+        SetPlayerCamNoise(0.0f, 0.0f);
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(true);
+        return -10.0f;
     }
 
     //Boss 카메라 흔들림 없애기
-    void BossDirection7()
+    float BossDirection7()
     {
         DialogueInteraction dialogueInteraction = FindAnyObjectByType<DialogueInteraction>();
         dialogueInteraction.SetActiveDialogUI2(true);
         SetBossCamNoise(0.0f, 0.0f);
         SetPlayerCamNoise(0.0f, 0.0f);
+        return -10.0f;
     }
 
-    void BossDirection8()
+    float BossDirection8()
     {
-
+        return -10.0f;
     }
-    void BossDirection9()
+    float BossDirection9()
     {
-
+        return -10.0f;
     }
     void CursorStop()
     {
