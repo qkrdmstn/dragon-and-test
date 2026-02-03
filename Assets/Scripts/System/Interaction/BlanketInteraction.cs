@@ -62,6 +62,8 @@ public class BlanketInteraction : Interaction
         isBlanketInteraction = true;
         isDone = false;
         SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.mopo);
+        UIManager.instance.presenters[(int)PresenterType.Item].objs[1].SetActive(false);    // GunUI
+        UIManager.instance.presenters[(int)PresenterType.Item].objs[2].SetActive(false);    // BulletUI
 
         //기존 material hwatu 삭제
         for (int i = 0; i < materialHwatuUIObjectList.Count; i++)
@@ -127,6 +129,9 @@ public class BlanketInteraction : Interaction
     {
         isDone = true;
         isBlanketInteraction = false;
+
+        UIManager.instance.presenters[(int)PresenterType.Item].objs[1].SetActive(true);    // GunUI
+        UIManager.instance.presenters[(int)PresenterType.Item].objs[2].SetActive(true);    // BulletUI
     }
 
     public bool AddSelectedHwatu(MaterialHwatuSlotUI ui)

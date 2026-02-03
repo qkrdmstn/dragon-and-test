@@ -3,6 +3,7 @@ using UnityEngine;
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public enum StatActionType
 {
@@ -205,7 +206,7 @@ public class Player : MonoBehaviour
         return speed;
     }
 
-    public void OnDamaged(int damage)
+    public void OnDamaged(int damage, bool isDeadbykk0 = false)
     {
         if(IsDash())
         {  
@@ -233,10 +234,9 @@ public class Player : MonoBehaviour
             else
                 DecrementHP(damage);
 
-            if (refCurHp <= 0) //Dead
-            {
-                //장사
-                //4% 확률로 죽음 회피 & 체력 회복
+            if (refCurHp <= 0)
+            {   //Dead
+                //장사 - 4% 확률로 죽음 회피 & 체력 회복
                 SkillDB js410Data = SkillManager.instance.GetSkillDB(SeotdaHwatuCombination.JS410);
                 float js410Prob = SkillManager.instance.GetSkillProb(SeotdaHwatuCombination.JS410);
                 float randomVal = UnityEngine.Random.Range(0.0f, 1.0f);
@@ -245,17 +245,31 @@ public class Player : MonoBehaviour
                     refCurHp = 1;
                     isDamaged = false;
                 }
-                else
-                {
-                    PlayerDead();
+                else {
+                    if (isDeadbykk0)
+                    {   // KK0으로 죽는 경우,
+                        Invoke("CheckDeadBykk0", 3f);
+                    }
+                    else PlayerDead();
                 }
             }
-            else
-            {
+            else {
                 //Change Layer & Change Color
                 ChangePlayerLayer(7);
                 StartCoroutine(DamagedProcess(hitDuration));
             }
+        }
+    }
+
+    void CheckDeadBykk0()
+    {   
+        BlanketInteraction blanketInteraction = (BlanketInteraction)GetComponentInChildren<PlayerInteraction>().blanketInteraction;
+        if (blanketInteraction.isBlanketInteraction)
+        {
+            UIManager.instance.isClose = true;
+            Debug.Log("ddd");
+            blanketInteraction.EndInteraction();
+            PlayerDead();
         }
     }
 
@@ -276,7 +290,7 @@ public class Player : MonoBehaviour
     private void PlayerDead()
     {
         isDead = true;
-        if (isBoss)
+        if (isBoss && SceneManager.GetActiveScene().buildIndex == (int)SceneInfo.Boss_1)
         {
             FindObjectOfType<BossInteractionController>().BossFail();
         }
@@ -365,14 +379,14 @@ public class Player : MonoBehaviour
                     pos = new Vector3(-2.5f, 22.5f, 0);
                 }
                 break;
-            case SceneInfo.Tutorial:    // 2
+            case SceneInfo.Tutorial:    
                 isTutorial = true;
                 break;
-            case SceneInfo.Puzzle_1:    // 3
-            case SceneInfo.Battle_1_A:  // 4
-            case SceneInfo.Battle_1_B:  // 5
-            case SceneInfo.Battle_1_C:  // 6
-            case SceneInfo.Boss_1:      // 7
+            case SceneInfo.Puzzle_1:    
+            case SceneInfo.Battle_1_A:  
+            case SceneInfo.Battle_1_B:  
+            case SceneInfo.Battle_1_C:  
+            case SceneInfo.Boss_1:      
                 isAttackable = true;
                 isCombatZone = true;
                 InitPositionHistoryQueue();
@@ -380,7 +394,10 @@ public class Player : MonoBehaviour
         }
 
         if (curScene == SceneInfo.Boss_1)
+        {
             isBoss = true;
+            Debug.Log("isBoss: "+isBoss);
+        }
         else
             isBoss = false;
         ControlPlayerPos(pos);

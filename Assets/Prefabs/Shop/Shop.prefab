@@ -134,7 +134,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.4339428}
+  m_Offset: {x: 0, y: 0.28}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -145,7 +145,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.7492771}
+  m_Size: {x: 1, y: 0.36}
   m_EdgeRadius: 0
 --- !u!212 &9009978903917284647
 SpriteRenderer:
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 9009978904474676112}
   - component: {fileID: 9009978904474676119}
   m_Layer: 12
-  m_Name: "Item Obj - \uBB34\uAE30 7"
+  m_Name: Item Obj - Armor
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,9 +227,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9009978904474676117}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.67, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.694, y: -0.15, z: 0}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 9009978904636289098}
   m_RootOrder: 1
@@ -275,7 +275,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 927338625, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e38b71d2e5f5658489574a07d6f92c54, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -299,18 +299,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.75}
+  m_Offset: {x: 0, y: -0.67}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0, y: 0.12, z: 0, w: 0.06}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.65, y: 0.76}
     newSize: {x: 0.5555556, y: 0.6111111}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.75, y: 2}
+  m_Size: {x: 0.6, y: 1.6}
   m_EdgeRadius: 0
 --- !u!114 &9009978904474676112
 MonoBehaviour:
@@ -341,7 +341,10 @@ MonoBehaviour:
   type: 2
   eventName: "\uC0C1\uC810"
   sequence: 0
-  npcImg: {fileID: 21300000, guid: 36b7656356393fb488855a4cccf98b48, type: 3}
+  npcImg:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   itemData: {fileID: 11400000, guid: e067edf5f5e2ad84f8cc2a5ce78f037e, type: 2}
 --- !u!1 &9009978904636289097
 GameObject:
@@ -392,9 +395,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemObjs: []
-  gunItemDatas: []
-  armorItemDatas: []
-  fruitItemData: {fileID: 0}
 --- !u!1 &9009978904854920097
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9009978904970359974}
   - component: {fileID: 9009978904970359975}
+  - component: {fileID: 6184338759025143164}
   m_Layer: 0
   m_Name: Jigae
   m_TagString: Untagged
@@ -564,6 +565,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!70 &6184338759025143164
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9009978904970359973}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.10938473, y: 0.20838377}
+  m_Size: {x: 0.5886632, y: 0.4167749}
+  m_Direction: 1
 --- !u!1 &9009978904995493530
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +610,7 @@ Transform:
   m_GameObject: {fileID: 9009978904995493530}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.75, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9009978904636289098}
@@ -640,7 +657,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -344242777, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 24c5b5669e7ad6442b525849df9ec2b7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -668,14 +685,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.65, y: 0.76}
     newSize: {x: 0.82, y: 0.67}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 0.6, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &9009978904995493525
 MonoBehaviour:
@@ -706,7 +723,10 @@ MonoBehaviour:
   type: 2
   eventName: "\uC0C1\uC810"
   sequence: 0
-  npcImg: {fileID: 21300000, guid: 36b7656356393fb488855a4cccf98b48, type: 3}
+  npcImg:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   itemData: {fileID: 11400000, guid: 311c010d1a880994786306cc831e0e1e, type: 2}
 --- !u!1 &9009978905480590232
 GameObject:
@@ -833,7 +853,7 @@ GameObject:
   - component: {fileID: 9009978905513427229}
   - component: {fileID: 9009978905513427228}
   m_Layer: 12
-  m_Name: Item Obj - Armor
+  m_Name: Item Obj - Health1
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -847,8 +867,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9009978905513428706}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.37, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalPosition: {x: 0.249, y: -0.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9009978904636289098}
@@ -895,7 +915,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -38345435, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a57249e2d7c954cd6a961b7edfab8534, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -923,14 +943,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.8333333, y: 0.6666667}
+    oldSize: {x: 0.51, y: 0.55}
     newSize: {x: 0.8333333, y: 0.6666667}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8333333, y: 2}
+  m_Size: {x: 0.5, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &9009978905513427229
 MonoBehaviour:
@@ -961,7 +981,10 @@ MonoBehaviour:
   type: 2
   eventName: "\uC0C1\uC810"
   sequence: 0
-  npcImg: {fileID: 21300000, guid: 36b7656356393fb488855a4cccf98b48, type: 3}
+  npcImg:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   itemData: {fileID: 0}
 --- !u!1 &9009978905576538189
 GameObject:
@@ -977,7 +1000,7 @@ GameObject:
   - component: {fileID: 9009978905576538184}
   - component: {fileID: 9009978905576538191}
   m_Layer: 12
-  m_Name: Item Obj - Health
+  m_Name: Item Obj - Health2
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -992,7 +1015,7 @@ Transform:
   m_GameObject: {fileID: 9009978905576538189}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.076, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9009978904636289098}
@@ -1105,5 +1128,8 @@ MonoBehaviour:
   type: 2
   eventName: "\uC0C1\uC810"
   sequence: 0
-  npcImg: {fileID: 21300000, guid: 36b7656356393fb488855a4cccf98b48, type: 3}
+  npcImg:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   itemData: {fileID: 0}
