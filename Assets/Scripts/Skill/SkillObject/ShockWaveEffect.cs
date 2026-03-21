@@ -7,7 +7,6 @@ public class ShockWaveEffect : MonoBehaviour
     private Coroutine shockWaveCoroutine;
     private Material material;
     private static int waveDistanceFromCenter = Shader.PropertyToID("_WaveDistanceFromCenter");
-    public GameObject shockWaveParticleObject;
     public bool isScale = true;
 
     private void Awake()
@@ -22,7 +21,6 @@ public class ShockWaveEffect : MonoBehaviour
 
     private IEnumerator ShockWaveAction(float startPos, float endPos, float shockWaveTime)
     {
-        shockWaveParticleObject.SetActive(true);
         material.SetFloat(waveDistanceFromCenter, startPos);
         float lerpedAmount = 0f;
 
@@ -40,6 +38,5 @@ public class ShockWaveEffect : MonoBehaviour
             yield return null;
         }
         material.SetFloat(waveDistanceFromCenter, 1.0f);
-        shockWaveParticleObject.SetActive(false);
     }
 }
