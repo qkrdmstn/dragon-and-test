@@ -125,10 +125,10 @@ public class GunController : MonoBehaviour, IGun
     public void ClearGunDatas()
     {   // 모든 총을 삭제하고 기본 총을 새롭게 생성
         refCurGunData = null;
-        foreach(Transform curGun in gunParent.GetComponentsInChildren<Transform>(true))
-        {
-            if (curGun == gunParent) continue;
-            else Destroy(curGun.gameObject);
+
+        while(gunParent.childCount > 0)
+        {   // 바로 삭제하기때문에 실시간으로 gunParent.childCount 깎임 -> 없을 때까지 destory
+            DestroyImmediate(gunParent.GetChild(0).gameObject);
         }
 
         curGunItems.Clear();
@@ -137,14 +137,10 @@ public class GunController : MonoBehaviour, IGun
 
     void InitActiveGun()
     {   // curGun 갱신하면서 프로퍼티 사용해서 이미지랑 총알 수 바인딩
-
         for (int i = 0; i < gunParent.childCount; i++)
         {
-            gunParent.GetChild(i).gameObject.SetActive(false);
+            gunParent.GetChild(i).gameObject.SetActive(false); // 새로운 총 생성과 동시에 비활성화 처리
         }
-
-        if (gunParent.childCount == 1)
-            currentIdx = 0;
 
         currentGun = gunParent.GetChild(currentIdx).gameObject;
         refCurGunData = currentGun.GetComponent<Gun>().initItemData;

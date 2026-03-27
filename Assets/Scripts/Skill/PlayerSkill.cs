@@ -83,13 +83,13 @@ public class PlayerSkill : MonoBehaviour
                 coolTime = VineSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.duration, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT7:
-                coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
+                coolTime = BlankBullet(data.TransStringToEnum(), data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT6:
                 coolTime = GuidedMissile(data.TransStringToEnum(),data.damage, data.speed, data.range, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT5:
-                coolTime = BlankBullet(data.damage, data.range, data.force, data.coolTime);
+                coolTime = BlankBullet(data.TransStringToEnum(), data.damage, data.range, data.force, data.coolTime);
                 break;
             case SeotdaHwatuCombination.TT4:
                 coolTime = VineSkill(data.TransStringToEnum(), data.damage, data.range, data.speed, data.duration, data.coolTime);
@@ -140,20 +140,23 @@ public class PlayerSkill : MonoBehaviour
 
     #region Active
     #region BlankBullet
-    private float BlankBullet(int damage, float impactRadius, float impactForce, float coolTime)
+    private float BlankBullet(SeotdaHwatuCombination code, int damage, float impactRadius, float impactForce, float coolTime)
     {
-        StartCoroutine(BlankBulletCoroutine(damage, impactRadius, impactForce));
+        StartCoroutine(BlankBulletCoroutine(code, damage, impactRadius, impactForce));
 
         return coolTime;
     }
 
-    private IEnumerator BlankBulletCoroutine(int damage, float impactRadius, float impactForce)
+    private IEnumerator BlankBulletCoroutine(SeotdaHwatuCombination code, int damage, float impactRadius, float impactForce)
     {
         _impactRadius = impactRadius;
         shockWaveEffectManager.CallShockWave(shockWaveTime, impactRadius);
         cameraManager.CameraShakeFromProfile(shockWaveEffectProfile, impulseSource);
         Time.timeScale = shockWaveTimeScale;
-        
+
+        GameObject prefabs = skillObjDictionary[code];
+        GameObject projectilObj = Instantiate(prefabs, transform.position, Quaternion.identity);
+
         Collider2D[] inRangeTarget = Physics2D.OverlapCircleAll(this.transform.position, impactRadius, impactLayerMask);
         for (int i = 0; i < inRangeTarget.Length; i++)
         {
@@ -178,8 +181,11 @@ public class PlayerSkill : MonoBehaviour
             }
         }
 
-        yield return new WaitForSecondsRealtime(shockWaveSlowDuration);
-        Time.timeScale = 1.0f;
+        //yield return new WaitForSecondsRealtime(shockWaveSlowDuration);
+        //Time.timeScale = 1.0f;
+
+        yield return new WaitForSecondsRealtime(1.3f);
+        Destroy(projectilObj);
     }
     #endregion
 
@@ -357,10 +363,14 @@ public class PlayerSkill : MonoBehaviour
 
     IEnumerator SupermanCoroutine(float duration)
     {
+        GameObject effect = transform.Find("GTT38_Effect").gameObject;
+        effect.SetActive(true);
+
         SkillManager.instance.ClearCoolTimer();
         Player.instance.isSuperman = true;
         yield return new WaitForSeconds(duration);
         Player.instance.isSuperman = false;
+        effect.SetActive(false);
     }
 
     #endregion
@@ -413,7 +423,7 @@ public class PlayerSkill : MonoBehaviour
         }
 
         GameObject prefabs = skillObjDictionary[code];
-        GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta));
+        GameObject projectilObj = Instantiate(prefabs, initPos, Quaternion.Euler(0, 0, theta+90));
         SkillObj_Breath projectile = projectilObj.GetComponent<SkillObj_Breath>();
         projectile.Initialize(damage, dist, dir, projectileSpeed);
 

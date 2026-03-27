@@ -18,7 +18,7 @@ public class CursorControl : MonoBehaviour
     [SerializeField] float player_threshold;
 
     Vector3 worldPos, targetPos;
-    static bool isStart = false;
+    public static bool isStart = false;
 
     private void Start()
     {
@@ -43,12 +43,22 @@ public class CursorControl : MonoBehaviour
 
             transform.position = targetPos;
         }
-        else transform.position = player.position;
+        else
+        {
+            transform.position = player.position;
+        }
     }
 
     public void SetStartCursor()
     {
+        Player.instance.isCursorStart = true;
         isStart = true;
+    }
+
+    public void SetStopCursor()
+    {
+        Player.instance.isCursorStart = false;
+        isStart = false;
     }
 
     public void SetCursor(Sprite _cursorImg)

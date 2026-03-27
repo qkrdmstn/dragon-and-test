@@ -1,3 +1,4 @@
+using Spine;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -173,6 +174,13 @@ public class MonsterBase : MonoBehaviour
         Vector3 dir = player.transform.position - transform.position;
         return monsterAnimController.FindDirToPlayer(dir);
     }
+    
+    public Direction CheckDirReverse()
+    {
+        
+        Vector3 dir = transform.position - player.transform.position;
+        return monsterAnimController.FindDirToPlayer(dir);
+    }
 
     //데미지 처리
     public virtual void OnDamaged(int damage)
@@ -180,7 +188,6 @@ public class MonsterBase : MonoBehaviour
         curHP -= damage;
         if (curHP <= 0)
         {
-            isDead = true;
             stateMachine.ChangeState(deadState);
         }
         else SoundManager.instance.SetEffectSound(SoundType.Monster, MonsterSfx.Damage);

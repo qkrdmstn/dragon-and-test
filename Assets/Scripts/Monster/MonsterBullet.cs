@@ -74,7 +74,7 @@ public class MonsterBullet : MonoBehaviour
         float theta = Vector2.Angle(Vector2.right, _dir);
         if (_dir.y < 0)
             theta *= -1;
-        this.transform.rotation = Quaternion.Euler(0, 0, theta);
+        this.transform.rotation = Quaternion.Euler(0, 0, theta+90);
     }
 
     private bool IsInDomain()

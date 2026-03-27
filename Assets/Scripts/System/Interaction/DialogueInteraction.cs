@@ -32,10 +32,21 @@ public class DialogueInteraction : Interaction
     InteractionData data;
     DialogueUIGroup dialogueUIGroup;
 
+    [SerializeField]
+    private float maxDuration;
+    [SerializeField]
+    private bool haveTimeLimit;
+
     private async void Start()
     {
         dialogueUIGroup = UIManager.instance.GetComponentInChildren<DialogueUIGroup>(true);
         await LoadDialogueDBEntity();
+    }
+
+    private void Update()
+    {
+        if (haveTimeLimit)
+            maxDuration -= Time.deltaTime;
     }
 
     public override void LoadEvent(InteractionData data)
@@ -173,7 +184,7 @@ public class DialogueInteraction : Interaction
         }
         else
         {   
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F) || (haveTimeLimit && maxDuration < 0.0f ))
             {   //  일반 대화 출력
                 SoundManager.instance.SetEffectSound(SoundType.UI, UISfx.Dialogue);
                 if (dialogDatas.Count == curIdx)
@@ -188,11 +199,16 @@ public class DialogueInteraction : Interaction
         return isDone;
     }
 
-    public void SetActiveDialogUI(bool visible)
+    public void SetActiveDialogUI(bool visible) //텍스트만 Setting.
     {   
         dialogueTxt.gameObject.SetActive(visible);
         
         if (isFirst) isFirst = false;
+    }
+
+    public void SetActiveDialogUI2(bool visible) //대화 UI 전체 Setting.
+    {
+        UIManager.instance.SceneUI["Dialogue"].SetActive(visible);
     }
 
     void SetActiveSelectUI(bool visible)
@@ -218,7 +234,16 @@ public class DialogueInteraction : Interaction
             //이미지 swap
             ImageSetting(dialogDatas[idx]._imageIdx);
             //보스 상호작용일 경우, 카메라 연출 함수 호출
-            Debug.Log(dialogDatas[idx]._cameraEffectNum);
+            if(data.type == InteractionData.InteractionType.Boss)
+            {
+                BossInteractionController bossInteraction = FindAnyObjectByType<BossInteractionController>();
+                maxDuration = bossInteraction.DoBossDirection(dialogDatas[idx]._cameraEffectNum);
+                if (maxDuration > 0.0f)
+                    haveTimeLimit = true;
+                else
+                    haveTimeLimit = false;
+                //Debug.Log(dialogDatas[idx]._cameraEffectNum + "cam effect");
+            }
 
             if (isFirst)
             {   // 첫 대화 출력
